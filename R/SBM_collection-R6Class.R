@@ -13,16 +13,15 @@ SBM_collection <-
       ## criteria = NULL, # variational bound and ICL for all models
   )
 )
-#
-# SBM_collection$set("public", "doVEstep",
-#   function(model) {
-#
-#   }
-# )
-#
-# SBM_collection$set("public", "doMstep",
-#   function(model) {
-#
-#   }
-# )
-#
+
+SBM_collection$set("public", "doVEstep",
+  function(model) {
+
+  }
+)
+
+SBM_collection$set("public", "doMstep",
+  function(model) {
+
+  }
+)
