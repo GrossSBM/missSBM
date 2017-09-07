@@ -56,6 +56,12 @@ R6Class(classname = "SBM_BernoulliUndirected",
       adjacencyMatrix <- adjacencyMatrix * lower.tri(adjacencyMatrix) + t(adjacencyMatrix * lower.tri(adjacencyMatrix))
       diag(adjacencyMatrix) <- 0
       return(list(blocks = blocks, adjacencyMatrix = adjacencyMatrix))
+    },
+    MStep = function(){
+      
+    },
+    VEStep = function(){
+      
     }
   )
 )
