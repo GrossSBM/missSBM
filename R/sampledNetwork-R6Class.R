@@ -21,6 +21,7 @@ R6Class(classname = "sampledNetwork",
     missingDyads    = NULL, # array indices of missing dyads
     observedDyads   = NULL, # array indices of observed dyads
     samplingRate    = NULL, # percentage of observed dyads
+    samplingMatrix  = NULL, # matrix of observed and non-observed edges
   )
 )  
 
@@ -45,6 +46,10 @@ function(adjacencyMatrix, directed) {
     self$observedDyads <- which(!is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
   }
   self$samplingRate    <- nrow(missingDyads)/nDyads
+  
+  
+  self$samplingMatrix  <- matrix(0, self$nNodes, self$nNodes)
+  self$samplingMatrix[observedDyads] <- 1
 })
 
 sampledNetwork$set("public", "plot",

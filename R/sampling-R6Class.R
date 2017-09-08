@@ -14,7 +14,6 @@ sampling <-
             nNodes         = NULL, # number of nodes
             missingParam   = NULL, # vector of missing parameters (a.k.a. alpha)
             completeLogLik = NULL, # pourquoi est-ce ici ???
-            samplingMatrix = NULL, #
             directed       = FALSE, #
             ## methods
             initialize = function(nNodes=NA, missingParam=NA, directed = FALSE) {
@@ -34,33 +33,33 @@ sampling_doubleStandard <-
               super$initialize(nNodes, missingParam, directed)
             },
             rSampling = function(adjMatrix) {
-              self$samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
               if(!self$directed){
                 areOne  <- (adjMatrix == 1) & upper.tri(adjMatrix)
                 areZero <- (adjMatrix == 0) & upper.tri(adjMatrix)
                 
-                self$samplingMatrix[areOne]  <- runif(sum(areOne))  < self$missingParam[2]
-                self$samplingMatrix[areZero] <- runif(sum(areZero)) < self$missingParam[1]
-                self$samplingMatrix <- t(self$samplingMatrix) | self$samplingMatrix
-                diag(self$samplingMatrix) <- 1
+                samplingMatrix[areOne]  <- runif(sum(areOne))  < self$missingParam[2]
+                samplingMatrix[areZero] <- runif(sum(areZero)) < self$missingParam[1]
+                samplingMatrix <- t(samplingMatrix) | samplingMatrix
+                diag(samplingMatrix) <- 1
               } else {
                 areOne  <- (adjMatrix == 1)
                 areZero <- (adjMatrix == 0)
                 
-                self$samplingMatrix[areOne]  <- runif(sum(areOne))  < self$missingParam[2]
-                self$samplingMatrix[areZero] <- runif(sum(areZero)) < self$missingParam[1]
-                diag(self$samplingMatrix) <- 1
+                samplingMatrix[areOne]  <- runif(sum(areOne))  < self$missingParam[2]
+                samplingMatrix[areZero] <- runif(sum(areZero)) < self$missingParam[1]
+                diag(samplingMatrix) <- 1
               }
               
               sampAdjMatrix  <- adjMatrix
-              sampAdjMatrix[which(self$samplingMatrix == 0)] <- NA
-              return(list(samplingMatrix = self$samplingMatrix, sampAdjMatrix = sampAdjMatrix))
+              sampAdjMatrix[which(samplingMatrix == 0)] <- NA
+              return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(completedAdjMatrix) {
-              obsEdges  <- which(!is.na(completedAdjMatrix) & (upper.tri(completedAdjMatrix) | lower.tri(completedAdjMatrix)), arr.ind = TRUE)
-              missEdges <- which(is.na(completedAdjMatrix) , arr.ind = TRUE)
-              ll       <- sum(log(self$missingParam[2]) * completedAdjMatrix[obsEdges] + log(self$missingParam[1]) * (1-completedAdjMatrix[obsEdges])) +
-                        sum(log(1-self$missingParam[2]) * completedAdjMatrix[missEdges] + log(1-self$missingParam[1]) * (1-completedAdjMatrix[missEdges]))
+            samplingLogLik = function(sampledNetwork) {
+              obsEdges  <- which(!is.na(sampledNetwork$adjacencyMatrix) & (upper.tri(sampledNetwork$adjacencyMatrix) | lower.tri(sampledNetwork$adjacencyMatrix)), arr.ind = TRUE)
+              missEdges <- which(is.na(sampledNetwork$adjacencyMatrix) , arr.ind = TRUE)
+              ll       <- sum(log(self$missingParam[2]) * sampledNetwork$adjacencyMatrix[obsEdges] + log(self$missingParam[1]) * (1-sampledNetwork$adjacencyMatrix[obsEdges])) +
+                        sum(log(1-self$missingParam[2]) * sampledNetwork$adjacencyMatrix[missEdges] + log(1-self$missingParam[1]) * (1-sampledNetwork$adjacencyMatrix[missEdges]))
               if(!self$directed){
                 return(ll/2)
               } else {
@@ -94,22 +93,22 @@ sampling_class <-
               super$initialize(nNodes, missingParam, directed)
             },
             rSampling = function(adjMatrix, blockIndicators) {
-              self$samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
               sampProb <- runif(self$nNodes) < self$missingParam[apply(blockIndicators, 1, which.max)]
               obsNodes <- which(runif(self$nNodes) < sampProb)
               
-              self$samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; self$samplingMatrix[obsNodes,] <- 1
-              diag(self$samplingMatrix) <- 1
-              self$samplingMatrix <- (t(self$samplingMatrix) | self$samplingMatrix)*1
+              samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
+              diag(samplingMatrix) <- 1
+              samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
               
               sampAdjMatrix  <- adjMatrix
-              sampAdjMatrix[which(self$samplingMatrix == 0)] <- NA
-              return(list(samplingMatrix = self$samplingMatrix, sampAdjMatrix = sampAdjMatrix))
+              sampAdjMatrix[which(samplingMatrix == 0)] <- NA
+              return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(completedAdjMatrix, blockIndicators) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(completedAdjMatrix)))] <- 1
-              obsEdges       <- which(!is.na(completedAdjMatrix) & (upper.tri(completedAdjMatrix) | lower.tri(completedAdjMatrix)), arr.ind = TRUE)
-              missEdges      <- which(is.na(completedAdjMatrix) , arr.ind = TRUE)
+            samplingLogLik = function(sampledNetwork, blockIndicators) {
+              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
+              obsEdges       <- which(!is.na(sampledNetwork$adjacencyMatrix) & (upper.tri(sampledNetwork$adjacencyMatrix) | lower.tri(sampledNetwork$adjacencyMatrix)), arr.ind = TRUE)
+              missEdges      <- which(is.na(sampledNetwork$adjacencyMatrix) , arr.ind = TRUE)
               return(sum(t(samplingVector) %*% blockIndicators %*% log(self$missingParam) + t(1-samplingVector) %*% blockIndicators %*% log(1-self$missingParam)))
             }
           )
@@ -130,21 +129,21 @@ sampling_degree <-
               super$initialize(nNodes, missingParam, directed)
             },
             rSampling = function(adjMatrix) {
-              self$samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
               sampProb            <- self$missingParam[1]+self$missingParam[2]*rowSums(AdjMatrix)
               samprob             <- 1/(1+exp(-sampProb))
               obsNodes            <- which(runif(self$nNodes) < sampProb)
               
-              self$samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; self$samplingMatrix[obsNodes,] <- 1
-              diag(self$samplingMatrix) <- 1
-              self$samplingMatrix <- (t(self$samplingMatrix) | self$samplingMatrix)*1
+              samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
+              diag(samplingMatrix) <- 1
+              samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
 
-              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(self$samplingMatrix == 0)] <- NA
-              return(list(samplingMatrix = self$samplingMatrix, sampAdjMatrix = sampAdjMatrix))
+              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
+              return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(completedAdjMatrix) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(completedAdjMatrix)))] <- 1
-              sampProb       <- self$missingParam[1]+self$missingParam[2]*rowSums(completedAdjMatrix)
+            samplingLogLik = function(sampledNetwork) {
+              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
+              sampProb       <- self$missingParam[1]+self$missingParam[2]*rowSums(sampledNetwork$adjacencyMatrix)
               samprob        <- 1/(1+exp(-sampProb))
               return(log((sampProb^samplingVector)%*%((1-sampProb)^(1-samplingVector))) )
             }
@@ -167,7 +166,7 @@ sampling_randomPairMAR <-
               super$initialize(nNodes, missingParam, directed)
             },
             rSampling = function(adjMatrix) {
-              self$samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
               
               if(!self$directed){
                 edgeSamp <- sample(which(lower.tri(adjMatrix)), floor((self$nNodes*(self$nNodes-1)/2)*self$missingParam))
@@ -175,16 +174,16 @@ sampling_randomPairMAR <-
                 edgeSamp <- sample(which(lower.tri(adjMatrix) | upper.tri(adjMatrix)), floor((self$nNodes^2 - self$nNodes)*self$missingParam))
               }
               
-              self$samplingMatrix <- matrix(0,self$nNodes,self$nNodes)
-              self$samplingMatrix[edgeSamp] <- 1
-              self$samplingMatrix <- t(self$samplingMatrix) | self$samplingMatrix ; diag(self$samplingMatrix) <- 1
+              samplingMatrix <- matrix(0,self$nNodes,self$nNodes)
+              samplingMatrix[edgeSamp] <- 1
+              samplingMatrix <- t(samplingMatrix) | samplingMatrix ; diag(samplingMatrix) <- 1
               
-              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(self$samplingMatrix == 0)] <- NA
-              return(list(samplingMatrix = self$samplingMatrix, sampAdjMatrix = sampAdjMatrix))
+              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
+              return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(completedAdjMatrix) {
-              obsEdges  <- which(!is.na(completedAdjMatrix) & (upper.tri(completedAdjMatrix) | lower.tri(completedAdjMatrix)), arr.ind = TRUE)
-              missEdges <- which(is.na(completedAdjMatrix) , arr.ind = TRUE)
+            samplingLogLik = function(sampledNetwork) {
+              obsEdges  <- which(!is.na(sampledNetwork$adjacencyMatrix) & (upper.tri(sampledNetwork$adjacencyMatrix) | lower.tri(sampledNetwork$adjacencyMatrix)), arr.ind = TRUE)
+              missEdges <- which(is.na(sampledNetwork$adjacencyMatrix) , arr.ind = TRUE)
               logPsi    <- ifelse (self$missingParam < .Machine$double.eps, 0, log(self$missingParam))
               log1mPsi  <- ifelse (self$missingParam > 1-.Machine$double.eps, 0, log(1-self$missingParam))
               ll        <- length(obsEdges)*logPsi + length(missEdges)*log1mPsi
@@ -212,18 +211,18 @@ sampling_randomNodesMAR <-
               super$initialize(nNodes, missingParam, directed)
             },
             rSampling = function(adjMatrix) {
-              self$samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
               obsNodes            <- which(runif(self$nNodes) < rep(self$missingParam, self$nNodes))
               
-              self$samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; self$samplingMatrix[obsNodes,] <- 1
-              diag(self$samplingMatrix) <- 1
-              self$samplingMatrix <- (t(self$samplingMatrix) | self$samplingMatrix)*1
+              samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
+              diag(samplingMatrix) <- 1
+              samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
               
-              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(self$samplingMatrix == 0)] <- NA
-              return(list(samplingMatrix = self$samplingMatrix, sampAdjMatrix = sampAdjMatrix))
+              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
+              return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(completedAdjMatrix) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(completedAdjMatrix)))] <- 1
+            samplingLogLik = function(sampledNetwork) {
+              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
               sampProb       <- rep(self$missingParam, self$nNodes)
               logPsi         <- ifelse (sampProb < .Machine$double.eps, 0, log(sampProb))
               log1mPsi       <- ifelse (sampProb > 1-.Machine$double.eps, 0, log(1-sampProb))
@@ -247,18 +246,18 @@ sampling_snowball <-
               super$initialize(nNodes, missingParam, directed)
             },
             rSampling = function(adjMatrix) {
-              self$samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
               obsNodes            <- which(runif(self$nNodes) < self$missingParam)
               
-              self$samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; self$samplingMatrix[obsNodes,] <- 1
-              diag(self$samplingMatrix) <- 1
-              self$samplingMatrix <- (t(self$samplingMatrix) | self$samplingMatrix)*1
+              samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
+              diag(samplingMatrix) <- 1
+              samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
               
-              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(self$samplingMatrix == 0)] <- NA
-              return(list(samplingMatrix = self$samplingMatrix, sampAdjMatrix = sampAdjMatrix))
+              sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
+              return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(completedAdjMatrix) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(completedAdjMatrix)))] <- 1
+            samplingLogLik = function(sampledNetwork) {
+              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
               return(log((self$missingParam^samplingVector)%*%((1-self$missingParam)^(1-samplingVector))))
             }
           )

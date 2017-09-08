@@ -57,7 +57,7 @@ SBM_collection$set("public", "estimate",
                   "SBM_poissonDirected"     = SBM_poissonDirected$new(self$sampling$nNodes, NA, NA))
     
 
-    VEMfit <- SBM_VEMfit$new(, NA, NA, SBM, lowerBound, vICL, blocks)
+    VEMfit <- SBM_VEMfit$new(self$sampledNetwork$adjacencyMatrix, NA, NA, SBM, lowerBound, vICL, blocks)
 
     
     
