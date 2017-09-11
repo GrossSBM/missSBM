@@ -67,9 +67,34 @@ R6Class(classname = "SBM_BernoulliUndirected",
   )
 )
 
-# mySBM <- SBM_BernoulliUndirected$new(20, c(1/2, 1/2), matrix(c(.2, .05, .05, .2),2,2))
-# mySBM$rBlocks()
-# image(mySBM$rSBM()$adjacencyMatrix)
+#' @export
+SBM_BernoulliUndirected.fit <-
+  R6Class(classname = "SBM_BernoulliUndirected.fit",
+          inherit = SBM_BernoulliUndirected,
+          public = list(
+            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
+              super$initialize(nNodes, mixtureParam, connectParam)
+            },
+            maximization = function(SBM, completedNetwork, blockVarParam) {
+              SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
+              SBM$mixtureParam <-  colMeans(blockVarParam)
+              return(SBM)
+            },
+            maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
+              SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
+              SBM$mixtureParam <- colMeans(blockVarParam)
+              return(SBM)
+            }, 
+            fixpoint = function(SBM, blockVarParam, completedNetwork) {
+              completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
+              blockVarParam_new <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + 
+                                               completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
+              num               <- rowSums(blockVarParam_new)
+              blockVarParam_new <- blockVarParam_new/num
+            }
+          )
+  )
+
 
 
 #' @export

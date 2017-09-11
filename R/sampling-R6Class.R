@@ -13,7 +13,6 @@ sampling <-
             ## fields
             nNodes         = NULL, # number of nodes
             missingParam   = NULL, # vector of missing parameters (a.k.a. alpha)
-            completeLogLik = NULL, # pourquoi est-ce ici ???
             directed       = FALSE, #
             ## methods
             initialize = function(nNodes=NA, missingParam=NA, directed = FALSE) {
