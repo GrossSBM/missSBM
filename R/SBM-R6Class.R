@@ -85,12 +85,29 @@ SBM_BernoulliUndirected.fit <-
               SBM$mixtureParam <- colMeans(blockVarParam)
               return(SBM)
             }, 
-            fixpoint = function(SBM, blockVarParam, completedNetwork) {
+            fixPoint = function(SBM, blockVarParam, completedNetwork) {
               completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
-              blockVarParam_new <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + 
+              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + 
                                                completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
-              num               <- rowSums(blockVarParam_new)
-              blockVarParam_new <- blockVarParam_new/num
+              num                  <- rowSums(blockVarParam.new)
+              blockVarParam.new    <- blockVarParam.new/num
+              return(blockVarParam.new)
+            },
+            fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
+              completedNetwork.bar <- (1 - completedNetwork)*samplingMatrix; diag(completedNetwork.bar) <- 0
+              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + 
+                                                  completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
+              num                  <- rowSums(blockVarParam.new)
+              blockVarParam.new    <- blockVarParam.new/num
+              return(blockVarParam.new)
+            },
+            updateNu = function(SBM, sampling, sampledNetwork, blockVarParam, completedNetwork) {
+              PI                   <- log(SBM$connectParam) - log(1-SBM$connectParam)
+              completedNetwork.new <- completedNetwork
+              eph <- log(1-sampling$missingParam[2]) - log(1-sampling$missingParam[1]) + blockVarParam %*% PI %*% t(blockVarParam)
+              eph <- 1/(1+exp(-eph))
+              completedNetwork.new[sampledNetwork$missingDyads] <- eph[sampledNetwork$missingDyads]
+              return(completedNetwork.new)
             }
           )
   )
