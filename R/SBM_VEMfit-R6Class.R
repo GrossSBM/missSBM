@@ -15,44 +15,42 @@ SBM_VEMfit <-
           public = list(
             ## fields
             completedNetwork = NULL, # the completed adjacency matrix of the initial network
-            sampledNetwork   = NULL, # 
-            missingVarParam  = NULL, # variational parameters for missing entries (a.k.a. nu)
-            blockVarParam    = NULL, # variational parameters for latent blocks, (a.k.a. tau)
-            nBlocks          = NULL, # number of blocks 
             SBM              = NULL, # 
             sampling         = NULL, # 
-            controlVEstep    = NULL,
-            controlMstep     = NULL,
+            sampledNetwork   = NULL, # 
+            blockVarParam    = NULL, # variational parameters for latent blocks, (a.k.a. tau)
+            controlVEM       = NULL,
+            maxIterVEM       = NULL,
             ## methods
             lowerBound       = NULL, # variational lower bound (a.k.a. J)
             vICL             = NULL, # compute the (variational) integrated complete likelihood
-            blocks           = NULL,  # get the most probable blocks
-            # fixPoint         = NULL,
-            updateNu         = NULL,
             VEstep           = function() {
-              # browser()
-              if(any(!(class(self$sampling) %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball")))){
-                self$blockVarParam <- self$SBM$fixPoint(self$SBM, self$blockVarParam, self$completedNetwork)
-                # browser()
-                self$missingVarParam <- self$SBM$updateNu(self$SBM, self$sampling, self$sampledNetwork, self$blockVarParam, self$completedNetwork)
+              if(!(class(self$sampling)[1] %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball"))){
+                self$blockVarParam    <- self$SBM$fixPoint(self$SBM, self$blockVarParam, self$completedNetwork)
+                self$completedNetwork <- self$SBM$updateNu(self$SBM, self$sampling, self$sampledNetwork, self$blockVarParam, self$completedNetwork)
+                self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik(self$completedNetwork, self$blockVarParam))
+                                          # - sum(self$blockVarParam*log(self$blockVarParam + 1*(self$blockVarParam==0))))
+                self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork)
               } else {
-                self$blockVarParam <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
+                self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
+                self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork))
+                                          # - sum(self$blockVarParam*log(self$blockVarParam + 1*(self$blockVarParam==0))))
               }
             },
             Mstep            = function() {
-              if(any(!(class(self$sampling) %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball")))){
-                # browser()
+              if(!(class(self$sampling)[1] %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball"))){
                 self$SBM <- self$SBM$maximization(self$SBM, self$completedNetwork, self$blockVarParam)
               } else {
                 self$SBM <- self$SBM$maximization_MAR(self$SBM, self$completedNetwork, self$blockVarParam, self$sampledNetwork$samplingMatrix)
               }
             },
-            initialize       = function(SBM, sampledNetwork, sampling, nBlocks) {
+            initialize       = function(SBM, sampledNetwork, sampling, controlVEM = 1e-5, maxIterVEM = 100) {
               self$sampledNetwork   <- sampledNetwork
               self$SBM              <- SBM
               self$sampling         <- sampling
               self$completedNetwork <- sampledNetwork$adjacencyMatrix
-              self$nBlocks          <- nBlocks
+              self$controlVEM       <- controlVEM
+              self$maxIterVEM       <- maxIterVEM
             }
           )
   )
@@ -60,61 +58,53 @@ SBM_VEMfit <-
 SBM_VEMfit$set("public", "doVEM",
                function() {
 
-                 eps        <- 1e-5
-                 mc.cores   <- 2
-                 zero       <- .Machine$double.eps
-                 maxIter    <- 100
-                 conv    <- vector("numeric", maxIter) ; conv[1] <- NA
-                 theta   <- vector("list", length = maxIter)
-
-                 cl0 <- SpectralClustering(self$completedNetwork, self$nBlocks)
-
-                 self$blockVarParam <- matrix(0,self$SBM$nNodes,self$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, self$nBlocks)] <- 1
-
+                 conv    <- vector("numeric", self$maxIterVEM) ; conv[1] <- NA
+                 theta   <- vector("list", length = self$maxIterVEM)
+                 
+                 cl0 <- SpectralClustering(self$completedNetwork, self$SBM$nBlocks)
+                 self$blockVarParam    <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, cl0)] <- 1
+                 
+                 self$completedNetwork[is.na(self$completedNetwork)] <- 0
                  theta[[1]] <- (t(self$blockVarParam)%*% self$completedNetwork %*%self$blockVarParam) / (t(self$blockVarParam)%*%((1-diag(self$SBM$nNodes)))%*%self$blockVarParam)
                  self$completedNetwork[self$sampledNetwork$missingDyads] <- ((self$blockVarParam) %*% theta[[1]] %*% t(self$blockVarParam))[self$sampledNetwork$missingDyads]
-
+                 
                  i <- 0; cond <- FALSE
                  while(!cond){
                    i <- i+1
-                    
+                   
                    self$Mstep()
-                   # browser()
                    self$VEstep()
-
-                   self$completedNetwork[self$sampledNetwork$missingDyads] <- self$missingVarParam
-                   self$completedNetwork.bar <- 1 - self$self$completedNetwork ; diag(self$completedNetwork.bar) <- 0
-
-                   self$lowerBound <- c(self$lowerBound, logLik.SBM(self$self$completedNetwork, self$self$completedNetwork.bar, self$blockVarParam, self$SBM$mixtureParam, self$SBM$connectParam) -
-                     sum(self$blockVarParam*log(blockVarParam + 1*(blockVarParam==0))))
-                   theta[[i]]      <- self$SBM$connectParam
+                   
+                   theta[[i]] <- self$SBM$connectParam
 
                    if (i > 1) {
                      conv[i] <- sqrt(sum((theta[[i]]-theta[[i-1]])^2)) / sqrt(sum((theta[[i-1]])^2))
-                     cond    <- (i > maxIter) |  (conv[i] < eps)
+                     cond    <- (i > self$maxIterVEM) |  (conv[i] < self$controlVEM)
                    }
                  }
+                 self$vICL <- -2 * (self$lowerBound[length(self$lowerBound)] + self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork)) + 
+                                self$sampling$penality(self$SBM$nBlocks, self$SBM$nNodes)
                }
 )
-
 
 ### Tests :
 
 # SBM : 
-mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/2, 1/2), matrix(c(.2, .05, .05, .2),2,2))
+mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/2, 1/2), matrix(c(.5, .05, .05, .5),2,2))
 
-# Sampled SBM :
-mySampledSBM  <- sampling_doubleStandard$new(100, c(1/4, 1/2))
+# # Sampled SBM :
+# mySampledSBM  <- sampling_doubleStandard$new(100, c(1/2, 1/2), FALSE)
+# Y             <- mySBM$rSBM()$adjacencyMatrix
+# sampledNetwork <- mySampledSBM$rSampling(Y)
+
+# Sampled SBM 2 (MAR):
+mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
 Y             <- mySBM$rSBM()$adjacencyMatrix
-sampAdjMatrix <- mySampledSBM$rSampling(Y)$sampAdjMatrix
-
-# Sampled network :
-sampledNetwork <- sampledNetwork$new(sampAdjMatrix, FALSE)
+sampledNetwork <- mySampledSBM$rSampling(Y)
 
 # VEM : 
-mySBM <- SBM_BernoulliUndirected.fit$new(100, NA, NA)
-nBlocks <- 2
-fit <- SBM_VEMfit$new(mySBM, sampledNetwork, mySampledSBM, nBlocks)
+mySBM   <- SBM_BernoulliUndirected.fit$new(100, rep(0, 2), NA)
+fit     <- SBM_VEMfit$new(mySBM, sampledNetwork, mySampledSBM)
 fit$doVEM()
 
 

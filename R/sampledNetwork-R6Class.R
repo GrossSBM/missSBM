@@ -38,13 +38,13 @@ function(adjacencyMatrix, directed) {
                                  self$nNodes*(self$nNodes-1)/2)
   # dyads are either defined on the whole matrix or on the lower triangular,
   # depending if the network is directed or not
-  if (directed) {
+  # if (directed) {
     self$missingDyads  <- which( is.na(adjacencyMatrix))
     self$observedDyads <- which(!is.na(adjacencyMatrix))
-  } else {
-    self$missingDyads  <- which( is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
-    self$observedDyads <- which(!is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
-  }
+  # } else {
+  #   self$missingDyads  <- which( is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
+  #   self$observedDyads <- which(!is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
+  # }
   self$samplingRate    <- nrow(self$missingDyads)/self$nDyads
   
   self$samplingMatrix  <- matrix(0, self$nNodes, self$nNodes)

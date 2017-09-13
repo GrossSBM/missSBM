@@ -33,6 +33,7 @@ sampling_doubleStandard <-
             },
             rSampling = function(adjMatrix) {
               samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              # browser()
               if(!self$directed){
                 areOne  <- (adjMatrix == 1) & upper.tri(adjMatrix)
                 areZero <- (adjMatrix == 0) & upper.tri(adjMatrix)
@@ -54,16 +55,22 @@ sampling_doubleStandard <-
               sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork) {
-              obsEdges  <- which(!is.na(sampledNetwork$adjacencyMatrix) & (upper.tri(sampledNetwork$adjacencyMatrix) | lower.tri(sampledNetwork$adjacencyMatrix)), arr.ind = TRUE)
-              missEdges <- which(is.na(sampledNetwork$adjacencyMatrix) , arr.ind = TRUE)
-              ll       <- sum(log(self$missingParam[2]) * sampledNetwork$adjacencyMatrix[obsEdges] + log(self$missingParam[1]) * (1-sampledNetwork$adjacencyMatrix[obsEdges])) +
-                        sum(log(1-self$missingParam[2]) * sampledNetwork$adjacencyMatrix[missEdges] + log(1-self$missingParam[1]) * (1-sampledNetwork$adjacencyMatrix[missEdges]))
+            samplingLogLik = function(sampledNetwork, completedNetwork) {
+              ll <- sum(log(self$missingParam[2]) * completedNetwork[obsEdges] + log(self$missingParam[1]) * (1-completedNetwork[obsEdges])) +
+                        sum(log(1-self$missingParam[2]) * completedNetwork[missEdges] + log(1-self$missingParam[1]) * (1-completedNetwork[missEdges]))
               if(!self$directed){
                 return(ll/2)
               } else {
                 return(ll)
               }
+            },
+            updatePsi = function(completedNetwork, sampledNetwork) {
+              num   <- c(sum(1-completedNetwork[sampledNetwork$observedDyads])-n, sum(completedNetwork[sampledNetwork$observedDyads]))
+              denom <- c(sum(1-completedNetwork)-n, sum(completedNetwork))
+              return(num/denom)
+            },
+            penality = function(nBlocks, nNodes) {
+              return((2 + nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + (nBlocks-1)*log(nNodes))
             }
           )
   )
@@ -140,7 +147,7 @@ sampling_degree <-
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork) {
+            samplingLogLik = function(sampledNetwork, completedNetwork) {
               samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
               sampProb       <- self$missingParam[1]+self$missingParam[2]*rowSums(sampledNetwork$adjacencyMatrix)
               samprob        <- 1/(1+exp(-sampProb))
@@ -180,17 +187,18 @@ sampling_randomPairMAR <-
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork) {
-              obsEdges  <- which(!is.na(sampledNetwork$adjacencyMatrix) & (upper.tri(sampledNetwork$adjacencyMatrix) | lower.tri(sampledNetwork$adjacencyMatrix)), arr.ind = TRUE)
-              missEdges <- which(is.na(sampledNetwork$adjacencyMatrix) , arr.ind = TRUE)
+            samplingLogLik = function(sampledNetwork, completedNetwork) {
               logPsi    <- ifelse (self$missingParam < .Machine$double.eps, 0, log(self$missingParam))
               log1mPsi  <- ifelse (self$missingParam > 1-.Machine$double.eps, 0, log(1-self$missingParam))
-              ll        <- length(obsEdges)*logPsi + length(missEdges)*log1mPsi
+              ll        <- length(sampledNetwork$observedDyads)*logPsi + length(sampledNetwork$missingDyads)*log1mPsi
               if(!self$directed){
                 return(ll/2)
               } else {
                 return(ll)
               }
+            },
+            penality = function(nBlocks, nNodes) {
+              return((1 + nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + (nBlocks-1)*log(nNodes))
             }
           )
   )
@@ -220,7 +228,7 @@ sampling_randomNodesMAR <-
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork) {
+            samplingLogLik = function(sampledNetwork, completedNetwork) {
               samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
               sampProb       <- rep(self$missingParam, self$nNodes)
               logPsi         <- ifelse (sampProb < .Machine$double.eps, 0, log(sampProb))
@@ -255,7 +263,7 @@ sampling_snowball <-
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork) {
+            samplingLogLik = function(sampledNetwork, completedNetwork) {
               samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
               return(log((self$missingParam^samplingVector)%*%((1-self$missingParam)^(1-samplingVector))))
             }

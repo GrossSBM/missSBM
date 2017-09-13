@@ -16,7 +16,7 @@ R6Class(classname = "SBM",
     mixtureParam   = NULL, # vector of block parameters (a.k.a. alpha)
     connectParam   = NULL, # vector of model parameters (a.k.a. theta)
     ## methods
-    initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
+    initialize = function(nNodes, mixtureParam, connectParam=NA) {
       self$nNodes       <- nNodes
       self$mixtureParam <- mixtureParam
       self$connectParam <- connectParam
@@ -44,17 +44,20 @@ R6Class(classname = "SBM_BernoulliUndirected",
     initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
       super$initialize(nNodes, mixtureParam, connectParam)
     },
-    completeLogLik = function(completedNetwork, blockIndicators, sampledNetwork) {
-      if(missing(sampledNetwork)){
-        network     <- completedNetwork
-        network.bar <- 1 - network ; diag(network.bar) <- 0
-      } else if(missing(completedNetwork)){
-        network     <- sampledNetwork$adjacencyMatrix * sampledNetwork$samplingMatrix
-        network.bar <- (1 - network) * sampledNetwork$samplingMatrix ; diag(network.bar) <- 0
-      }
+    completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
+      network     <- sampledNetwork$adjacencyMatrix[is.na(sampledNetwork$adjacencyMatrix)] <- 0
+      network.bar <- (1 - network) * sampledNetwork$samplingMatrix ; diag(network.bar) <- 0
+      
       return(sum(blockIndicators %*% log(self$mixtureParam)) +
         .5 * sum( network.bar *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
                     network * (blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
+    },
+    completeLogLik = function(completedNetwork, blockIndicators) {
+      network     <- completedNetwork
+      network.bar <- 1 - network ; diag(network.bar) <- 0
+      return(sum(blockIndicators %*% log(self$mixtureParam)) +
+               .5 * sum( network.bar *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
+                           network * (blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
     },
     rSBM = function() {
       blocks <- super$rSBM()$blocks
@@ -62,7 +65,6 @@ R6Class(classname = "SBM_BernoulliUndirected",
       adjacencyMatrix <- adjacencyMatrix * lower.tri(adjacencyMatrix) + t(adjacencyMatrix * lower.tri(adjacencyMatrix))
       diag(adjacencyMatrix) <- 0
       return(list(blocks = blocks, adjacencyMatrix = adjacencyMatrix))
-    }
     }
   )
 )
@@ -81,7 +83,7 @@ SBM_BernoulliUndirected.fit <-
               return(SBM)
             },
             maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-              SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
+              SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
               SBM$mixtureParam <- colMeans(blockVarParam)
               return(SBM)
             }, 
