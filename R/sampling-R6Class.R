@@ -1,10 +1,10 @@
 #' an SBM model
-#'
+#' 
 #' @field nNodes          number of nodes
 #' @field nBlocks         number of blocks
 #' @field blockProportion vector of block proportion (a.k.a. alpha)
 #' @field modelParameters vector of model parameters (a.k.a. theta)
-#'
+#' 
 #' @importFrom R6 R6Class
 #' @export
 sampling <-
@@ -33,7 +33,6 @@ sampling_doubleStandard <-
             },
             rSampling = function(adjMatrix) {
               samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-              # browser()
               if(!self$directed){
                 areOne  <- (adjMatrix == 1) & upper.tri(adjMatrix)
                 areZero <- (adjMatrix == 0) & upper.tri(adjMatrix)
@@ -156,11 +155,11 @@ sampling_degree <-
               return(log((sampProb^sampledNetwork$samplingVector)%*%((1-sampProb)^(1-sampledNetwork$samplingVector))) )
             },
             updatePsi = function(completedNetwork, sampledNetwork, blockVarParam) {
-              b1     <- ( (((2*sum(g(ksi)*Dtilde))*(-length(Nmiss) + 0.5*n)))/(sum(g(ksi))) - (-sum(Dtilde[Nmiss]) + sum(Dtilde)*0.5) )
-              b2     <- ( 2*sum(g(ksi)*Dchap) - (((2*sum(g(ksi)*Dtilde))^2 ))/(sum(g(ksi))))
-              b      <- b1/b2
-              a      <- -(b*(2*sum(g(ksi)*Dtilde)) + (-length(Nmiss) + 0.5*n))/(sum(g(ksi)))
-              psi    <- c(a,b)
+              b1  <- ( (((2*sum(g(ksi)*Dtilde))*(-length(Nmiss) + 0.5*n)))/(sum(g(ksi))) - (-sum(Dtilde[Nmiss]) + sum(Dtilde)*0.5) )
+              b2  <- ( 2*sum(g(ksi)*Dchap) - (((2*sum(g(ksi)*Dtilde))^2 ))/(sum(g(ksi))))
+              b   <- b1/b2
+              a   <- -(b*(2*sum(g(ksi)*Dtilde)) + (-length(Nmiss) + 0.5*n))/(sum(g(ksi)))
+              psi <- c(a,b)
               return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
             },
             penality = function(nBlocks, nNodes) {
@@ -246,6 +245,9 @@ sampling_randomNodesMAR <-
               logPsi         <- ifelse (sampProb < .Machine$double.eps, 0, log(sampProb))
               log1mPsi       <- ifelse (sampProb > 1-.Machine$double.eps, 0, log(1-sampProb))
               return(logPsi*sum(sampledNetwork$samplingVector) + log1mPsi * sum(1-sampledNetwork$samplingVector))
+            },
+            penality = function(nBlocks, nNodes) {
+              return(nBlocks*(nBlocks+1)/2*log(nNodes*(nNodes-1)/2) + nBlocks*log(nNodes))
             }
           )
   )
@@ -277,6 +279,9 @@ sampling_snowball <-
             },
             samplingLogLik = function(sampledNetwork, completedNetwork) {
               return(log((self$missingParam^sampledNetwork$samplingVector)%*%((1-self$missingParam)^(1-sampledNetwork$samplingVector))))
+            },
+            penality = function(nBlocks, nNodes) {
+              return(nBlocks*(nBlocks+1)/2*log(nNodes*(nNodes-1)/2) + nBlocks*log(nNodes))
             }
           )
   )

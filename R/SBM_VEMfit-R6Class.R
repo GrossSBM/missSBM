@@ -56,13 +56,55 @@ SBM_VEMfit <-
           )
   )
 
+SBM_VEMfit$set("public", "SpectralClustering",
+               function() {
+                 ## basic handling of missing values
+                 if (anyNA(self$completedNetwork)) self$completedNetwork[is.na(self$completedNetwork)] <- 0
+                 
+                 ## handling lonely souls  
+                 cl.final <- rep(NA, ncol(self$completedNetwork))
+                 unconnected <- which(rowSums(self$completedNetwork) == 0)
+                 connected <- setdiff(1:ncol(self$completedNetwork), unconnected)
+                 
+                 self$completedNetwork <- self$completedNetwork[connected,connected]
+                 if (self$SBM$nBlocks > 1) {
+                   
+                   ## Normalized Laplacian
+                   D <- colSums(self$completedNetwork)
+                   L <- diag(rep(1,ncol(self$completedNetwork))) -
+                     diag(D^(-1/2)) %*% self$completedNetwork %*% diag(D^(-1/2))
+                   
+                   ## Absolute eigenvalue in order
+                   E <- order(-abs(eigen(L)$values))
+                   
+                   ## Go into eigenspace
+                   U <- eigen(L)$vectors[,E]
+                   U <- U[,c((ncol(U)-self$SBM$nBlocks+1):ncol(U))]
+                   U <- U / rowSums(U^2)^(1/2)
+                   
+                   ## Applying the K-means in the eigenspace
+                   cl <- kmeans(U, self$SBM$nBlocks, nstart = 10, iter.max = 30)$cluster
+                 } else {
+                   cl <- as.factor(rep(1,ncol(self$completedNetwork)))
+                 }
+                 
+                 ## handing lonely souls    
+                 cl.final[connected] <- cl
+                 cl.final[unconnected] <- which.min(rowsum(D,cl))
+                 
+                 return(as.factor(cl.final))
+                 
+               }
+)
+
+
 SBM_VEMfit$set("public", "doVEM",
                function() {
 
                  conv    <- vector("numeric", self$maxIterVEM) ; conv[1] <- NA
                  theta   <- vector("list", length = self$maxIterVEM)
                  
-                 cl0 <- SpectralClustering(self$completedNetwork, self$SBM$nBlocks)
+                 cl0 <- self$SpectralClustering()
                  self$blockVarParam    <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, cl0)] <- 1
                  
                  self$completedNetwork[is.na(self$completedNetwork)] <- 0
@@ -87,6 +129,10 @@ SBM_VEMfit$set("public", "doVEM",
                                 self$sampling$penality(self$SBM$nBlocks, self$SBM$nNodes)
                }
 )
+
+
+
+
 
 ### Tests :
 
