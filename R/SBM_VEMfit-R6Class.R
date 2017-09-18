@@ -19,6 +19,7 @@ SBM_VEMfit <-
             sampling         = NULL, # 
             sampledNetwork   = NULL, # 
             blockVarParam    = NULL, # variational parameters for latent blocks, (a.k.a. tau)
+            taylorVarParam   = NULL, # variational parameters for Taylor expansion (a.k.a. ksi)
             controlVEM       = NULL,
             maxIterVEM       = NULL,
             ## methods

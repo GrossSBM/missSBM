@@ -64,7 +64,7 @@ sampling_doubleStandard <-
                 return(ll)
               }
             },
-            updatePsi = function(completedNetwork, sampledNetwork) {
+            updatePsi = function(completedNetwork, sampledNetwork, blockVarParam) {
               num   <- c(sum(1-completedNetwork[sampledNetwork$observedDyads])-n, sum(completedNetwork[sampledNetwork$observedDyads]))
               denom <- c(sum(1-completedNetwork)-n, sum(completedNetwork))
               return(num/denom)
@@ -85,9 +85,9 @@ sampling_doubleStandard <-
 # mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2), directed = TRUE)
 # samp <- mySBM$rSampling(matrix(1,10,10))
 # ll <- mySBM$samplingLogLik(matrix(1,10,10))mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2))
-Y    <- matrix(round(runif(100, 0,1)),10,10)
-samp <- mySBM$rSampling(Y)
-ll   <- mySBM$samplingLogLik(Y)
+# Y    <- matrix(round(runif(100, 0,1)),10,10)
+# samp <- mySBM$rSampling(Y)
+# ll   <- mySBM$samplingLogLik(Y)
 
 
 #' @export
@@ -98,9 +98,9 @@ sampling_class <-
             initialize = function(nNodes, missingParam, directed = FALSE) {
               super$initialize(nNodes, missingParam, directed)
             },
-            rSampling = function(adjMatrix, blockIndicators) {
+            rSampling = function(adjMatrix, blockVarParam) {
               samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-              sampProb <- runif(self$nNodes) < self$missingParam[apply(blockIndicators, 1, which.max)]
+              sampProb <- runif(self$nNodes) < self$missingParam[apply(blockVarParam, 1, which.max)]
               obsNodes <- which(runif(self$nNodes) < sampProb)
               
               samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
@@ -111,11 +111,14 @@ sampling_class <-
               sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork, blockIndicators) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
-              obsEdges       <- which(!is.na(sampledNetwork$adjacencyMatrix) & (upper.tri(sampledNetwork$adjacencyMatrix) | lower.tri(sampledNetwork$adjacencyMatrix)), arr.ind = TRUE)
-              missEdges      <- which(is.na(sampledNetwork$adjacencyMatrix) , arr.ind = TRUE)
-              return(sum(t(samplingVector) %*% blockIndicators %*% log(self$missingParam) + t(1-samplingVector) %*% blockIndicators %*% log(1-self$missingParam)))
+            samplingLogLik = function(sampledNetwork, blockVarParam) {
+              return(sum(t(sampledNetwork$samplingVector) %*% blockVarParam %*% log(self$missingParam) + t(1-sampledNetwork$samplingVector) %*% blockVarParam %*% log(1-self$missingParam)))
+            },
+            updatePsi = function(completedNetwork, sampledNetwork, blockVarParam) {
+              return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
+            },
+            penality = function(nBlocks, nNodes) {
+              return((nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + 2*(nBlocks-1)*log(nNodes))
             }
           )
   )
@@ -148,10 +151,20 @@ sampling_degree <-
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
             samplingLogLik = function(sampledNetwork, completedNetwork) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
               sampProb       <- self$missingParam[1]+self$missingParam[2]*rowSums(sampledNetwork$adjacencyMatrix)
               samprob        <- 1/(1+exp(-sampProb))
-              return(log((sampProb^samplingVector)%*%((1-sampProb)^(1-samplingVector))) )
+              return(log((sampProb^sampledNetwork$samplingVector)%*%((1-sampProb)^(1-sampledNetwork$samplingVector))) )
+            },
+            updatePsi = function(completedNetwork, sampledNetwork, blockVarParam) {
+              b1     <- ( (((2*sum(g(ksi)*Dtilde))*(-length(Nmiss) + 0.5*n)))/(sum(g(ksi))) - (-sum(Dtilde[Nmiss]) + sum(Dtilde)*0.5) )
+              b2     <- ( 2*sum(g(ksi)*Dchap) - (((2*sum(g(ksi)*Dtilde))^2 ))/(sum(g(ksi))))
+              b      <- b1/b2
+              a      <- -(b*(2*sum(g(ksi)*Dtilde)) + (-length(Nmiss) + 0.5*n))/(sum(g(ksi)))
+              psi    <- c(a,b)
+              return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
+            },
+            penality = function(nBlocks, nNodes) {
+              return((nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + 2*(nBlocks-1)*log(nNodes))
             }
           )
   )
@@ -229,11 +242,10 @@ sampling_randomNodesMAR <-
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
             samplingLogLik = function(sampledNetwork, completedNetwork) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
               sampProb       <- rep(self$missingParam, self$nNodes)
               logPsi         <- ifelse (sampProb < .Machine$double.eps, 0, log(sampProb))
               log1mPsi       <- ifelse (sampProb > 1-.Machine$double.eps, 0, log(1-sampProb))
-              return(logPsi*sum(samplingVector) + log1mPsi * sum(1-samplingVector))
+              return(logPsi*sum(sampledNetwork$samplingVector) + log1mPsi * sum(1-sampledNetwork$samplingVector))
             }
           )
   )
@@ -264,8 +276,7 @@ sampling_snowball <-
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
             samplingLogLik = function(sampledNetwork, completedNetwork) {
-              samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(sampledNetwork$adjacencyMatrix)))] <- 1
-              return(log((self$missingParam^samplingVector)%*%((1-self$missingParam)^(1-samplingVector))))
+              return(log((self$missingParam^sampledNetwork$samplingVector)%*%((1-self$missingParam)^(1-sampledNetwork$samplingVector))))
             }
           )
   )
