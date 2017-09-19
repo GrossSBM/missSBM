@@ -55,8 +55,8 @@ sampling_doubleStandard <-
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
             samplingLogLik = function(sampledNetwork, completedNetwork) {
-              ll <- sum(log(self$missingParam[2]) * completedNetwork[obsEdges] + log(self$missingParam[1]) * (1-completedNetwork[obsEdges])) +
-                        sum(log(1-self$missingParam[2]) * completedNetwork[missEdges] + log(1-self$missingParam[1]) * (1-completedNetwork[missEdges]))
+              ll <- sum(log(self$missingParam[2]) * completedNetwork[sampledNetwork$observedDyads] + log(self$missingParam[1]) * (1-completedNetwork[sampledNetwork$observedDyads])) +
+                        sum(log(1-self$missingParam[2]) * completedNetwork[sampledNetwork$observedDyads] + log(1-self$missingParam[1]) * (1-completedNetwork[sampledNetwork$observedDyads]))
               if(!self$directed){
                 return(ll/2)
               } else {
@@ -64,29 +64,29 @@ sampling_doubleStandard <-
               }
             },
             updatePsi = function(completedNetwork, sampledNetwork, blockVarParam) {
-              num   <- c(sum(1-completedNetwork[sampledNetwork$observedDyads])-n, sum(completedNetwork[sampledNetwork$observedDyads]))
-              denom <- c(sum(1-completedNetwork)-n, sum(completedNetwork))
+              num   <- c(sum(1-completedNetwork[sampledNetwork$observedDyads])-self$nNodes, sum(completedNetwork[sampledNetwork$observedDyads]))
+              denom <- c(sum(1-completedNetwork)-self$nNodes, sum(completedNetwork))
               return(num/denom)
             },
-            penality = function(nBlocks, nNodes) {
-              return((2 + nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + (nBlocks-1)*log(nNodes))
+            penality = function(nBlocks) {
+              return((2 + nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + (nBlocks-1)*log(self$nNodes))
             }
           )
   )
 
-# Undirected :
-# mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2))
-# Y <- matrix(round(runif(100, 0,1)),10,10)
-# samp <- mySBM$rSampling(Y)
-# ll <- mySBM$samplingLogLik(Y)
-
-# # Directed :
-# mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2), directed = TRUE)
-# samp <- mySBM$rSampling(matrix(1,10,10))
-# ll <- mySBM$samplingLogLik(matrix(1,10,10))mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2))
-# Y    <- matrix(round(runif(100, 0,1)),10,10)
-# samp <- mySBM$rSampling(Y)
-# ll   <- mySBM$samplingLogLik(Y)
+# # Undirected :
+# # mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2))
+# # Y <- matrix(round(runif(100, 0,1)),10,10)
+# # samp <- mySBM$rSampling(Y)
+# # ll <- mySBM$samplingLogLik(Y)
+# 
+# # # Directed :
+# # mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2), directed = TRUE)
+# # samp <- mySBM$rSampling(matrix(1,10,10))
+# # ll <- mySBM$samplingLogLik(matrix(1,10,10))mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2))
+# # Y    <- matrix(round(runif(100, 0,1)),10,10)
+# # samp <- mySBM$rSampling(Y)
+# # ll   <- mySBM$samplingLogLik(Y)
 
 
 #' @export
@@ -116,17 +116,12 @@ sampling_class <-
             updatePsi = function(completedNetwork, sampledNetwork, blockVarParam) {
               return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
             },
-            penality = function(nBlocks, nNodes) {
-              return((nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + 2*(nBlocks-1)*log(nNodes))
+            penality = function(nBlocks) {
+              return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
             }
           )
   )
 
-# mySBM <- sampling_class$new(10, c(1/4, 1/2))
-# Y     <- matrix(round(runif(100, 0,1)),10,10)
-# s     <- round(runif(10, 1,2)); Z <- matrix(0, 10, 2); Z[cbind(1:10, s)] <- 1
-# samp  <- mySBM$rSampling(Y, Z)
-# ll    <- mySBM$samplingLogLik(Y, Z)
 
 #' @export
 sampling_degree <-
@@ -162,17 +157,11 @@ sampling_degree <-
               psi <- c(a,b)
               return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
             },
-            penality = function(nBlocks, nNodes) {
-              return((nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + 2*(nBlocks-1)*log(nNodes))
+            penality = function(nBlocks) {
+              return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
             }
           )
   )
-
-
-# mySBM <- sampling_degree$new(10, runif(10))
-# Y     <- matrix(round(runif(100, 0,1)),10,10)
-# samp  <- mySBM$rSampling(Y)
-# ll    <- mySBM$samplingLogLik(Y)
 
 
 #' @export
@@ -209,16 +198,11 @@ sampling_randomPairMAR <-
                 return(ll)
               }
             },
-            penality = function(nBlocks, nNodes) {
-              return((1 + nBlocks*(nBlocks+1)/2)*log(nNodes*(nNodes-1)/2) + (nBlocks-1)*log(nNodes))
+            penality = function(nBlocks) {
+              return((1 + nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + (nBlocks-1)*log(self$nNodes))
             }
           )
   )
-
-# mySBM <- sampling_randomPairMAR$new(10, 0.5, directed = TRUE)
-# Y     <- matrix(round(runif(100, 0,1)),10,10)
-# samp  <- mySBM$rSampling(Y)
-# ll    <- mySBM$samplingLogLik(Y)
 
 
 #' @export
@@ -246,17 +230,12 @@ sampling_randomNodesMAR <-
               log1mPsi       <- ifelse (sampProb > 1-.Machine$double.eps, 0, log(1-sampProb))
               return(logPsi*sum(sampledNetwork$samplingVector) + log1mPsi * sum(1-sampledNetwork$samplingVector))
             },
-            penality = function(nBlocks, nNodes) {
-              return(nBlocks*(nBlocks+1)/2*log(nNodes*(nNodes-1)/2) + nBlocks*log(nNodes))
+            penality = function(nBlocks) {
+              return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
             }
           )
   )
 
-
-# mySBM <- sampling_randomNodesMAR$new(10, 0.5)
-# Y     <- matrix(round(runif(100, 0,1)),10,10)
-# samp  <- mySBM$rSampling(Y)
-# ll    <- mySBM$samplingLogLik(Y)
 
 #' @export
 sampling_snowball <-
@@ -280,13 +259,9 @@ sampling_snowball <-
             samplingLogLik = function(sampledNetwork, completedNetwork) {
               return(log((self$missingParam^sampledNetwork$samplingVector)%*%((1-self$missingParam)^(1-sampledNetwork$samplingVector))))
             },
-            penality = function(nBlocks, nNodes) {
-              return(nBlocks*(nBlocks+1)/2*log(nNodes*(nNodes-1)/2) + nBlocks*log(nNodes))
+            penality = function(nBlocks) {
+              return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
             }
           )
   )
 
-# mySBM <- sampling_snowball$new(10, runif(10))
-# Y     <- matrix(round(runif(100, 0,1)),10,10)
-# samp  <- mySBM$rSampling(Y)
-# ll    <- mySBM$samplingLogLik(Y)
