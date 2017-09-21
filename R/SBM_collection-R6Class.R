@@ -25,7 +25,7 @@ SBM_collection$set("public", "initialize",
     self$sampledNetwork <- sampledNetwork$new(sample, link)
     self$samplingData   <- switch(sampling,
                             "doubleStandard" = sampling_doubleStandard$new(self$sampledNetwork$nNodes, c(.5,.5), link),
-                            "class"          = sampling_class$new(self$sampledNetwork$nNodes, NA, link),
+                            "class"          = sampling_class$new(self$sampledNetwork$nNodes, .5, link),
                             "starDegree"     = sampling_starDegree$new(self$sampledNetwork$nNodes, coefficients(glm(self$sampledNetwork$samplingVector~rowSums(sample, na.rm=TRUE), family = binomial(link = "logit"))), link),
                             "MAREdge"        = sampling_randomPairMAR$new(self$sampledNetwork$nNodes, .5, link),
                             "MARNode"        = sampling_randomNodeMAR$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), link),
@@ -55,7 +55,7 @@ SBM_collection$set("public", "estimate",
 
 SBM_collection$set("public", "getBestModel",
                    function() {
-                     if(length(which(self$vICLs == 0) > 0)){
+                     if(length(which(self$vICLs == 0)) > 0){
                        return(self$models[[which.min(self$vICLs[-which(self$vICLs == 0)])]])
                      } else {
                        return(self$models[[which.min(self$vICLs)]])
@@ -64,24 +64,28 @@ SBM_collection$set("public", "getBestModel",
 )
 
 ### Tests :
-# # SBM :
+# SBM :
 # mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/2, 1/2), matrix(c(.5, .05, .05, .5),2,2))
 # 
 # # # Sampled SBM :
-# # mySampledSBM   <- sampling_doubleStandard$new(100, c(1/2, 1/2), FALSE)
-# # Y              <- mySBM$rSBM()$adjacencyMatrix
-# # sample         <- mySampledSBM$rSampling(Y)
+# mySampledSBM   <- sampling_starDegree$new(100, c(-3, .13), FALSE)
+# Y              <- mySBM$rSBM()$adjacencyMatrix
+# # Z              <- t(rmultinom(100, size = 1, prob = c(.5, .5)))
+# # Znum           <- Z %*% c(1:2)
+# # sample         <- mySampledSBM$rSampling(Y, Z)
+# sample         <- mySampledSBM$rSampling(Y)
 # 
 # # Sampled SBM 2 (MAR):
-# mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
-# Y             <- mySBM$rSBM()$adjacencyMatrix
-# sampledNetwork <- mySampledSBM$rSampling(Y)
+# # mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
+# # Y             <- mySBM$rSBM()$adjacencyMatrix
+# # sampledNetwork <- mySampledSBM$rSampling(Y)
 # 
 # # VEM :
-# sbm <- SBM_collection$new(sample$adjacencyMatrix, 2, "MAREdge", "Bernoulli", FALSE)
+# sbm <- SBM_collection$new(sample$adjacencyMatrix, 2, "starDegree", "Bernoulli", FALSE)
 # sbm$estimate()
+# 
 # sbm$getBestModel()
-# sbm$vICLs
+# sbm$vICLs[-1]
 
 
 

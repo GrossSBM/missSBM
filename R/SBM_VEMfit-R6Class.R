@@ -34,7 +34,7 @@ SBM_VEMfit <-
                 }
                 self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik(self$completedNetwork, self$blockVarParam))
                                           # - sum(self$blockVarParam*log(self$blockVarParam + 1*(self$blockVarParam==0))))
-                self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork)
+                self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork,  self$blockVarParam, self$taylorVarParam)
               } else {
                 self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
                 self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork))
@@ -114,7 +114,7 @@ SBM_VEMfit$set("public", "doVEM",
                  }
                  
                  self$blockVarParam    <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, cl0)] <- 1
-                 if(class(self$sampling)[1] == "starDegree"){
+                 if(class(self$sampling)[1] == "sampling_starDegree"){
                    networkWithZeros     <- self$completedNetwork
                    networkWithZeros[self$sampledNetwork$missingDyads] <- 0
                    Dtilde              <- rowSums(self$completedNetwork)
@@ -126,13 +126,10 @@ SBM_VEMfit$set("public", "doVEM",
                  theta[[1]] <- (t(self$blockVarParam)%*% self$completedNetwork %*%self$blockVarParam) / (t(self$blockVarParam)%*%((1-diag(self$SBM$nNodes)))%*%self$blockVarParam)
                  self$completedNetwork[self$sampledNetwork$missingDyads] <- ((self$blockVarParam) %*% theta[[1]] %*% t(self$blockVarParam))[self$sampledNetwork$missingDyads]
                  
-                 # browser()
-                 
                  i <- 0; cond <- FALSE
                  while(!cond){
                    i <- i+1
-                   # browser()
-                   
+
                    self$Mstep()
                    self$VEstep()
                    
@@ -143,7 +140,7 @@ SBM_VEMfit$set("public", "doVEM",
                      cond    <- (i > self$maxIterVEM) |  (conv[i] < self$controlVEM)
                    }
                  }
-                 self$vICL <- -2 * (self$lowerBound[length(self$lowerBound)] + self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork)) + 
+                 self$vICL <- -2 * (self$lowerBound[length(self$lowerBound)] + self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork, self$blockVarParam)) + 
                                 self$sampling$penality(self$SBM$nBlocks)
                }
 )

@@ -116,10 +116,10 @@ SBM_BernoulliUndirected.fit <-
               networkWithZeros     <- completedNetwork
               networkWithZeros[sampledNetwork$missingDyads] <- 0
               pap <- matrix(rowSums(completedNetwork), nrow = self$nNodes, ncol = self$nNodes, byrow = FALSE) - (completedNetwork-networkWithZeros)
-              eph <- switch(class(sampling),
+              eph <- switch(class(sampling)[1],
                             "sampling_doubleStandard" = log(1-sampling$missingParam[2]) - log(1-sampling$missingParam[1]) + blockVarParam %*% PI %*% t(blockVarParam),
                             "sampling_class"          = blockVarParam %*% PI %*% t(blockVarParam),
-                            "sampling_starDegree"     = blockVarParam %*% PI %*% t(blockVarParam)  - sampling$missingParam[2] + 2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))  + t(2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap)))sampling$missingParam[1])
+                            "sampling_starDegree"     = blockVarParam %*% PI %*% t(blockVarParam)  - sampling$missingParam[2] + 2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))  + t(2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))))
               eph <- 1/(1+exp(-eph))
               completedNetwork.new[sampledNetwork$missingDyads] <- eph[sampledNetwork$missingDyads]
               return(completedNetwork.new)
@@ -139,13 +139,6 @@ SBM_BernoulliUndirected.fit <-
           )
   )
 
-self$samplingData   <- switch(sampling,
-                              "doubleStandard" = sampling_doubleStandard$new(self$sampledNetwork$nNodes, c(.5,.5), link),
-                              "class"          = sampling_class$new(self$sampledNetwork$nNodes, NA, link),
-                              "starDegree"     = sampling_starDegree$new(self$sampledNetwork$nNodes, coefficients(glm(self$sampledNetwork$samplingVector~rowSums(sample, na.rm=TRUE), family = binomial(link = "logit"))), link),
-                              "MAREdge"        = sampling_randomPairMAR$new(self$sampledNetwork$nNodes, .5, link),
-                              "MARNode"        = sampling_randomNodeMAR$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), link),
-                              "snowball"       = sampling_snowball$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), link))
 
 #' @export
 SBM_BernoulliDirected <-
@@ -179,7 +172,7 @@ SBM_BernoulliDirected <-
 #' @export
 SBM_BernoulliDirected.fit <-
   R6Class(classname = "SBM_BernoulliDirected.fit",
-          inherit = SBM_BernoulliUndirected,
+          inherit = SBM_BernoulliDirected,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
               super$initialize(nNodes, mixtureParam, connectParam)
@@ -195,7 +188,7 @@ SBM_BernoulliDirected.fit <-
               SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
               SBM$mixtureParam <- colMeans(blockVarParam)
               return(SBM)
-            }, 
+            },
             fixPoint = function(SBM, blockVarParam, completedNetwork) {
               completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
               blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + 
@@ -214,11 +207,34 @@ SBM_BernoulliDirected.fit <-
               blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
               return(blockVarParam.new)
             },
-            updateNu = function(SBM, sampling, sampledNetwork, blockVarParam, completedNetwork) {
+            updateNu = function(SBM, sampling, sampledNetwork, blockVarParam, completedNetwork, taylorVarParam) {
+              PI                   <- log(SBM$connectParam) - log(1-SBM$connectParam)
+              completedNetwork.new <- completedNetwork
+              networkWithZeros     <- completedNetwork
+              networkWithZeros[sampledNetwork$missingDyads] <- 0
+              pap <- matrix(rowSums(completedNetwork), nrow = self$nNodes, ncol = self$nNodes, byrow = FALSE) - (completedNetwork-networkWithZeros)
+              eph <- switch(class(sampling)[1],
+                            "sampling_doubleStandard" = log(1-sampling$missingParam[2]) - log(1-sampling$missingParam[1]) + blockVarParam %*% PI %*% t(blockVarParam),
+                            "sampling_class"          = blockVarParam %*% PI %*% t(blockVarParam),
+                            "sampling_starDegree"     = blockVarParam %*% PI %*% t(blockVarParam)  - sampling$missingParam[2] + 2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))  + t(2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))))
+              eph <- 1/(1+exp(-eph))
+              completedNetwork.new[sampledNetwork$missingDyads] <- eph[sampledNetwork$missingDyads]
+              return(completedNetwork.new)
+            },
+            updateKsi = function(sampling, completedNetwork){
+              networkWithZeros     <- completedNetwork
+              networkWithZeros[sampledNetwork$missingDyads] <- 0
+              Dtilde   <- rowSums(completedNetwork)
+              Dchap    <- rowSums((completedNetwork-networkWithZeros)*(1-(completedNetwork-networkWithZeros))) + Dtilde^2 
+              ksi      <- sqrt(sampling$missingParam[1]^2 + (sampling$missingParam[2]^2)*Dchap + 2*sampling$missingParam[1]*sampling$missingParam[2]*Dtilde) 
+            }
+          ),
+          private = list(
+            g = function(x){
+              return(-(1/(1+exp(-x)) - 0.5)/(0.5*x))
             }
           )
   )
-
 
 #' @export
 SBM_PoissonDirected <-

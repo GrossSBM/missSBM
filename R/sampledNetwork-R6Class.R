@@ -51,7 +51,7 @@ function(adjacencyMatrix, directed) {
   self$samplingMatrix  <- matrix(0, self$nNodes, self$nNodes)
   self$samplingMatrix[self$observedDyads] <- 1
   
-  samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(adjacencyMatrix)))] <- 1
+  self$samplingVector <- rep(0, self$nNodes); self$samplingVector[which(!is.na(rowSums(adjacencyMatrix)))] <- 1
   
 })
 
