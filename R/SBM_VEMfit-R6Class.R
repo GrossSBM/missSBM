@@ -24,6 +24,7 @@ SBM_VEMfit <-
             maxIterVEM       = NULL,
             ## methods
             lowerBound       = NULL, # variational lower bound (a.k.a. J)
+            compLogLik       = NULL, # variationnal complete log-likelihood
             vICL             = NULL, # compute the (variational) integrated complete likelihood
             VEstep           = function() {
               if(!(class(self$sampling)[1] %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball"))){
@@ -96,6 +97,12 @@ SBM_VEMfit$set("public", "SpectralClustering",
                  cl.final[unconnected] <- which.min(rowsum(D,cl))
                  
                  return(as.factor(cl.final))
+                 
+               }
+)
+
+SBM_VEMfit$set("public", "initialization",
+               function() {
                  
                }
 )
