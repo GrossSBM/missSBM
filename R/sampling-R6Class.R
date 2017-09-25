@@ -198,7 +198,7 @@ sampling_randomPairMAR <-
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork, completedNetwork) {
+            samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
               logPsi    <- ifelse (self$missingParam < .Machine$double.eps, 0, log(self$missingParam))
               log1mPsi  <- ifelse (self$missingParam > 1-.Machine$double.eps, 0, log(1-self$missingParam))
               ll        <- length(sampledNetwork$observedDyads)*logPsi + length(sampledNetwork$missingDyads)*log1mPsi
@@ -206,6 +206,13 @@ sampling_randomPairMAR <-
                 return(ll/2)
               } else {
                 return(ll)
+              }
+            },
+            updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
+              if(!sampledNetwork$directed){
+                return(length(sampledNetwork$observedDyads)/(2*sampledNetwork$nDyads))
+              } else {
+                return(length(sampledNetwork$observedDyads)/sampledNetwork$nDyads)
               }
             },
             penality = function(nBlocks) {
@@ -234,11 +241,14 @@ sampling_randomNodesMAR <-
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
             },
-            samplingLogLik = function(sampledNetwork, completedNetwork) {
+            samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
               sampProb       <- rep(self$missingParam, self$nNodes)
               logPsi         <- ifelse (sampProb < .Machine$double.eps, 0, log(sampProb))
               log1mPsi       <- ifelse (sampProb > 1-.Machine$double.eps, 0, log(1-sampProb))
               return(logPsi*sum(sampledNetwork$samplingVector) + log1mPsi * sum(1-sampledNetwork$samplingVector))
+            },
+            updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
+              return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
             },
             penality = function(nBlocks) {
               return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
