@@ -59,8 +59,8 @@ R6Class(classname = "SBM_BernoulliUndirected",
       network     <- completedNetwork
       network.bar <- 1 - network ; diag(network.bar) <- 0
       return(sum(blockIndicators %*% log(self$mixtureParam)) +
-               .5 * sum( network.bar *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
-                           network * (blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
+               .5 * sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
+                             network.bar *(blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
     },
     rSBM = function() {
       blocks <- super$rSBM()$blocks

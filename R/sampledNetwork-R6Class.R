@@ -41,7 +41,7 @@ function(adjacencyMatrix, directed) {
   # depending if the network is directed or not
   # if (directed) {
     self$missingDyads  <- which( is.na(adjacencyMatrix))
-    self$observedDyads <- which(!is.na(adjacencyMatrix) & (lower.tri(adjacencyMatrix) | upper.tri(adjacencyMatrix)))
+    self$observedDyads <- which(!is.na(adjacencyMatrix)) #  & (lower.tri(adjacencyMatrix) | upper.tri(adjacencyMatrix))
   # } else {
   #   self$missingDyads  <- which( is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
   #   self$observedDyads <- which(!is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )

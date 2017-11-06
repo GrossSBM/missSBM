@@ -1,0 +1,874 @@
+\documentclass[]{imsart}
+
+\RequirePackage[OT1]{fontenc}
+\usepackage{amsthm,amsmath,amssymb,amsfonts,dsfont,mathtools}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{tikz}
+\usepackage{longtable}
+\usepackage{version}
+%\usepackage[authoryear]{natbib}
+
+\usepackage[babel=true]{csquotes}
+
+%% somes macros
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+\newcommand{\1}{\mathds{1}}
+\newcommand{\MA}{Y}
+\newcommand{\MAO}{\MA^\text{\rm o}}
+\newcommand{\MAM}{\MA^\text{\rm m}}
+\newcommand{\bMAM}{\mathbf{\MA}^\text{\rm m}}
+\newcommand{\bMAO}{\mathbf{\MA}^\text{\rm o}}
+\newcommand{\card}[1]{\text{\rm card}\left(#1\right)}
+
+%% sets in SBM
+\newcommand{\block}{\mathcal{Q}}
+
+\newcommand{\dyad}{\mathcal{D}}
+\newcommand{\dyadO}{\dyad^\text{\rm o}}
+\newcommand{\dyadM}{\dyad^\text{\rm m}}
+
+\newcommand{\node}{\mathcal{N}}
+\newcommand{\nodeO}{\node^\text{\rm o}}
+\newcommand{\nodeM}{\node^\text{\rm m}}
+
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Vbb}{\mathbb{V}}
+\newcommand{\Rbb}{\mathbb{R}}
+
+% \newcommand{\argmax}{\mathop{\mathrm{arg\ max}}}
+% \newcommand{\argmin}{\mathop{\mathrm{arg\ min}}}
+
+%macros
+\newcommand{\btau}{\boldsymbol{\tau}}
+% \newcommand{\bnu}{\boldsymbol{\nu}}
+\newcommand{\bZ}{\mathbf{Z}}
+% \newcommand{\bY}{\mathbf{Y}}
+
+% settings
+%\pubyear{0000}
+%\volume{0}
+%\issue{0}
+%\firstpage{1}
+%\lastpage{8}
+% \arxiv{arXiv:0000.0000}
+
+\startlocaldefs
+\numberwithin{equation}{section}
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{dof}[thm]{Definition}
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{corollaire}[thm]{Corollary}
+\newtheorem{lemme}[thm]{Lemma}
+\theoremstyle{remark}
+%\newtheorem{rem}{Remark}[section]
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{exemple}{Example}
+\endlocaldefs
+
+\newcommand{\TT}[1]{\textcolor{red}{ #1}}
+\newcommand{\PB}[1]{\textcolor{purple}{#1}}
+\newcommand{\MM}[1]{\textcolor{orange}{#1}}
+\newcommand{\JC}[1]{\textcolor{blue}{#1}}
+\input{commandes.tex}
+
+\begin{document}
+
+\begin{frontmatter}
+\title{Consistency and Asymptotic Normality of Stochastic Block Model Estimators under sampling condition}
+\runtitle{Consistency and asymptotic normality of SBM estimators under sampling condition}
+
+% \begin{aug}
+% \author{\fnms{VINCENT} \snm{BRAULT}\thanksref{a,e1}\ead[label=e1,mark]{vincent.brault@univ-grenoble-alpes.fr}}
+% \author{\fnms{CHRISTINE} \snm{KERIBIN}\thanksref{b,e2}\ead[label=e2,mark]{christine.keribin@math.u-psud.fr}}
+% \and
+% \author{\fnms{MAHENDRA} \snm{MARIADASSOU}\thanksref{c,e3}%
+% \ead[label=e3,mark]{mahendra.mariadassou@inra.fr}%
+% }
+% 
+% \address[a]{Univ. Grenoble Alpes, LJK, F-38000 Grenoble, France\\
+% CNRS, LJK, F-38000 Grenoble, France
+% \printead{e1}}
+% 
+% \address[b]{Laboratoire de Mathématiques d'Orsay, CNRS, and INRIA Saclay \^Ile de France, Universit\'e Paris-Sud, Universit\'e Paris-Saclay, F-91405 Orsay, France.
+% \printead{e2}}
+% 
+% \address[c]{MaIAGE, INRA, Universit\'e Paris-Saclay, 78352 Jouy-en-Josas, France
+% \printead{e3}}
+% 
+% \runauthor{V. BRAULT et al.}
+% 
+% \affiliation{Some University and Another University}
+% 
+% \end{aug}
+% 
+% \begin{abstract}
+% Latent Block Model (LBM) is a model-based method to cluster simultaneously the $d$ columns and $n$ rows of a data matrix. Parameter estimation in LBM is a difficult and multifaceted problem. Although various estimation strategies have been proposed and are now well understood empirically, theoretical guarantees about their asymptotic behavior is rather sparse. We show here that under some mild conditions on the parameter space, and in an asymptotic regime where $\log(\dd)/\n$ and $\log(\n)/\dd$ tend to $0$ when $\n$ and $\dd$ tend to $+\infty$, (1) the maximum-likelihood estimate of the complete model (with known labels) is consistent and (2) the log-likelihood ratios are equivalent under the complete and observed (with unknown labels) models. This equivalence allows us to transfer the asymptotic consistency to the maximum likelihood estimate under the observed model. Moreover, the variational estimator is also consistent. 
+% %These results can be used to show that the integrated complete likelihood (ICL) criterion has the same behavior as BIC under the true distribution.
+% \end{abstract}
+
+% \begin{keyword}
+% \kwd{Stochastic Block Model}
+% \kwd{asymptotic normality}
+% \kwd{Maximum Likelihood Estimate} \kwd{Concentration Inequality}
+% %\kwd{ICL}
+% \end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+
+% Coclustering is an unsupervised way to cluster simultaneously the rows and columns of a data matrix, and can be used in numerous applications such as recommendation systems, genomics or text mining. Among the coclustering methods, the Latent Block Model (LBM) is based on the definition of a probabilistic model. 
+% 
+% We observe a data matrix  $\X=(\xij)$ with $n$ rows and $d$ columns and we suppose that there exists a row-partition with $g$ row-classes and a column-partition with $m$ column-classes.
+% The row (resp. column) class for each row (resp. column) is unknown and has to be determined. Once determined, rows and columns can be re-ordered according to this coclustering, to let appear blocks that are  homogeneous and distinct. This leads to a parsimonious data representation. 
+% 
+% LBM can deal with binary (\cite{govaert2008block}), Gaussian (\cite{lomet2012}), categorical (\cite{keribin2015estimation}) or count (\cite{govaert2010latent}) data. Due to the complex dependence structure, neither the likelihood, nor the computation of the distribution of the assignments conditionally to the observations (E-step of the EM algorithm), and therefore the maximum likelihood estimator (MLE)  are  numerically tractable. Estimation can be however performed either with a variational approximation (leading to an approximate value of the MLE), or with a Bayesian approach (VBayes algorithm or Gibbs sampler). Notice that \cite{keribin2015estimation} recommend to perform a Gibbs sampler combined with a VBayes algorithm. 
+% 
+% Although these estimation methods give satisfactory results, the consistence and asymptotic normality of the MLE are still an open question. Some partial results exist for LBM, and this question has been solved for SBM (Stochastic Block Model), a special case of LBM where the data is a random graphe  encoded by its adjacency matrix (rows and columns represents the same units, so that there is only one partition, the same for rows and columns). \cite{celisse2012consistency} proved in their Theorem 3 that under the true parameter value, the distribution of the assignments conditionally to the observations of a binary SBM converges to a Dirac of the real assignments. Moreover, this convergence remains valid under the estimated parameter value, assuming that this estimator converges at rate at least $n^{-1}$, where $n$ is the number of nodes (Proposition 3.8). This assumption  is not trivial, and it is not established that such an estimator exists except in some particular cases (\cite{ambroise2012new} for example). \cite{mariadassou2015} presented a unified frame for LBM and SBM in case of observations coming from an exponential family, and showed the consistency of the  assignment conditional distribution under all parameter value in a neighborhood of the true value. \cite{bickel2009nonparametric} and \cite{bickel2013asymptotic} proved the consistency and asymptotic normality of the MLE for the binary SBM. Bursting with the preceding approaches, they first studied the asymptotic behavior of the MLE in the complete model (observations and assignments) which is very simple to handle; then, they showed that the complete likelihood and the marginal likelihood have similar asymptotic behavior by the use of a Bernstein inequality for bounded observations.
+% 
+% We extend these results to the double asymptotic framework of LBM, following the way of \cite{bickel2013asymptotic}, and for observations coming from some exponential family. Moreover, we introduce the concept of model symmetry  which was not pointed out by these authors, but is necessary to set the asymptotic behavior. The asymptotic normality of the variational estimator is also settled, and an application to model selection criteria is presented.
+% 
+% The paper is organized as follows. The model, main assumptions and notations are introduced in Section \ref {sec:ModelAndAssumptions}, where model symmetry is also discussed. Section \ref{sec:mle-complete-likelihood} establishes the asymptotic normality of the complete likelihood estimator, and section \ref{sec:profile-likelihood} settles three different types of assignment behaviors. Our main result showing that the observed likelihood behaves like the complete likelihood takes place in section \ref{sec:big-theorem}, and the consistency of MLE and variational estimator is deduced. 
+% %We ended with an application to model selection and a discussion on sparsity.
+% Technical proofs are gathered in the appendices.
+
+\section{Model and assumptions}
+
+In  SBM,  nodes  from  a  set  $\node  \triangleq  \{1,\dots,n\}$  are
+distributed among a set $\block  \triangleq \{1, \dots, Q\}$ of hidden
+blocks that  model the latent structure  of the graph. The  blocks are
+described  by  categorical  variables $(Z_i,  i\in\node)$  with  prior
+probabilities $\alpha  = ( \alpha_{1}, \dots,  \alpha_{Q})$, such that
+$\Pbb(Z_i = q) = \alpha_q$,  with $q\in\block$.  
+The probability of an edge between any dyad in
+$\dyad \triangleq \node \times \node$ only depends on the blocks the
+two nodes belong to.  Hence, the presence of an edge between $i$ and
+$j$, indicated by the binary variable $Y_{ij}$, is independent on the
+other edges conditionally on the latent blocks:
+\begin{equation}
+\nonumber
+\MA_{ij}    \   |    \   Z_i=q,    Z_j   =    \ell   \sim^{\text{ind}}
+\dens(., \pi_{q\el}), \qquad \forall (i,j) \in\dyad, \quad \forall
+(q,\ell) \in\block\times\block.
+\end{equation}
+In the
+following,
+$Y=(Y_{ij})_{i,j\in\dyad}$ is
+the $n\times n$ adjacency matrix of the random graph,
+$Z = (Z_1, \dots, Z_n)$ the $n$-vector of the latent blocks.  With a slight abuse of notation, we associate to $Z_i$ a vector
+of indicator variables $(Z_{i1}, \dots, Z_{iQ})$ such that
+$Z_i = q \Leftrightarrow Z_{iq} = 1, Z_{i\ell} = 0$, for all
+$\ell \neq q$.  Notice that in the undirected binary case,
+$Y_{ij} = Y_{ji}$ for all $(i,j) \in \dyad$ and $Y_{ii} = 0$ for all
+$i\in\node$.  Similarly, $\pi_{q\ell}=\pi_{\ell q}$ for all
+$(q,\ell)\in\mathcal{Q}\times \mathcal{Q}$. \\
+
+Hence, the  complete parameter set is $\btheta=(\bpi,\bal)\in\bTheta$ and  $\bTheta$  the parameter space.  
+% Figure \ref{Fig:notations} summarizes these notations.
+
+% \begin{figure}[!h]
+% \input{figure.tex}
+% \caption{\label{Fig:notations} Notations. Left: Notations for the elements of observed data matrix are in black, notations for the block clusters are in blue. Right: Notations for the model parameter.}
+% \end{figure}
+
+When performing inference from data, we note $\bthetas = (\bpis, \bals)$ the true parameter set, \emph{i.e.} the parameter values used to generate the data, and $\bzs$ the true (and usually unobserved) assignment of rows and columns to their group.
+For given matrices of indicator variables $\bz$, we also note:
+\begin{itemize}
+\item $\zsumk = \sum_{\ii} \zik$ 
+\item $\zssumk$ his counterpart for $\bzs$.
+\end{itemize}
+The confusion matrix allows to compare the partition.
+\begin{dof}[confusion matrix]
+  \label{def:confusion}
+  For given assignments $\bz$ and $\bzs$, we define the \emph{confusion matrix} between $\bz$ and $\bzs$, noted $\RQbz$, as follows:
+  \begin{equation}
+    \label{eq:confusion-matrix}
+    \RQbz_{q q^{\prime}} = \frac{1}{\n} \sum_{\ii} \z^\vrai_{\ii q} \z_{\ii q^{\prime}}
+  \end{equation}
+\end{dof}
+
+\subsection{Likelihood}
+When the labels are known, the {\em complete log-likelihood} is given by:
+\begin{equation}
+  \label{eq:log-vraisemblance-complete}
+  \begin{aligned}
+    \Lc(\bz;\btheta)&= \log\prob(\by,\bz;\btheta)\\
+    &= \log\left\{ \left(\prodiq{\pii^{\ziq}}\right)\left(\prodijql{\dens\left(\yij;\piql\right)^{\ziq\zjl}}\right) \right\}\\
+    &= \log\left\{ \left(\prodi{\pii_{\zi}}\right)\left(\prodij{\dens\left(\xij;\pi_{\zi\zj}\right)}\right) \right\}.	\\
+  \end{aligned}
+\end{equation}
+But the labels are usually unobserved, and the {\em observed log-likelihood} is obtained by marginalization over all the label configurations:
+\begin{equation}
+  \label{eq:log-vraisemblance-observee}
+  \LL(\btheta)=\log\prob(\by;\btheta) = \log \left( \sum_{\bz \in \mcZ}\prob(\by,\bz;\btheta) \right).
+\end{equation}
+
+\subsection{Assumptions}\label{sec:assumptions}
+We focus here on parametric models where $\dens$ belongs to a regular one-dimension exponential family in canonical form:
+\begin{equation}
+  \dens(x, \pi) = b(x)\exp(\pi x - \norm(\pi)),
+\end{equation}
+where $\pi$ belongs to the space  $\mathcal{A}$, so that $\dens(\cdot, \pi)$ is well defined for all $\pi \in \mathcal{A}$. Classical properties of exponential families insure that $\norm$ is convex, infinitely differentiable on $\mathring{\mathcal{A}}$, that $\normpm$ is well defined on $\normp(\mathring{\mathcal{A}})$. When $X_{\pi} \sim \dens(., \pi)$, $\Esp[X_\pi] = \normp(\pi)$ and $\Var[X_{\pi}] = \normp'(\pi)$. \\
+
+%\subsection{Hypothèses sur le paramètre}
+Moreover, we make the following assumptions on the parameter space~:
+\begin{enumerate}
+% \item $\bTheta$ is compact \textcolor{red}{is it necessary?};
+\item[$H_1$]: There exist a positive constant $c$, and a compact $C_\pi$ such that 
+  \begin{equation*}
+%   \label{eq:assumptions}
+    \bTheta \subset [c, 1-c]^{\g} \times  [c, 1-c]^{\m} \times C_{\pi}^{\g \times \m} \quad \text{with} \quad C_\pi \subset \mathring{\mathcal{A}}.
+  \end{equation*}
+\item[$H_2$]: The true parameter $\bthetas = (\bpis, \bals)$ lies in the relative interior of $\bTheta$.
+\item[$H_3$]: The map $\pi \mapsto \dens(\cdot, \pi)$ is injective.
+\item[$H_4$]: 
+Each row and each column of $\bpis$ is unique.
+%\item The ratio $\log(\dd)/\n$ (resp. $\log(\n)/\dd$) tend to 0 with $\n$ and $\dd$.
+\end{enumerate}
+%\begin{rem}
+
+The previous assumptions are standard. Assumption~$H_1$ ensure that the group proportions are bounded away from $0$ and $1$ so that no group disappears when $\n$ goes to infinity. It also ensures that $\pi$ is bounded away from the boundaries of the $\mathcal{A}$ and that there exists a $\kappa>0$, such that $[\piql - \neighborsize, \piql + \neighborsize] \subset \mathring{\mathcal{A}}$ for all parameters $\piql$ of $\btheta \in \bTheta$. Assumptions $H_3$ and $H_4$ are necessary to ensure that the model is identifiable. If the map $\pi \mapsto \dens(., \pi)$ is not injective, the model is trivially not identifiable. Similarly, if rows $q$ and $q^\prime$ are identical, we can build a more parsimonious model that induces the same distribution of $\by$ by merging groups $q$ and $q^\prime$. In the following, we  consider that $\mathcal{Q}$, the number of classes (or groups) is known.
+
+%\end{rem}
+Moreover, we define the $ \delta(\bal)$, that captures the differences between groups: lower values means that there are two classes that are very similar. 
+\begin{dof}[class distinctness]
+  \label{def:group-distinctness}
+  For $\btheta = (\bpi, \bal) \in \bTheta$. We define:
+  \begin{equation*}
+    \delta(\bal) =  \min_{\el, \lp} \max_{q} \KL(\piql, \pi_{q \lp}) 
+  \end{equation*}
+  with $\KL(\pi,\pi') = \Esp_{\pi}[\log(\dens(X, \pi)/\dens(X, \pi'))]=\normp(\pi) (\pi - \pi') + \norm(\pi') - \norm(\pi)$ the Kullback divergence between $\dens(., \pi)$ and $\dens(., \pi')$, when $\dens$ comes from an exponential family.
+\end{dof}
+\begin{rem}
+Since all $\bal$ have distinct rows and columns, $\delta(\bpi) > 0$.
+\end{rem}
+
+\begin{rem}
+Since we restricted $\pi$ in a bounded subset of $\mathring{\mathcal{A}}$, there exists two positive values $M_{\pi}$ and $\neighborsize$ such that $C_\pi + (-\neighborsize, \neighborsize) \subset [-M_{\pi}, M_\pi] \subset \mathring{\mathcal{A}}$. Moreover, the variance of $\X_{\pi}$ is bounded away from $0$ and $+\infty$. We note
+\begin{equation}
+  \label{eq:condition-variance}
+  \sup_{\pi \in [-M_{\pi}, M_{\pi}] } \Var(\X_\pi) = \vmax^2 < +\infty \quad \text{and} \quad \inf_{\pi \in [-M_{\pi}, M_{\pi}]} \Var(\X_\pi) = \vmin^2 > 0.
+\end{equation}
+\end{rem}
+\begin{proposition}
+With the previous notations, if $\pi \in C_\pi$ and $X_{\pi} \sim \dens(., \pi)$, then $X_\pi$ is subexponential with parameters $(\vmax^2, \neighborsize^{-1})$.
+\end{proposition}
+
+\begin{rem}
+These assumptions are satisfied for many distributions, including but not limited to:
+\begin{itemize}
+\item Bernoulli, when the proportion $p$ is bounded away from $0$ and $1$, or natural parameter $\pi = \log(p / (1 - p))$ bounded away from $\pm \infty$;
+\item Poisson, when the mean $\lambda$ is bounded away from $0$ and $+\infty$, or natural parameter $\pi = \log(\lambda)$ bounded away from $\pm \infty$;
+\item Gaussian with known variance when the mean $\mu$, which is also the natural parameter, is bounded away from $\pm \infty$.
+\end{itemize}
+In particular, the conditions stating that $\norm$ is twice differentiable and that $\normpm$ exists are equivalent to assuming that $\X_{\pi}$ has positive and finite variance for all values of $\pi$ in the parameter space.
+\end{rem}
+
+
+
+%\begin{rem}
+%For the sake of simplicity, we only consider data matrices where most elements $\Xij$ are non-zero. Similar results are available for "zero-inflated" distributions $\X_{\al} \sim \kappa_{\n, \dd}\delta_0 + (1 - \kappa_{\n, \dd})\dens(., \al)$ where  $\kappa_{\n, \dd} \xrightarrow[\n,\dd \to +\infty]{} 0$. If missing values are treated as $0$, the two configurations correspond to dense and sparse data tables. Results concerning zero-inflated distributions are detailed in Section~\ref{sec:sparsity}.
+%\end{rem}
+
+
+
+
+\subsection{Symmetry}
+\label{sec:definitions}
+The study of the asymptotic properties of the MLE will lead to take into account symmetry properties on the parameter set. We first recall the definition of a permutation, then define equivalence relationships for assignments and parameter, and  precise symmetry. 
+
+\begin{dof}[permutation]
+  \label{def:permutation}
+  Let $s$ be a permutation on $\{1,\dots,\g\}$ and $t$ a permutation on $\{1,\dots,\m\}$. If $\boldsymbol{A}$ is a matrix with $\g$ columns, we define $\boldsymbol{A}^s$ as the matrix obtained by permuting the columns of $\boldsymbol{A}$ according to $s$, \emph{i.e.} for any row $\ii$ and column $\kk$ of $\boldsymbol{A}$, ${A}^s_{\ii \kk} = A_{\ii s(\kk)}$. If $\boldsymbol{B}$ is a matrix with $\m$ columns and $\boldsymbol{C}$ is a matrix with $\g$ rows and $\m$ columns, $\boldsymbol{B}^t$ and $\boldsymbol{C}^{s,t}$ are defined similarly:
+  \begin{equation*}
+    \boldsymbol{A}^s = \left( A_{\ii s^{}(\kk)} \right)_{\ii,\kk} \quad  \boldsymbol{B}^t = \left( B_{\jj t^{}(\el)} \right)_{\jj, \el} \quad \boldsymbol{C}^{s,t} = \left( C_{s^{}(\kk) t^{}(\el)} \right)_{\kk,\el}
+  \end{equation*}
+\end{dof}
+
+\begin{dof}[equivalence]
+  \label{def:equivalence}
+  We define the following equivalence relationships:
+  \begin{itemize}
+  \item Two assignments $\bz$ and $\bz'$ are \emph{equivalent}, noted $\sim$, if they are equal up to label permutation, \emph{i.e.} it exists a permutation $s$ such that $\bz' = \bz^s$.
+  \item Two parameters are $\btheta$ and $\btheta'$ are \emph{equivalent}, noted $\sim$, if they are equal up to label permutation, \emph{i.e.} it exists a permutation $s$ such that $(\bpi^s,\bal^{s}) = (\bpi', \bal')$. This is \emph{label-switching}.
+  \item  $(\btheta, \bz)$ and $(\btheta', \bz')$ are \emph{equivalent}, noted $\sim$, if they are equal up to label permutation on $\bal$, \emph{i.e.} it exists a permutation $s$ such that $(\bal^{s}, \bz^s) = (\bal', \bz')$.
+  \end{itemize}
+\end{dof}
+
+\begin{dof}[distance]
+  \label{def:equivalence-distance}
+  We define the following distance, up to equivalence, between configurations $\bz$ and $\bzs$:
+    \begin{equation*}
+    \|\bz - \bzs\|_{0, \sim} = \inf_{\bz' \sim \bz} \|\bz' - \bzs\|_0
+    \end{equation*}
+    where, for all matrix $\bz$, we use the Hamming norm $\left\|\cdot\right\|_{0}$ defined by
+\[\left\|\bz\right\|_{0}=\sum_{\ii,\kk}{\mathds{1}{\left\{\zik\neq0\right\}}}.\]
+\end{dof}
+  
+  
+The last equivalence relationship is not concerned with $\bal$. It is useful when dealing with the conditional likelihood $\prob(\bx| \bz; \btheta)$ which does not depend on $\bal$ :  in fact, if $(\btheta, \bz) \sim (\btheta', \bz')$, then for all $\bx$, we have $\prob(\bx| \bz; \btheta) = \prob(\bx| \bz'; \btheta')$. 
+Note also that $\bz \sim \bzs$  if and only if the confusion matrix $\RQbz$  is equivalent to a diagonal matrix. 
+
+\begin{dof}[symmetry]
+  \label{def:symmetry}
+  We say that the parameter $\btheta$ \emph{exhibits symmetry for the permutation} $s$ if
+  \begin{equation*}
+    (\bpi^s, \bal^{s}) = (\bpi, \bal).
+  \end{equation*}
+  $\btheta$ \emph{exhibits symmetry} if it exhibits symmetry for any non trivial pair of permutations $(s,t)$. Finally the set of pairs $(s,t)$ for which $\btheta$ exhibits symmetry is noted $\Symmetric(\btheta)$.
+\end{dof}
+
+%\begin{dof}[$\btheta$-symmetry]
+%  \label{def:theta-symmetry}
+%  For any $\btheta \in \bTheta$, we say that assignments $(\bz, \bw)$ and $(\bz', \bw')$ are \emph{$\btheta$-equivalent}, noted $\thetasim$, if there exists $(s,t) \in \Symmetric(\btheta)$ such that $(\bz^s, \bw^t) = (\bz', \bw')$. \CK{ ou est-ce qu'on s'en sert?}
+%\end{dof}
+
+\begin{rem}
+  The set of parameters that exhibit symmetry is a manifold of null Lebesgue measure in $\bTheta$.  The notion of symmetry allows us to deal with a notion of non-identifiability of the class labels that is subtler than and different from label switching.\\
+% To emphasize the difference between equivalence and symmetry, consider the following model: $\bpi = (1/2, 1/2)$, $\brho = (1/3, 2/3)$ and $\bal = \left( \begin{array}{cc} \al_1 & \al_2 \\ \al_2 & \al_1 \end{array} \right) $ with $\al_1 \neq \al_2$. The only permutations of interest here are $s = t = [1\ 2]$. Choose any $\bz$ and $\bw$. Because of label switching, we know that $\prob(\bx, \bz^s, \bw^t; \btheta^{s,t}) = \prob(\bx, \bz, \bw; \btheta)$. $(\bz^s, \bw^t)$ and $(\bz, \bw)$ have the same likelihood but under \emph{different} parameters $\btheta$ and $\btheta^{s,t}$. If however, $\brho = (1/2, 1/2)$, then $(s, t) \in \Symmetric(\btheta)$ and $\btheta^{s,t} = \btheta$ so that $(\bz, \bw)$ and $(\bz^s, \bw^t)$ have exactly the same likelihood under the \emph{same} parameter $\btheta$. In particular, if $(\bz, \bw)$ is a maximum-likelihood assignment under $\btheta$, so is $(\bz^s, \bw^t)$. In other words, if $\theta$ exhibits symmetry,  the maximum-likelihood \emph{assignment} is not unique under the true model and there are at least $\# \Symmetric(\btheta)$ of them. 
+\end{rem}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Complete model
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Asymptotic properties in the complete data model}
+\label{sec:mle-complete-likelihood}
+As stated in the introduction, we first study the asymptotic properties of the complete data model.
+Let $\widehat{\btheta}_{c}=\left(\hbpi,\hbal\right)$ be the MLE of $\btheta$ in the complete data model, where the real assignments $\bz=\bzs$ are known. We can derive the following general estimates from Equation~\eqref{eq:log-vraisemblance-complete}:
+
+\begin{equation}
+  \label{eq:mle-complete-likelihood}
+  \begin{aligned}
+    \hpi_{q}  = \pizq = \frac{\zsumq}{\n} & \\
+    \hyqlz = \frac{\sum_{\ii < \jj} \yij r_{ij} \ziq \zjl}{\sum_{\ii < \jj} r_{ij} \ziq \zjl} & \quad
+    \hpi_{q\el}  = \pizql = \normpm \left(  \hyqlz \right)
+  \end{aligned}
+\end{equation}
+
+\begin{lemme}
+$$\frac{1}{\binom{n}{2}}\sum_{\ii < \jj} r_{ij} \ziq^\star \zjl^\star \xrightarrow[\n \to +\infty]{\mathbb{P}} p \pii^\vrai_{\kk}\pii^\vrai_{l}$$
+\end{lemme}
+\begin{proof}
+
+\end{proof}
+
+
+
+\begin{proposition}
+  \label{prop:mle-asymptotic-normality}
+  The matrices $\Sigma_{\bpis} = \Diag(\bpis) - \bpis\left(\bpis\right)\transpose $is semi-definite positive, of rank $\mathcal{Q}-1$, and $\widehat{\bpi}$ is asymptotically normal:
+  \begin{equation}
+    \label{eq:mle-proportion-asymptotic-normality}
+    \sqrt{\n}\left( \hat{\bpi}\left(\bzs\right) - \bpis \right) \xrightarrow[\n \to \infty]{\mathcal{D}} \mathcal{N}(0, \Sigma_{\bpis})
+  \end{equation}
+Similarly, let $V(\bals)$ be the matrix defined by $[V(\bals)]_{q \el} = 1/\normp'(\pi^\vrai_{q\el})$ and\\  $\Sigma_{\bals} = \Diag^{-1}(\bpis) V(\bals) \Diag^{-1}(\bpis)$. Then:
+  \begin{equation}
+    \label{eq:mle-parameters-asymptotic-normality}
+    \sqrt{\n(\n-1)/2}\;(\hal_{q\el}\left(\bzs\right) - \pi^\vrai_{q\el}) \xrightarrow[\n, \to \infty]{\mathcal{D}}  \mathcal{N}(0, \Sigma_{\bals, q \el})\;\;\; \hbox{for all  } q, \el
+  \end{equation}
+  where the components are independent. 
+\end{proposition}
+
+\textit{Proof:}
+Since $\hat{\bpi}\left(\bzs\right) = \left(\hpi_1\left(\bzs\right), \dots, \hpi_\g\left(\bzs\right)\right)$ is the sample mean of $\n$ i.i.d. multinomial random variables with parameters $1$ and $\bpis$, a simple application of the central limit theorem (CLT) gives:
+\begin{equation*}
+  \Sigma_{\bpis, \kk \kp} =
+  \begin{cases}
+    \pii^{\vrai}_{\kk}(1 - \pii^{\vrai}_{\kk}) & \text{if} \quad \kk = \kp \\
+    -\pii^{\vrai}_{\kk} \pii^{\vrai}_{\kp} & \text{if} \quad \kk \neq \kp \\
+  \end{cases}
+\end{equation*}
+which proves Equation~\eqref{eq:mle-proportion-asymptotic-normality}
+where $\Sigma_{\bpis}$ is
+semi-definite positive of rank $\mathcal{Q} - 1$.
+
+Similarly, $\normp\left(\hal_{\kk\el}\left(\bzs,\bws\right)\right)$ is
+the average of $\zsumk^{\vrai}\wsuml^{\vrai} =
+\n\dd\hpi_\kk\left(\bzs\right)\hrho_\el\left(\bws\right)$
+i.i.d. random variables with mean
+$\normp\left(\al^\vrai_{\kk\el}\right)$ and variance
+$\normp'\left(\al^\vrai_{\kk\el}\right)$. $\n\dd\hpi_\kk\left(\bzs\right)\hrho_\el\left(\bws\right)$
+is itself random but
+\mbox{$\hpi_\kk\left(\bzs\right)\hrho_\el\left(\bws\right)
+  \xrightarrow[\n,\dd \to +\infty]{} \pii^\vrai_{\kk}
+  \rhoo^\vrai_{\el}$} almost surely. Therefore, by Slutsky's lemma and
+the CLT for random sums of random variables \cite{Shanthikumar1984}, we have:
+\begin{eqnarray*}
+\sqrt{\n\dd\pii^\star_{\kk}} \left(\normp\left(\hal_{\kk\el}\left(\bzs\right)\right) - \normp(\al^\vrai_{\kk\el}) \right)  &=& \sqrt{\n\dd\pii^\star_{\kk}} \left( \frac{\sum_{\ii\jj} \Xij \zik^{\vrai} \zjl^{\vrai}}{nd\hpi_\kk\left(\bzs\right)} - \normp(\al^\vrai_{\kk\el}) \right) \\
+&& \xrightarrow[\n,\dd \to +\infty]{\mathcal{D}} \mcN\left(0, \normp'(\al^\vrai_{\kk\el})\right)
+\end{eqnarray*}
+The differentiability of $\normpm$ and the delta method then gives:
+\begin{equation*}
+  \sqrt{\n\dd} \left(\hal_{\kk\el}\left(\bzs,\bws\right) - \al^\vrai_{\kk\el} \right) \xrightarrow[\n,\dd \to +\infty]{\mathcal{D}} \mcN\left(0, \frac{1}{\pii^\star_{\kk}\rhoo^\star_{\el} \normp'(\al^\vrai_{\kk\el})}\right)
+\end{equation*}
+and the independence results from the independence of $\hal_{\kk\el}\left(\bzs,\bws\right)$ and
+$\hal_{\kp\lp}\left(\bzs,\bws\right)$ as soon as $\kk \neq \kp$ or $\el
+\neq \lp$, as they involve different sets of i.i.d. variables.
+
+\begin{flushright}
+$\square$
+\end{flushright}
+
+\begin{proposition}[Local asymptotic normality]\label{prop:LocalAsymp}
+Let $\Lcs$ the function defined on $\bTheta$ by $\Lcs\left(\bpi,\brho,\bal\right)=\log\prob\left(\bx,\bzs,\bws;\btheta\right)$. For any $s$, $t$ and $u$ in a compact set, we have:
+\begin{eqnarray*}
+\Lcs\left(\bpis+\frac{s}{\sqrt{\n}},\brhos+\frac{t}{\sqrt{\dd}},\bals+\frac{u}{\sqrt{\n\dd}}\right)
+&=&\Lcs\left(\bthetas\right) + s\transpose\bY_{\bpis}+t\transpose\bY_{\brhos}+ \text{Tr}(u\transpose\bY_{\bals})\\
+& -&\left(\frac{1}{2}s\transpose\Sig_{\bpis}s+\frac{1}{2}t\transpose\Sig_{\brhos}t+\frac{1}{2} \text{Tr}\left((u \odot u)\transpose\Sig_{\bals}\right)\right)\\
+&+&o_{P}(1)\\
+\end{eqnarray*}
+where $\odot$ denote the Hadamard product of two matrices (element-wise product) and $\Sig_{\bpis}$, $\Sig_{\brhos}$ and $\Sig_{\bals}$ are defined in Proposition~\ref{prop:mle-asymptotic-normality}. $\bY_{\bpis}$, $\bY_{\brhos}$ are asymptotically Gaussian with zero mean and respective variance matrices $\Sig_{\bpis}$, $\Sig_{\brhos}$ and $\bY_{\bals}$ is a matrix of asymptotically independent Gaussian components with zero mean and variance matrix $\Sig_{\bals}$.
+\end{proposition}
+\proofbegin
+By Taylor expansion,
+\begin{eqnarray*}
+& &\!\!\!\!\!\!\!\!\!\!\Lcs\left(\bpis+\frac{s}{\sqrt{\n}},\brhos+\frac{t}{\sqrt{\dd}},\bals+\frac{u}{\sqrt{\n\dd}}\right)\\
+&=&\Lcs\left(\bthetas\right)+\frac{1}{\sqrt{\n}}s\transpose\nabla{\Lcs}_{\bpi}\left(\bthetas\right) +\frac{1}{\sqrt{\dd}}t\transpose\nabla{\Lcs}_{\brho}\left(\bthetas\right)+\frac{1}{\sqrt{\n\dd}}\text{Tr}\left(u\transpose\nabla{\Lcs}_{\bal}\left(\bthetas\right)\right)\\
+&&\quad+\frac{1}{\n}s\transpose\bH_{\bpi}\left(\bthetas\right)s+\frac{1}{\dd}t\transpose\bH_{\brho}\left(\bthetas\right)t +\frac{1}{\n\dd}\text{Tr}\left((u \odot u)\transpose\bH_{\bal}\left(\bthetas\right)\right)+o_{P}(1)\\
+\end{eqnarray*}
+where $\nabla{\Lcs}_{\bpi}\left(\bthetas\right)$, $\nabla{\Lcs}_{\brho}\left(\bthetas\right)$ and $\nabla{\Lcs}_{\bal}\left(\bthetas\right)$ denote the respective components of the gradient of $\Lcs$ evaluated at $\bthetas$ and $\bH_{\bpi}$, $\bH_{\brho}$ and $\bH_{\bal}$ denote the conditional hessian of $\Lcs$ evaluated at $\bthetas$. By inspection, $\bH_{\bpi}/\n$, $\bH_{\brho}/\dd$ and $\bH_{\bal}/\n\dd$ converge in probability to constant matrices and the random vectors $\nabla{\Lcs}_{\bpi}\left(\bthetas\right)/\sqrt{\n}$, $\nabla{\Lcs}_{\brho}\left(\bthetas\right)/\sqrt{\dd}$ and $\nabla{\Lcs}_{\bal}\left(\bthetas\right)/\sqrt{\n\dd}$ converge in distribution by central limit theorem. %This concludes the proof.
+\proofend
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Profile Likelihood}
+\label{sec:profile-likelihood}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+To study the likelihood behaviors, we shall work conditionally to the real configurations $(\bzs,\bws)$ that have enough observations in each row or column group. We therefore define regular configurations which occur with high probability, then introduce conditional and profile log-likelihood ratio. 
+\subsection{Regular assignments}
+\begin{dof}[$c$-regular assignments]
+  \label{def:regular}
+  Let $\bz \in \mcZ$ and $\bw \in \mcW$. For any $c > 0$, we say that $\bz$ and $\bw$ are c-\emph{regular} if
+  \begin{equation}
+    \label{eq:regular-configuration}
+    \min_{\kk} \zsumk \geq {c\n} \quad \text{and} \quad \min_{\el} \wsuml \geq {c\dd}.
+  \end{equation}
+\end{dof}
+
+
+
+In regular configurations, each row-group (resp. column-group) has $\Om(\n)$ members, where $u_\n=\Om(\n)$ if there exists two constant $a, b>0$ such that for $\n$ enough large $a\n \leq u_\n \leq b\n$. $c/2$-regular assignments, with $c$ defined in Assumption $H_1$, have high  $\Prob_{\bthetas}$-probability in the space of all assignments, uniformly over all $\bthetas \in \bTheta$. 
+
+Each $\zsumk$ is a sum of $\n$ i.i.d Bernoulli r.v. with parameter $\pik \geq \pii_{\min} \geq c$. A simple Hoeffding bound shows that
+\begin{equation*}
+  \Prob_{\bthetas}\left( \zsumk \leq \n \frac{c}{2} \right)
+  \leq
+  \Prob_{\bthetas}\left( \zsumk \leq \n \frac{\pik}{2} \right)
+  \leq
+  \exp\left( - 2\n\left(\frac{\pik}{2}\right)^2 \right)
+  \leq
+  \exp\left( - \frac{\n c^2}{2} \right)
+\end{equation*}
+taking a union bound over $\g$ values of $\kk$ and using a similar approach for $\wsuml$ lead to Proposition \ref{cor:prob-regular-configurations-star}.
+\begin{proposition}
+  \label{cor:prob-regular-configurations-star}
+  Define $\mcZ_1$ and $\mcW_1$ as the subsets of $\mcZ$ and $\mcW$
+  made of $c/2$-regular assignments, with $c$ defined in assumption $H_1$. Note $\Om_1$ the event $\{ (\bzs, \bws)
+  \in \mcZ_1 \times \mcW_1 \}$, then:
+  \begin{equation*}
+    \Prob_{\bthetas}\left( \bar{\Om}_1 \right) \leq \g \exp\left( -\frac{\n c^2}{2}\right)+ \m \exp\left( -\frac{\dd c^2}{2}\right).
+  \end{equation*}
+\end{proposition}
+
+We define now balls of configurations taking into account equivalent assignments classes.
+\begin{dof}[Set of local assignments]
+  \label{prop:small-deviations-profile-likelihood}
+  We note $S(\bzs, \bws, r)$ the set of configurations that have a representative (for $\sim$) within relative radius $r$ of $(\bzs, \bws)$:
+  \begin{equation*}
+    S(\bzs, \bws, r) = \left\{ (\bz, \bw) : \|\bz - \bzs\|_{0, \sim} \leq r \n \text{ and } \|\bw - \bws\|_{0, \sim} \leq r \dd \right\}
+  \end{equation*}
+\end{dof}
+
+\subsection{Conditional and profile log-likelihoods}
+\label{sec:cond-and-prof-likelihood} 
+%We now consider the likelihood $\prob(\bx,\bz,\bw;\btheta)$ when $\bz$ and $\bw$ are unknown. Instead of maximizing this quantity for the correct assignments $(\bzs, \bws)$, we will maximize it in $\btheta$ it for \enquote{well-behaved} test assignments $(\bz, \bw)$ and show that it is a $\smallO_P$ of $\prob(\bx,\bzs,\bws;\bthetas)$ whenever $(\bz, \bw) \nsim (\bzs, \bws)$.
+%
+We first introduce few notations.
+
+\begin{dof}
+\label{def:conditional-profile-likelihood}
+We define the conditional log-likelihood ratio $F_{\n,\dd}$ and its expectation $G$ as:
+\begin{equation}
+  \label{eq:conditional-likelihood}
+  \begin{aligned}
+    \Fnd(\btheta, \bz, \bw) & = \log \frac{\prob(\bx| \bz,\bw;\btheta)}{\prob(\bx| \bzs,\bws;\bthetas)} \\
+    \G(\btheta, \bz, \bw) & = \Esp_{\bthetas} \left[ \left. \log \frac{\prob(\bx| \bz,\bw;\btheta)}{\prob(\bx| \bzs,\bws;\bthetas)} \right| \bzs, \bws  \right] \\
+  \end{aligned}
+\end{equation}
+We also define the profile log-likelihood ratio $\Lamb$ and its expectation $\Lambtilde$ as:
+\begin{equation}
+  \label{eq:profile-likelihood}
+  \begin{aligned}
+    \Lamb(\bz, \bw) & = \max_{\btheta} \Fnd(\btheta, \bz, \bw)  \\
+    \Lambtilde(\bz, \bw) & = \max_{\btheta} \G(\btheta, \bz, \bw).
+  \end{aligned}
+\end{equation}
+\end{dof}
+
+\begin{rem}
+As  $\Fnd$ and $\G$ only depend on $\btheta$ through $\bal$, we will sometimes replace $\btheta$ with $\bal$ in the expressions of $\Fnd$ and $\G$. Replacing $F_{\n,\dd}$ and $G$ by their profiled version $\Lamb$ and $\Lambtilde$ allows us to get rid of the continuous argument of $F_{\n\dd}$ and to effectively use discrete contrasts $\Lamb$ and $\Lambtilde$.
+\end{rem}
+
+The following proposition shows which values of $\bal$ maximize $\Fnd$ and $\G$ to attain $\Lamb$ and $\Lambtilde$.
+\begin{proposition}[maximum of $\G$ and $\Lambtilde$ in $\theta$]
+\label{prop:profile-likelihood}
+Conditionally on  $\bzs, \bws$, define
+the following quantities:
+\begin{equation}
+  \label{eq:profile-likelihood-notations}
+  \begin{aligned}
+    \Sal & = (\Salkl)_{\kk\el} = \left( \normp(\alskl) \right)_{\kk\el} \\
+    \barxkl(\bz, \bw) & = \Esp_{\bthetas}[\hxklzw | \bzs, \bws] = \frac{\left[ \Rgbz\transpose \Sal \Rmbw \right]_{\kk\el}}{\pizk\rhowl}
+  \end{aligned}
+\end{equation}
+with $\barxkl(\bz, \bw)=0$ for $\bz$ and $\bw$ such that $\pizk=0$ or $\rhowl=0$. 
+Then $\Fnd(\btheta, \bz, \bw)$ and $\G(\btheta, \bz, \bw)$ are maximum in $\bal$ for  $\hbal(\bz, \bw)$ and $\bar{\bal}(\bz, \bw)$ defined by:
+\begin{equation*}
+  \hal(\bz, \bw)_{\kk\el} = \normpm ( \hxklzw ) \quad \text{and} \quad \bar{\al}(\bz, \bw)_{\kk\el} = \normpm ( \barxkl(\bz, \bw) )
+\end{equation*}
+so that
+\begin{equation*}
+  \begin{aligned}
+    \Lamb(\bz, \bw) & = \Fnd(\hbal(\bz, \bw), \bz, \bw) % = \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\hxklzw) - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\Salkl) \\
+    \\
+    \Lambtilde(\bz, \bw) & = \G(\bar{\bal}(\bz, \bw), \bz, \bw) % = \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\barxklzw) - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\Salkl).
+  \end{aligned}
+\end{equation*}
+\end{proposition}
+Note that although $\bar{x}_{\kk\el} = \mathbb{E}_{\bthetas}\left[\left.\hat{x}_{\kk\el}\right|\bzs,\bws\right]$, in general %$\bar{\al}_{\kk\el} = \normpm(\barxkl) \neq \normpm(\hxkl) = \hat{\al}_{\kk\el}$
+$\bar{\al}_{\kk\el} \neq \mathbb{E}_{\bthetas}\left[\left.\hat{\al}_{\kk\el}\right|\bzs,\bws\right]$ by non linearity of $\normpm$. Nevertheless, $\normpm$ is Lipschitz over compact subsets of $\normp(\mathring{\mathcal{A}})$ and therefore, with high probability, $|\bar{\al}_{\kk\el} - \hat{\al}_{\kk\el}|$ and $|\hxkl - \barxkl|$ are of the same order of magnitude. 
+
+The maximum and $\argmax$ of $G$ and $\Lambtilde$ are characterized by the following propositions.
+\begin{proposition}[maximum of $\G$ and $\Lambtilde$ in $(\theta,\bz,\bw)$]
+  \label{prop:maximum-conditional-likelihood}
+  Let $\KL(\al,\al') = \normp(\al) (\al - \al') + \norm(\al') - \norm(\al)$ be the Kullback divergence between $\dens(., \al)$ and $\dens(., \al')$ then:
+  \begin{equation}
+    \label{eq:conditional-likelihood-second-form}
+    \G(\btheta, \bz, \bw) = - \n\dd \sum_{\kk,\kp} \sum_{\el,\lp} \Rgbz_{\kk,\kp} \Rmbw_{\el, \lp} \KL(\al^\vrai_{\kk\el}, \al_{\kp\lp}) \leq 0.
+  \end{equation}
+  Conditionally on the set $\Om_1$ of regular assignments and for $n, d > 2/c$,
+\begin{itemize}
+\item[(i)] $\G$ is maximized at $(\bals, \bzs, \bws)$ and its equivalence class.
+\item[(ii)] $\Lambtilde$ is maximized at $(\bzs, \bws)$ and its equivalence class; moreover, $\Lambtilde(\bzs, \bws)=0$.
+\item[(iii)] The maximum of $\Lambtilde$ (and hence the maximum of $\G$) is well separated.
+\end{itemize}
+
+\end{proposition}
+Property $(iii)$ of Proposition \ref{prop:maximum-conditional-likelihood} is a direct consequence of the local upperbound for $\Lambtilde$ as stated as follows:
+
+\begin{proposition}[Local upperbound for  $\Lambtilde$]
+\label{prop:profile-likelihood-derivative}
+Conditionally upon $\Om_1$, there exists a positive constant $C$ such that for all $(\bz, \bw) \in S(\bzs, \bws, C)$:
+\begin{equation}
+\label{eq:conditional-likelihood-separability}
+  \Lambtilde(\bz, \bw) \leq -\frac{c\delta(\bals)}{4} \left( \dd \|\bz - \bzs\|_{0, \sim} + \n \|\bw - \bws\|_{0,\sim} \right)
+\end{equation}
+\end{proposition}
+Proofs of Propositions \ref{prop:profile-likelihood}, \ref{prop:maximum-conditional-likelihood} and \ref{prop:profile-likelihood-derivative} are reported in Appendix \ref{sec:proofPL}.
+
+\section{Main Result}
+\label{sec:big-theorem}
+%%%%%%%%%%%%%%%%%%%%%%
+We are now ready to present our main result
+stated in Theorem \ref{thm:observed-akin-to-complete-general}.
+
+\begin{thm}[complete-observed]
+  \label{thm:observed-akin-to-complete-general}
+  Consider that assumptions $H_1$ to $H_4$ hold for the Latent Block Model of known order with $n\times d$ observations coming from an univariate exponential family  and define  $\# \Symmetric(\btheta)$ as the set of pairs of permutation $(s,t)$ for which $\btheta=(\bpi,\brho,\bal)$ exhibits symmetry. Then, for $n$ and $d$ tending to infinity with asymptotic rates  $\log (\dd)/\n\rightarrow 0$ and $\log(\n)/\dd\rightarrow 0$, the observed likelihood ratio behaves like the complete likelihood ratio, up to a bounded multiplicative factor:
+  \begin{equation*}
+    \frac{\prob(\bx; \btheta)}{\prob(\bx; \bthetas)} = \frac{\# \Symmetric(\btheta)}{\# \Symmetric(\bthetas)} \max_{\btheta' \sim \btheta} \frac{\prob(\bx, \bzs, \bws; \btheta')}{\prob(\bx, \bzs, \bws; \bthetas)}\left(1 + \smallO_P(1)\right) + \smallO_P(1)
+  \end{equation*}
+  where the $\smallO_P$ is uniform over all $\btheta \in \bTheta$.
+\end{thm}
+The maximum over all $\btheta'$ that are equivalent to $\btheta$ stems from the fact that because of label-switching, $\btheta$ is only identifiable up to its $\sim$-equivalence class from the observed likelihood, whereas it is completely identifiable from the complete likelihood.\\
+As already pointed out, if $\bTheta$ exhibits symmetry, the maximum likelihood assignment is not unique under the true model, and $\# \Symmetric(\btheta)$ terms contribute with the same weight. This was not taken into account by \cite{bickel2013asymptotic}.
+The next corollary is deduced immediately~:
+\begin{corollaire}
+  \label{cor:observed-akin-to-complete-simple-case}
+  If $\bTheta$ contains only parameters that do not exhibit symmetry:
+  \begin{equation*}
+    \frac{\prob(\bx; \btheta)}{\prob\left(\bx; \btheta^{\vrai}\right)} = \max_{\btheta' \sim \btheta} \frac{\prob(\bx, \bzs, \bws; \btheta')}{\prob(\bx, \bzs, \bws; \bthetas)}\left(1 + \smallO_P(1)\right) + \smallO_P(1)
+  \end{equation*}
+where the $\smallO_P$ is uniform over all $\bTheta$.
+\end{corollaire}
+
+
+%\textcolor{red}{Redondant avec la fin de la section~\ref{sec:cond-and-prof-likelihood}?}
+Using the conditional log-likelihood, the observed likelihood can be written as
+\begin{eqnarray}
+\nonumber
+\prob(\bx; \btheta) &=&
+  \sum_{ (\bz, \bw)} \prob(\bx, \bz, \bw; \btheta) \\
+%  &=&  \prob(\bx| \bzs, \bws; \bthetas) \sum_{(\bz, \bw)} 
+% \prob(\bz, \bw; \btheta)\frac{\prob(\bx| \bz,\bw;\btheta)}{\prob(\bx| \bzs,\bws;\bthetas)}\\
+%
+&=&\prob(\bx| \bzs, \bws; \bthetas)
+\sum_{(\bz, \bw)}   \prob(\bz, \bw; \btheta) \exp(\Fnd(\btheta, \bz, \bw) ).
+\end{eqnarray} 
+%Hence, the convergence of $\Fnd$ is of crucial importance to study the asymptotic of the observed likelihood. In fact, we shall have to study it for three types of configurations
+
+The proof proceeds with an examination of the asymptotic behavior of  $\Fnd$ on three types of configurations that partition $\mcZ\times\mcW$:
+
+
+\begin{enumerate}
+\item  \emph{global control}: for $(\bz, \bw)$ such that $\Lambtilde(\bz, \bw) = \Omega(-\n\dd)$, Proposition \ref{prop:conditional-likelihood-convergence} proves a large deviation behavior for $\Fnd = -\Omega_P(\n\dd)$  and in turn those assignments contribute a $\smallO_{P}$ of $\prob(\bx, \bzs, \bws; \bthetas))$ to the sum (Proposition \ref{prop:large-deviations-profile-likelihood}). 
+
+\item \emph{local control}: a small deviation result (Proposition~\ref{prop:profile-likelihood-convergence-local}) is needed  to show that the combined contribution of assignments close to but not equivalent to $(\bzs, \bws)$ is also a $\smallO_{P}$ of $\prob(\bx, \bzs, \bws; \bthetas)$ (Proposition \ref{prop:small-deviations-profile-likelihood}). 
+\item \emph{equivalent assignments}: Proposition~\ref{prop:equivalent-configurations-profile-likelihood} examines which of the remaining assignments, all equivalent to $(\bzs, \bws)$, contribute to the sum.
+\end{enumerate}
+These results are presented in next section \ref{sec:technicalpropositions} and their proofs reported in Appendix \ref{sec:proofPL}. They are then put together in section \ref{sec:proofbigth} to achieve the proof of our main result. The remainder of the section is devoted to the asymptotics of the ML and variational estimators as a consequence of the main result.
+
+\subsection{Different asymptotic behaviors}\label{sec:technicalpropositions}
+
+We begin with a large deviations inequality for configurations $(\bz, \bw)$ far from $(\bzs, \bws)$ and leverage it to prove that far away configurations make a small contribution to $\prob(\bx; \btheta)$. 
+
+\subsubsection{Global Control}
+% a global deviation bound for $\Fnd$ and shows that  $\left( \Fnd - \G \right)_{+} = \bigO_{P}(\sqrt{\n\dd})$.
+
+\begin{proposition}[large deviations of $\Fnd$]
+  \label{prop:conditional-likelihood-convergence}
+  Let $\Diam(\bTheta) = \sup_{\btheta, \btheta'} \|\btheta - \btheta' \|_{\infty}$. For all $\vareps_{\n, \dd} < \neighborsize / (2\sqrt{2}\Diam(\bTheta))$ and $\n, \dd$ large enough that 
+  \begin{multline}
+    \label{eq:conditional-likelihood-convergence}
+    \Delta_{\n\dd}^1(\vareps_{\n\dd})\\ = \Prob\left( \sup_{\btheta, \bz, \bw} \left\{ \Fnd(\btheta, \bz, \bw) - \Lambtilde(\bz,\bw) \right\} \geq \vmax \n\dd \Diam(\bTheta) 2\sqrt{2}\vareps_{\n\dd}\left[1 + \frac{\g\m}{2\sqrt{2\n\dd}\vareps_{\n\dd}} \right] \right) \\ 
+    \leq \g^{\n} \m^{\dd} \exp\left( - \frac{\n\dd\vareps_{\n\dd}^2} {2}\right)
+  \end{multline}
+\end{proposition}
+
+\begin{proposition}[contribution of global assignments]
+  \label{prop:large-deviations-profile-likelihood}
+  Assume $\log(\dd)/n \to 0$, $\log(\n)/\dd \to 0$ when $n$ and $\dd$ tend to infinity, and choose $\tnd$ decreasing to $0$ such that $\tnd \gg \max(\frac{\n+\dd}{\n\dd}, \frac{\log(\n\dd)}{\sqrt{\n\dd}})$. Then conditionally on $\Omega_1$ and for $\n,\dd$ large enough that $2\sqrt{2\n\dd}\tnd \geq \g\m$, we have:
+  \begin{equation*}
+    \sup_{\btheta \in \bTheta} \sum_{(\bz, \bw) \notin S(\bzs, \bws, \tnd)} \prob(\bz, \bw, \bx; \btheta) = \smallO_P( \prob(\bzs, \bws, \bx; \bthetas) )
+  \end{equation*}
+\end{proposition}
+
+\subsubsection{Local Control}
+
+Proposition~\ref{prop:conditional-likelihood-convergence} gives deviations of order $\bigO_{P}(\sqrt{\n\dd})$, which are only useful for $(\bz, \bw)$ such that $\G$ and $\Lambtilde$ are large compared to $\sqrt{\n\dd}$. For $(\bz, \bw)$ close to $(\bzs, \bws)$, we need tighter concentration inequalities, of order $\smallO_P(-(\n+\dd))$, as follows:
+
+\begin{proposition}[small deviations $\Fnd$]
+  \label{prop:profile-likelihood-convergence-local}
+  Conditionally upon $\Om_1$, there exists three positive constant $c_1$, $c_2$ and $C$ such that for all $\vareps \leq \neighborsize \vmin^2$, for all $(\bz, \bw) \nsim(\bzs, \bws)$ such that $(\bz, \bw) \in S(\bzs, \bws, C)$:
+  \begin{equation}
+    \label{eq:profile-likelihood-convergence-local}
+    \begin{aligned}
+      \Delta_{\n\dd}^2(\vareps) = \Prob_{\bthetas}\left( \sup_{\btheta} \frac{\Fnd(\btheta, \bz, \bw) - \Lambtilde(\bz, \bw)}{\dd \| \bz - \bzs \|_{0, \sim} + \n \| \bw - \bws \|_{0, \sim}} \geq \vareps \right) \leq \exp \left( - \frac{\n\dd c^2 \vareps^2}{128(c_1 \vmax^2 + c_2 \neighborsize^{-1} \vareps)}\right)
+    \end{aligned}
+  \end{equation}
+\end{proposition}
+
+The next propositions builds on Proposition~\ref{prop:profile-likelihood-convergence-local} and \ref{prop:maximum-conditional-likelihood} to show that the combined contributions of assignments close to $(\bzs, \bws)$ to the observed likelihood is also a $\smallO_P$ of  $\prob(\bzs, \bws, \bx; \bthetas)$
+
+\begin{proposition}[contribution of local assignments]
+  \label{prop:small-deviations-profile-likelihood}
+  With the previous notations
+  \begin{equation*}
+    \sup_{\btheta \in \bTheta} \sum_{\substack{(\bz, \bw) \in S(\bzs, \bws, C) \\ (\bz, \bw) \nsim (\bzs, \bws)}} \prob(\bz, \bw, \bx; \btheta) = \smallO_P( \prob(\bzs, \bws, \bx; \bthetas) )
+  \end{equation*}
+\end{proposition}
+
+
+\subsubsection{Equivalent assignments}
+It remains to study the contribution of equivalent assignments.
+\begin{proposition}[contribution of equivalent assignments]
+  \label{prop:equivalent-configurations-profile-likelihood}
+  For all $\btheta \in \bTheta$, we have 
+  \begin{equation*}
+    \sum_{(\bz, \bw) \sim (\bzs, \bws)} \frac{\prob(\bx, \bz, \bw; \btheta)}{\prob(\bx, \bzs, \bws; \bthetas)} = \# \Symmetric(\btheta) \max_{\btheta' \sim \btheta} \frac{\prob(\bx, \bzs, \bws; \btheta')}{\prob(\bx, \bzs, \bws; \bthetas)} (1 + \smallO_P(1))
+  \end{equation*}   
+  where the $\smallO_P$ is uniform in $\btheta$. 
+\end{proposition}
+
+\subsection{Proof of the main result}\label{sec:proofbigth}
+
+\proofbegin We work conditionally on $\Omega_1$. Choose $(\bzs, \bws)
+\in \mcZ_1\times \mcW_1$ and a sequence $\tnd$ decreasing to $0$ but satisfying $\tnd \gg \max\left(\frac{\n+\dd}{\n\dd}, \frac{\log(\n\dd)}{\sqrt{\n\dd}}\right)$ (this is possible since $\log(\dd)/\n\rightarrow 0$ and $\log(\n)/\dd\rightarrow 0$). According to Proposition~\ref{prop:large-deviations-profile-likelihood}, 
+\begin{equation*}
+    \sup_{\btheta \in \bTheta} \sum_{(\bz, \bw) \notin S(\bzs, \bws, \tnd)} \prob(\bz, \bw, \bx; \btheta) = \smallO_P( \prob(\bzs, \bws, \bx; \bthetas) )
+\end{equation*}
+Since $\tnd$ decreases to $0$, it gets smaller than $C$ (used in proposition~\ref{prop:small-deviations-profile-likelihood}) for $\n, \dd$ large enough. As this point, Proposition~\ref{prop:small-deviations-profile-likelihood} ensures that:
+\begin{equation*}
+    \sup_{\btheta \in \bTheta} \sum_{\substack{(\bz, \bw) \in S(\bzs, \bws, \tnd) \\ (\bz, \bw) \nsim (\bzs, \bws)}} \prob(\bz, \bw, \bx; \btheta) = \smallO_P( \prob(\bzs, \bws, \bx; \bthetas) )
+\end{equation*}
+And therefore the observed likelihood ratio reduces as:
+\begin{align*}
+    \frac{\prob(\bx; \btheta)}{\prob(\bx; \bthetas)} & = \frac{\displaystyle \sum_{(\bz, \bw) \sim (\bzs, \bws)} \prob(\bx, \bz, \bw; \btheta) + \sum_{(\bz, \bw) \nsim (\bzs, \bws)} \prob(\bx, \bz, \bw; \btheta)}{\displaystyle \sum_{(\bz, \bw) \sim (\bzs, \bws)} \prob(\bx, \bz, \bw; \bthetas) + \sum_{(\bz, \bw) \nsim (\bzs, \bws)} \prob(\bx, \bz, \bw; \bthetas)} \\
+    & = \frac{\displaystyle \sum_{(\bz, \bw) \sim (\bzs, \bws)} \prob(\bx, \bz, \bw; \btheta) + \prob(\bx; \bzs, \bws, \bthetas) \smallO_P(1)}{\displaystyle \sum_{(\bz, \bw) \sim (\bzs, \bws)} \prob(\bx, \bz, \bw; \bthetas) + \prob(\bx; \bzs, \bws, \bthetas) \smallO_P(1)} \\
+\end{align*}
+And Proposition~\ref{prop:equivalent-configurations-profile-likelihood} allows us to conclude
+\begin{equation*}
+    \frac{\prob(\bx; \btheta)}{\prob(\bx; \bthetas)} = \frac{\# \Symmetric(\btheta)}{\# \Symmetric(\bthetas)} \max_{\btheta' \sim \btheta} \frac{\prob(\bx, \bzs, \bws; \btheta')}{\prob(\bx, \bzs, \bws; \bthetas)}(1 + \smallO_P(1)) + \smallO_P(1).
+\end{equation*} \proofend
+
+% \subsection{Global control}
+% 
+% 
+% 
+% \begin{proposition}[global convergence $\Fnd$]
+%   \label{prop:conditional-likelihood-convergence}
+%   Let $\Diam(\bTheta) = \sup_{\btheta, \btheta'} \|\btheta - \btheta' \|_{\infty}$. For all $\n,\dd$ large enough that $\g\m \CK{ \log 2} \leq \n^2\dd^2 \Diam(\bTheta) \vmax^2$, for all $\vareps_{\n, \dd} < \neighborsize / \Diam(\bTheta)$,
+%   \begin{multline}
+%     \label{eq:conditional-likelihood-convergence}
+%     \Delta_{\n\dd}^1(\vareps_{\n\dd}) = \Prob\left( \sup_{\btheta, \bz, \bw} \left\{ \Fnd(\btheta, \bz, \bw) - \Lambtilde(\bz,\bw) \right\} \geq \vmax \n\dd \Diam(\bTheta) \vareps_{\n\dd}\left[1 + \frac{\g\m}{\sqrt{\n\dd}\vareps_{\n\dd}} \right] \right) \\ 
+%     \leq \g^{\n} \m^{\dd} \exp\left( - \frac{\n\dd\vareps_{\n\dd}^2} {4}\right)\\
+%   \end{multline}
+% \end{proposition}
+
+% \subsection{Local control}
+% 
+% In small neighborhoods of $(\bzs, \bws)$,  $\G(\btheta, \bz, \bw)$ is typically not of order $\Omega(-\n\dd)$ and more care is required. The following Proposition gives an upper bound of $\Lambtilde$ (and therefore of $\G$) of order $\Omega(-(\n+\dd))$.
+% 
+% \begin{proposition}[Local upperbound for  $\Lambtilde$]
+% \label{prop:profile-likelihood-derivative}
+% Conditionally upon $\Om_1$, there exists a positive constant $C$ such that for all $(\bz, \bw) \in S(\bzs, \bws, C)$:
+% \begin{equation*}
+%   \Lambtilde(\bz, \bw) \leq -\frac{c\delta(\bals)}{4} \left( \dd \|\bz - \bzs\|_{0, \sim} + \n \|\bw - \bws\|_{0,\sim} \right)
+% \end{equation*}
+% \end{proposition}
+% 
+% The deviations of order $\bigO_{P}(\sqrt{\n\dd})$ given by Proposition~\ref{prop:conditional-likelihood-convergence} are only useful far away of $(\bzs, \bws)$, where $\G$ and $\Lambtilde$ are large compared to $\sqrt{\n\dd}$. Close to $(\bzs, \bws)$, we need tighter concentration inequalities, of order $\smallO_P(-(\n+\dd))$, as follows:
+% 
+% \begin{proposition}[local convergence $\Fnd$]
+%   \label{prop:profile-likelihood-convergence-local}
+%   Conditionally upon $\Om_1$, there exists two positive constant $c_1$ and $c_2$ such that for all $\vareps \leq \neighborsize \vmax^2$, for all $(\bz, \bw) \nsim(\bzs, \bws)$ such that for all $\|\bz - \bzs\|_0 \leq c\n/4$ and $\|\bw - \bws\|_0 \leq c\dd/4$:
+%   \begin{equation}
+%     \label{eq:profile-likelihood-convergence-local}
+%     \begin{aligned}
+%       \Delta_{\n\dd}^2(\vareps) = \Prob_{\bthetas}\left( \sup_{\btheta} \frac{\Fnd(\btheta, \bz, \bw) - \Lambtilde(\bz, \bw)}{\dd \| \bz - \bzs \|_0 + \n \| \bw - \bws \|_0} \geq \vareps \right) \leq \exp \left( - \frac{\n\dd c^2 \vareps^2}{128(c_1 \vmax^2 + c_2 \neighborsize^{-1} \vareps)}\right)
+%     \end{aligned}
+%   \end{equation}
+% \end{proposition}
+% 
+% Finally, the following proposition builds on Proposition~\ref{prop:profile-likelihood-derivative} and Proposition~\ref{prop:profile-likelihood-convergence-local} to show that the combined contribution of assignments close to but different from $(\bzs, \bws)$ (or an equivalent assignment) to the observed likelihood is a $\smallO_P$ of  $\prob(\bzs, \bws, \bx; \bthetas)$
+% 
+% \begin{proposition}[contribution of local assignments]
+%   \label{prop:small-deviations-profile-likelihood}
+%   Let $S(\bzs, \bws, \tilde{c})$ be the set of configurations that have a representative (for $\sim$) within distance $\tilde{c}$ of $(\bzs, \bws)$. 
+%   Then for all $\tilde{c} \leq \min(c_3, c/4)$ ,
+%   \begin{equation*}
+%     \sup_{\btheta \in \bTheta} \sum_{\substack{(\bz, \bw) \in S(\bzs, \bws, \tilde{c}) \\ (\bz, \bw) \nsim (\bzs, \bws)}} \prob(\bz, \bw, \bx; \btheta) = \smallO_P( \prob(\bzs, \bws, \bx; \bthetas) )
+%   \end{equation*}
+% 
+% \end{proposition}
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Asymptotics for the MLE of $\btheta$}
+
+The asymptotic behavior of the maximum likelihood estimator in the incomplete data model is a direct consequence of Theorem~\ref{thm:observed-akin-to-complete-general}.
+
+\begin{corollaire}[Asymptotic behavior of $\bthetaEMV$]\label{cor:behaviorEMV} Denote $\bthetaEMV$ the maximum likelihood estimator and use the notations of Proposition~\ref{prop:mle-asymptotic-normality}. If $\# \Symmetric(\btheta)=1$, there exist permutations $s$ of $\{1, \dots, \g\}$ and $t$ of $\{1, \dots, \m\}$ such that
+\begin{eqnarray*}
+\hat{\bpi}\left(\bzs\right)-\bpiEMV^{s}=o_{P}\left(\n^{-1/2}\right),&&\hat{\brho}\left(\bws\right)-\brhoEMV^{t}=o_{P}\left(\dd^{-1/2}\right),\\
+\hat{\bal}\left(\bzs,\bws\right)-\balEMV^{s,t}&=&o_{P}\left(\left(\n\dd\right)^{-1/2}\right).\\
+\end{eqnarray*}
+If $\# \Symmetric(\btheta)\neq1$,  $\bthetaEMV$ is still consistent:  there exist permutations $s$ of $\{1, \dots, \g\}$ and $t$ of $\{1, \dots, \m\}$ such that
+\begin{eqnarray*}
+\hat{\bpi}\left(\bzs\right)-\bpiEMV^{s}=o_{P}\left(1\right),&&\hat{\brho}\left(\bws\right)-\brhoEMV^{t}=o_{P}\left(1\right),\\
+\hat{\bal}\left(\bzs,\bws\right)-\balEMV^{s,t}&=&o_{P}\left(1\right). \\
+\end{eqnarray*}
+\end{corollaire}
+Hence, the maximum likelihood estimator for the LBM is consistent and asymptotically normal, with the same behavior as the maximum likelihood estimator in the complete data model when $\theta$ does not exhibit any symmetry.
+%The proof is available in section~\ref{annexe:cor:behaviorEMV}.
+The proof in appendix \ref{annexe:cor:behaviorEMV} relies on the local asymptotic normality of the MLE in the complete model, as stated in Proposition~\ref{prop:LocalAsymp} and on our main Theorem.
+%\CK{ !! et que se passe-t- il si $\theta$ ou $\theta^*$ présente une symmetrie?}
+
+
+% \subsection{Consistency of variational estimates}
+% Due to the complex dependence structure of the observations, the maximum likelihood estimator of the LBM is not numerically tractable, even  with the \textit{Expectation Maximisation} algorithm. In practice, a variational approximation can be used (\cite[see for example][]{govaert2003}): for any joint distribution $\setQ\in\mcQ$ on $\mcZ\times\mcW$ a lower bound of $\mcL(\btheta)$ is given by
+% \begin{eqnarray*}
+% \Jvar\left(\setQ,\btheta\right)&=&\mcL(\btheta)-KL\left(\setQ,\prob\left(., . ; \btheta,\bx\right)\right)\\
+%                             &=&\Esp_{\setQ}\left[\Lc\left(\bz,\bw;\btheta\right)\right]+\mcH\left(\setQ\right).
+% \end{eqnarray*}
+% where $\mcH\left(\setQ\right)=-\Esp_{\setQ}[\log(\setQ)]$.
+% Choose $\mcQ$  to be the set of product distributions, such that for all $\left(\bz,\bw\right)$
+% \[\setQ\left(\bz,\bw\right)=\setQ\left(\bz\right)\setQ\left(\bw\right)=\prod_{\ii,\kk}\setQ\left(\zik=1\right)^{\zik} \prod_{\jj,\el}\setQ\left(\wjl=1\right)^{\wjl}\]
+% allow to obtain tractable expressions of $\Jvar\left(\setQ,\btheta\right)$. The variational estimate $\bthetavar$ of $\btheta$ is defined as
+% \[\bthetavar\in\underset{\btheta\in\bTheta}{\arg\!\max}\;\underset{\setQ\in\mcQ}{\max}\;\Jvar\left(\setQ,\btheta\right).\]
+% 
+% The following corollary states that $\bthetavar$ has the same asymptotic properties as $\bthetaEMV$ and $\widehat{\btheta}_{MC}$.
+% %\begin{corollaire}[Variational estimate]\label{cor:Variational}
+% %Under the conditions of Theorem~\ref{thm:observed-akin-to-complete-general}, \VB{ there exist permutations $s$ of $\{1, \dots, \g\}$ and $t$ of $\{1, \dots, \m\}$ such that
+% %\begin{eqnarray*}
+% %\hat{\bpi}\left(\bzs\right)-\bpivar^{s}=o_{P}\left(\n^{-1/2}\right),&&\hat{\brho}\left(\bws\right)-\brhovar^{t}=o_{P}\left(\dd^{-1/2}\right),\\
+% %\hat{\bal}\left(\bzs,\bws\right)-\balvar^{s,t}&=&o_{P}\left(\left(\n\dd\right)^{-1/2}\right).\\
+% %\end{eqnarray*}}
+% %%\[\bthetavar\in
+% %%\underset{\btheta}{\arg\!\max}\log\prob(\bx;\btheta).\]
+% %If $\# \Symmetric(\btheta)=1$ and with the notations of Theorem~\ref{thm:observed-akin-to-complete-general}, we have
+% %  \begin{equation*}
+% %    \frac{\underset{\setQ\in\mcQ}{\max}\;\exp\left[\Jvar\left(\setQ,\btheta\right)\right]}{\prob(\bx; \bthetas)} =  \frac{1}{\# \Symmetric(\bthetas)} \max_{\btheta' \sim \btheta}\frac{\prob(\bx, \bzs, \bws; \btheta')}{\prob(\bx, \bzs, \bws; \bthetas)}\left(1 + \smallO_P(1)\right) + \smallO_P(1)
+% %  \end{equation*}
+% %  where the $\smallO_P$ is uniform over all $\btheta \in \bTheta\backslash\left\{\btheta\in\bTheta|\# \Symmetric(\btheta)=1\right\}$.
+% %\end{corollaire}
+% \begin{corollaire}[Variational estimate]\label{cor:Variational}
+% Under the assumptions of Theorem~\ref{thm:observed-akin-to-complete-general} and if $\# \Symmetric(\btheta)=1$, there exist permutations $s$ of $\{1, \dots, \g\}$ and $t$ of $\{1, \dots, \m\}$ such that
+% \begin{eqnarray*}
+% \hat{\bpi}\left(\bzs\right)-\bpivar^{s}=o_{P}\left(\n^{-1/2}\right),&&\hat{\brho}\left(\bws\right)-\brhovar^{t}=o_{P}\left(\dd^{-1/2}\right),\\
+% \hat{\bal}\left(\bzs,\bws\right)-\balvar^{s,t}&=&o_{P}\left(\left(\n\dd\right)^{-1/2}\right).
+% \end{eqnarray*}
+% %\[\bthetavar\in
+% %\underset{\btheta}{\arg\!\max}\log\prob(\bx;\btheta).\]
+% \begin{comment}
+% Moreover, 
+%   \begin{eqnarray}  
+%   \label{cor:Variational:plus}
+%     \frac{\underset{\setQ\in\mcQ}{\max}\;\exp\left[\Jvar\left(\setQ,\btheta\right)\right]}{\prob(\bx; \bthetas)} =  \frac{1}{\# \Symmetric(\bthetas)} \max_{\btheta' \sim \btheta}\frac{\prob(\bx, \bzs, \bws; \btheta')}{\prob(\bx, \bzs, \bws; \bthetas)}\left(1 + \smallO_P(1)\right) + \smallO_P(1)
+% \end{eqnarray} 
+%   where the $\smallO_P$ is uniform over all $\btheta \in \bTheta\backslash\left\{\btheta\in\bTheta|\# \Symmetric(\btheta)=1\right\}$.
+%   \end{comment}
+% \end{corollaire}
+% The proof is available in appendix~\ref{annexe:cor:Variational}.
+
+
+
+
+
+\appendix
+
+\include{bj-Theorem1Propositions}
+
+\bibliographystyle{plain}
+\bibliography{bj-BraultKeribinMariadassou}
+
+% \begin{thebibliography}{}
+% 
+% \bibitem[\protect\citeauthoryear{Billingsley, P.}{1999}]{r1}
+% Billingsley, P. (1999) \textit{Convergence of
+% Probability Measures}, 2nd edn. New York: Wiley.
+% \MR{1700749}
+% 
+% \bibitem[\protect\citeauthoryear{Bourbaki, N.}{1966}]{r2}
+% Bourbaki, N. (1966) \textit{General Topology}  \textbf{1}.
+% Reading, MA: Addison--Wesley.
+% 
+% \bibitem[\protect\citeauthoryear{Ethier, S. N. and Kurtz, T. G.}{1985}]{r3}
+% Ethier, S. N. and Kurtz, T. G. (1985)
+% \textit{Markov Processes: Characterization and Convergence}.
+% New York: Wiley.
+% \MR{838085}
+% 
+% \bibitem[\protect\citeauthoryear{Prokhorov, Yu.}{1956}]{r4}
+% Prokhorov, Yu. (1956)
+% Convergence of random processes and limit theorems in probability
+% theory. \textit{Theory  Probab.  Appl.},
+% \textbf{1}, 157--214.
+% \MR{84896}
+% 
+% \end{thebibliography}
+
+\end{document}

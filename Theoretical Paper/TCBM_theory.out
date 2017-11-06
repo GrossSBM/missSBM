@@ -1,0 +1,31 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Model and assumptions}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Likelihood}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Assumptions}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Symmetry}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Asymptotic properties in the complete data model}{}% 6
+\BOOKMARK [1][-]{section.4}{Profile Likelihood}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Regular assignments}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Conditional and profile log-likelihoods}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Main Result}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Different asymptotic behaviors}{section.5}% 11
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Global Control}{subsection.5.1}% 12
+\BOOKMARK [3][-]{subsubsection.5.1.2}{Local Control}{subsection.5.1}% 13
+\BOOKMARK [3][-]{subsubsection.5.1.3}{Equivalent assignments}{subsection.5.1}% 14
+\BOOKMARK [2][-]{subsection.5.2}{Proof of the main result}{section.5}% 15
+\BOOKMARK [2][-]{subsection.5.3}{Asymptotics for the MLE of bold0mu mumu program@epstopdf}{section.5}% 16
+\BOOKMARK [1][-]{appendix.A}{Proofs}{}% 17
+\BOOKMARK [2][-]{subsection.A.1}{Proof of Proposition 4.6}{appendix.A}% 18
+\BOOKMARK [2][-]{subsection.A.2}{Proof of Proposition 4.7 \(maximum of G and \)}{appendix.A}% 19
+\BOOKMARK [2][-]{subsection.A.3}{Proof of Proposition 4.8 \(Local upper bound for \)}{appendix.A}% 20
+\BOOKMARK [2][-]{subsection.A.4}{Proof of Proposition 5.3 \(global convergence Fnd\)}{appendix.A}% 21
+\BOOKMARK [2][-]{subsection.A.5}{Proof of Proposition 5.4 \(contribution of far away assignments\)}{appendix.A}% 22
+\BOOKMARK [2][-]{subsection.A.6}{Proof of Proposition 5.5 \(local convergence Fnd\)}{appendix.A}% 23
+\BOOKMARK [2][-]{subsection.A.7}{Proof of Proposition 5.6 \(contribution of local assignments\)}{appendix.A}% 24
+\BOOKMARK [2][-]{subsection.A.8}{Proof of Proposition 5.7 \(contribution of equivalent assignments\)}{appendix.A}% 25
+\BOOKMARK [2][-]{subsection.A.9}{Proof of Corollary 5.8: Behavior of bold0mu mumu program@epstopdf"0362bold0mu mumu program@epstopdfMLE}{appendix.A}% 26
+\BOOKMARK [2][-]{subsection.A.10}{Proof of Corollary ??: Behavior of J\(Q,bold0mu mumu program@epstopdf\)}{appendix.A}% 27
+\BOOKMARK [1][-]{appendix.B}{Technical Lemma}{}% 28
+\BOOKMARK [2][-]{subsection.B.1}{Sub-exponential variables}{appendix.B}% 29
+\BOOKMARK [2][-]{subsection.B.2}{Likelihood ratio of assignments}{appendix.B}% 30
+\BOOKMARK [1][-]{section*.18}{References}{}% 31

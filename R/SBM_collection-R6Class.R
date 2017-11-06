@@ -46,11 +46,11 @@ SBM_collection$set("public", "initialize",
 SBM_collection$set("public", "smoothingBackward",
                    function() {
                      for(i in rev(self$vBlocks[-1])){
-                       comb <- combn(i, 2)
-                       for(j in 1:ncol(comb)){
+                       comb <- combn(i, 2, simplify = FALSE)
+                       for(j in 1:length(comb)){
                          cl_fusion <- factor(apply(self$models[[i]]$blockVarParam, 1, which.max))
                          if(length(levels(cl_fusion)) == i){
-                           levels(cl_fusion)[which(levels(cl_fusion) == paste(comb[1,j]))] <- paste(comb[2,j])
+                           levels(cl_fusion)[which(levels(cl_fusion) == paste(comb[[j]][1]))] <- paste(comb[[j]][2])
                            levels(cl_fusion) <- as.character(1:(i-1))
                            clone             <- self$models[[i-1]]$clone()
                            clone$blockInit   <- as.numeric(cl_fusion)
@@ -75,12 +75,13 @@ SBM_collection$set("public", "getBestModel",
 
 ### Tests :
 # SBM :
-mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/3, 2/3), matrix(c(.5, .05, .05, .5),2,2))
+mySBM <- SBM_BernoulliUndirected.fit$new(200, rep(1, 5)/5, diag(.45,5)+.05)
 
 # Sampled SBM :
-mySampledSBM   <- sampling_doubleStandard$new(100, c(.7,.9), FALSE)
-Y              <- mySBM$rSBM()$adjacencyMatrix
-# Z              <- t(rmultinom(100, size = 1, prob = c(.5, .5)))
+mySampledSBM   <- sampling_doubleStandard$new(200, c(.3,.7), FALSE)
+SBMdata        <- mySBM$rSBM()
+Y <- SBMdata$adjacencyMatrix
+# Z <- SBMdata$blocks
 # Znum           <- Z %*% c(1:2)
 # sample         <- mySampledSBM$rSampling(Y, Z)
 sample         <- mySampledSBM$rSampling(Y)
@@ -93,17 +94,23 @@ sample         <- mySampledSBM$rSampling(Y)
 # VEM :
 sbm <- SBM_collection$new(sample$adjacencyMatrix, 1:10, "doubleStandard", "Bernoulli", FALSE)
 
-cat(sbm$vICLs, "\n")
-# sbm$getBestModel()
-# sbm$models
+Icl <- sbm$vICLs
+plot(sbm$vICLs)
+# # sbm$getBestModel()
+# # sbm$models
 sbm$smoothingBackward()
-cat("\n", sbm$vICLs)
 plot(sbm$vICLs)
 
+# # cat("\n", sbm$vICLs)
+# # plot(sbm$vICLs)
+# # 
+# res <- func_missSBM.twoStd(sample$adjacencyMatrix, 1:10)
 
-
-
-
-
+# logLik.SBM <- function(X1, X0, Z, alpha, pi) {
+#   return(sum(Z%*%log(alpha)) + .5 * sum( X1 *(Z %*% log(pi) %*% t(Z)) + X0 * (Z %*% log(1-pi) %*% t(Z))))
+# }
+# mySBM$completeLogLik(Y, Z)
+# Ybar <- 1-Y; diag(Ybar) <- 0; logLik.SBM(Y, Ybar, Z, mySBM$mixtureParam, mySBM$connectParam)
+# 
 
 

@@ -56,7 +56,7 @@ sampling_doubleStandard <-
             },
             samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
               ll <- sum(log(self$missingParam[2]) * completedNetwork[sampledNetwork$observedDyads] + log(self$missingParam[1]) * (1-completedNetwork[sampledNetwork$observedDyads])) +
-                        sum(log(1-self$missingParam[2]) * completedNetwork[sampledNetwork$observedDyads] + log(1-self$missingParam[1]) * (1-completedNetwork[sampledNetwork$observedDyads]))
+                        sum(log(1-self$missingParam[2]) * completedNetwork[sampledNetwork$missingDyads] + log(1-self$missingParam[1]) * (1-completedNetwork[sampledNetwork$missingDyads]))
               if(!self$directed){
                 return(ll/2)
               } else {

@@ -1,0 +1,80 @@
+\begin{thebibliography}{10}
+
+\bibitem{ambroise2012new}
+Christophe Ambroise and Catherine Matias.
+\newblock New consistent and asymptotically normal parameter estimates for
+  random-graph mixture models.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 74(1):3--35, 2012.
+
+\bibitem{bickel2013asymptotic}
+Peter Bickel, David Choi, Xiangyu Chang, Hai Zhang, et~al.
+\newblock Asymptotic normality of maximum likelihood and its variational
+  approximation for stochastic blockmodels.
+\newblock {\em The Annals of Statistics}, 41(4):1922--1943, 2013.
+
+\bibitem{bickel2009nonparametric}
+Peter~J Bickel and Aiyou Chen.
+\newblock A nonparametric view of network models and newman--girvan and other
+  modularities.
+\newblock {\em Proceedings of the National Academy of Sciences},
+  106(50):21068--21073, 2009.
+
+\bibitem{celisse2012consistency}
+Alain Celisse, Jean-Jacques Daudin, Laurent Pierre, et~al.
+\newblock Consistency of maximum-likelihood and variational estimators in the
+  stochastic block model.
+\newblock {\em Electronic Journal of Statistics}, 6:1847--1899, 2012.
+
+\bibitem{govaert2003}
+G{\'e}rard Govaert and Mohamed Nadif.
+\newblock Clustering with block mixture models.
+\newblock {\em Pattern Recognition}, 36(2):463--473, 2003.
+
+\bibitem{govaert2008block}
+G{\'e}rard Govaert and Mohamed Nadif.
+\newblock Block clustering with bernoulli mixture models: Comparison of
+  different approaches.
+\newblock {\em Computational Statistics \& Data Analysis}, 52(6):3233--3245,
+  2008.
+
+\bibitem{govaert2010latent}
+G{\'e}rard Govaert and Mohamed Nadif.
+\newblock Latent block model for contingency table.
+\newblock {\em Communications in Statistics—Theory and Methods},
+  39(3):416--425, 2010.
+
+\bibitem{govaert2013co}
+G{\'e}rard Govaert and Mohamed Nadif.
+\newblock {\em Co-clustering}.
+\newblock John Wiley \& Sons, 2013.
+
+\bibitem{keribin2015estimation}
+Christine Keribin, Vincent Brault, Gilles Celeux, and G{\'e}rard Govaert.
+\newblock Estimation and selection for the latent block model on categorical
+  data.
+\newblock {\em Statistics and Computing}, 25(6):1201--1216, 2015.
+
+\bibitem{lomet2012}
+Aurore Lomet.
+\newblock {\em S\'election de mod\`eles pour la classification de donn\'ees
+  continues}.
+\newblock PhD thesis, Universit\'e Technologique de Compi\`egne, 2012.
+
+\bibitem{mariadassou2015}
+Mahendra Mariadassou and Catherine Matias.
+\newblock Convergence of the groups posterior distribution in latent or
+  stochastic block models.
+\newblock {\em Bernoulli}, 21(1):537--573, 2015.
+
+\bibitem{massart2007concentration}
+Pascal Massart.
+\newblock {\em Concentration inequalities and model selection}, volume~6.
+\newblock Springer, 2007.
+
+\bibitem{Shanthikumar1984}
+J.G. Shanthikumar and U.~Sumita.
+\newblock A central limit theorem for random sums of random variables.
+\newblock {\em Operations Research Letters}, 3(3):153 -- 155, 1984.
+
+\end{thebibliography}

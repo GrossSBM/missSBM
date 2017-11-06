@@ -28,8 +28,10 @@ SBM_VEMfit <-
             blockInit        = NULL, # Initialization clustering
             VEstep           = function() {
               if(!(class(self$sampling)[1] %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball"))){
-                self$blockVarParam    <- self$SBM$fixPoint(self$SBM, self$blockVarParam, self$completedNetwork)
-                self$completedNetwork <- self$SBM$updateNu(self$SBM, self$sampling, self$sampledNetwork, self$blockVarParam, self$completedNetwork, self$taylorVarParam)
+                # for(i in 1:5){
+                  self$blockVarParam    <- self$SBM$fixPoint(self$SBM, self$blockVarParam, self$completedNetwork)
+                  self$completedNetwork <- self$SBM$updateNu(self$SBM, self$sampling, self$sampledNetwork, self$blockVarParam, self$completedNetwork, self$taylorVarParam)
+                # }
                 if(class(self$sampling)[1] == "sampling_starDegree"){
                   self$taylorVarParam   <- self$SBM$updateKsi(self$sampling, self$completedNetwork)
                 }
@@ -39,7 +41,9 @@ SBM_VEMfit <-
                 
                 self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork,  self$blockVarParam, self$taylorVarParam)
               } else {
-                self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
+                # for(i in 1:5){
+                  self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
+                # }
                 self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork)
                                           - sum(self$blockVarParam*log(self$blockVarParam + 1*(self$blockVarParam==0))))
                 self$compLogLik       <- c(self$compLogLik, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork))
@@ -54,7 +58,7 @@ SBM_VEMfit <-
                 self$SBM <- self$SBM$maximization_MAR(self$SBM, self$completedNetwork, self$blockVarParam, self$sampledNetwork$samplingMatrix)
               }
             },
-            initialize       = function(SBM, sampledNetwork, sampling, blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 100) {
+            initialize       = function(SBM, sampledNetwork, sampling, blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
               self$sampledNetwork   <- sampledNetwork
               self$SBM              <- SBM
               self$sampling         <- sampling
@@ -112,11 +116,7 @@ SBM_VEMfit$set("public", "SpectralClustering",
 
 SBM_VEMfit$set("public", "initialization",
                function() {
-                 if(is.null(self$blockInit)){
-                   cl0 <- self$SpectralClustering()
-                 } else {
-                   cl0 <- self$blockInit
-                 }
+                cl0 <- self$SpectralClustering()
 
                  self$blockVarParam    <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, cl0)] <- 1
                  if(class(self$sampling)[1] == "sampling_starDegree"){
@@ -126,11 +126,11 @@ SBM_VEMfit$set("public", "initialization",
                    Dchap               <- rowSums((self$completedNetwork-networkWithZeros)*(1-(self$completedNetwork-networkWithZeros))) + Dtilde^2
                    self$taylorVarParam <- sqrt(self$sampling$missingParam[1]^2 + (self$sampling$missingParam[2]^2)*Dchap + 2*self$sampling$missingParam[1]*self$sampling$missingParam[2]*Dtilde)
                  }
-                 
+                 res@models[[2]]@theta
                  self$completedNetwork[is.na(self$completedNetwork)] <- 0
                  theta <- (t(self$blockVarParam)%*% self$completedNetwork %*%self$blockVarParam) / (t(self$blockVarParam)%*%((1-diag(self$SBM$nNodes)))%*%self$blockVarParam)
                  self$completedNetwork[self$sampledNetwork$missingDyads] <- ((self$blockVarParam) %*% theta %*% t(self$blockVarParam))[self$sampledNetwork$missingDyads]
-                 return(list(theta=theta, cl0=cl0))
+                 return(cl0=cl0)
                }
 )
 
@@ -141,9 +141,7 @@ SBM_VEMfit$set("public", "doVEM",
                  conv    <- vector("numeric", self$maxIterVEM) ; conv[1] <- NA
                  theta   <- vector("list", length = self$maxIterVEM)
                  
-                 init       <- self$initialization()
-                 theta[[1]] <- init$theta
-                 cl0        <- init$cl0
+                 cl0     <- self$initialization()
                  
                  i <- 0; cond <- FALSE
                  while(!cond){
