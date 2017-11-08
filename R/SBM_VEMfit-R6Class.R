@@ -134,25 +134,25 @@ SBM_VEMfit$set("public", "doVEM",
 
 
 
-### Tests :
-
-# SBM : 
-mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/2, 1/2), matrix(c(.5, .05, .05, .5),2,2))
-
-# # Sampled SBM :
-# mySampledSBM  <- sampling_doubleStandard$new(100, c(1/2, 1/2), FALSE)
+# ### Tests :
+# 
+# # SBM : 
+# mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/2, 1/2), matrix(c(.5, .05, .05, .5),2,2))
+# 
+# # # Sampled SBM :
+# # mySampledSBM  <- sampling_doubleStandard$new(100, c(1/2, 1/2), FALSE)
+# # Y             <- mySBM$rSBM()$adjacencyMatrix
+# # sampledNetwork <- mySampledSBM$rSampling(Y)
+# 
+# # Sampled SBM 2 (MAR):
+# mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
 # Y             <- mySBM$rSBM()$adjacencyMatrix
 # sampledNetwork <- mySampledSBM$rSampling(Y)
-
-# Sampled SBM 2 (MAR):
-mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
-Y             <- mySBM$rSBM()$adjacencyMatrix
-sampledNetwork <- mySampledSBM$rSampling(Y)
-
-# VEM : 
-mySBM   <- SBM_BernoulliUndirected.fit$new(100, rep(0, 2), NA)
-fit     <- SBM_VEMfit$new(mySBM, sampledNetwork, mySampledSBM)
-fit$doVEM()
+# 
+# # VEM : 
+# mySBM   <- SBM_BernoulliUndirected.fit$new(100, rep(0, 2), NA)
+# fit     <- SBM_VEMfit$new(mySBM, sampledNetwork, mySampledSBM)
+# fit$doVEM()
 
 
 
