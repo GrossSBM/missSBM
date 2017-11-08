@@ -41,17 +41,21 @@ function(adjacencyMatrix, directed) {
   # depending if the network is directed or not
   # if (directed) {
     self$missingDyads  <- which( is.na(adjacencyMatrix))
-    self$observedDyads <- which(!is.na(adjacencyMatrix))
+    self$observedDyads <- which(!is.na(adjacencyMatrix)) #  & (lower.tri(adjacencyMatrix) | upper.tri(adjacencyMatrix))
   # } else {
   #   self$missingDyads  <- which( is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
   #   self$observedDyads <- which(!is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
   # }
-  self$samplingRate    <- nrow(self$missingDyads)/self$nDyads
-  
+  if(!directed){
+    self$samplingRate    <- length(self$observedDyads)/(2*self$nDyads)
+  } else {
+    self$samplingRate    <- length(self$observedDyads)/self$nDyads
+  }
+
   self$samplingMatrix  <- matrix(0, self$nNodes, self$nNodes)
   self$samplingMatrix[self$observedDyads] <- 1
   
-  samplingVector <- rep(0, self$nNodes); samplingVector[which(!is.na(rowSums(adjacencyMatrix)))] <- 1
+  self$samplingVector <- rep(0, self$nNodes); self$samplingVector[which(!is.na(rowSums(adjacencyMatrix)))] <- 1
   
 })
 

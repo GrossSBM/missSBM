@@ -1,4 +1,4 @@
-#' a collection of adjusted Stochastic Block Model
+#' A collection of adjusted Stochastic Block Model
 #'
 #' @importFrom R6 R6Class
 SBM_collection <-
@@ -10,72 +10,107 @@ SBM_collection <-
       sampling = NULL,       # the sampling design for missing data modeling
       samplingData = NULL,   # informations about the sampling
       family   = NULL,       # the emission law of the adjacency matrix
-      link     = NULL        # directed or not, depends on what we are modeling
+      vICLs    = NULL        # ICL's of the model collection
   )
 )
 
 SBM_collection$set("public", "initialize",
-  function(sampledNetwork, vBlocks, sampling, family, link) {
+  function(sample, vBlocks, sampling, family, directed) {
+    require(parallel)
     self$family   <- family
-    self$link     <- link
     self$vBlocks  <- vBlocks
     self$sampling <- sampling
-    self$sampledNetwork <- sampledNetwork$new(sampledNetwork, link)
+    self$sampledNetwork <- sampledNetwork$new(sample, directed)
     self$samplingData   <- switch(sampling,
-                            "doubleStandard" = sampling_doubleStandard$new(self$sampledNetwork$nNodes, NA, link),
-                            "class"          = sampling_class$new(self$sampledNetwork$nNodes, NA, link),
-                            "starDegree"     = sampling_starDegree$new(self$sampledNetwork$nNodes, NA, link),
-                            "MAREdge"        = sampling_randomPairMAR$new(self$sampledNetwork$nNodes, NA, link),
-                            "MARNode"        = sampling_randomNodeMAR$new(self$sampledNetwork$nNodes, NA, link),
-                            "snowball"       = sampling_snowball$new(self$sampledNetwork$nNodes, NA, link))
+                            "doubleStandard" = sampling_doubleStandard$new(self$sampledNetwork$nNodes, c(.5,.5), directed),
+                            "class"          = sampling_class$new(self$sampledNetwork$nNodes, .5, directed),
+                            "starDegree"     = sampling_starDegree$new(self$sampledNetwork$nNodes, coefficients(glm(self$sampledNetwork$samplingVector~rowSums(sample, na.rm=TRUE), family = binomial(directed = "logit"))), directed),
+                            "MAREdge"        = sampling_randomPairMAR$new(self$sampledNetwork$nNodes, .5, directed),
+                            "MARNode"        = sampling_randomNodeMAR$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), directed),
+                            "snowball"       = sampling_snowball$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), directed))
+    self$models <- mclapply(self$vBlocks, function(i){
+      SBM <- switch(paste0(self$family, ifelse(self$sampledNetwork$directed, "Directed", "Undirected")),
+                    "BernoulliUndirected" = SBM_BernoulliUndirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
+                    "BernoulliDirected"   = SBM_BernoulliDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
+                    "PoissonUndirected"   = SBM_PoissonUndirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
+                    "PoissonDirected"     = SBM_PoissonDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05))
+      SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData)
+      SBM_VEMfit$doVEM()
+      return(SBM_VEMfit)
+    }
+    , mc.cores = 5)
+    self$vICLs <- sapply(self$models, function(x){x$vICL})
   }
 )
 
-SBM_collection$set("public", "estimate",
+SBM_collection$set("public", "smoothingBackward",
                    function() {
-                     temp <- ifelse(link, "Directed", "Undirected")
-                     type <- paste0(family, temp)
-                     require(parallel)
-                     self$models <- mclapply(vBlocks, function(i){
-                      SBM <- switch(type,
-                              "BernoulliUndirected" = SBM_BernoulliUndirected.fit$new(self$sampledNetwork$nNodes, rep(0, i), NA),
-                              "BernoulliDirected"   = SBM_BernoulliDirected.fit$new(self$sampledNetwork$nNodes, rep(0, i), NA),
-                              "PoissonUndirected"   = SBM_PoissonUndirected.fit$new(self$sampledNetwork$nNodes, rep(0, i), NA),
-                              "PoissonDirected"     = SBM_PoissonDirected.fit$new(self$sampledNetwork$nNodes, rep(0, i), NA))
-                      SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData)
-                      SBM_VEMfit$doVEM()
-                      return(SBM)
+                     for(i in rev(self$vBlocks[-1])){
+                       comb <- combn(i, 2, simplify = FALSE)
+                       for(j in 1:length(comb)){
+                         cl_fusion <- factor(apply(self$models[[i]]$blockVarParam, 1, which.max))
+                         if(length(levels(cl_fusion)) == i){
+                           levels(cl_fusion)[which(levels(cl_fusion) == paste(comb[[j]][1]))] <- paste(comb[[j]][2])
+                           levels(cl_fusion) <- as.character(1:(i-1))
+                           clone             <- self$models[[i-1]]$clone()
+                           clone$blockInit   <- as.numeric(cl_fusion)
+                           clone$doVEM()
+                           
+                           if(clone$vICL < self$models[[i-1]]$vICL){
+                             self$models[[i-1]] <- clone
+                             cat('+')
+                           }
+                         }
                        }
-                     ,mc.cores = detectCores()-1)
-                     SBM_VEMfit$new(mySBM, sampledNetwork, mySampledSBM)
+                     }
+                     self$vICLs <- sapply(self$models, function(x){x$vICL})
+                   }
+)
+
+SBM_collection$set("public", "getBestModel",
+                   function() {
+                     return(nrow(self$models[[which.min(self$vICLs)]]$SBM$connectParam))
                    }
 )
 
 ### Tests :
-
-# SBM : 
-mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/2, 1/2), matrix(c(.5, .05, .05, .5),2,2))
+# SBM :
+mySBM <- SBM_BernoulliUndirected.fit$new(200, rep(1, 5)/5, diag(.45,5)+.05)
 
 # Sampled SBM :
-mySampledSBM   <- sampling_doubleStandard$new(100, c(1/2, 1/2), FALSE)
-Y              <- mySBM$rSBM()$adjacencyMatrix
-sampledNetwork <- mySampledSBM$rSampling(Y)
+mySampledSBM   <- sampling_doubleStandard$new(200, c(.3,.7), FALSE)
+SBMdata        <- mySBM$rSBM()
+Y <- SBMdata$adjacencyMatrix
+# Z <- SBMdata$blocks
+# Znum           <- Z %*% c(1:2)
+# sample         <- mySampledSBM$rSampling(Y, Z)
+sample         <- mySampledSBM$rSampling(Y)
 
-# # Sampled SBM 2 (MAR):
+# Sampled SBM 2 (MAR):
 # mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
 # Y             <- mySBM$rSBM()$adjacencyMatrix
 # sampledNetwork <- mySampledSBM$rSampling(Y)
 
-# VEM : 
-sbm <- SBM_collection$new(sampledNetwork, 1:5, "doubleStandard", "Bernoulli", FALSE)
+# VEM :
+sbm <- SBM_collection$new(sample$adjacencyMatrix, 1:10, "doubleStandard", "Bernoulli", FALSE)
 
+Icl <- sbm$vICLs
+plot(sbm$vICLs)
+# # sbm$getBestModel()
+# # sbm$models
+sbm$smoothingBackward()
+plot(sbm$vICLs)
 
+# # cat("\n", sbm$vICLs)
+# # plot(sbm$vICLs)
+# # 
+# res <- func_missSBM.twoStd(sample$adjacencyMatrix, 1:10)
 
-
-
-
-
-
-
+# logLik.SBM <- function(X1, X0, Z, alpha, pi) {
+#   return(sum(Z%*%log(alpha)) + .5 * sum( X1 *(Z %*% log(pi) %*% t(Z)) + X0 * (Z %*% log(1-pi) %*% t(Z))))
+# }
+# mySBM$completeLogLik(Y, Z)
+# Ybar <- 1-Y; diag(Ybar) <- 0; logLik.SBM(Y, Ybar, Z, mySBM$mixtureParam, mySBM$connectParam)
+# 
 
 
