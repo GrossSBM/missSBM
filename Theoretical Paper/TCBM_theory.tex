@@ -7,6 +7,7 @@
 \usepackage{longtable}
 \usepackage{version}
 %\usepackage[authoryear]{natbib}
+\usepackage{natbib}
 
 \usepackage[babel=true]{csquotes}
 
@@ -61,6 +62,7 @@
 \newtheorem{proposition}[thm]{Proposition}
 \newtheorem{corollaire}[thm]{Corollary}
 \newtheorem{lemme}[thm]{Lemma}
+\newtheorem{property}[thm]{Property}
 \theoremstyle{remark}
 %\newtheorem{rem}{Remark}[section]
 \newtheorem{rem}[thm]{Remark}
@@ -189,20 +191,187 @@ The confusion matrix allows to compare the partition.
   \end{equation}
 \end{dof}
 
+
+\subsection{Missing data for SBM}
+
+Regarding SBM inference, a missing value corresponds to a missing entry in the adjacency matrix $\MA$, typically denoted by \texttt{NA}'s.
+Therefore, $\MA$ has three possible entries $0$, $1$ or \texttt{NA}.
+We rely on the $n\times n$ sampling matrix $R$ to record the data sampled during this process:
+\begin{equation}
+\label{eq:R}
+ (R_{ij}) = \begin{cases}
+  1 &   \text{ if $\MA_{ij}$  is observed,}  \\
+  0 &   \text{ otherwise.}  \\
+\end{cases}
+\end{equation}
+As  a  shortcut,  we use  $\MAO  =  \{\MA_{ij}  :  R_{ij} =  1\}$  and
+$\MAM=\{\MA_{ij} :  R_{ij} =  0 \}$  to denote  the sets  of variables
+respectively    associated    with     the    \textit{observed}    and
+\textit{missing} data.  The \emph{sampling  design} is the description
+of the stochastic process that generates  $R$.  It is assumed that the
+network pre-exists this process, which is fully characterized by the
+conditional distribution $p_\psi(R|\MA)$, the parameters of which are
+such   that   $\psi$   and   $\theta$   live   in   a   product   space
+$\Theta   \times   \Psi$.    We    then   follow   the   framework   of
+\citet{Rubin1976} for  missing data that  we adapt to the  presence of
+the latent variables $Z_i$: the  joint probability density function of
+the observed data satisfies
+\begin{equation}
+p_{\theta, \psi}(\MAO,R)=\int \int p_{\theta}(\MAO,\MAM,Z)p_\psi(R|\MAO,\MAM,Z)d\MAM dZ.
+\label{eq:likelihood}
+\end{equation}
+Simplifications may  occur in  \eqref{eq:likelihood} depending  on the
+sampling  design, leading  to the  three usual  types of  missingness:
+Missing completely  at random (MCAR),  Missing at random (MAR)  or Not
+missing  at random  (NMAR).  For  SBM,  this typology  depends on  the
+relations between  the network $Y$,  the latent structure $Z$  and the
+sampling  $R$,  so  that  the missingness  is  characterized  by  four
+directed acyclic graphs (DAG) displayed in Figure~\ref{fig:DAGs}.
+Since the network pre-exists the sampling process, we do not consider DAG where
+$R$ is a parent node.
+
+%\begin{figure}[htbp!]
+%  \centering
+%  \begin{tabular}{c@{\hspace{1.5em}}c@{\hspace{1.5em}}c@{\hspace{1.5em}}c}
+%    \begin{tikzpicture}
+%      \tikzstyle{every edge}=[-,>=stealth',shorten >=1pt,auto,thin,draw]
+%      \tikzstyle{every state}=[draw=none,text=white,scale=0.8, font=\scriptsize, transform shape]
+%      \node[state,fill=blue!40!black] (Z) at (0,0) {Z};
+%      \node[state,fill=yellow!60!orange] (\MA) at (1.25,0) {\MA};
+%      \node[state,fill=red!60!black] (R) at (2.5,0) {R};
+%      \draw[->,>=latex] (Z) -- (\MA);
+%      %    \draw[->,>=latex] (\MA) -- (R);
+%    \end{tikzpicture}
+%    &
+%    \begin{tikzpicture}
+%      \tikzstyle{every edge}=[-,>=stealth',shorten >=1pt,auto,thin,draw]
+%      \tikzstyle{every state}=[draw=none,text=white,scale=0.8, font=\scriptsize, transform shape]
+%      
+%      \node[state,fill=blue!40!black] (Z) at (0,0) {Z};
+%      \node[state,fill=yellow!60!orange] (\MA) at (1.25,0) {\MA};
+%      \node[state,fill=red!60!black] (R) at (2.5,0) {R};
+%      
+%      \draw[->,>=latex] (Z) -- (\MA);
+%      \draw[->,>=latex] (\MA) -- (R);
+%    \end{tikzpicture}
+%    & 
+%      \begin{tikzpicture}
+%        
+%        \tikzstyle{every edge}=[-,>=stealth',shorten >=1pt,auto,thin,draw]
+%        \tikzstyle{every state}=[draw=none,text=white,scale=0.8, font=\scriptsize, transform shape]
+%        \tikzstyle{every node}=[fill=red!80!black]
+%        
+%        \node[state,fill=blue!40!black] (Z) at (0,0) {Z};
+%        \node[state,fill=yellow!60!orange] (\MA) at (1.25,0) {\MA};
+%        \node[state,fill=red!60!black] (R) at (2.5,0) {R};
+%        
+%        \draw[->,>=latex] (Z) -- (\MA);
+%        \draw[->,>=latex] (\MA) -- (R);
+%        \draw[->,>=latex] (Z) to[bend left] (R);
+%        
+%      \end{tikzpicture}
+%    &
+%      \begin{tikzpicture}
+%        
+%        \tikzstyle{every edge}=[-,>=stealth',shorten >=1pt,auto,thin,draw]
+%        \tikzstyle{every state}=[draw=none,text=white,scale=0.8, font=\scriptsize, transform shape]
+%        \tikzstyle{every node}=[fill=green!50!black]
+%        
+%        \node[state,fill=blue!40!black] (Z) at (0,0) {Z};
+%        \node[state,fill=yellow!60!orange] (\MA) at (-2/2,-2/2) {\MA};
+%        \node[state,fill=red!60!black] (R) at (2/2,-2/2) {R};
+%        
+%        \draw[->,>=latex] (Z) -- (\MA);
+%        \draw[->,>=latex] (Z) -- (R);
+%      \end{tikzpicture}
+%    \\
+%    (a) & (b) & (c) & (d) \\
+%  \end{tabular}    
+%  \caption{DAGs of relationships between $Y,Z$ and $R$ considered in
+%    the framework of missing data  for SBM. Notice the systematic edge
+%    between $Z$ and $Y$ which comes from the SBM.
+% DAG (a)  corresponds to MCAR,  DAG (b) can  correspond to MAR  or NMAR
+% (additional specifications are necessary) while  DAGs (c) and (d) lead
+% to NMAR.
+%}
+%	\label{fig:DAGs}
+%\end{figure}
+
+
+The type of  missingness for SBM  can be
+defined as follows:
+\begin{equation}
+  \label{def:missingness}
+  \text{Sampling design for SBM is }
+  \begin{cases}
+    \text{MCAR} & \text{if } R \ \indep \ (\MAM, Z, \MAO),\\
+    \text{MAR} & \text{if } R \ \indep \ (\MAM,Z) \ | \ \MAO,\\
+    \text{NMAR} & \text{otherwise}.\\
+  \end{cases}
+\end{equation}
+% \begin{definition}[MAR, MCAR, NMAR]
+%   A sampling design is MAR, respectively MCAR, if the sampling process
+%   $R$ is such that
+%   \begin{equation*}
+%     R \ \indep \ (\MAM,Z) \ | \ \MAO, \qquad \text{resp. } \quad R \ \indep \ (\MAM, Z, \MAO). 
+%   \end{equation*}
+%   Otherwise, the sampling design is NMAR.
+% \end{definition}
+% It is straightforward that MCAR is a special case of MAR.
+
+\begin{property}\label{prop:mar} According to definition
+  \eqref{def:missingness}, if the sampling design is MAR, then maximising $p_{\theta, \psi}(\MAO,R)$  in $\theta$  is equivalent  to maximising $p_{\theta}(\MAO)$ in $\theta$, this corresponds to ignorability notion defined in Rubin and recalled in  Handcock and Gile.
+\label{MAR}
+\end{property}
+
+\subsection{Sampling design examples}
+
+\begin{dof}[Random dyad sampling]
+  Each   dyad    $(i,j)   \in\dyad$    has   the    same   probability
+  $\Pbb(R_{ij}=1)=\rho$ to be observed independently on the others.
+\end{dof}
+\begin{dof}[Star sampling]
+  Each   node    $i   \in \{1,...n\}$    has   the    same   probability
+  $\Pbb(S_{i}=1)=\rho$ to be observed independently on the others.
+\end{dof}
+These designs  are trivially MCAR because  each dyad/node is sampled  with the
+same probability $\rho$ which does not depend on $Y$. \\
+
+\begin{proposition}
+Under random dyad sampling, defining $N_i = \sum_{j \neq i}R_{ij}$ and $\Omega_{0,n} = \{ \forall i \in \{ 1, ..., n \}, \ N_i \geqslant 1 \}$. Then 
+$$\mathbb{P}\left(\underset{n\to+\infty}{\lim}\Omega_{0,n}\right) = 1.$$
+\label{prop:Omega}
+\end{proposition}
+\begin{proof}
+Noticing that $N_i \sim \text{Bin}(n, \rho)$, then  $\mathbb{P}(N_i \geqslant 1) = 1 - {\rho}^n$. As a consequence
+$\mathbb{P}(\overline{\Omega_{0,n}}) \leqslant  \sum_{i} \mathbb{P}(N_i = 0) = n\rho^n \underset{n\to+\infty}{\longrightarrow} 0$, and 
+$\mathbb{P}(\Omega_{0,n}) \underset{n\to+\infty}{\longrightarrow} 1$. Then
+$\mathbb{P}(\limsup (\overline{\Omega_{0,n}})) = 0$ by Borel-Cantelli theorem (because $\sum_{n} \mathbb{P}(\overline{\Omega_{0,n}})$ does not converge), and as
+$\overline{\limsup \overline{\Omega_{0,n}}} = \overline{\bigcap_{n \geqslant 0} \bigcup_{q \geqslant n} \overline{\Omega_{0,n}}} = \bigcup_{n \geqslant 0} \bigcap_{q \geqslant n} {\Omega_{0,n}} =
+\liminf {\Omega_{0,n}}$, the result follow.
+\end{proof}
+
+\begin{rem}
+Proposition \ref{prop:Omega} is trivially true for any node-centered sampling design.
+\end{rem}
+
+In the following we will consider only MCAR samplings dyad-centered. Because of proposition \ref{prop:Omega}, we will always consider that at least one dyad is sampled for each node of the network.
+
+
 \subsection{Likelihood}
 When the labels are known, the {\em complete log-likelihood} is given by:
 \begin{equation}
   \label{eq:log-vraisemblance-complete}
   \begin{aligned}
-    \Lc(\bz;\btheta)&= \log\prob(\by,\bz;\btheta)\\
-    &= \log\left\{ \left(\prodiq{\pii^{\ziq}}\right)\left(\prodijql{\dens\left(\yij;\piql\right)^{\ziq\zjl}}\right) \right\}\\
-    &= \log\left\{ \left(\prodi{\pii_{\zi}}\right)\left(\prodij{\dens\left(\xij;\pi_{\zi\zj}\right)}\right) \right\}.	\\
+    \Lc(\bz;\btheta)&= \log\prob(\byo,\bz;\btheta)\\
+    &= \log\left\{ \left(\prodiq{\pii^{\ziq}}\right)\left(\prodijql{\dens\left(\yij;\piql\right)^{\ziq\zjl\rrij}}\right) \right\}\\
+    &= \log\left\{ \left(\prodi{\pii_{\zi}}\right)\left(\prodij{\dens\left(\yij;\pi_{\zi\zj}\right)^{\rrij}}\right) \right\}.	\\
   \end{aligned}
 \end{equation}
 But the labels are usually unobserved, and the {\em observed log-likelihood} is obtained by marginalization over all the label configurations:
 \begin{equation}
   \label{eq:log-vraisemblance-observee}
-  \LL(\btheta)=\log\prob(\by;\btheta) = \log \left( \sum_{\bz \in \mcZ}\prob(\by,\bz;\btheta) \right).
+  \LL(\btheta)=\log\prob(\byo;\btheta) = \log \left( \sum_{\bz \in \mcZ}\prob(\byo,\bz;\btheta) \right).
 \end{equation}
 
 \subsection{Assumptions}\label{sec:assumptions}
@@ -265,7 +434,6 @@ These assumptions are satisfied for many distributions, including but not limite
 \end{itemize}
 In particular, the conditions stating that $\norm$ is twice differentiable and that $\normpm$ exists are equivalent to assuming that $\X_{\pi}$ has positive and finite variance for all values of $\pi$ in the parameter space.
 \end{rem}
-
 
 
 %\begin{rem}
@@ -345,28 +513,29 @@ Let $\widehat{\btheta}_{c}=\left(\hbpi,\hbal\right)$ be the MLE of $\btheta$ in 
   \label{eq:mle-complete-likelihood}
   \begin{aligned}
     \hpi_{q}  = \pizq = \frac{\zsumq}{\n} & \\
-    \hyqlz = \frac{\sum_{\ii < \jj} \yij r_{ij} \ziq \zjl}{\sum_{\ii < \jj} r_{ij} \ziq \zjl} & \quad
+    \hyqlz = \frac{\sum_{\ii < \jj} \yij \rrij \ziq \zjl}{\sum_{\ii < \jj} \rrij \ziq \zjl} & \quad
     \hpi_{q\el}  = \pizql = \normpm \left(  \hyqlz \right)
   \end{aligned}
 \end{equation}
 
 \begin{lemme}
-$$\frac{1}{\binom{n}{2}}\sum_{\ii < \jj} r_{ij} \ziq^\star \zjl^\star \xrightarrow[\n \to +\infty]{\mathbb{P}} p \pii^\vrai_{\kk}\pii^\vrai_{l}$$
+$$\frac{1}{\binom{n}{2}}\sum_{\ii < \jj} r_{ij} \ziq \zjl \xrightarrow[\n \to +\infty]{\mathbb{P}} p \pii_{\kk}\pii_{l}$$
+\label{lem:convdenom}
 \end{lemme}
 \begin{proof}
-
+It is a consequence of Hoeffding's decomposition for U-statistics (see \cite{Hoeffding1948}) and Hoeffding concentration inequality.
 \end{proof}
 
 
 
 \begin{proposition}
   \label{prop:mle-asymptotic-normality}
-  The matrices $\Sigma_{\bpis} = \Diag(\bpis) - \bpis\left(\bpis\right)\transpose $is semi-definite positive, of rank $\mathcal{Q}-1$, and $\widehat{\bpi}$ is asymptotically normal:
+  The matrix $\Sigma_{\bpis} = \Diag(\bpis) - \bpis\left(\bpis\right)\transpose $is semi-definite positive, of rank $\mathcal{Q}-1$, and $\widehat{\bpi}$ is asymptotically normal:
   \begin{equation}
     \label{eq:mle-proportion-asymptotic-normality}
     \sqrt{\n}\left( \hat{\bpi}\left(\bzs\right) - \bpis \right) \xrightarrow[\n \to \infty]{\mathcal{D}} \mathcal{N}(0, \Sigma_{\bpis})
   \end{equation}
-Similarly, let $V(\bals)$ be the matrix defined by $[V(\bals)]_{q \el} = 1/\normp'(\pi^\vrai_{q\el})$ and\\  $\Sigma_{\bals} = \Diag^{-1}(\bpis) V(\bals) \Diag^{-1}(\bpis)$. Then:
+Similarly, let $V(\bals)$ be the matrix defined by $[V(\bals)]_{q \el} = 1/\normp'(\pi^\vrai_{q\el})$ and\\  $\Sigma_{\bals} = \rho^{-1}\Diag^{-1}(\bpis) V(\bals) \Diag^{-1}(\bpis)$. Then:
   \begin{equation}
     \label{eq:mle-parameters-asymptotic-normality}
     \sqrt{\n(\n-1)/2}\;(\hal_{q\el}\left(\bzs\right) - \pi^\vrai_{q\el}) \xrightarrow[\n, \to \infty]{\mathcal{D}}  \mathcal{N}(0, \Sigma_{\bals, q \el})\;\;\; \hbox{for all  } q, \el
@@ -387,27 +556,24 @@ which proves Equation~\eqref{eq:mle-proportion-asymptotic-normality}
 where $\Sigma_{\bpis}$ is
 semi-definite positive of rank $\mathcal{Q} - 1$.
 
-Similarly, $\normp\left(\hal_{\kk\el}\left(\bzs,\bws\right)\right)$ is
-the average of $\zsumk^{\vrai}\wsuml^{\vrai} =
-\n\dd\hpi_\kk\left(\bzs\right)\hrho_\el\left(\bws\right)$
+Similarly, $\normp\left(\hal_{\kk\el}\left(\bzs\right)\right)$ is
+the average of $\sum_{\ii < \jj} \rrij \ziq^\star \zjl^\star$
 i.i.d. random variables with mean
 $\normp\left(\al^\vrai_{\kk\el}\right)$ and variance
-$\normp'\left(\al^\vrai_{\kk\el}\right)$. $\n\dd\hpi_\kk\left(\bzs\right)\hrho_\el\left(\bws\right)$
-is itself random but
-\mbox{$\hpi_\kk\left(\bzs\right)\hrho_\el\left(\bws\right)
-  \xrightarrow[\n,\dd \to +\infty]{} \pii^\vrai_{\kk}
-  \rhoo^\vrai_{\el}$} almost surely. Therefore, by Slutsky's lemma and
+$\normp'\left(\al^\vrai_{\kk\el}\right)$. $\sum_{\ii < \jj} \rrij \ziq^\star \zjl^\star$
+is itself random but thanks to lemma \ref{lem:convdenom} : 
+\mbox{$\frac{1}{\binom{n}{2}}\sum_{\ii < \jj} r_{ij} \ziq^\star \zjl^\star \xrightarrow[\n \to +\infty]{\mathbb{P}} p \pii^\vrai_{\kk}\pii^\vrai_{l}$}. Therefore, by Slutsky's lemma and
 the CLT for random sums of random variables \cite{Shanthikumar1984}, we have:
 \begin{eqnarray*}
-\sqrt{\n\dd\pii^\star_{\kk}} \left(\normp\left(\hal_{\kk\el}\left(\bzs\right)\right) - \normp(\al^\vrai_{\kk\el}) \right)  &=& \sqrt{\n\dd\pii^\star_{\kk}} \left( \frac{\sum_{\ii\jj} \Xij \zik^{\vrai} \zjl^{\vrai}}{nd\hpi_\kk\left(\bzs\right)} - \normp(\al^\vrai_{\kk\el}) \right) \\
+\sqrt{\frac{\n(\n-1)}{2}\rho\pii^\star_{\kk}\pii^\star_{\el}} \left(\normp\left(\hal_{\kk\el}\left(\bzs\right)\right) - \normp(\al^\vrai_{\kk\el}) \right)  &=& \sqrt{\frac{\n(\n-1)}{2}\rho\pii^\star_{\kk}\pii^\star_{\el}} \left( \frac{\sum_{\ii < \jj} \Xij \Rij \zik^{\vrai} \zjl^{\vrai}}{\sum_{\ii < \jj} \Rij \ziq^\star \zjl^\star} - \normp(\al^\vrai_{\kk\el}) \right) \\
 && \xrightarrow[\n,\dd \to +\infty]{\mathcal{D}} \mcN\left(0, \normp'(\al^\vrai_{\kk\el})\right)
 \end{eqnarray*}
 The differentiability of $\normpm$ and the delta method then gives:
 \begin{equation*}
-  \sqrt{\n\dd} \left(\hal_{\kk\el}\left(\bzs,\bws\right) - \al^\vrai_{\kk\el} \right) \xrightarrow[\n,\dd \to +\infty]{\mathcal{D}} \mcN\left(0, \frac{1}{\pii^\star_{\kk}\rhoo^\star_{\el} \normp'(\al^\vrai_{\kk\el})}\right)
+  \sqrt{\frac{\n(\n-1)}{2}} \left(\hal_{\kk\el}\left(\bzs\right) - \al^\vrai_{\kk\el} \right) \xrightarrow[\n,\dd \to +\infty]{\mathcal{D}} \mcN\left(0, \frac{1}{\rho\pii^\star_{\kk}\rhoo^\star_{\el} \normp'(\al^\vrai_{\kk\el})}\right)
 \end{equation*}
-and the independence results from the independence of $\hal_{\kk\el}\left(\bzs,\bws\right)$ and
-$\hal_{\kp\lp}\left(\bzs,\bws\right)$ as soon as $\kk \neq \kp$ or $\el
+and the independence results from the independence of $\hal_{\kk\el}\left(\bzs\right)$ and
+$\hal_{\kp\lp}\left(\bzs\right)$ as soon as $\kk \neq \kp$ or $\el
 \neq \lp$, as they involve different sets of i.i.d. variables.
 
 \begin{flushright}
@@ -415,11 +581,11 @@ $\square$
 \end{flushright}
 
 \begin{proposition}[Local asymptotic normality]\label{prop:LocalAsymp}
-Let $\Lcs$ the function defined on $\bTheta$ by $\Lcs\left(\bpi,\brho,\bal\right)=\log\prob\left(\bx,\bzs,\bws;\btheta\right)$. For any $s$, $t$ and $u$ in a compact set, we have:
+Let $\Lcs$ the function defined on $\bTheta$ by $\Lcs\left(\bpi,\bal\right)=\log\prob\left(\by^o,\bzs;\btheta\right)$. For any $s$, $t$ and $u$ in a compact set, we have:
 \begin{eqnarray*}
-\Lcs\left(\bpis+\frac{s}{\sqrt{\n}},\brhos+\frac{t}{\sqrt{\dd}},\bals+\frac{u}{\sqrt{\n\dd}}\right)
-&=&\Lcs\left(\bthetas\right) + s\transpose\bY_{\bpis}+t\transpose\bY_{\brhos}+ \text{Tr}(u\transpose\bY_{\bals})\\
-& -&\left(\frac{1}{2}s\transpose\Sig_{\bpis}s+\frac{1}{2}t\transpose\Sig_{\brhos}t+\frac{1}{2} \text{Tr}\left((u \odot u)\transpose\Sig_{\bals}\right)\right)\\
+\Lcs\left(\bpis+\frac{s}{\sqrt{\n}},\bals+\frac{u}{\sqrt{\frac{\n(\n-1)}{2}}}\right)
+&=&\Lcs\left(\bthetas\right) + s\transpose\bY_{\bpis}+ \text{Tr}(u\transpose\bY_{\bals})\\
+& -&\left(\frac{1}{2}s\transpose\Sig_{\bpis}s+\frac{1}{2} \text{Tr}\left((u \odot u)\transpose\Sig_{\bals}\right)\right)\\
 &+&o_{P}(1)\\
 \end{eqnarray*}
 where $\odot$ denote the Hadamard product of two matrices (element-wise product) and $\Sig_{\bpis}$, $\Sig_{\brhos}$ and $\Sig_{\bals}$ are defined in Proposition~\ref{prop:mle-asymptotic-normality}. $\bY_{\bpis}$, $\bY_{\brhos}$ are asymptotically Gaussian with zero mean and respective variance matrices $\Sig_{\bpis}$, $\Sig_{\brhos}$ and $\bY_{\bals}$ is a matrix of asymptotically independent Gaussian components with zero mean and variance matrix $\Sig_{\bals}$.
@@ -427,11 +593,11 @@ where $\odot$ denote the Hadamard product of two matrices (element-wise product)
 \proofbegin
 By Taylor expansion,
 \begin{eqnarray*}
-& &\!\!\!\!\!\!\!\!\!\!\Lcs\left(\bpis+\frac{s}{\sqrt{\n}},\brhos+\frac{t}{\sqrt{\dd}},\bals+\frac{u}{\sqrt{\n\dd}}\right)\\
-&=&\Lcs\left(\bthetas\right)+\frac{1}{\sqrt{\n}}s\transpose\nabla{\Lcs}_{\bpi}\left(\bthetas\right) +\frac{1}{\sqrt{\dd}}t\transpose\nabla{\Lcs}_{\brho}\left(\bthetas\right)+\frac{1}{\sqrt{\n\dd}}\text{Tr}\left(u\transpose\nabla{\Lcs}_{\bal}\left(\bthetas\right)\right)\\
-&&\quad+\frac{1}{\n}s\transpose\bH_{\bpi}\left(\bthetas\right)s+\frac{1}{\dd}t\transpose\bH_{\brho}\left(\bthetas\right)t +\frac{1}{\n\dd}\text{Tr}\left((u \odot u)\transpose\bH_{\bal}\left(\bthetas\right)\right)+o_{P}(1)\\
+& &\!\!\!\!\!\!\!\!\!\!\Lcs\left(\bpis+\frac{s}{\sqrt{\n}},\bals+\frac{u}{\sqrt{\frac{\n(\n-1)}{2}}}\right)\\
+&=&\Lcs\left(\bthetas\right)+\frac{1}{\sqrt{\n}}s\transpose\nabla{\Lcs}_{\bpi}\left(\bthetas\right) +\frac{1}{\sqrt{\frac{\n(\n-1)}{2}}}\text{Tr}\left(u\transpose\nabla{\Lcs}_{\bal}\left(\bthetas\right)\right)\\
+&&\quad+\frac{1}{\n}s\transpose\bH_{\bpi}\left(\bthetas\right)s+\frac{1}{\frac{\n(\n-1)}{2}}\text{Tr}\left((u \odot u)\transpose\bH_{\bal}\left(\bthetas\right)\right)+o_{P}(1)\\
 \end{eqnarray*}
-where $\nabla{\Lcs}_{\bpi}\left(\bthetas\right)$, $\nabla{\Lcs}_{\brho}\left(\bthetas\right)$ and $\nabla{\Lcs}_{\bal}\left(\bthetas\right)$ denote the respective components of the gradient of $\Lcs$ evaluated at $\bthetas$ and $\bH_{\bpi}$, $\bH_{\brho}$ and $\bH_{\bal}$ denote the conditional hessian of $\Lcs$ evaluated at $\bthetas$. By inspection, $\bH_{\bpi}/\n$, $\bH_{\brho}/\dd$ and $\bH_{\bal}/\n\dd$ converge in probability to constant matrices and the random vectors $\nabla{\Lcs}_{\bpi}\left(\bthetas\right)/\sqrt{\n}$, $\nabla{\Lcs}_{\brho}\left(\bthetas\right)/\sqrt{\dd}$ and $\nabla{\Lcs}_{\bal}\left(\bthetas\right)/\sqrt{\n\dd}$ converge in distribution by central limit theorem. %This concludes the proof.
+where $\nabla{\Lcs}_{\bpi}\left(\bthetas\right)$ and $\nabla{\Lcs}_{\bal}\left(\bthetas\right)$ denote the respective components of the gradient of $\Lcs$ evaluated at $\bthetas$ and $\bH_{\bpi}$ and $\bH_{\bal}$ denote the conditional hessian of $\Lcs$ evaluated at $\bthetas$. By inspection, $\bH_{\bpi}/\n$ and $\bH_{\bal}/\frac{\n(\n-1)}{2}$ converge in probability to constant matrices and the random vectors $\nabla{\Lcs}_{\bpi}\left(\bthetas\right)/\sqrt{\n}$ and $\nabla{\Lcs}_{\bal}\left(\bthetas\right)/\sqrt{\frac{\n(\n-1)}{2}}$ converge in distribution by central limit theorem. %This concludes the proof.
 \proofend
 
 
@@ -439,20 +605,20 @@ where $\nabla{\Lcs}_{\bpi}\left(\bthetas\right)$, $\nabla{\Lcs}_{\brho}\left(\bt
 \section{Profile Likelihood}
 \label{sec:profile-likelihood}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-To study the likelihood behaviors, we shall work conditionally to the real configurations $(\bzs,\bws)$ that have enough observations in each row or column group. We therefore define regular configurations which occur with high probability, then introduce conditional and profile log-likelihood ratio. 
+To study the likelihood behaviors, we shall work conditionally to the real configurations $\bzs$ that have enough observations in each group. We therefore define regular configurations which occur with high probability, then introduce conditional and profile log-likelihood ratio. 
 \subsection{Regular assignments}
 \begin{dof}[$c$-regular assignments]
   \label{def:regular}
-  Let $\bz \in \mcZ$ and $\bw \in \mcW$. For any $c > 0$, we say that $\bz$ and $\bw$ are c-\emph{regular} if
+  Let $\bz \in \mcZ$. For any $c > 0$, we say that $\bz$ is c-\emph{regular} if
   \begin{equation}
     \label{eq:regular-configuration}
-    \min_{\kk} \zsumk \geq {c\n} \quad \text{and} \quad \min_{\el} \wsuml \geq {c\dd}.
+    \min_{\kk} \zsumk \geq {c\n} .
   \end{equation}
 \end{dof}
 
 
 
-In regular configurations, each row-group (resp. column-group) has $\Om(\n)$ members, where $u_\n=\Om(\n)$ if there exists two constant $a, b>0$ such that for $\n$ enough large $a\n \leq u_\n \leq b\n$. $c/2$-regular assignments, with $c$ defined in Assumption $H_1$, have high  $\Prob_{\bthetas}$-probability in the space of all assignments, uniformly over all $\bthetas \in \bTheta$. 
+In regular configurations, each group  has $\Om(\n)$ members, where $u_\n=\Om(\n)$ if there exists two constant $a, b>0$ such that for $\n$ enough large $a\n \leq u_\n \leq b\n$. $c/2$-regular assignments, with $c$ defined in Assumption $H_1$, have high  $\Prob_{\bthetas}$-probability in the space of all assignments, uniformly over all $\bthetas \in \bTheta$. 
 
 Each $\zsumk$ is a sum of $\n$ i.i.d Bernoulli r.v. with parameter $\pik \geq \pii_{\min} \geq c$. A simple Hoeffding bound shows that
 \begin{equation*}
@@ -464,23 +630,22 @@ Each $\zsumk$ is a sum of $\n$ i.i.d Bernoulli r.v. with parameter $\pik \geq \p
   \leq
   \exp\left( - \frac{\n c^2}{2} \right)
 \end{equation*}
-taking a union bound over $\g$ values of $\kk$ and using a similar approach for $\wsuml$ lead to Proposition \ref{cor:prob-regular-configurations-star}.
+taking a union bound over $\q$ values of $\kk$ lead to Proposition \ref{cor:prob-regular-configurations-star}.
 \begin{proposition}
   \label{cor:prob-regular-configurations-star}
-  Define $\mcZ_1$ and $\mcW_1$ as the subsets of $\mcZ$ and $\mcW$
-  made of $c/2$-regular assignments, with $c$ defined in assumption $H_1$. Note $\Om_1$ the event $\{ (\bzs, \bws)
-  \in \mcZ_1 \times \mcW_1 \}$, then:
+  Define $\mcZ_1$ as the subset of $\mcZ$ made of $c/2$-regular assignments, with $c$ defined in assumption $H_1$. Note $\Om_1$ the event $\{ \bzs
+  \in \mcZ_1 \}$, then:
   \begin{equation*}
-    \Prob_{\bthetas}\left( \bar{\Om}_1 \right) \leq \g \exp\left( -\frac{\n c^2}{2}\right)+ \m \exp\left( -\frac{\dd c^2}{2}\right).
+    \Prob_{\bthetas}\left( \bar{\Om}_1 \right) \leq \q \exp\left( -\frac{\n c^2}{2}\right).
   \end{equation*}
 \end{proposition}
 
 We define now balls of configurations taking into account equivalent assignments classes.
 \begin{dof}[Set of local assignments]
   \label{prop:small-deviations-profile-likelihood}
-  We note $S(\bzs, \bws, r)$ the set of configurations that have a representative (for $\sim$) within relative radius $r$ of $(\bzs, \bws)$:
+  We note $S(\bzs, r)$ the set of configurations that have a representative (for $\sim$) within relative radius $r$ of $\bzs$:
   \begin{equation*}
-    S(\bzs, \bws, r) = \left\{ (\bz, \bw) : \|\bz - \bzs\|_{0, \sim} \leq r \n \text{ and } \|\bw - \bws\|_{0, \sim} \leq r \dd \right\}
+    S(\bzs, r) = \left\{ \bz : \|\bz - \bzs\|_{0, \sim} \leq r \n \right\}
   \end{equation*}
 \end{dof}
 
@@ -843,7 +1008,7 @@ The proof in appendix \ref{annexe:cor:behaviorEMV} relies on the local asymptoti
 \include{bj-Theorem1Propositions}
 
 \bibliographystyle{plain}
-\bibliography{bj-BraultKeribinMariadassou}
+\bibliography{bibliographie_theoreticalPaper}
 
 % \begin{thebibliography}{}
 % 
