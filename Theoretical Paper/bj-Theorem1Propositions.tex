@@ -6,17 +6,42 @@
 
 \subsection{Proof of Proposition~\ref{prop:profile-likelihood}} 
 \proofbegin
-Define
-    $\nu(y, \al)  = y \al - \norm (\al)$. For $\y$ fixed, $\nu(y, \al)$ is maximized at $\al = \normpm(y)$. Define $n_{q\el}(z)=\left( \sum_{i<j}\rrij\ziq\zjl \right)$, manipulations yield
+
+First of all we will prove equation \ref{eq:profile-likelihood-notations},
+\begin{eqnarray*}
+ \barykl(\bz) &=& \Esp_{\bthetas}\left[\frac{\sum_{i<j}\ziq\zjl\rrij\yij}{\sum_{i<j}\ziq\zjl\rrij} | \bzs\right] \\
+ &=& \Esp_{\bthetas}\left[\Esp_{\bthetas}\left[\frac{\sum_{i<j}\ziq\zjl\rrij\yij}{\sum_{i<j}\ziq\zjl\rrij} | R, \bzs\right]| \bzs\right] \\
+ &=& \Esp_{\bthetas}\left[\frac{\sum_{i<j}\ziq\zjl\rrij S_{Z_{i} Z_{j}}^{\star}}{\sum_{i<j}\ziq\zjl\rrij}| \bzs\right],\\
+ \end{eqnarray*}
+where $Z_{i} = q \Leftrightarrow \ziq = 1$. Noticing that the $(i,j)$ for which $\ziq\zjl=0$ does not contributes in any of the two terms of the ratio. The calculus of this expectation is then equivalent to calculate an expectation of the general form $\Esp_{\bthetas}\left[ \frac{\sum_{i=1}^{n} a_i R_i}{\sum_{i=1}^{n} R_i} \right]$.
+\begin{lemme}
+$$\Esp_{\bthetas}\left[ \frac{\sum_{i=1}^{n} a_i R_i}{\sum_{i=1}^{n} R_i} \right] = \frac{\sum_{i=1}^{n}a_i}{n}.$$
+\label{lem:expectation}
+\end{lemme}
+\begin{proof}
+Define $N=\sum_{i=1}^{n}R_i$ and noticing that $\Esp[R_i | N=k]=\frac{k}{n}$. Conditionally to $N \geq 1$ \begin{eqnarray*}
+\Esp\left[ \frac{\sum_{i=1}^{n} a_i R_i}{\sum_{i=1}^{n} R_i} \right] &=& \Esp\left[\Esp\left[ \frac{\sum_{i=1}^{n} a_i R_i}{N} | N\right]\right] \\
+&=& \frac{\sum_{i=1}^{n}a_i}{n}. 
+\end{eqnarray*}
+\end{proof}
+
+Now, applying lemma \ref{lem:expectation} with $N_{q\el}(z) = \sum_{i<j}\ziq\zjl\rrij$ leads to
+\begin{equation*}
+\Esp_{\bthetas}\left[\frac{\sum_{i<j}\ziq\zjl\rrij S_{Z_{i} Z_{j}}^{\star}}{\sum_{i<j}\ziq\zjl\rrij}| \bzs, N_{q\el}(z) \geq 1 \right] = \frac{\left[ \RQbz\transpose \Sal \RQbz \right]_{\kk\el}}{\pizk\pizl} \1_{N_{q\el}(z) \geq 1}.
+\end{equation*}
+Finally, $\Esp_{\bthetas}[\hyklz | \bzs, N_{q\el}(z)=0]$ can be arbitrarily defined at the same value than $\Esp_{\bthetas}[\hyklz | \bzs, N_{q\el}(z)\geq1]$ which conclued the proof.
+
+Secondly, define
+    $\nu(y, \al)  = y \al - \norm (\al)$. For $\y$ fixed, $\nu(y, \al)$ is maximized at $\al = \normpm(y)$. Manipulations yield
 \begin{align*}
   &\Fn(\bal, \bz)= \log \prob(\byo; \bz,\btheta) - \log {\prob(\byo; \bzs,\bthetas)} \\
 %   & = \n\dd \left[ \sum_{\kk} \sum_{\el} \pizk \rhowl \left\{\hxklzw \alkl - \norm(\alkl) \right\}  - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \left\{\hxkl(\bzs, \bws) \alskl - \norm(\alskl) \right\} \right] \\
-  & = \left[ \sum_{\kk} \sum_{\el} n_{q\el}(z) \nu(\hyklz, \alkl)  - \sum_{\kk} \sum_{\el} n_{q\el}(z^\star)\nu(\hykl(\bzs), \alskl) \right]
+  & = \left[ \sum_{\kk} \sum_{\el} N_{q\el}(z) \nu(\hyklz, \alkl)  - \sum_{\kk} \sum_{\el} N_{q\el}(z^\star)\nu(\hykl(\bzs), \alskl) \right]
 \end{align*}
 which is maximized at $\alkl = \normpm(\hyklz)$. Similarly
 \begin{align*}
  & \G(\bal, \bz)  = \Esp_{\bthetas} [ \log \prob(\byo; \bz,\btheta) - \log \prob(\byo; \bzs,\bthetas) ] \\
-  & = \left[ \sum_{\kk} \sum_{\el} n_{q\el}(z) \nu(\baryklz, \alkl)  - \sum_{\kk} \sum_{\el} n_{q\el}(z^\star) \nu(\normp(\alskl), \alskl) \right]
+  & = \left[ \sum_{\kk} \sum_{\el} N_{q\el}(z) \nu(\baryklz, \alkl)  - \sum_{\kk} \sum_{\el} N_{q\el}(z^\star) \nu(\normp(\alskl), \alskl) \right]
 \end{align*}
 is maximized at $\alkl = \normpm(\baryklz)$
 \proofend

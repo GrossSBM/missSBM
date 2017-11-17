@@ -512,9 +512,9 @@ Let $\widehat{\btheta}_{c}=\left(\hbpi,\hbal\right)$ be the MLE of $\btheta$ in 
 \begin{equation}
   \label{eq:mle-complete-likelihood}
   \begin{aligned}
-    \hpi_{q}  = \pizq = \frac{\zsumq}{\n} & \\
+    \hpi_{q}  = \pizq = \frac{\zsumq}{\n}&& \\
     \hyqlz = \frac{\sum_{\ii < \jj} \yij \rrij \ziq \zjl}{\sum_{\ii < \jj} \rrij \ziq \zjl} & \quad
-    \hpi_{q\el}  = \pizql = \normpm \left(  \hyqlz \right)
+    \hal_{q\el}  = \pizql = \normpm \left(  \hyqlz \right)&
   \end{aligned}
 \end{equation}
 
@@ -575,7 +575,8 @@ is itself random but thanks to lemma \ref{lem:convdenom} :
 \mbox{$\frac{1}{\binom{n}{2}}\sum_{\ii < \jj} r_{ij} \ziq^\star \zjl^\star \xrightarrow[\n \to +\infty]{\mathbb{P}} p \pii^\vrai_{\kk}\pii^\vrai_{l}$}. Therefore, by Slutsky's lemma and
 the CLT for random sums of random variables \cite{Shanthikumar1984}, we have:
 \begin{eqnarray*}
-\sqrt{\frac{\n(\n-1)}{2}\rho\pii^\star_{\kk}\pii^\star_{\el}} \left(\normp\left(\hal_{\kk\el}\left(\bzs\right)\right) - \normp(\al^\vrai_{\kk\el}) \right)  &=& \sqrt{\frac{\n(\n-1)}{2}\rho\pii^\star_{\kk}\pii^\star_{\el}} \left( \frac{\sum_{\ii < \jj} \Xij \Rij \zik^{\vrai} \zjl^{\vrai}}{\sum_{\ii < \jj} \Rij \ziq^\star \zjl^\star} - \normp(\al^\vrai_{\kk\el}) \right) \\
+&&\sqrt{\frac{\n(\n-1)}{2}\rho\pii^\star_{\kk}\pii^\star_{\el}} \left(\normp\left(\hal_{\kk\el}\left(\bzs\right)\right) - \normp(\al^\vrai_{\kk\el}) \right)  \\
+&& = \sqrt{\frac{\n(\n-1)}{2}\rho\pii^\star_{\kk}\pii^\star_{\el}} \left( \frac{\sum_{\ii < \jj} \Xij \Rij \zik^{\vrai} \zjl^{\vrai}}{\sum_{\ii < \jj} \Rij \ziq^\star \zjl^\star} - \normp(\al^\vrai_{\kk\el}) \right) \\
 && \xrightarrow[\n,\dd \to +\infty]{\mathcal{D}} \mcN\left(0, \normp'(\al^\vrai_{\kk\el})\right)
 \end{eqnarray*}
 The differentiability of $\normpm$ and the delta method then gives:
@@ -702,46 +703,50 @@ the following quantities:
   \end{aligned}
 \end{equation}
 with $\barykl(\bz)=0$ for $\bz$ such that $\pizk=0$ or $\pizl=0$. 
-Then $\Fnd(\btheta, \bz, \bw)$ and $\G(\btheta, \bz, \bw)$ are maximum in $\bal$ for  $\hbal(\bz, \bw)$ and $\bar{\bal}(\bz, \bw)$ defined by:
+Then $\Fnd(\btheta, \bz)$ and $\G(\btheta, \bz)$ are maximum in $\bal$ for  $\hbal(\bz)$ and $\bar{\bal}(\bz)$ defined by:
 \begin{equation*}
-  \hal(\bz, \bw)_{\kk\el} = \normpm ( \hxklzw ) \quad \text{and} \quad \bar{\al}(\bz, \bw)_{\kk\el} = \normpm ( \barxkl(\bz, \bw) )
+  \hal(\bz)_{\kk\el} = \normpm ( \hyklz ) \quad \text{and} \quad \bar{\al}(\bz)_{\kk\el} = \normpm ( \barykl(\bz) )
 \end{equation*}
 so that
 \begin{equation*}
   \begin{aligned}
-    \Lamb(\bz, \bw) & = \Fnd(\hbal(\bz, \bw), \bz, \bw) % = \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\hxklzw) - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\Salkl) \\
+    \Lamb(\bz) & = \Fn(\hbal(\bz), \bz) % = \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\hxklzw) - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\Salkl) \\
     \\
-    \Lambtilde(\bz, \bw) & = \G(\bar{\bal}(\bz, \bw), \bz, \bw) % = \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\barxklzw) - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\Salkl).
+    \Lambtilde(\bz) & = \G(\bar{\bal}(\bz), \bz) % = \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\barxklzw) - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\Salkl).
   \end{aligned}
 \end{equation*}
 \end{proposition}
-Note that although $\bar{x}_{\kk\el} = \mathbb{E}_{\bthetas}\left[\left.\hat{x}_{\kk\el}\right|\bzs,\bws\right]$, in general %$\bar{\al}_{\kk\el} = \normpm(\barxkl) \neq \normpm(\hxkl) = \hat{\al}_{\kk\el}$
-$\bar{\al}_{\kk\el} \neq \mathbb{E}_{\bthetas}\left[\left.\hat{\al}_{\kk\el}\right|\bzs,\bws\right]$ by non linearity of $\normpm$. Nevertheless, $\normpm$ is Lipschitz over compact subsets of $\normp(\mathring{\mathcal{A}})$ and therefore, with high probability, $|\bar{\al}_{\kk\el} - \hat{\al}_{\kk\el}|$ and $|\hxkl - \barxkl|$ are of the same order of magnitude. 
+Note that although $\bar{y}_{\kk\el} = \mathbb{E}_{\bthetas}\left[\left.\hat{y}_{\kk\el}\right|\bzs\right]$, in general %$\bar{\al}_{\kk\el} = \normpm(\barxkl) \neq \normpm(\hxkl) = \hat{\al}_{\kk\el}$
+$\bar{\al}_{\kk\el} \neq \mathbb{E}_{\bthetas}\left[\left.\hat{\al}_{\kk\el}\right|\bzs\right]$ by non linearity of $\normpm$. Nevertheless, $\normpm$ is Lipschitz over compact subsets of $\normp(\mathring{\mathcal{A}})$ and therefore, with high probability, $|\bar{\al}_{\kk\el} - \hat{\al}_{\kk\el}|$ and $|\hykl - \barykl|$ are of the same order of magnitude. 
 
 The maximum and $\argmax$ of $G$ and $\Lambtilde$ are characterized by the following propositions.
-\begin{proposition}[maximum of $\G$ and $\Lambtilde$ in $(\theta,\bz,\bw)$]
+\begin{proposition}[maximum of $\G$ and $\Lambtilde$ in $(\theta,\bz)$]
   \label{prop:maximum-conditional-likelihood}
   Let $\KL(\al,\al') = \normp(\al) (\al - \al') + \norm(\al') - \norm(\al)$ be the Kullback divergence between $\dens(., \al)$ and $\dens(., \al')$ then:
   \begin{equation}
     \label{eq:conditional-likelihood-second-form}
-    \G(\btheta, \bz, \bw) = - \n\dd \sum_{\kk,\kp} \sum_{\el,\lp} \Rgbz_{\kk,\kp} \Rmbw_{\el, \lp} \KL(\al^\vrai_{\kk\el}, \al_{\kp\lp}) \leq 0.
+    \G(\btheta, \bz) = - \rho\n^2 \sum_{\kk,\kp} \sum_{\el,\lp} \RQbz_{\kk,\kp} \RQbz_{\el, \lp} \KL(\al^\vrai_{\kk\el}, \al_{\kp\lp}) \leq 0.
   \end{equation}
-  Conditionally on the set $\Om_1$ of regular assignments and for $n, d > 2/c$,
+  Conditionally on the set $\Om_1$ of regular assignments and for $n> 2/c$,
 \begin{itemize}
-\item[(i)] $\G$ is maximized at $(\bals, \bzs, \bws)$ and its equivalence class.
-\item[(ii)] $\Lambtilde$ is maximized at $(\bzs, \bws)$ and its equivalence class; moreover, $\Lambtilde(\bzs, \bws)=0$.
+\item[(i)] $\G$ is maximized at $(\bals, \bzs)$ and its equivalence class.
+\item[(ii)] $\Lambtilde$ is maximized at $(\bzs)$ and its equivalence class; moreover, $\Lambtilde(\bzs)=0$.
 \item[(iii)] The maximum of $\Lambtilde$ (and hence the maximum of $\G$) is well separated.
 \end{itemize}
+
+
 
 \end{proposition}
 Property $(iii)$ of Proposition \ref{prop:maximum-conditional-likelihood} is a direct consequence of the local upperbound for $\Lambtilde$ as stated as follows:
 
+\TT{Jusqu'ici tout est bon pour moi, la proposition suivante est à vérifier.}
+
 \begin{proposition}[Local upperbound for  $\Lambtilde$]
 \label{prop:profile-likelihood-derivative}
-Conditionally upon $\Om_1$, there exists a positive constant $C$ such that for all $(\bz, \bw) \in S(\bzs, \bws, C)$:
+Conditionally upon $\Om_1$, there exists a positive constant $C$ such that for all $\bz \in S(\bzs, C)$:
 \begin{equation}
 \label{eq:conditional-likelihood-separability}
-  \Lambtilde(\bz, \bw) \leq -\frac{c\delta(\bals)}{4} \left( \dd \|\bz - \bzs\|_{0, \sim} + \n \|\bw - \bws\|_{0,\sim} \right)
+  \Lambtilde(\bz) \leq -\frac{c\delta(\bals)}{4}  \n \|\bz - \bzs\|_{0, \sim}
 \end{equation}
 \end{proposition}
 Proofs of Propositions \ref{prop:profile-likelihood}, \ref{prop:maximum-conditional-likelihood} and \ref{prop:profile-likelihood-derivative} are reported in Appendix \ref{sec:proofPL}.
@@ -805,7 +810,7 @@ We begin with a large deviations inequality for configurations $(\bz, \bw)$ far 
 \subsubsection{Global Control}
 % a global deviation bound for $\Fnd$ and shows that  $\left( \Fnd - \G \right)_{+} = \bigO_{P}(\sqrt{\n\dd})$.
 
-\begin{proposition}[large deviations of $\Fnd$]
+\begin{proposition}[large deviations of $\Fn$]
   \label{prop:conditional-likelihood-convergence}
   Let $\Diam(\bTheta) = \sup_{\btheta, \btheta'} \|\btheta - \btheta' \|_{\infty}$. For all $\vareps_{\n, \dd} < \neighborsize / (2\sqrt{2}\Diam(\bTheta))$ and $\n, \dd$ large enough that 
   \begin{multline}
