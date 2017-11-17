@@ -388,12 +388,12 @@ Moreover, we make the following assumptions on the parameter space~:
 \item[$H_1$]: There exist a positive constant $c$, and a compact $C_\pi$ such that 
   \begin{equation*}
 %   \label{eq:assumptions}
-    \bTheta \subset [c, 1-c]^{\g} \times  [c, 1-c]^{\m} \times C_{\pi}^{\g \times \m} \quad \text{with} \quad C_\pi \subset \mathring{\mathcal{A}}.
+    \bTheta \subset [c, 1-c]^{\q} \times C_{\pi}^{\q \times \q} \quad \text{with} \quad C_\pi \subset \mathring{\mathcal{A}}.
   \end{equation*}
 \item[$H_2$]: The true parameter $\bthetas = (\bpis, \bals)$ lies in the relative interior of $\bTheta$.
 \item[$H_3$]: The map $\pi \mapsto \dens(\cdot, \pi)$ is injective.
 \item[$H_4$]: 
-Each row and each column of $\bpis$ is unique.
+Each row and each column of $\bals$ is unique.
 %\item The ratio $\log(\dd)/\n$ (resp. $\log(\n)/\dd$) tend to 0 with $\n$ and $\dd$.
 \end{enumerate}
 %\begin{rem}
@@ -519,11 +519,21 @@ Let $\widehat{\btheta}_{c}=\left(\hbpi,\hbal\right)$ be the MLE of $\btheta$ in 
 \end{equation}
 
 \begin{lemme}
-$$\frac{1}{\binom{n}{2}}\sum_{\ii < \jj} r_{ij} \ziq \zjl \xrightarrow[\n \to +\infty]{\mathbb{P}} p \pii_{\kk}\pii_{l}$$
+$$U_{n} = \frac{1}{\binom{n}{2}}\sum_{\ii < \jj} \rrij \ziq \zjl \xrightarrow[\n \to +\infty]{\mathbb{P}} \rho \pii_{\kk}\pii_{l}$$
 \label{lem:convdenom}
 \end{lemme}
 \begin{proof}
-It is a consequence of Hoeffding's decomposition for U-statistics (see \cite{Hoeffding1948}) and Hoeffding concentration inequality.
+Noticing that $\mathbb{E}[\rrij \ziq \zjl] = \rho \pii_{\kk}\pii_{l}$ and defining $q_{i,j}^{q, \el}=\rrij \ziq \zjl - \rho \pii_{\kk}\pii_{l}$. By Hoeffding decomposition for U-statistics (see \cite{Hoeffding1963})
+\begin{equation}
+ \label{eq:ustat}
+ U_{n} = \frac{1}{n!}\sum_{\sigma \in \mathfrak{S}_{n}}\frac{1}{\lfloor\frac{n}{2}\rfloor}\sum_{i=1}^{\lfloor\frac{n}{2}\rfloor}q_{\sigma(i), \sigma(i+\lfloor\frac{n}{2}\rfloor)}^{q, \el},
+\end{equation}
+where for each permutation $\sigma \in \mathfrak{S}$, $\sum_{i=1}^{\lfloor\frac{n}{2}\rfloor}q_{\sigma(i), \sigma(i+\lfloor\frac{n}{2}\rfloor)}^{q, \el}$ is a sum of independant r.v. Then, for $\gamma > 0$ by Jensen's inequality and Hoeffding's lemma about bounded r.v.
+\begin{eqnarray*}
+\mathbb{E}\left[ \exp(\gamma U_{n}) \right] &\leq& \frac{1}{n!}\sum_{\sigma \in \mathfrak{S}_{n}}\mathbb{E}\exp\left(\frac{\gamma}{\lfloor\frac{n}{2}\rfloor}\sum_{i=1}^{\lfloor\frac{n}{2}\rfloor}q_{\sigma(i), \sigma(i+\lfloor\frac{n}{2}\rfloor)}^{q, \el}\right) \\
+&\leq& \exp\left(\frac{\gamma^2}{8\lfloor\frac{n}{2}\rfloor}\right).
+\end{eqnarray*}
+Finally, using the same proof than Hoeffding's allows us to conclude.
 \end{proof}
 
 
@@ -657,41 +667,41 @@ We first introduce few notations.
 
 \begin{dof}
 \label{def:conditional-profile-likelihood}
-We define the conditional log-likelihood ratio $F_{\n,\dd}$ and its expectation $G$ as:
+We define the conditional log-likelihood ratio $F_{\n}$ and its expectation $G$ as:
 \begin{equation}
   \label{eq:conditional-likelihood}
   \begin{aligned}
-    \Fnd(\btheta, \bz, \bw) & = \log \frac{\prob(\bx| \bz,\bw;\btheta)}{\prob(\bx| \bzs,\bws;\bthetas)} \\
-    \G(\btheta, \bz, \bw) & = \Esp_{\bthetas} \left[ \left. \log \frac{\prob(\bx| \bz,\bw;\btheta)}{\prob(\bx| \bzs,\bws;\bthetas)} \right| \bzs, \bws  \right] \\
+    \Fn(\btheta, \bz) & = \log \frac{\prob(\byo | \bz;\btheta)}{\prob(\byo | \bzs;\bthetas)} \\
+    \G(\btheta, \bz) & = \Esp_{\bthetas} \left[ \left. \log \frac{\prob(\byo | \bz;\btheta)}{\prob(\byo | \bzs;\bthetas)} \right| \bzs  \right] \\
   \end{aligned}
 \end{equation}
 We also define the profile log-likelihood ratio $\Lamb$ and its expectation $\Lambtilde$ as:
 \begin{equation}
   \label{eq:profile-likelihood}
   \begin{aligned}
-    \Lamb(\bz, \bw) & = \max_{\btheta} \Fnd(\btheta, \bz, \bw)  \\
-    \Lambtilde(\bz, \bw) & = \max_{\btheta} \G(\btheta, \bz, \bw).
+    \Lamb(\bz) & = \max_{\btheta} \Fn(\btheta, \bz)  \\
+    \Lambtilde(\bz) & = \max_{\btheta} \G(\btheta, \bz).
   \end{aligned}
 \end{equation}
 \end{dof}
 
 \begin{rem}
-As  $\Fnd$ and $\G$ only depend on $\btheta$ through $\bal$, we will sometimes replace $\btheta$ with $\bal$ in the expressions of $\Fnd$ and $\G$. Replacing $F_{\n,\dd}$ and $G$ by their profiled version $\Lamb$ and $\Lambtilde$ allows us to get rid of the continuous argument of $F_{\n\dd}$ and to effectively use discrete contrasts $\Lamb$ and $\Lambtilde$.
+As  $\Fn$ and $\G$ only depend on $\btheta$ through $\bal$, we will sometimes replace $\btheta$ with $\bal$ in the expressions of $\Fn$ and $\G$. Replacing $F_{\n}$ and $G$ by their profiled version $\Lamb$ and $\Lambtilde$ allows us to get rid of the continuous argument of $\Fn$ and to effectively use discrete contrasts $\Lamb$ and $\Lambtilde$.
 \end{rem}
 
-The following proposition shows which values of $\bal$ maximize $\Fnd$ and $\G$ to attain $\Lamb$ and $\Lambtilde$.
+The following proposition shows which values of $\bal$ maximize $\Fn$ and $\G$ to attain $\Lamb$ and $\Lambtilde$.
 \begin{proposition}[maximum of $\G$ and $\Lambtilde$ in $\theta$]
 \label{prop:profile-likelihood}
-Conditionally on  $\bzs, \bws$, define
+Conditionally on  $\bzs$, define
 the following quantities:
 \begin{equation}
   \label{eq:profile-likelihood-notations}
   \begin{aligned}
     \Sal & = (\Salkl)_{\kk\el} = \left( \normp(\alskl) \right)_{\kk\el} \\
-    \barxkl(\bz, \bw) & = \Esp_{\bthetas}[\hxklzw | \bzs, \bws] = \frac{\left[ \Rgbz\transpose \Sal \Rmbw \right]_{\kk\el}}{\pizk\rhowl}
+    \barykl(\bz) & = \Esp_{\bthetas}[\hyklz | \bzs] = \frac{\left[ \RQbz\transpose \Sal \RQbz \right]_{\kk\el}}{\pizk\pizl}
   \end{aligned}
 \end{equation}
-with $\barxkl(\bz, \bw)=0$ for $\bz$ and $\bw$ such that $\pizk=0$ or $\rhowl=0$. 
+with $\barykl(\bz)=0$ for $\bz$ such that $\pizk=0$ or $\pizl=0$. 
 Then $\Fnd(\btheta, \bz, \bw)$ and $\G(\btheta, \bz, \bw)$ are maximum in $\bal$ for  $\hbal(\bz, \bw)$ and $\bar{\bal}(\bz, \bw)$ defined by:
 \begin{equation*}
   \hal(\bz, \bw)_{\kk\el} = \normpm ( \hxklzw ) \quad \text{and} \quad \bar{\al}(\bz, \bw)_{\kk\el} = \normpm ( \barxkl(\bz, \bw) )

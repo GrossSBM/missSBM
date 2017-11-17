@@ -7,41 +7,41 @@
 \subsection{Proof of Proposition~\ref{prop:profile-likelihood}} 
 \proofbegin
 Define
-    $\nu(x, \al)  = x \al - \norm (\al)$. For $\x$ fixed, $\nu(x, \al)$ is maximized at $\al = \normpm(x)$. Manipulations yield
+    $\nu(y, \al)  = y \al - \norm (\al)$. For $\y$ fixed, $\nu(y, \al)$ is maximized at $\al = \normpm(y)$. Define $n_{q\el}(z)=\left( \sum_{i<j}\rrij\ziq\zjl \right)$, manipulations yield
 \begin{align*}
-  &\Fnd(\bal, \bz, \bw)= \log \prob(\bx; \bz,\bw,\btheta) - \log {\prob(\bx; \bzs,\bws,\bthetas)} \\
+  &\Fn(\bal, \bz)= \log \prob(\byo; \bz,\btheta) - \log {\prob(\byo; \bzs,\bthetas)} \\
 %   & = \n\dd \left[ \sum_{\kk} \sum_{\el} \pizk \rhowl \left\{\hxklzw \alkl - \norm(\alkl) \right\}  - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \left\{\hxkl(\bzs, \bws) \alskl - \norm(\alskl) \right\} \right] \\
-  & = \n\dd \left[ \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\hxklzw, \alkl)  - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\hxkl(\bzs, \bws), \alskl) \right]
+  & = \left[ \sum_{\kk} \sum_{\el} n_{q\el}(z) \nu(\hyklz, \alkl)  - \sum_{\kk} \sum_{\el} n_{q\el}(z^\star)\nu(\hykl(\bzs), \alskl) \right]
 \end{align*}
-which is maximized at $\alkl = \normpm(\hxklzw)$. Similarly
+which is maximized at $\alkl = \normpm(\hyklz)$. Similarly
 \begin{align*}
- & \G(\bal, \bz, \bw)  = \Esp_{\bthetas} [ \log \prob(\bx; \bz,\bw,\btheta) - \log \prob(\bx; \bzs,\bws,\bthetas) ] \\
-  & = \n\dd \left[ \sum_{\kk} \sum_{\el} \pizk \rhowl \nu(\barxklzw, \alkl)  - \sum_{\kk} \sum_{\el} \pizsk \rhowsl \nu(\normp(\alskl), \alskl) \right]
+ & \G(\bal, \bz)  = \Esp_{\bthetas} [ \log \prob(\byo; \bz,\btheta) - \log \prob(\byo; \bzs,\bthetas) ] \\
+  & = \left[ \sum_{\kk} \sum_{\el} n_{q\el}(z) \nu(\baryklz, \alkl)  - \sum_{\kk} \sum_{\el} n_{q\el}(z^\star) \nu(\normp(\alskl), \alskl) \right]
 \end{align*}
-is maximized at $\alkl = \normpm(\barxklzw)$
+is maximized at $\alkl = \normpm(\baryklz)$
 \proofend
 
 \subsection{Proof of Proposition~\ref{prop:maximum-conditional-likelihood}  (maximum of $\G$ and $\Lambtilde$)} 
 
 \proofbegin
-We condition on $(\bzs, \bws)$ and prove Equation~\eqref{eq:conditional-likelihood-second-form}:
+We condition on $\bzs$ and prove Equation~\eqref{eq:conditional-likelihood-second-form}:
 \begin{align*}
-  \G(\btheta, \bz, \bw) & = \Esp_{\bthetas} \left[ \left. \frac{\prob(\bx; \bz,\bw,\btheta)}{\prob(\bx; \bzs,\bws,\bthetas)} \right| \bzs, \bws \right] \\
-  & = \sum_{\ii} \sum_{\jj} \sum_{\kk,\kp}\ \sum_{\el,\lp} \Esp_{\bthetas}\left[ x_{ij} (\al_{\kp\lp} - \alskl) - (\norm(\al_{\kp\lp}) - \norm(\alskl)) \right] \z^\vrai_{\ii\kk} \z_{\ii\kp} \w^\vrai_{\jj\el} \w_{\jj\lp} \\
-  & = \n\dd \sum_{\kk, \kp} \sum_{\el, \lp}  \Rgbz_{\kk,\kp} \Rmbw_{\el, \lp} \left[ \normp(\alskl) (\al_{\kp\lp} - \alskl) +  \norm(\alskl) - \norm(\al_{\kp\lp}) \right] \\
-  & = - \n\dd \sum_{\kk,\kp} \sum_{\el,\lp} \Rgbz_{\kk,\kp} \Rmbw_{\el, \lp} \KL(\al^\vrai_{\kk\el}, \al_{\kp\lp})
+  \G(\btheta, \bz) & = \Esp_{\bthetas} \left[ \left. \frac{\prob(\byo; \bz,\btheta)}{\prob(\byo; \bzs,\bthetas)} \right| \bzs \right] \\
+  & = \sum_{\ii} \sum_{\jj} \sum_{\kk,\kp}\ \sum_{\el,\lp} \Esp_{\bthetas}\left[ y_{ij}  (\al_{\kp\lp} - \alskl) - (\norm(\al_{\kp\lp}) - \norm(\alskl)) \right] \rho \z^\vrai_{\ii\kk} \z_{\ii\kp} \z^\vrai_{\jj\el} \z_{\jj\lp} \\
+  & = \n^2 \rho \sum_{\kk, \kp} \sum_{\el, \lp}  \RQbz_{\kk,\kp} \RQbz_{\el, \lp} \left[ \normp(\alskl) (\al_{\kp\lp} - \alskl) +  \norm(\alskl) - \norm(\al_{\kp\lp}) \right] \\
+  & = - \n^2 \rho \sum_{\kk,\kp} \sum_{\el,\lp} \RQbz_{\kk,\kp} \RQbz_{\el, \lp} \KL(\al^\vrai_{\kk\el}, \al_{\kp\lp})
 \end{align*}
 
-If $(\bzs,\bws)$ is regular, and for $n, d > 2/c$, all the rows of $\Rgbz$ and $\Rmbw$ have
+If $\bzs$ is regular, and for $n > 2/c$, all the rows of $\RQbz$ have
 at least one positive element and we can apply
 lemma~\ref{lemme:casdegalite} (which is an adaptation for LBM of Lemma 3.2 of \cite{bickel2013asymptotic} for SBM) to characterize the maximum for
 $\G$.
 
-The maximality  of $\Lambtilde(\bzs, \bws)$ results from the fact that $\Lambtilde(\bz, \bw) = \G(\bar{\bal}(\bz, \bw), \bz, \bw)$ where
-$\bar{\bal}(\bz, \bw)$ is a particular value of $\bal$, $\Lambtilde$ is
-immediately maximum at $(\bz, \bw) \sim (\bzs,\bws)$, and for those, we have $\bar{\bal}(\bz, \bw) \sim \bals$.
+The maximality  of $\Lambtilde(\bzs)$ results from the fact that $\Lambtilde(\bz) = \G(\bar{\bal}(\bz), \bz)$ where
+$\bar{\bal}(\bz)$ is a particular value of $\bal$, $\Lambtilde$ is
+immediately maximum at $\bz \sim \bzs$, and for those, we have $\bar{\bal}(\bz) \sim \bals$.
 
-The separation and local behavior of $G$ around $(\bzs, \bws)$ is a direct consequence of the proposition \ref{prop:profile-likelihood-derivative}.
+The separation and local behavior of $G$ around $\bzs$ is a direct consequence of the proposition \ref{prop:profile-likelihood-derivative}.
 
 \proofend
 
