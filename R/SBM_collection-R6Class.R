@@ -24,9 +24,9 @@ SBM_collection$set("public", "initialize",
     self$samplingData   <- switch(sampling,
                             "doubleStandard" = sampling_doubleStandard$new(self$sampledNetwork$nNodes, c(.5,.5), directed),
                             "class"          = sampling_class$new(self$sampledNetwork$nNodes, .5, directed),
-                            "starDegree"     = sampling_starDegree$new(self$sampledNetwork$nNodes, coefficients(glm(self$sampledNetwork$samplingVector~rowSums(sample, na.rm=TRUE), family = binomial(directed = "logit"))), directed),
+                            "starDegree"     = sampling_starDegree$new(self$sampledNetwork$nNodes, coefficients(glm(self$sampledNetwork$samplingVector~rowSums(sample, na.rm=TRUE), family = binomial(link = "logit"))), directed),
                             "MAREdge"        = sampling_randomPairMAR$new(self$sampledNetwork$nNodes, .5, directed),
-                            "MARNode"        = sampling_randomNodeMAR$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), directed),
+                            "MARNode"        = sampling_randomNodesMAR$new(self$sampledNetwork$nNodes, .5, directed),
                             "snowball"       = sampling_snowball$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), directed))
     self$models <- mclapply(self$vBlocks, function(i){
       SBM <- switch(paste0(self$family, ifelse(self$sampledNetwork$directed, "Directed", "Undirected")),
@@ -55,7 +55,7 @@ SBM_collection$set("public", "smoothingBackward",
                            clone             <- self$models[[i-1]]$clone()
                            clone$blockInit   <- as.numeric(cl_fusion)
                            clone$doVEM()
-                           
+
                            if(clone$vICL < self$models[[i-1]]$vICL){
                              self$models[[i-1]] <- clone
                              cat('+')
@@ -72,45 +72,4 @@ SBM_collection$set("public", "getBestModel",
                      return(nrow(self$models[[which.min(self$vICLs)]]$SBM$connectParam))
                    }
 )
-
-### Tests :
-# SBM :
-mySBM <- SBM_BernoulliUndirected.fit$new(200, rep(1, 5)/5, diag(.45,5)+.05)
-
-# Sampled SBM :
-mySampledSBM   <- sampling_doubleStandard$new(200, c(.3,.7), FALSE)
-SBMdata        <- mySBM$rSBM()
-Y <- SBMdata$adjacencyMatrix
-# Z <- SBMdata$blocks
-# Znum           <- Z %*% c(1:2)
-# sample         <- mySampledSBM$rSampling(Y, Z)
-sample         <- mySampledSBM$rSampling(Y)
-
-# Sampled SBM 2 (MAR):
-# mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
-# Y             <- mySBM$rSBM()$adjacencyMatrix
-# sampledNetwork <- mySampledSBM$rSampling(Y)
-
-# VEM :
-sbm <- SBM_collection$new(sample$adjacencyMatrix, 1:10, "doubleStandard", "Bernoulli", FALSE)
-
-Icl <- sbm$vICLs
-plot(sbm$vICLs)
-# # sbm$getBestModel()
-# # sbm$models
-sbm$smoothingBackward()
-plot(sbm$vICLs)
-
-# # cat("\n", sbm$vICLs)
-# # plot(sbm$vICLs)
-# # 
-# res <- func_missSBM.twoStd(sample$adjacencyMatrix, 1:10)
-
-# logLik.SBM <- function(X1, X0, Z, alpha, pi) {
-#   return(sum(Z%*%log(alpha)) + .5 * sum( X1 *(Z %*% log(pi) %*% t(Z)) + X0 * (Z %*% log(1-pi) %*% t(Z))))
-# }
-# mySBM$completeLogLik(Y, Z)
-# Ybar <- 1-Y; diag(Ybar) <- 0; logLik.SBM(Y, Ybar, Z, mySBM$mixtureParam, mySBM$connectParam)
-# 
-
 
