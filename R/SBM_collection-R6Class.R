@@ -67,6 +67,29 @@ SBM_collection$set("public", "smoothingBackward",
                    }
 )
 
+SBM_collection$set("public", "smoothingForward",
+                   function() {
+                     for(i in self$vBlocks[-length(self$vBlocks)]]){
+                       for(j in 1:i){
+                       }
+                     }
+                     self$vICLs <- sapply(self$models, function(x){x$vICL})
+                   }
+)
+
+SBM_collection$set("private", "CAH",
+                   function(X, Q) {
+                     require(hclust)
+                     D  <- as.matrix(dist(X, method="manhattan"))
+                     D[which(X == 1)] <- D[which(X == 1)] - 2
+                     is (anyNA(D))
+                       D <- as.dist(additive(D))
+                     return(cutree(hclust(as.dist(D), method="ward.D"), Q))
+                   }
+)
+
+
+
 SBM_collection$set("public", "getBestModel",
                    function() {
                      return(nrow(self$models[[which.min(self$vICLs)]]$SBM$connectParam))
