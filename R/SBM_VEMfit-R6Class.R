@@ -42,9 +42,9 @@ SBM_VEMfit <-
                 self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork,  self$blockVarParam, self$taylorVarParam)
               } else {
                 # for(i in 1:5){
-                  self$blockVarParam    <- self$SBM$fixPoint_MA
-                  R(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
+                  self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
                 # }
+                # browser()
                 self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork)
                                           - sum(self$blockVarParam*log(self$blockVarParam + 1*(self$blockVarParam==0))))
                 self$compLogLik       <- c(self$compLogLik, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork))

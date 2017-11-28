@@ -150,7 +150,6 @@ sampling_starDegree <-
               return(log((sampProb^sampledNetwork$samplingVector)%*%((1-sampProb)^(1-sampledNetwork$samplingVector))) )
             },
             updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
-              # browser()
               networkWithZeros     <- completedNetwork
               networkWithZeros[sampledNetwork$missingDyads] <- 0
               Dtilde <- rowSums(completedNetwork)
@@ -173,6 +172,7 @@ sampling_starDegree <-
             }
           )
   )
+
 
 
 #' @export

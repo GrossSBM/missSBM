@@ -67,15 +67,15 @@ SBM_collection$set("public", "smoothingBackward",
                    }
 )
 
-SBM_collection$set("public", "smoothingForward",
-                   function() {
-                     for(i in self$vBlocks[-length(self$vBlocks)]]){
-                       for(j in 1:i){
-                       }
-                     }
-                     self$vICLs <- sapply(self$models, function(x){x$vICL})
-                   }
-)
+# SBM_collection$set("public", "smoothingForward",
+#                    function() {
+#                      for(i in self$vBlocks[-length(self$vBlocks)]]){
+#                        for(j in 1:i){
+#                        }
+#                      }
+#                      self$vICLs <- sapply(self$models, function(x){x$vICL})
+#                    }
+# )
 
 SBM_collection$set("private", "CAH",
                    function(X, Q) {

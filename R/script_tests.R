@@ -34,10 +34,10 @@ source("SBM_collection-R6Class.R")
 # class           : check
 
 #### SBM : ####
-mySBM <- SBM_BernoulliUndirected.fit$new(400, rep(1, 5)/5, diag(.45,5)+.05)
+mySBM <- SBM_PoissonDirected.fit$new(200, rep(1, 5)/5, diag(.5,5)+1)
 
 #### Sampled SBM : ####
-mySampledSBM   <- sampling_starDegree$new(400, c(-2.5, 0.05), FALSE)
+mySampledSBM   <- sampling_randomPairMAR$new(200, 0.8, TRUE)
 SBMdata        <- mySBM$rSBM()
 Y              <- SBMdata$adjacencyMatrix
 
@@ -55,18 +55,18 @@ sample
 # sample        <- mySampledSBM$rSampling(Y)
 
 #### VEM  nouveau : ####
-sbm <- SBM_collection$new(sample$adjacencyMatrix, 1:7, "starDegree", "Bernoulli", FALSE)
+sbm <- SBM_collection$new(sample$adjacencyMatrix, 5, "MAREdge", "Poisson", TRUE)
 
 plot(sbm$vICLs)
-sbm$getBestModel()
+# sbm$getBestModel()
 
 # ## Smoothing : ##
-sbm$smoothingBackward()
+# sbm$smoothingBackward()
 
 #### VEM  ancien : ####
 # res.twoStd   <- func_missSBM.twoStd(sample$adjacencyMatrix, 1:10)
 # res.class    <- func_missSBM.class(sample$adjacencyMatrix, 1:5)
-res.degree    <- func_missSBM.degree(sample$adjacencyMatrix, 1:10)
+# res.degree    <- func_missSBM.degree(sample$adjacencyMatrix, 1:10)
 # res.mar      <- missSBM(sample$adjacencyMatrix, 2, missingness  = "class")
-plot(res.degree@ICLs)
+# plot(res.degree@ICLs)
 
