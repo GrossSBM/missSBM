@@ -49,7 +49,8 @@ R6Class(classname = "SBM_BernoulliUndirected",
     },
     completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
       network                 <- sampledNetwork$adjacencyMatrix
-      network[is.na(sampledNetwork$adjacencyMatrix)] <- (blockIndicators %*% self$connectParam %*% t(blockIndicators))[is.na(sampledNetwork$adjacencyMatrix)]
+      network[is.na(network)] <- 0
+      # network[is.na(sampledNetwork$adjacencyMatrix)] <- (blockIndicators %*% self$connectParam %*% t(blockIndicators))[is.na(sampledNetwork$adjacencyMatrix)]
       network.bar             <- (1 - network); diag(network.bar) <- 0
       return(sum(blockIndicators %*% log(self$mixtureParam)) +
         .5 * sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
@@ -262,7 +263,8 @@ SBM_PoissonDirected <-
                   sum(loop.bar*blockIndicators%*%self$connectParam%*%t(blockIndicators)))
             },
             completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
-                network     <- sampledNetwork$adjacencyMatrix * sampledNetwork$samplingMatrix
+                network     <- sampledNetwork$adjacencyMatrix
+                network[is.na(network)] <- 0;
                 loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
                 return(sum(blockIndicators%*%log(self$mixtureParam)) +
                          sum(network*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
@@ -277,6 +279,7 @@ SBM_PoissonDirected <-
             }
           )
   )
+
 
 #' @export
 SBM_PoissonDirected.fit <-

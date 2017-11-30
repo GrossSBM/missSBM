@@ -117,7 +117,11 @@ sampling_class <-
               return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
             },
             penality = function(nBlocks) {
-              return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
+              if(directed){
+                return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + 2*(nBlocks-1)*log(self$nNodes))
+              } else {
+                return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
+              }
             }
           )
   )
@@ -163,7 +167,11 @@ sampling_starDegree <-
               return(psi)
             },
             penality = function(nBlocks) {
-              return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
+              if(directed){
+                return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + 2*(nBlocks-1)*log(self$nNodes))
+              } else {
+                return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
+              }
             }
           ),
           private = list(
@@ -217,7 +225,19 @@ sampling_randomPairMAR <-
               }
             },
             penality = function(nBlocks) {
-              return((1 + nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + (nBlocks-1)*log(self$nNodes))
+              if(self$directed){
+                return((1 + (nBlocks^2))*log(self$nNodes*(self$nNodes-1)) + (nBlocks-1)*log(self$nNodes))
+              } else {
+                return((1 + nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + (nBlocks-1)*log(self$nNodes))
+              }
+            },
+            penalityPoisson = function(nBlocks, samplingMatrix) {
+              nObsDyads <- length(which(is.na(samplingMatrix)))
+              if(self$directed){
+                return((nBlocks^2)*log(nObsDyads*(nObsDyads-1)) + (nBlocks-1)*log(self$nNodes))
+              } else {
+                return((nBlocks*(nBlocks+1)/2)*log(nObsDyads*(nObsDyads-1)/2) + (nBlocks-1)*log(nObsDyads))
+              }
             }
           )
   )
@@ -251,7 +271,19 @@ sampling_randomNodesMAR <-
               return(mean(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam)))
             },
             penality = function(nBlocks) {
-              return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
+              if(self$directed){
+                return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + nBlocks*log(self$nNodes))
+              } else {
+                return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
+              }
+            },
+            penalityPoisson = function(nBlocks, samplingMatrix) {
+              nObsDyads <- length(which(is.na(samplingMatrix)))
+              if(self$directed){
+                return((nBlocks^2)*log(nObsDyads*(nObsDyads-1)) + nBlocks*log(self$nNodes))
+              } else {
+                return((nBlocks*(nBlocks+1)/2)*log(nObsDyads*(nObsDyads-1)/2) + nBlocks*log(nObsDyads))
+              }
             }
           )
   )
@@ -280,7 +312,12 @@ sampling_snowball <-
               return(log((self$missingParam^sampledNetwork$samplingVector)%*%((1-self$missingParam)^(1-sampledNetwork$samplingVector))))
             },
             penality = function(nBlocks) {
-              return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
+              if(directed){
+                return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + nBlocks*log(self$nNodes))
+              }
+              else {
+                return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
+              }
             }
           )
   )

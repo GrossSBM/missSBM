@@ -25,7 +25,7 @@ SBM_VEMfit <-
             lowerBound       = NULL, # variational lower bound (a.k.a. J)
             compLogLik       = NULL, # variationnal complete log-likelihood
             vICL             = NULL, # compute the (variational) integrated complete likelihood
-            blockInit        = NULL, # Initialization clustering
+            blockInit        = NULL, # Initialization clustering8
             VEstep           = function() {
               if(!(class(self$sampling)[1] %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball"))){
                 # for(i in 1:5){
@@ -44,7 +44,6 @@ SBM_VEMfit <-
                 # for(i in 1:5){
                   self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
                 # }
-                # browser()
                 self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork)
                                           - sum(self$blockVarParam*log(self$blockVarParam + 1*(self$blockVarParam==0))))
                 self$compLogLik       <- c(self$compLogLik, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork))
@@ -122,7 +121,6 @@ SBM_VEMfit$set("public", "initialization",
 
                  self$blockVarParam    <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, cl0)] <- 1
                  if(class(self$sampling)[1] == "sampling_starDegree"){
-                   # browser()
                    self$completedNetwork[is.na(self$completedNetwork)] <- mean(self$completedNetwork[which(!is.na(self$completedNetwork))])
                    networkWithZeros    <- self$completedNetwork
                    networkWithZeros[self$sampledNetwork$missingDyads] <- 0
@@ -162,6 +160,33 @@ SBM_VEMfit$set("public", "doVEM",
                  }
                  self$vICL <- -2 * (self$compLogLik[length(self$compLogLik)] + self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork, self$blockVarParam)) +
                                 self$sampling$penality(self$SBM$nBlocks)
+               }
+)
+
+SBM_VEMfit$set("public", "doVEMPoisson",
+               function() {
+
+                 conv    <- vector("numeric", self$maxIterVEM) ; conv[1] <- NA
+                 theta   <- vector("list", length = self$maxIterVEM)
+
+                 cl0     <- self$initialization()
+
+                 i <- 0; cond <- FALSE
+                 while(!cond){
+                   i <- i+1
+
+                   self$Mstep()
+                   self$VEstep()
+
+                   theta[[i]] <- self$SBM$connectParam
+
+                   if (i > 1) {
+                     conv[i] <- sqrt(sum((theta[[i]]-theta[[i-1]])^2)) / sqrt(sum((theta[[i-1]])^2))
+                     cond    <- (i > self$maxIterVEM) |  (conv[i] < self$controlVEM)
+                   }
+                 }
+                 # browser()
+                 self$vICL <- -2 * self$compLogLik[length(self$compLogLik)] + self$sampling$penalityPoisson(self$SBM$nBlocks, self$sampledNetwork$adjacencyMatrix)
                }
 )
 

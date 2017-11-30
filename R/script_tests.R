@@ -21,6 +21,8 @@ source("sampledNetwork-R6Class.R")
 source("SBM_VEMfit-R6Class.R")
 source("SBM_collection-R6Class.R")
 
+source("~/Desktop/VEM 2.0 Poisson/func.ICL2_SBM_Poisson.R")
+
 
 ####################
 ### Test général ###
@@ -34,10 +36,10 @@ source("SBM_collection-R6Class.R")
 # class           : check
 
 #### SBM : ####
-mySBM <- SBM_PoissonDirected.fit$new(200, rep(1, 5)/5, diag(.5,5)+1)
+mySBM <- SBM_PoissonDirected.fit$new(100, rep(1, 3)/3, diag(1,3)+1)
 
 #### Sampled SBM : ####
-mySampledSBM   <- sampling_randomPairMAR$new(200, 0.8, TRUE)
+mySampledSBM   <- sampling_randomPairMAR$new(100, 0.8, TRUE)
 SBMdata        <- mySBM$rSBM()
 Y              <- SBMdata$adjacencyMatrix
 
@@ -55,9 +57,13 @@ sample
 # sample        <- mySampledSBM$rSampling(Y)
 
 #### VEM  nouveau : ####
-sbm <- SBM_collection$new(sample$adjacencyMatrix, 5, "MAREdge", "Poisson", TRUE)
+sbm <- SBM_collection$new(sample$adjacencyMatrix, 1:5, "MAREdge", "Poisson", TRUE)
 
-plot(sbm$vICLs)
+plot(sbm$vICLs[1:5])
+
+# Xmis <- sample$adjacencyMatrix; Xmis[is.na(Xmis)] <- 0
+# # func.VEM2_SBM_Poisson(3, Xmis, sample$samplingMatrix)
+# func.ICL2_SBM_Poisson(Xmis,sample$samplingMatrix,qmin=3,qmax = 3)
 # sbm$getBestModel()
 
 # ## Smoothing : ##

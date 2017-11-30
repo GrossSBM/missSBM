@@ -35,7 +35,11 @@ SBM_collection$set("public", "initialize",
                     "PoissonUndirected"   = SBM_PoissonUndirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
                     "PoissonDirected"     = SBM_PoissonDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05))
       SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData)
-      SBM_VEMfit$doVEM()
+      if(self$family == "Bernoulli"){
+        SBM_VEMfit$doVEM()
+      } else {
+        SBM_VEMfit$doVEMPoisson()
+      }
       return(SBM_VEMfit)
     }
     , mc.cores = 5)
