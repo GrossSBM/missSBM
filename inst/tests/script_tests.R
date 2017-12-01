@@ -5,13 +5,13 @@
 rm(list=ls())
 library(missSBM)
 
-# Ancien :
-setwd("~/SVN/Code/code_these/functions/")
-source("func_missSBM.R")
-source("func_missSBM.twoStd.R")
-source("func_missSBM.degree.R")
-source("func_missSBM.class.R")
-
+# # Ancien :
+# setwd("~/SVN/Code/code_these/functions/")
+# source("func_missSBM.R")
+# source("func_missSBM.twoStd.R")
+# source("func_missSBM.degree.R")
+# source("func_missSBM.class.R")
+#
 source("~/Desktop/VEM 2.0 Poisson/func.ICL2_SBM_Poisson.R")
 
 
@@ -48,7 +48,7 @@ sample
 # sample        <- mySampledSBM$rSampling(Y)
 
 #### VEM  nouveau : ####
-sbm <- SBM_collection$new(sample$adjacencyMatrix, 1:5, "MAREdge", "Poisson", TRUE)
+sbm <- SBM_collection$new(sample$adjacencyMatrix, 1:15, "MAREdge", "Poisson", TRUE)
 
 plot(sbm$vICLs[1:5])
 

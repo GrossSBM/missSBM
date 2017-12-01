@@ -36,7 +36,8 @@ SBM_collection$set("public", "initialize",
                     "BernoulliDirected"   = SBM_BernoulliDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
                     "PoissonUndirected"   = SBM_PoissonUndirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
                     "PoissonDirected"     = SBM_PoissonDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05))
-      SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData)
+      if(self$family == "Poisson") { init <- "SpectralC" }
+      SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData, init)
       if(self$family == "Bernoulli"){
         SBM_VEMfit$doVEM()
       } else {

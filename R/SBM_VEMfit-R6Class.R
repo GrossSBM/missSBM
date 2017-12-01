@@ -13,6 +13,7 @@ SBM_VEMfit <-
           public = list(
             ## fields
             completedNetwork = NULL, # the completed adjacency matrix of the initial network
+            init             = NULL, # kind of classification for the beginning
             SBM              = NULL, #
             sampling         = NULL, #
             sampledNetwork   = NULL, #
@@ -40,6 +41,7 @@ SBM_VEMfit <-
                 self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork,  self$blockVarParam, self$taylorVarParam)
               } else {
                 # for(i in 1:5){
+                # browser()
                   self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
                 # }
                 self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork)
@@ -57,8 +59,9 @@ SBM_VEMfit <-
               }
             },
 
-            initialize       = function(SBM, sampledNetwork, sampling, blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
+            initialize       = function(SBM, sampledNetwork, sampling, init = "SpectralC", blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
               self$sampledNetwork   <- sampledNetwork
+              self$init             <- init
               self$SBM              <- SBM
               self$sampling         <- sampling
               self$completedNetwork <- sampledNetwork$adjacencyMatrix
@@ -115,9 +118,18 @@ SBM_VEMfit$set("public", "SpectralClustering",
 
 SBM_VEMfit$set("public", "initialization",
                function() {
-                cl0 <- self$SpectralClustering()
+                 if(self$init == "CAH"){
+                   networkWithZero <- self$completedNetwork; networkWithZero[is.na(networkWithZero)] <- 0
+                   D  <- as.matrix(dist(networkWithZero, method="manhattan"))
+                   D[networkWithZero == 1] <- D[networkWithZero == 1] - 2
+                   classif <- cutree(hclust(as.dist(D), method="ward.D"), self$SBM$nBlocks)
+                   self$blockVarParam <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks)
+                   self$blockVarParam[cbind(1:self$SBM$nNodes, classif)] <- 1
+                 } else {
+                   cl0 <- self$SpectralClustering()
+                   self$blockVarParam <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, cl0)] <- 1
+                 }
 
-                 self$blockVarParam    <- matrix(0,self$SBM$nNodes,self$SBM$nBlocks) ; self$blockVarParam[cbind(1:self$SBM$nNodes, cl0)] <- 1
                  if(class(self$sampling)[1] == "sampling_starDegree"){
                    self$completedNetwork[is.na(self$completedNetwork)] <- mean(self$completedNetwork[which(!is.na(self$completedNetwork))])
                    networkWithZeros    <- self$completedNetwork
@@ -128,8 +140,10 @@ SBM_VEMfit$set("public", "initialization",
                  }
                  self$completedNetwork[is.na(self$completedNetwork)] <- 0
                  theta <- (t(self$blockVarParam)%*% self$completedNetwork %*%self$blockVarParam) / (t(self$blockVarParam)%*%((1-diag(self$SBM$nNodes)))%*%self$blockVarParam)
-                 self$completedNetwork[self$sampledNetwork$missingDyads] <- ((self$blockVarParam) %*% theta %*% t(self$blockVarParam))[self$sampledNetwork$missingDyads]
-                 return(cl0=cl0)
+                 if(!(class(self$SBM)[2] %in% c("SBM_PoissonDirected", "SBM_PoissonUndirected"))){
+                   self$completedNetwork[self$sampledNetwork$missingDyads] <- ((self$blockVarParam) %*% theta %*% t(self$blockVarParam))[self$sampledNetwork$missingDyads]
+                 }
+
                }
 )
 
@@ -167,7 +181,7 @@ SBM_VEMfit$set("public", "doVEMPoisson",
                  conv    <- vector("numeric", self$maxIterVEM) ; conv[1] <- NA
                  theta   <- vector("list", length = self$maxIterVEM)
 
-                 cl0     <- self$initialization()
+                 self$initialization()
 
                  i <- 0; cond <- FALSE
                  while(!cond){
@@ -183,7 +197,6 @@ SBM_VEMfit$set("public", "doVEMPoisson",
                      cond    <- (i > self$maxIterVEM) |  (conv[i] < self$controlVEM)
                    }
                  }
-                 # browser()
                  self$vICL <- -2 * self$compLogLik[length(self$compLogLik)] + self$sampling$penalityPoisson(self$SBM$nBlocks, self$sampledNetwork$adjacencyMatrix)
                }
 )

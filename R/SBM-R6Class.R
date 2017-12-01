@@ -266,6 +266,7 @@ SBM_PoissonDirected <-
                 network     <- sampledNetwork$adjacencyMatrix
                 network[is.na(network)] <- 0;
                 loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
+                # browser()
                 return(sum(blockIndicators%*%log(self$mixtureParam)) +
                          sum(network*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
                          sum(sampledNetwork$samplingMatrix * log(factorial(network))*(blockIndicators%*%matrix(1,self$nBlocks,self$nBlocks)%*%t(blockIndicators))) -
@@ -291,13 +292,13 @@ SBM_PoissonDirected.fit <-
             },
             maximization = function(SBM, completedNetwork, blockVarParam) {
               SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
+              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
               SBM$mixtureParam <-  colMeans(blockVarParam)
               return(SBM)
             },
             maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
               SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
+              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
               SBM$mixtureParam <- colMeans(blockVarParam)
               return(SBM)
             },
@@ -312,10 +313,14 @@ SBM_PoissonDirected.fit <-
               return(blockVarParam.new)
             },
             fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
-              completedNetwork.bar <- (1 - completedNetwork)*samplingMatrix; diag(completedNetwork.bar) <- 0
               blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
                                                   log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
                                                   (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t((SBM$connectParam + t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
+
+              # blockVarParam.new    <- exp(log(matrix(self$connectParam,nrow=self$nNodes,ncol=self$nBlocks,byrow=T)) + completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
+              #                                     log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
+              #                                     (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t(SBM$connectParam + t(SBM$connectParam)))
+
               num                  <- rowSums(blockVarParam.new)
               blockVarParam.new    <- blockVarParam.new/num
               blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5

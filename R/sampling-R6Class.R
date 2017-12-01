@@ -193,7 +193,6 @@ sampling_randomPairMAR <-
             },
             rSampling = function(adjMatrix) {
               samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-
               if(!self$directed){
                 edgeSamp <- sample(which(lower.tri(adjMatrix)), floor((self$nNodes*(self$nNodes-1)/2)*self$missingParam))
               } else {
@@ -202,7 +201,8 @@ sampling_randomPairMAR <-
 
               samplingMatrix <- matrix(0,self$nNodes,self$nNodes)
               samplingMatrix[edgeSamp] <- 1
-              samplingMatrix <- t(samplingMatrix) | samplingMatrix ; diag(samplingMatrix) <- 1
+              if(!self$directed){ samplingMatrix <- t(samplingMatrix) | samplingMatrix }
+              diag(samplingMatrix) <- 1
 
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
@@ -232,11 +232,11 @@ sampling_randomPairMAR <-
               }
             },
             penalityPoisson = function(nBlocks, samplingMatrix) {
-              nObsDyads <- length(which(is.na(samplingMatrix)))
+              nObsDyads <- length(which(!is.na(samplingMatrix)))-nrow(samplingMatrix)
               if(self$directed){
-                return((nBlocks^2)*log(nObsDyads*(nObsDyads-1)) + (nBlocks-1)*log(self$nNodes))
+                return((nBlocks^2)*log(nObsDyads) + (nBlocks-1)*log(self$nNodes))
               } else {
-                return((nBlocks*(nBlocks+1)/2)*log(nObsDyads*(nObsDyads-1)/2) + (nBlocks-1)*log(nObsDyads))
+                return((nBlocks*(nBlocks+1)/2)*log((nObsDyads)/2) + (nBlocks-1)*log(nObsDyads))
               }
             }
           )
