@@ -1,5 +1,7 @@
 #' A collection of adjusted Stochastic Block Model
 #'
+#' @export
+#'
 #' @importFrom R6 R6Class
 SBM_collection <-
   R6Class(classname = "SBM_collection",

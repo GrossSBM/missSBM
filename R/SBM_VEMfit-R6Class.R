@@ -6,8 +6,6 @@
 #' @field lowerBound
 #' @field ICL
 #'
-#' @include SBM-R6class.R
-#'
 #' @importFrom R6 R6Class
 #' @export
 SBM_VEMfit <-

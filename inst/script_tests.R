@@ -3,7 +3,7 @@
 ############################# Script de tests ############################
 ##########################################################################
 rm(list=ls())
-library(R6)
+library(missSBM)
 
 # Ancien :
 setwd("~/SVN/Code/code_these/functions/")
@@ -11,15 +11,6 @@ source("func_missSBM.R")
 source("func_missSBM.twoStd.R")
 source("func_missSBM.degree.R")
 source("func_missSBM.class.R")
-
-
-# Nouveau :
-setwd("~/Git/missSBM/R")
-source("SBM-R6Class.R")
-source("sampling-R6Class.R")
-source("sampledNetwork-R6Class.R")
-source("SBM_VEMfit-R6Class.R")
-source("SBM_collection-R6Class.R")
 
 source("~/Desktop/VEM 2.0 Poisson/func.ICL2_SBM_Poisson.R")
 
