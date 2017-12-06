@@ -411,9 +411,9 @@ SBM_PoissonUndirected.fit <-
               return(blockVarParam.new)
             },
             fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
-                                                  log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
-                                                  (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t((SBM$connectParam + t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
+              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) -
+                                                  log(factorial(completedNetwork)) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
+                                                  (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t(SBM$connectParam),2,log(SBM$mixtureParam),"+"))
               num                  <- rowSums(blockVarParam.new)
               blockVarParam.new    <- blockVarParam.new/num
               blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
