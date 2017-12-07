@@ -2,18 +2,25 @@ library(igraph)
 
 # Simulation des graphes :
 
-graph <- function(pir,top){
+graph <- function(pir,dens,top){
   n <- 300
   Q_com <- 3
   Q_hub <- 6
   alpha_com <- rep(1,3)/3
   alpha_hub <- rep(c(.2, .8)/3, 3)
+  if(!is.null(dens)){
+    pir <- switch(top,
+                  "1" = dens,
+                  "2" = (36/54)*dens,
+                  "3" = (36/54)*dens,
+                  "4" = (9/15)*dens,
+                  "5" = (9/15)*dens)
+  }
   pia <- 3*pir
   pi_com <- matrix(c(pia, pir ,pir, pir, pia, pir, pir, pir, pia),3,3)
   pi_hub <- matrix(c(pia,pia,pir,pir,pir,pir, pia,pir,pir,pir,pir,pir, pir,pir,pia,pia,pir,pir, pir,pir,pia,pir,pir,pir,
                      pir,pir,pir,pir,pia,pia, pir,pir,pir,pir,pia,pir),6,6)
-  
-  
+
   if(top==1){
     Z <- 1
     pi <- pir
@@ -32,15 +39,15 @@ graph <- function(pir,top){
     Z <- t(rmultinom(n, size = 1, prob = alpha_hub))
     pi <- pi_hub
   }
-  
+
   Yvec    <- rbinom(n^2,1,Z %*% pi %*% t(Z))
   X       <- matrix(Yvec,n)
   diag(X) <- 0
-  
+
   return(X)
 }
 
-g <- graph(.15, 5)
+g <- graph(dens=.18, top="2")
 
 
 
