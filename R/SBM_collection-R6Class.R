@@ -4,7 +4,7 @@
 #'
 #' @importFrom R6 R6Class
 SBM_collection <-
-  R6Class(classname = "SBM_collection",
+  R6::R6Class(classname = "SBM_collection",
     public = list(
       sampledNetwork = NULL, # the sampled network data
       vBlocks  = NULL,       # the vector of number of blocks considered in the collection

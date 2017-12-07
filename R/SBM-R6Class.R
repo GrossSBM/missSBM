@@ -8,7 +8,7 @@
 #' @importFrom R6 R6Class
 #' @export
 SBM <-
-R6Class(classname = "SBM",
+R6::R6Class(classname = "SBM",
   public = list(
     ## fields
     nNodes         = NULL, # number of nodes
@@ -41,7 +41,7 @@ R6Class(classname = "SBM",
 #'
 #' @export
 SBM_BernoulliUndirected <-
-R6Class(classname = "SBM_BernoulliUndirected",
+R6::R6Class(classname = "SBM_BernoulliUndirected",
   inherit = SBM,
   public = list(
     initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
@@ -75,7 +75,7 @@ R6Class(classname = "SBM_BernoulliUndirected",
 
 #' @export
 SBM_BernoulliUndirected.fit <-
-  R6Class(classname = "SBM_BernoulliUndirected.fit",
+  R6::R6Class(classname = "SBM_BernoulliUndirected.fit",
           inherit = SBM_BernoulliUndirected,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
@@ -143,7 +143,7 @@ SBM_BernoulliUndirected.fit <-
 
 #' @export
 SBM_BernoulliDirected <-
-  R6Class(classname = "SBM_BernoulliDirected",
+  R6::R6Class(classname = "SBM_BernoulliDirected",
           inherit = SBM,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
@@ -175,7 +175,7 @@ SBM_BernoulliDirected <-
 
 #' @export
 SBM_BernoulliDirected.fit <-
-  R6Class(classname = "SBM_BernoulliDirected.fit",
+  R6::R6Class(classname = "SBM_BernoulliDirected.fit",
           inherit = SBM_BernoulliDirected,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
@@ -249,7 +249,7 @@ SBM_BernoulliDirected.fit <-
 
 #' @export
 SBM_PoissonDirected <-
-  R6Class(classname = "SBM_PoissonDirected",
+  R6::R6Class(classname = "SBM_PoissonDirected",
           inherit = SBM,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
@@ -283,7 +283,7 @@ SBM_PoissonDirected <-
 
 #' @export
 SBM_PoissonDirected.fit <-
-  R6Class(classname = "SBM_PoissonDirected.fit",
+  R6::R6Class(classname = "SBM_PoissonDirected.fit",
           inherit = SBM_PoissonDirected,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
@@ -348,7 +348,7 @@ SBM_PoissonDirected.fit <-
 
 #' @export
 SBM_PoissonUndirected <-
-  R6Class(classname = "SBM_PoissonUndirected",
+  R6::R6Class(classname = "SBM_PoissonUndirected",
           inherit = SBM,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
@@ -382,7 +382,7 @@ SBM_PoissonUndirected <-
 
 #' @export
 SBM_PoissonUndirected.fit <-
-  R6Class(classname = "SBM_PoissonUndirected.fit",
+  R6::R6Class(classname = "SBM_PoissonUndirected.fit",
           inherit = SBM_PoissonUndirected,
           public = list(
             initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {

@@ -1,7 +1,7 @@
 #' Bayesian calibration for computational codes
 #'
 #' The foo package provides three categories of important functions:
-#' \code{\link{missSBM}}.
+#' \code{\link{nomADonner}}.
 #'
 #' @details
 #' Package: missSBM

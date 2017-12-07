@@ -11,7 +11,7 @@
 #' @importFrom R6 R6Class
 #' @export
 sampledNetwork <-
-R6Class(classname = "sampledNetwork",
+  R6::R6Class(classname = "sampledNetwork",
   public = list(
     ## fields
     nNodes          = NULL, # number of nodes

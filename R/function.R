@@ -2,7 +2,6 @@
 #'
 #' \code{model} is a function that generates a calibration model and the associated likelihood.
 #'
-#'
 #' @details The different statistical models are: \itemize{\item{Model1:
 #' \deqn{for i in [1,...,n]  Yexp_i=f(x_i,\Theta)+\epsilon(x_i)}}
 #' \item{Model2:
@@ -43,13 +42,12 @@
 #' @seealso \code{\link{model.class}},
 #' @examples
 #' @export
-
-missSBM <- function(sample, vBlocks, sampling, family, directed)
+nomADonner <- function(sample, vBlocks, sampling, family, directed)
 {
-  library(R6)
-  
-  
-  
+
+
+
+
 }
 
 

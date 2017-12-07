@@ -1,14 +1,14 @@
-#' an SBM model
+#' A class of function which modelisate the sampling design and then missing data in the graph.
 #'
 #' @field nNodes          number of nodes
-#' @field nBlocks         number of blocks
+#' @field missingParam    sampling parameters
 #' @field blockProportion vector of block proportion (a.k.a. alpha)
 #' @field modelParameters vector of model parameters (a.k.a. theta)
 #'
 #' @importFrom R6 R6Class
 #' @export
 sampling <-
-  R6Class(classname = "sampling",
+  R6::R6Class(classname = "sampling",
           public = list(
             ## fields
             nNodes         = NULL, # number of nodes
@@ -25,7 +25,7 @@ sampling <-
 
 #' @export
 sampling_doubleStandard <-
-  R6Class(classname = "sampling_doubleStandard",
+  R6::R6Class(classname = "sampling_doubleStandard",
           inherit = sampling,
           public = list(
             initialize = function(nNodes, missingParam, directed = FALSE) {
@@ -91,7 +91,7 @@ sampling_doubleStandard <-
 
 #' @export
 sampling_class <-
-  R6Class(classname = "sampling_class",
+  R6::R6Class(classname = "sampling_class",
           inherit = sampling,
           public = list(
             initialize = function(nNodes, missingParam, directed = FALSE) {
@@ -129,7 +129,7 @@ sampling_class <-
 
 #' @export
 sampling_starDegree <-
-  R6Class(classname = "sampling_starDegree",
+  R6::R6Class(classname = "sampling_starDegree",
           inherit = sampling,
           public = list(
             initialize = function(nNodes, missingParam, directed = FALSE) {
@@ -185,7 +185,7 @@ sampling_starDegree <-
 
 #' @export
 sampling_randomPairMAR <-
-  R6Class(classname = "sampling_randomPairMAR",
+  R6::R6Class(classname = "sampling_randomPairMAR",
           inherit = sampling,
           public = list(
             initialize = function(nNodes, missingParam, directed = FALSE) {
@@ -245,7 +245,7 @@ sampling_randomPairMAR <-
 
 #' @export
 sampling_randomNodesMAR <-
-  R6Class(classname = "sampling_randomNodesMAR",
+  R6::R6Class(classname = "sampling_randomNodesMAR",
           inherit = sampling,
           public = list(
             initialize = function(nNodes, missingParam, directed = FALSE) {
@@ -291,7 +291,7 @@ sampling_randomNodesMAR <-
 
 #' @export
 sampling_snowball <-
-  R6Class(classname = "sampling_snowball",
+  R6::R6Class(classname = "sampling_snowball",
           inherit = sampling,
           public = list(
             initialize = function(nNodes, missingParam, directed = FALSE) {
@@ -299,11 +299,19 @@ sampling_snowball <-
             },
             rSampling = function(adjMatrix) {
               samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-              obsNodes            <- which(runif(self$nNodes) < self$missingParam)
 
-              samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
+              # First step :
+              obsNodes       <- which(runif(self$nNodes) < self$missingParam)
+              samplingMatrix <- matrix(0,self$nNodes,self$nNodes)
+              samplingMatrix[obsNodes,] <- 1
+              samplingMatrix[,obsNodes] <- 1
+
+              # Second step :
+              obsNeighbours <- apply(adjMatrix[obsNodes, ], 1, function(x) which(x != 0))
+              obsNeighbours <- unique(unlist(obsNeighbours))
+              samplingMatrix[obsNeighbours, ] <- samplingMatrix[, obsNeighbours] <- 1
+
               diag(samplingMatrix) <- 1
-              samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
 
               sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
               return(sampledNetwork$new(sampAdjMatrix, self$directed))
@@ -321,4 +329,7 @@ sampling_snowball <-
             }
           )
   )
+
+
+
 

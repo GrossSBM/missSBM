@@ -9,7 +9,7 @@
 #' @importFrom R6 R6Class
 #' @export
 SBM_VEMfit <-
-  R6Class(classname = "SBM_VEMfit",
+  R6::R6Class(classname = "SBM_VEMfit",
           public = list(
             ## fields
             completedNetwork = NULL, # the completed adjacency matrix of the initial network
