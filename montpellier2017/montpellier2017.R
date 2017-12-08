@@ -13,10 +13,10 @@ graph <- function(pir,dens,top){
   if(!is.null(dens)){
     pir <- switch(top,
                   "1" = dens,
-                  "2" = (36/54)*dens,
-                  "3" = (36/54)*dens,
-                  "4" = (9/15)*dens,
-                  "5" = (9/15)*dens)
+                  "2" = (9/15)*dens,     # (36/54)*dens,
+                  "3" = (9/15)*dens,   #(36/54)*dens,
+                  "4" = (25/31)*dens,  #(9/15)*dens,
+                  "5" = (25/31)*dens)  # (9/15)*dens)
   }
   pia <- 3*pir
   pi_com <- matrix(c(pia, pir ,pir, pir, pia, pir, pir, pir, pia),3,3)
@@ -50,30 +50,37 @@ graph <- function(pir,dens,top){
   return(X)
 }
 
-A <- graph(dens=.0005, top="5")
+A <- graph(dens=.005, top="5")
+G=graph_from_adjacency_matrix(A,mode="directed")
+plot(G)
+summary(degree(G))
 
 #### Simulations :
 
 npv=100
 nv=3
 
-densities <- seq(.00005, .2, length = 50)
+densities <- seq(.005, .1, length = 50)
 topologies <- as.character(1:5)
 res <- data.frame()
 
+
+
 for(top in topologies){
   for(dens in densities){
+    for (k in 1:10){
     matAdj <- graph(dens=dens,top=top)
-
+    n=nrow(matAdj)
     SN1=snowball_village(npv,nv,1,10,matAdj)
     SN2=snowball_village(npv,nv,2,1,matAdj)
-    res <- rbind.data.frame(res, data.frame(topology = top, density = dens, samplingRate = c(length(SN1)/300, length(SN2)/300), step = c("One step","Two steps")))
-  }
+    res <- rbind.data.frame(res, data.frame(topology = top, density = dens,empdensity = sum(matAdj)/(n*n-n), samplingRate = c(length(SN1)/300, length(SN2)/300), step = c("One step","Two steps")))
+    }
+      }
 }
 
 #### Représentation graphique :
-
-ggplot(res, aes(x=density, y=samplingRate, color=topology)) + geom_smooth(se=FALSE) + geom_point() + facet_grid(. ~ step) + theme_bw(base_size = 30)
+boxplot(res$density-res$empdensity~res$topology)
+ggplot(res, aes(x=density, y=samplingRate, color=topology, linetype = step)) + geom_smooth(se=FALSE) + geom_point() #+ facet_grid(. ~ step) + theme_bw(base_size = 20)
 
 
 
