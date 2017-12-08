@@ -299,10 +299,10 @@ sampling_snowball <-
             },
             rSampling = function(adjMatrix) {
               samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
+              # browser()
 
               # First step :
               obsNodes       <- which(runif(self$nNodes) < self$missingParam)
-              samplingMatrix <- matrix(0,self$nNodes,self$nNodes)
               samplingMatrix[obsNodes,] <- 1
               samplingMatrix[,obsNodes] <- 1
 
@@ -320,7 +320,7 @@ sampling_snowball <-
               return(log((self$missingParam^sampledNetwork$samplingVector)%*%((1-self$missingParam)^(1-sampledNetwork$samplingVector))))
             },
             penality = function(nBlocks) {
-              if(directed){
+              if(self$directed){
                 return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + nBlocks*log(self$nNodes))
               }
               else {

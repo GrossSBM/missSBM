@@ -69,10 +69,10 @@ npv=100
 nv=3
 
 snowball_samplingrate(npv,nv,1,100,sum(A)/((npv*nv)^2-npv*nv))
-SN=snowball_village(npv,nv,1,10,A)
-length(SN)/300
+SN=snowball_village(npv,nv,1,6,A)
+length(SN)
 
-snowball_samplingrate(npv,nv,2,50,sum(A)/((npv*nv)^2-npv*nv))
+snowball_samplingrate(npv,nv,2,100,sum(A)/((npv*nv)^2-npv*nv))
 SN=snowball_village(npv,nv,2,1,A)
 length(SN)
 

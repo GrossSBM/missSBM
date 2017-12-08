@@ -48,7 +48,9 @@ SBM_VEMfit <-
                                           - sum(self$blockVarParam*log(self$blockVarParam + 1*(self$blockVarParam==0))))
                 self$compLogLik       <- c(self$compLogLik, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork))
 
-                self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork,  self$blockVarParam, self$taylorVarParam)
+                if(!(class(self$sampling)[1] == "sampling_snowball")){
+                  self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork,  self$blockVarParam, self$taylorVarParam)
+                }
               }
             },
             Mstep            = function() {
@@ -59,7 +61,7 @@ SBM_VEMfit <-
               }
             },
 
-            initialize       = function(SBM, sampledNetwork, sampling, init = "SpectralC", blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
+            initialize       = function(SBM, sampledNetwork, sampling, init = "CAH", blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
               self$sampledNetwork   <- sampledNetwork
               self$init             <- init
               self$SBM              <- SBM
@@ -140,10 +142,9 @@ SBM_VEMfit$set("public", "initialization",
                  }
                  self$completedNetwork[is.na(self$completedNetwork)] <- 0
                  theta <- (t(self$blockVarParam)%*% self$completedNetwork %*%self$blockVarParam) / (t(self$blockVarParam)%*%((1-diag(self$SBM$nNodes)))%*%self$blockVarParam)
-                 if(!(class(self$SBM)[2] %in% c("SBM_PoissonDirected", "SBM_PoissonUndirected"))){
+                 if(!(class(self$SBM)[2] %in% c("SBM_PoissonDirected", "SBM_PoissonUndirected")) & !(class(self$sampling)[1] == "sampling_snowball")){
                    self$completedNetwork[self$sampledNetwork$missingDyads] <- ((self$blockVarParam) %*% theta %*% t(self$blockVarParam))[self$sampledNetwork$missingDyads]
                  }
-
                }
 )
 
@@ -170,8 +171,13 @@ SBM_VEMfit$set("public", "doVEM",
                      cond    <- (i > self$maxIterVEM) |  (conv[i] < self$controlVEM)
                    }
                  }
-                 self$vICL <- -2 * (self$compLogLik[length(self$compLogLik)] + self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork, self$blockVarParam)) +
-                                self$sampling$penality(self$SBM$nBlocks)
+                 if(!(class(self$sampling)[1] == "sampling_snowball")){
+                   self$vICL <- -2 * (self$compLogLik[length(self$compLogLik)] + self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork, self$blockVarParam)) +
+                     self$sampling$penality(self$SBM$nBlocks)
+                 } else {
+                   self$vICL <- -2 * self$compLogLik[length(self$compLogLik)] + self$sampling$penality(self$SBM$nBlocks)
+
+                 }
                }
 )
 
