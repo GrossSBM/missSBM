@@ -68,7 +68,7 @@ res <- data.frame()
 
 for(top in topologies){
   for(dens in densities){
-    for (k in 1:10){
+    for (k in 1:20){
     matAdj <- graph(dens=dens,top=top)
     n=nrow(matAdj)
     SN1=snowball_village(npv,nv,1,10,matAdj)
@@ -80,7 +80,7 @@ for(top in topologies){
 
 #### Représentation graphique :
 boxplot(res$density-res$empdensity~res$topology)
-ggplot(res, aes(x=density, y=samplingRate, color=topology, linetype = step)) + geom_smooth(se=FALSE) + geom_point() #+ facet_grid(. ~ step) + theme_bw(base_size = 20)
+ggplot(res, aes(x=density, y=samplingRate, color=topology, linetype = step)) + geom_smooth(se=FALSE) #+ geom_point() #+ facet_grid(. ~ step) + theme_bw(base_size = 20)
 
 
 
