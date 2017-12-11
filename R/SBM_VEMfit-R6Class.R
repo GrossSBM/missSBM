@@ -54,6 +54,7 @@ SBM_VEMfit <-
               }
             },
             Mstep            = function() {
+              # browser()
               if(!(class(self$sampling)[1] %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball"))){
                 self$SBM <- self$SBM$maximization(self$SBM, self$completedNetwork, self$blockVarParam)
               } else {
@@ -61,7 +62,7 @@ SBM_VEMfit <-
               }
             },
 
-            initialize       = function(SBM, sampledNetwork, sampling, init = "CAH", blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
+            initialize       = function(SBM, sampledNetwork, sampling, init = "spectralC", blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
               self$sampledNetwork   <- sampledNetwork
               self$init             <- init
               self$SBM              <- SBM
