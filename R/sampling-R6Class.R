@@ -253,7 +253,7 @@ sampling_randomNodesMAR <-
             },
             rSampling = function(adjMatrix) {
               samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-              obsNodes       <- which(runif(self$nNodes) < rep(self$missingParam, self$nNodes))
+              obsNodes       <- sample(1:self$nNodes, floor((self$nNodes)*self$missingParam))
 
               samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
               diag(samplingMatrix) <- 1

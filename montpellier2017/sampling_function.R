@@ -28,7 +28,7 @@ snowball_village=function(npv,nv,S,nfb,A)
 }
 
 
-snowball_village(100,3,2,10,A)
+# snowball_village(100,3,2,10,A)
 
 
 #garantir taux d echantillonnage
@@ -65,15 +65,15 @@ snowball_samplingrate=function(npv,nv,S,NS,density)
 
 }
 
-npv=100
-nv=3
-
-snowball_samplingrate(npv,nv,1,100,sum(A)/((npv*nv)^2-npv*nv))
-SN=snowball_village(npv,nv,1,6,A)
-length(SN)
-
-snowball_samplingrate(npv,nv,2,100,sum(A)/((npv*nv)^2-npv*nv))
-SN=snowball_village(npv,nv,2,1,A)
-length(SN)
+# npv=100
+# nv=3
+#
+# snowball_samplingrate(npv,nv,1,100,sum(A)/((npv*nv)^2-npv*nv))
+# SN=snowball_village(npv,nv,1,6,A)
+# length(SN)
+#
+# snowball_samplingrate(npv,nv,2,100,sum(A)/((npv*nv)^2-npv*nv))
+# SN=snowball_village(npv,nv,2,1,A)
+# length(SN)
 
 
