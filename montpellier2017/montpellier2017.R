@@ -112,9 +112,10 @@ for(p in pir){
     Q <- ifelse(top %in% c("2", "3"), Q <- 3, Q <- 6)
     for(sampR in samplingRate){
       cat("s")
-      res <- rbind(res,do.call(rbind, mclapply(1:200, function(i){
+      res <- rbind(res,do.call(rbind, mclapply(1:1, function(i){
         g <- graph(pir=p,top=top)
-        matAdj <- g$matAdj
+        matAdj <- g$matAd
+        type <- 1
 
         ### SN0 ###
         nbreI0 <- sampR*300
@@ -155,7 +156,7 @@ for(p in pir){
         VEM_SN1 <- SBM_collection$new(matAdj_N1, Q, "snowball", "Bernoulli", TRUE)
         VEM_SN2 <- SBM_collection$new(matAdj_N2, Q, "snowball", "Bernoulli", TRUE)
 
-        if(abs(length(SN2)-length(SN0)) <= 30){
+        if(abs(length(SN2)-length(SN0)) > 30){type <- 0}
           return(data.frame(density = dens,
                             topology = paste0("topology : ",top),
                             samplingRate = factor(sampR),
@@ -165,20 +166,20 @@ for(p in pir){
                             diffSampRate  = c(0, abs(length(SN1)-length(SN0)), abs(length(SN2)-length(SN0))),
                             ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
                                   adjustedRandIndex(apply(VEM_SN1$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
-                                  adjustedRandIndex(apply(VEM_SN2$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)))))
-        }
-      }, mc.cores = 4)))
+                                  adjustedRandIndex(apply(VEM_SN2$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q))),
+                            type = type))
+      }, mc.cores = 1)))
     }
   }
 }
 
 
-save(res, file = "montpellier2017-2AuCasOu.RData")
-# load("montpellier2017/montpellier2017.RData")
-
-#### Représentation graphique :
-ggplot(res, aes(x=samplingRate, y=ARI, fill = Sampling, colour = Sampling)) +
-geom_boxplot() + facet_grid(topology ~ density) #+ theme_bw(base_size = 20)
+# save(res, file = "montpellier2017-2AuCasOu.RData")
+# # load("montpellier2017/montpellier2017.RData")
+#
+# #### Représentation graphique :
+# ggplot(res, aes(x=samplingRate, y=ARI, fill = Sampling, colour = Sampling)) +
+# geom_boxplot() + facet_grid(topology ~ density) #+ theme_bw(base_size = 20)
 
 
 
