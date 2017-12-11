@@ -109,9 +109,10 @@ for(p in pir){
     Q <- ifelse(top %in% c("2", "3"), Q <- 3, Q <- 6)
     for(sampR in samplingRate){
       cat("s")
-      res <- rbind(res,do.call(rbind, mclapply(1:8, function(i){
+
+      res <- rbind(res,do.call(rbind, mclapply(1:1, function(i){
         g <- graph(pir=p,top=top)
-        matAdj <- g$matAdj
+        matAdj <- g$matAd
         type <- 1
 
         ### SN0 ###
@@ -166,21 +167,22 @@ for(p in pir){
                                   adjustedRandIndex(apply(VEM_SN2$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q))),
                             type = type))
 
-      }, mc.cores = 8)))
+      }, mc.cores = 1)))
     }
   }
 }
-
-
-# save(res, file = "~/Git/missSBM/montpellier2017/montpellier2017-3.RData")
-# load("~/Git/missSBM/montpellier2017/montpellier2017-2AuCasOu.RData")
 
 # mean(as.numeric(as.character(res1[which(res1$Sampling == "SN1"),]$samplingRate))*300 - res1[which(res1$Sampling == "SN1"),]$NbreTotNoeuds)
 
 
 #### Représentation graphique :
-ggplot(res, aes(x=samplingRate, y=ARI, fill = Sampling)) +
-geom_boxplot() + facet_grid(topology ~ density) #+ theme_bw(base_size = 20)
+
+# save(res, file = "montpellier2017-2AuCasOu.RData")
+# # load("montpellier2017/montpellier2017.RData")
+#
+# #### Représentation graphique :
+# ggplot(res, aes(x=samplingRate, y=ARI, fill = Sampling, colour = Sampling)) +
+# geom_boxplot() + facet_grid(topology ~ density) #+ theme_bw(base_size = 20)
 
 
 #### Simulations à refaire : ####
