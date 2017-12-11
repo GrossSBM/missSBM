@@ -117,7 +117,7 @@ sampling_class <-
               return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
             },
             penality = function(nBlocks) {
-              if(directed){
+              if(self$directed){
                 return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + 2*(nBlocks-1)*log(self$nNodes))
               } else {
                 return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
@@ -167,7 +167,7 @@ sampling_starDegree <-
               return(psi)
             },
             penality = function(nBlocks) {
-              if(directed){
+              if(self$directed){
                 return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + 2*(nBlocks-1)*log(self$nNodes))
               } else {
                 return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))

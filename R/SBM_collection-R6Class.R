@@ -36,7 +36,7 @@ SBM_collection$set("public", "initialize",
                     "BernoulliDirected"   = SBM_BernoulliDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
                     "PoissonUndirected"   = SBM_PoissonUndirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
                     "PoissonDirected"     = SBM_PoissonDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05))
-      SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData)
+      SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData, init = "CAH")
       if(self$family == "Bernoulli"){
         SBM_VEMfit$doVEM()
       } else {
@@ -44,7 +44,7 @@ SBM_collection$set("public", "initialize",
       }
       return(SBM_VEMfit)
     }
-    , mc.cores = 5)
+    , mc.cores = 1)
     self$vICLs <- sapply(self$models, function(x){x$vICL})
   }
 )

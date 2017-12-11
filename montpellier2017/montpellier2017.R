@@ -2,8 +2,8 @@ library(igraph)
 library(ggplot2)
 library(missSBM)
 library(mclust)
-source("~/Documents/samplesbm/Code/code_these/functions/func_init.R")
-source("~/Documents/missSBM/montpellier2017/sampling_function.R")
+library(parallel)
+source("~/Git/missSBM/montpellier2017/sampling_function.R")
 
 #### Simulation des graphes :
 
@@ -25,9 +25,6 @@ graph <- function(pir=NULL,dens=NULL,top){
   pi_com <- matrix(c(pia, pir ,pir, pir, pia, pir, pir, pir, pia),3,3)
   pi_hub <- matrix(c(pia,pia,pir,pir,pir,pir, pia,pir,pir,pir,pir,pir, pir,pir,pia,pia,pir,pir, pir,pir,pia,pir,pir,pir,
                      pir,pir,pir,pir,pia,pia, pir,pir,pir,pir,pia,pir),6,6)
-
-
-  # browser()
 
   if(top=="1"){
     Z <- 1
@@ -112,9 +109,10 @@ for(p in pir){
     Q <- ifelse(top %in% c("2", "3"), Q <- 3, Q <- 6)
     for(sampR in samplingRate){
       cat("s")
-      res <- rbind(res,do.call(rbind, mclapply(1:200, function(i){
+      res <- rbind(res,do.call(rbind, mclapply(1:8, function(i){
         g <- graph(pir=p,top=top)
         matAdj <- g$matAdj
+        type <- 1
 
         ### SN0 ###
         nbreI0 <- sampR*300
@@ -145,7 +143,7 @@ for(p in pir){
           cond <- (abs(length(SN2) - nbreI0) > 30)
           while(cond){
             SN2    <- snowball_village(npv,nv,2,floor(nbreI2),matAdj)
-            cond <- (abs(length(SN2) - nbreI0) > 30) & (i < 20)
+            cond <- (abs(length(SN2) - nbreI0) > 30) & (i < 10)
             i <- i+1
           }
         }
@@ -155,7 +153,7 @@ for(p in pir){
         VEM_SN1 <- SBM_collection$new(matAdj_N1, Q, "snowball", "Bernoulli", TRUE)
         VEM_SN2 <- SBM_collection$new(matAdj_N2, Q, "snowball", "Bernoulli", TRUE)
 
-        if(abs(length(SN2)-length(SN0)) <= 30){
+        if(abs(length(SN2)-length(SN0)) > 30){type <- 0}
           return(data.frame(density = dens,
                             topology = paste0("topology : ",top),
                             samplingRate = factor(sampR),
@@ -165,20 +163,86 @@ for(p in pir){
                             diffSampRate  = c(0, abs(length(SN1)-length(SN0)), abs(length(SN2)-length(SN0))),
                             ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
                                   adjustedRandIndex(apply(VEM_SN1$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
-                                  adjustedRandIndex(apply(VEM_SN2$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)))))
-        }
-      }, mc.cores = 4)))
+                                  adjustedRandIndex(apply(VEM_SN2$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q))),
+                            type = type))
+
+      }, mc.cores = 8)))
     }
   }
 }
 
 
-save(res, file = "montpellier2017-2AuCasOu.RData")
-# load("montpellier2017/montpellier2017.RData")
+# save(res, file = "~/Git/missSBM/montpellier2017/montpellier2017-3.RData")
+# load("~/Git/missSBM/montpellier2017/montpellier2017-2AuCasOu.RData")
+
+# mean(as.numeric(as.character(res1[which(res1$Sampling == "SN1"),]$samplingRate))*300 - res1[which(res1$Sampling == "SN1"),]$NbreTotNoeuds)
+
 
 #### Représentation graphique :
-ggplot(res, aes(x=samplingRate, y=ARI, fill = Sampling, colour = Sampling)) +
+ggplot(res, aes(x=samplingRate, y=ARI, fill = Sampling)) +
 geom_boxplot() + facet_grid(topology ~ density) #+ theme_bw(base_size = 20)
+
+
+#### Simulations à refaire : ####
+
+
+sim <- rbind(c(.02,"2",.5),c(.03,"2",.5),c(.03,"2",.7),c(.04,"2",.5),c(.04,"2",.7),c(.05,"2",.7),
+            c(.02,"3",.3),c(.02,"3",.5),c(.03,"3",.5),c(.03,"3",.7),c(.04,"3",.5),c(.04,"3",.7),c(.05,"3",.7),
+            c(.01,"4",.7),c(.04,"4",.5),c(.05,"4",.5),c(.05,"4",.7),
+            c(.01,"5",.7),c(.04,"5",.5),c(.05,"5",.5),c(.05,"5",.7))
+
+output <- apply(sim, 1, function(x){
+  pir   <- as.numeric(x[1])
+  top   <- x[2]
+  sampR <- as.numeric(x[3])
+  cat('+')
+
+  dens <- switch(top,
+                 "1" = p,
+                 "2" = (15/9)*p,
+                 "3" = (15/9)*p,
+                 "4" = (31/25)*p,
+                 "5" = (31/25)*p)
+  Q <- ifelse(top %in% c("2", "3"), Q <- 3, Q <- 6)
+
+  res <- rbind(res,do.call(rbind, mclapply(1:32, function(i){
+    g <- graph(pir=p,top=top)
+    matAdj <- g$matAdj
+    type <- 1
+
+    ### SN0 ###
+    nbreI0 <- sampR*300
+    SN0    <- sample(1:300, nbreI0, replace = F)
+    matAdj_N0 <- matrix(NA,300,300) ; matAdj_N0[SN0,] <- matAdj[SN0,] ; matAdj_N0[,SN0] <- matAdj[,SN0]
+
+    ### SN1 ###
+    nbreI1 <- floor(snowball_samplingrate(npv,nv,1,nbreI0,dens))
+    cond <- TRUE
+    while(cond){
+      SN1    <- snowball_village(npv,nv,1,nbreI1,matAdj)
+      cond <- (abs(length(SN1) - nbreI0) > 20) & (nbreI1 > 1)
+      nbreI1 <- nbreI1 - 1
+    }
+    matAdj_N1 <- matrix(NA,300,300) ; matAdj_N1[SN1,] <- matAdj[SN1,] ; matAdj_N1[,SN1] <- matAdj[,SN1]
+
+    VEM_SN0 <- SBM_collection$new(matAdj_N0, Q, "MARNode", "Bernoulli", TRUE)
+    VEM_SN1 <- SBM_collection$new(matAdj_N1, Q, "snowball", "Bernoulli", TRUE)
+
+    return(data.frame(density = dens,
+                      topology = paste0("topology : ",top),
+                      samplingRate = factor(sampR),
+                      Sampling = c("SN0", "SN1"),
+                      NbreNoeudsInit = c(nbreI0, nbreI1),
+                      NbreTotNoeuds = c(length(SN0), length(SN1)),
+                      diffSampRate  = c(0, abs(length(SN1)-length(SN0))),
+                      ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
+                            adjustedRandIndex(apply(VEM_SN1$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)))))
+
+  }, mc.cores = 8)))
+})
+
+
+
 
 
 
