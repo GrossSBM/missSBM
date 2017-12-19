@@ -197,8 +197,9 @@ SBM_BernoulliDirected.fit <-
               completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
               blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
                                                   completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)) +
-                                                  t(completedNetwork) %*% blockVarParam %*% t(log(SBM$connectParam)) +
-                                                  t(completedNetwork.bar) %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
+                                                  t(completedNetwork) %*% blockVarParam %*% t(log(t(SBM$connectParam))) +
+                                                  t(completedNetwork.bar) %*% blockVarParam %*% t(log(1-t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
+
               num                  <- rowSums(blockVarParam.new)
               blockVarParam.new    <- blockVarParam.new/num
               blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
@@ -208,8 +209,9 @@ SBM_BernoulliDirected.fit <-
               completedNetwork.bar <- (1 - completedNetwork)*samplingMatrix; diag(completedNetwork.bar) <- 0
               blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
                                                   completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)) +
-                                                  t(completedNetwork) %*% blockVarParam %*% t(log(SBM$connectParam)) +
-                                                  t(completedNetwork.bar) %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
+                                                  t(completedNetwork) %*% blockVarParam %*% t(log(t(SBM$connectParam))) +
+                                                  t(completedNetwork.bar) %*% blockVarParam %*% t(log(1-t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
+
               num                  <- rowSums(blockVarParam.new)
               blockVarParam.new    <- blockVarParam.new/num
               blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
@@ -315,10 +317,6 @@ SBM_PoissonDirected.fit <-
               blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
                                                   log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
                                                   (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t((SBM$connectParam + t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
-
-              # blockVarParam.new    <- exp(log(matrix(self$connectParam,nrow=self$nNodes,ncol=self$nBlocks,byrow=T)) + completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
-              #                                     log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
-              #                                     (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t(SBM$connectParam + t(SBM$connectParam)))
 
               num                  <- rowSums(blockVarParam.new)
               blockVarParam.new    <- blockVarParam.new/num

@@ -3,7 +3,7 @@ library(ggplot2)
 library(missSBM)
 library(mclust)
 library(parallel)
-source("~/Documents/missSBM/montpellier2017/sampling_function.R")
+source("~/Git/missSBM/montpellier2017/sampling_function.R")
 
 #### Simulation des graphes :
 
@@ -57,22 +57,16 @@ graph <- function(n,pir=NULL,dens=NULL,top){
   return(list(matAdj = X, Z=Z))
 }
 
-# A <- graph(dens=.02, top="2")
-# G=graph_from_adjacency_matrix(A$matAdj,mode="directed")
-# plot(G)
-# summary(degree(G))
-#
-# #### Simulations 1 :
-#
+
+#### Simulations 1 :
+
 # npv=100
 # nv=3
 #
 # densities <- seq(.0005, .05, length = 50)
 # topologies <- as.character(1:5)
 # res <- data.frame()
-#
-#
-#
+
 # for(top in topologies){
 #   for(dens in densities){
 #     for (k in 1:1){
@@ -84,15 +78,15 @@ graph <- function(n,pir=NULL,dens=NULL,top){
 #     }
 #       }
 # }
-#
+
 # #### Représentation graphique :
 # boxplot(res$density-res$empdensity~res$topology)
-# ggplot(res, aes(x=density, y=samplingRate, color=topology, linetype = step)) + geom_smooth(se=FALSE) #+ geom_point() #+ facet_grid(. ~ step) + theme_bw(base_size = 20)
+# ggplot(res, aes(x=density, y=samplingRate, color=topology, linetype = step)) + geom_smooth(se=FALSE)
 
 
 
-# #### Simulation 2 :
-#
+#### Simulation 2 :
+
 # npv=100
 # nv=3
 #
