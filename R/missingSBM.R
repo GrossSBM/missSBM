@@ -2,7 +2,6 @@
 #'
 #' @description \code{missingSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix
 #'
-#'
 #' @param sampledNetwork The sampled network data (a square matrix)
 #' @param vBlocks The vector of number of blocks considered in the collection
 #' @param sampling The sampling design for missing data modeling : MAREdge, doubleStandard, MARNode, snowball, starDegree, class
@@ -11,8 +10,23 @@
 #' by default "undirected" is choosen
 #' @return \code{missingSBM} returns a \code{\link{SBM_collection}} object.
 #' @author T. Tabouy
-#' @references [1] Tabouy et al., Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
+#' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{SBM_collection}}.
+#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered sampling, for
+#' more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{MAREdge:
+#' \deqn{\forall (i,j) \in \{1,\dots,n\}^2,\quad \mathbb{P}(R_{ij}=1)=\rho}}
+#' \item{MARnode:
+#' \deqn{\forall i \in \{1,\dots,n\},\quad \mathbb{P}(S_{i}=1)=\rho}}
+#' \item{snowball (one step):
+#' It is like the MARNode plus you sample the neighbours of nodes sampled at the first batch}
+#' }
+#' \item Not Missing At Random (NMAR) \itemize{ \item{doubleStandard:
+#' \deqn{ \mathbb{P}(R_{ij}=1|X_{ij}=1)=\rho_{1}, \mathbb{P}(R_{ij}=1|X_{ij}=0)=\rho_{0} }}
+#' \item{starDegree:
+#' \deqn{\mathbb{P}(S_{i}=1|D_i)=\mathbb{P}(Z \leqslant a+bD_i) \text{ where } D_i=\sum_j X_{ij}}}
+#' \item{class:
+#' \deqn{\forall i \in \{1,\dots,n\},\quad \mathbb{P}(S_{i}=1)=\rho}}
+#' }}
 #' @examples
 #' ## A SBM model : ##
 #' n <- 300
@@ -43,7 +57,7 @@
 #' sbm$models[[Q]]$SBM$mixtureParam                                                   # mixture parameters
 #'
 #' @export
-missingSBM <- function(sampledNetwork, vBlocks, sampling, family, directed){
+missingSBM <- function(sampledNetwork, vBlocks, sampling, family, directed = FALSE){
 
   library(R6)
   library(parallel)
