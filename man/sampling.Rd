@@ -3,20 +3,20 @@
 \docType{data}
 \name{sampling}
 \alias{sampling}
-\title{an SBM model}
+\title{A class of function which modelisate the sampling design and then missing data in the graph.}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 sampling
 }
 \description{
-an SBM model
+A class of function which modelisate the sampling design and then missing data in the graph.
 }
 \section{Fields}{
 
 \describe{
 \item{\code{nNodes}}{number of nodes}
 
-\item{\code{nBlocks}}{number of blocks}
+\item{\code{missingParam}}{sampling parameters}
 
 \item{\code{blockProportion}}{vector of block proportion (a.k.a. alpha)}
 

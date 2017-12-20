@@ -1,11 +1,3 @@
-#' an SBM model
-#'
-#' @field nNodes          number of nodes
-#' @field nBlocks         number of blocks
-#' @field blockProportion vector of block proportion (a.k.a. alpha)
-#' @field modelParameters vector of model parameters (a.k.a. theta)
-#'
-#' @importFrom R6 R6Class
 #' @export
 SBM <-
 R6::R6Class(classname = "SBM",

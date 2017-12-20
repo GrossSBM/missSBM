@@ -7,7 +7,7 @@
 \title{Bayesian calibration for computational codes}
 \description{
 The foo package provides three categories of important functions:
-\code{\link{nomADonner}}.
+\code{\link{missingSBM}}.
 }
 \details{
 Package: missSBM
@@ -28,7 +28,9 @@ vignette("missSBM-introduction")
 vignette("missSBM-package")
 }
 \references{
-Kolaczyk Erik D. (2009). Statistical Analysis of Network Data: Methods and Models. Springer.
+[1] Tabouy et al., Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
+
+[2] Kolaczyk Erik D. (2009). Statistical Analysis of Network Data: Methods and Models. Springer.
 }
 \author{
 Timothée Tabouy

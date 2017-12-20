@@ -14,7 +14,7 @@ Collate:
     'SBM_VEMfit-R6Class.R'
     'SBM_collection-R6Class.R'
     'missSBM-package.R'
-    'function.R'
+    'missingSBM.R'
     'sampledNetwork-R6Class.R'
     'sampling-R6Class.R'
 RoxygenNote: 6.0.1

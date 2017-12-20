@@ -15,10 +15,10 @@ graph <- function(n,pir=NULL,dens=NULL,top){
   if(!is.null(dens)){
     pir <- switch(top,
                   "1" = dens,
-                  "2" = (9/15)*dens,
-                  "3" = (9/15)*dens,
-                  "4" = (25/31)*dens,
-                  "5" = (25/31)*dens,
+                  "2" = (3/7)*dens,
+                  "3" = (3/7)*dens,
+                  "4" = (900/1332)*dens,
+                  "5" = (900/1332)*dens,
                   "6" = (3/7)*dens)
   }
   pia <- 5*pir
@@ -87,166 +87,168 @@ graph <- function(n,pir=NULL,dens=NULL,top){
 
 #### Simulation 2 :
 
-# npv=100
-# nv=3
-#
-# samplingRate <- c(.3,.5,.7)
-# pir <- c(.01, .02, .03, .04, .05)
-# topologies <- as.character(2:5)
-# res <- data.frame()
-#
-# for(p in pir){
-#   cat("+")
-#   for(top in topologies){
-#     dens <- switch(top,
-#                    "1" = p,
-#                    "2" = (15/9)*p,
-#                    "3" = (15/9)*p,
-#                    "4" = (31/25)*p,
-#                    "5" = (31/25)*p)
-#     cat("t")
-#     Q <- ifelse(top %in% c("2", "3"), Q <- 3, Q <- 6)
-#     for(sampR in samplingRate){
-#       cat("s")
-#
-#       res <- rbind(res,do.call(rbind, mclapply(1:60, function(i){
-#         g <- graph(pir=p,top=top)
-#         matAdj <- g$matAd
-#         type <- 1
-#
-#         ### SN0 ###
-#         nbreI0 <- sampR*300
-#         SN0    <- sample(1:300, nbreI0, replace = F)
-#         matAdj_N0 <- matrix(NA,300,300) ; matAdj_N0[SN0,] <- matAdj[SN0,] ; matAdj_N0[,SN0] <- matAdj[,SN0]
-#
-#         ### SN1 ###
-#         nbreI1 <- floor(snowball_samplingrate(npv,nv,1,nbreI0,dens))
-#         cond <- TRUE
-#         while(cond){
-#           SN1    <- snowball_village(npv,nv,1,nbreI1,matAdj)
-#           cond <- (abs(length(SN1) - nbreI0) > 20) & (nbreI1 > 1)
-#           nbreI1 <- nbreI1 - 1
-#         }
-#         matAdj_N1 <- matrix(NA,300,300) ; matAdj_N1[SN1,] <- matAdj[SN1,] ; matAdj_N1[,SN1] <- matAdj[,SN1]
-#
-#         ### SN2 ###
-#         nbreI2 <- floor(snowball_samplingrate(npv,nv,2,nbreI0,dens))
-#         cond <- TRUE
-#         while(cond){
-#           SN2    <- snowball_village(npv,nv,1,nbreI2,matAdj)
-#           cond <- (abs(length(SN2) - nbreI0) > 30) & (nbreI2 > 1)
-#           if(cond) nbreI2 <- nbreI2 - 1
-#         }
-#
-#         if(nbreI2 == 1){
-#           i <- 1
-#           cond <- (abs(length(SN2) - nbreI0) > 30)
-#           while(cond){
-#             SN2    <- snowball_village(npv,nv,2,floor(nbreI2),matAdj)
-#             cond <- (abs(length(SN2) - nbreI0) > 30) & (i < 10)
-#             i <- i+1
-#           }
-#         }
-#         matAdj_N2 <- matrix(NA,300,300) ; matAdj_N2[SN2,] <- matAdj[SN2,] ; matAdj_N2[,SN2] <- matAdj[,SN2]
-#
-#         VEM_SN0 <- SBM_collection$new(matAdj_N0, Q, "MARNode", "Bernoulli", TRUE)
-#         VEM_SN1 <- SBM_collection$new(matAdj_N1, Q, "snowball", "Bernoulli", TRUE)
-#         VEM_SN2 <- SBM_collection$new(matAdj_N2, Q, "snowball", "Bernoulli", TRUE)
-#
-#         if(abs(length(SN2)-length(SN0)) > 30){type <- 0}
-#           return(data.frame(density = dens,
-#                             pInter  = p,
-#                             topology = paste0("topology : ",top),
-#                             samplingRate = factor(sampR),
-#                             Sampling = c("SN0", "SN1", "SN2"),
-#                             NbreNoeudsInit = c(nbreI0, nbreI1, nbreI2),
-#                             NbreTotNoeuds = c(length(SN0), length(SN1), length(SN2)),
-#                             diffSampRate  = c(0, abs(length(SN1)-length(SN0)), abs(length(SN2)-length(SN0))),
-#                             ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
-#                                   adjustedRandIndex(apply(VEM_SN1$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
-#                                   adjustedRandIndex(apply(VEM_SN2$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q))),
-#                             type = type))
-#
-#       }, mc.cores = 4)))
-#     }
-#   }
-# }
+npv <- 100
+nv  <- 3
+n   <- 300
 
-#### Simulation 3 :
-
-npv=100
-nv=3
-n <- 600
-
-samplingRate <- c(1)
-pir <- c(.1)
-topologies <- as.character(6)
+samplingRate <- c(.2,.4,.6)
+pir <- c(.005, .01, .03, .05)
+topologies <- as.character(2:6)
 res <- data.frame()
 
 for(p in pir){
   cat("+")
   for(top in topologies){
     dens <- switch(top,
-                   "1" = p,
-                   "2" = (15/9)*p,
-                   "3" = (15/9)*p,
-                   "4" = (31/25)*p,
-                   "5" = (31/25)*p,
-                   "6" = (7/3)*p)
+                  "1" = p,
+                  "2" = (7/3)*p,
+                  "3" = (7/3)*p,
+                  "4" = (1332/900)*p,
+                  "5" = (1332/900)*p,
+                  "6" = (7/3)*p)
     cat("t")
     Q <- ifelse(top %in% c("2", "3", "6"), Q <- 3, Q <- 6)
     for(sampR in samplingRate){
       cat("s")
 
       res <- rbind(res,do.call(rbind, mclapply(1:1, function(i){
-        g <- graph(n,pir=p,top=top)
+        g <- graph(n=n,pir=p,top=top)
         matAdj <- g$matAd
         type <- 1
 
         ### SN0 ###
-        nbreI0 <- sampR*n
-        SN0    <- sample(1:n, nbreI0, replace = F)
-        matAdj_N0 <- matrix(NA,n,n) ; matAdj_N0[SN0,] <- matAdj[SN0,] ; matAdj_N0[,SN0] <- matAdj[,SN0]
+        nbreI0 <- sampR*300
+        SN0    <- sample(1:300, nbreI0, replace = F)
+        matAdj_N0 <- matrix(NA,300,300) ; matAdj_N0[SN0,] <- matAdj[SN0,] ; matAdj_N0[,SN0] <- matAdj[,SN0]
 
-        # ### SN1 ###
-        # nbreI1 <- ceiling(snowball_samplingrate(npv,nv,1,nbreI0,dens))
-        # cond <- TRUE
-        # while(cond){
-        #   SN1    <- snowball_village(npv,nv,1,nbreI1,matAdj)
-        #   cond <- (abs(length(SN1) - nbreI0) > 20) & (nbreI1 > 1)
-        #   if(cond) {nbreI1 <- nbreI1 - 1}
-        # }
-        # matAdj_N1 <- matrix(NA,300,300) ; matAdj_N1[SN1,] <- matAdj[SN1,] ; matAdj_N1[,SN1] <- matAdj[,SN1]
+        ### SN1 ###
+        nbreI1 <- floor(snowball_samplingrate(npv,nv,1,nbreI0,dens))
+        cond <- TRUE
+        while(cond){
+          SN1    <- snowball_village(npv,nv,1,nbreI1,matAdj)
+          cond <- (abs(length(SN1) - nbreI0) > 20) & (nbreI1 > 1)
+          nbreI1 <- nbreI1 - 1
+        }
+        matAdj_N1 <- matrix(NA,300,300) ; matAdj_N1[SN1,] <- matAdj[SN1,] ; matAdj_N1[,SN1] <- matAdj[,SN1]
 
+        ### SN2 ###
+        nbreI2 <- floor(snowball_samplingrate(npv,nv,2,nbreI0,dens))
+        cond <- TRUE
+        while(cond){
+          SN2    <- snowball_village(npv,nv,1,nbreI2,matAdj)
+          cond <- (abs(length(SN2) - nbreI0) > 30) & (nbreI2 > 1)
+          if(cond) nbreI2 <- nbreI2 - 1
+        }
+
+        if(nbreI2 == 1){
+          i <- 1
+          cond <- (abs(length(SN2) - nbreI0) > 30)
+          while(cond){
+            SN2    <- snowball_village(npv,nv,2,floor(nbreI2),matAdj)
+            cond <- (abs(length(SN2) - nbreI0) > 30) & (i < 10)
+            i <- i+1
+          }
+        }
+        matAdj_N2 <- matrix(NA,300,300) ; matAdj_N2[SN2,] <- matAdj[SN2,] ; matAdj_N2[,SN2] <- matAdj[,SN2]
 
         VEM_SN0 <- SBM_collection$new(matAdj_N0, Q, "MARNode", "Bernoulli", TRUE)
-        # VEM_SN1 <- SBM_collection$new(matAdj_N1, Q, "snowball", "Bernoulli", TRUE)
+        VEM_SN1 <- SBM_collection$new(matAdj_N1, Q, "snowball", "Bernoulli", TRUE)
+        VEM_SN2 <- SBM_collection$new(matAdj_N2, Q, "snowball", "Bernoulli", TRUE)
 
-        # return(data.frame(density = dens,
-        #                   pInter  = p,
-        #                   topology = paste0("topology : ",top),
-        #                   samplingRate = factor(sampR),
-        #                   Sampling = c("SN0", "SN1"),
-        #                   NbreNoeudsInit = c(nbreI0, nbreI1),
-        #                   NbreTotNoeuds = c(length(SN0), length(SN1)),
-        #                   diffSampRate  = c(0, abs(length(SN1)-length(SN0))),
-        #                   ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
-        #                         adjustedRandIndex(apply(VEM_SN1$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)))))
-
-        return(data.frame(density = dens,
-                          pInter  = p,
-                          topology = paste0("topology : ",top),
-                          samplingRate = factor(sampR),
-                          Sampling = c("SN0"),
-                          NbreNoeudsInit = c(nbreI0),
-                          NbreTotNoeuds = c(length(SN0)),
-                          ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)))))
-
+        if(abs(length(SN2)-length(SN0)) > 30){type <- 0}
+          return(data.frame(density = dens,
+                            pInter  = p,
+                            topology = paste0("topology : ",top),
+                            samplingRate = factor(sampR),
+                            Sampling = c("SN0", "SN1", "SN2"),
+                            NbreNoeudsInit = c(nbreI0, nbreI1, nbreI2),
+                            NbreTotNoeuds = c(length(SN0), length(SN1), length(SN2)),
+                            diffSampRate  = c(0, abs(length(SN1)-length(SN0)), abs(length(SN2)-length(SN0))),
+                            ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
+                                  adjustedRandIndex(apply(VEM_SN1$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
+                                  adjustedRandIndex(apply(VEM_SN2$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q))),
+                            type = type))
 
       }, mc.cores = 1)))
     }
   }
 }
+
+#### Simulation 3 :
+
+# npv=100
+# nv=3
+# n <- 300
+#
+# samplingRate <- c(.2,.4,.6)
+# pir <- c(.01, .05)
+# topologies <- as.character(6)
+# res <- data.frame()
+#
+# for(p in pir){
+#   cat("+")
+#   for(top in topologies){
+# pir <- switch(top,
+#               "1" = dens,
+#               "2" = (3/7)*dens,
+#               "3" = (3/7)*dens,
+#               "4" = (900/1332)*dens,
+#               "5" = (900/1332)*dens,
+#               "6" = (3/7)*dens)
+#     cat("t")
+#     Q <- ifelse(top %in% c("2", "3", "6"), Q <- 3, Q <- 6)
+#     for(sampR in samplingRate){
+#       cat("s")
+#
+#       res <- rbind(res,do.call(rbind, mclapply(1:40, function(i){
+#         g <- graph(n,pir=p,top=top)
+#         matAdj <- g$matAd
+#         type <- 1
+#
+#         ### SN0 ###
+#         nbreI0 <- sampR*n
+#         SN0    <- sample(1:n, nbreI0, replace = F)
+#         matAdj_N0 <- matrix(NA,n,n) ; matAdj_N0[SN0,] <- matAdj[SN0,] ; matAdj_N0[,SN0] <- matAdj[,SN0]
+#
+#         ### SN1 ###
+#         nbreI1 <- ceiling(snowball_samplingrate(npv,nv,1,nbreI0,dens))
+#         cond <- TRUE
+#         while(cond){
+#           SN1    <- snowball_village(npv,nv,1,nbreI1,matAdj)
+#           cond <- (abs(length(SN1) - nbreI0) > 20) & (nbreI1 > 1)
+#           if(cond) {nbreI1 <- nbreI1 - 1}
+#         }
+#         matAdj_N1 <- matrix(NA,300,300) ; matAdj_N1[SN1,] <- matAdj[SN1,] ; matAdj_N1[,SN1] <- matAdj[,SN1]
+#
+#
+#         VEM_SN0 <- SBM_collection$new(matAdj_N0, Q, "MARNode", "Bernoulli", TRUE)
+#         VEM_SN1 <- SBM_collection$new(matAdj_N1, Q, "snowball", "Bernoulli", TRUE)
+#
+#         return(data.frame(density = dens,
+#                           pInter  = p,
+#                           topology = paste0("topology : ",top),
+#                           samplingRate = factor(sampR),
+#                           Sampling = c("SN0", "SN1"),
+#                           NbreNoeudsInit = c(nbreI0, nbreI1),
+#                           NbreTotNoeuds = c(length(SN0), length(SN1)),
+#                           diffSampRate  = c(0, abs(length(SN1)-length(SN0))),
+#                           ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)),
+#                                 adjustedRandIndex(apply(VEM_SN1$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)))))
+#
+#         # return(data.frame(density = dens,
+#         #                   pInter  = p,
+#         #                   topology = paste0("topology : ",top),
+#         #                   samplingRate = factor(sampR),
+#         #                   Sampling = c("SN0"),
+#         #                   NbreNoeudsInit = c(nbreI0),
+#         #                   NbreTotNoeuds = c(length(SN0)),
+#         #                   ARI=c(adjustedRandIndex(apply(VEM_SN0$models[[1]]$blockVarParam, 1, which.max), g$Z %*% (1:Q)))))
+#
+#
+#       }, mc.cores = 8)))
+#     }
+#   }
+# }
 
 
 # #### Représentation graphique :

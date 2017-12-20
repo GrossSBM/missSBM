@@ -60,7 +60,7 @@ snowball_samplingrate=function(npv,nv,S,NS,density)
       if (n-nfirst*nv-NB1<0) stop("one wave is enough")
       return((n-nfirst*nv-NB1)*(1-(1-density)^NB1) )
     }
-    return( optimize(function(x) abs(NS-expect(x)-expect2(x)),interval = c(1,npv) )$minimum )
+    return( optimize(function(x) abs(NS-expect(x)-expect2(x)),interval = c(1,npv))$minimum )
   }
 
 }
