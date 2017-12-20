@@ -1,10 +1,15 @@
-#' an SBM fit, i.e. an adjusted SBM
+#'@title An adjusted SBM
 #'
-#' @field completedNetwork
-#' @field missingDyadsProb
-#' @field blocksProb
-#' @field lowerBound
-#' @field ICL
+#'@description A R6-class which apply a Variational E-M to a given SBM with a given number of groups.
+#'
+#'@param SBM A R6-class object SBM (of class SBM) which encode the model
+#'@param sampledNetwork A R6-class object sampled Network (of class sampledNetwork) which encode the data
+#'@param sampling A R6-class object sampling (of class sampling) which encode the sampling design
+#'@param init By default doing a spectral clustering ("spectralC"), can also be "CAH" a hierachical clustering more robust than spectral clustering
+#'with sparse networks
+#'@param blockInit By default equal to NULL, ad-hoc clustering to initialize the algorithm
+#'@param controlVEM By default equal to 1e-5, stop criterion to say that the algorithm has converged
+#'@param maxIterVEM By default equal to 100, stop criterion
 #'
 #' @importFrom R6 R6Class
 #' @export
@@ -41,7 +46,6 @@ SBM_VEMfit <-
                 self$sampling$missingParam <- self$sampling$updatePsi(self$completedNetwork, self$sampledNetwork,  self$blockVarParam, self$taylorVarParam)
               } else {
                 # for(i in 1:5){
-                # browser()
                   self$blockVarParam    <- self$SBM$fixPoint_MAR(self$SBM, self$blockVarParam, self$completedNetwork, self$sampledNetwork$samplingMatrix)
                 # }
                 self$lowerBound       <- c(self$lowerBound, self$SBM$completeLogLik_MAR(self$blockVarParam, self$sampledNetwork)
@@ -54,7 +58,6 @@ SBM_VEMfit <-
               }
             },
             Mstep            = function() {
-              # browser()
               if(!(class(self$sampling)[1] %in% c("sampling_randomPairMAR", "sampling_randomNodesMAR", "sampling_snowball"))){
                 self$SBM <- self$SBM$maximization(self$SBM, self$completedNetwork, self$blockVarParam)
               } else {
@@ -207,26 +210,4 @@ SBM_VEMfit$set("public", "doVEMPoisson",
                  self$vICL <- -2 * self$compLogLik[length(self$compLogLik)] + self$sampling$penalityPoisson(self$SBM$nBlocks, self$sampledNetwork$adjacencyMatrix)
                }
 )
-
-
-## Tests :
-
-# SBM :
-# mySBM <- SBM_BernoulliUndirected.fit$new(100, c(1/2, 1/2), matrix(c(.5, .05, .05, .5),2,2))
-#
-# # Sampled SBM :
-# mySampledSBM  <- sampling_doubleStandard$new(100, c(1/2, 1/2), FALSE)
-# Y             <- mySBM$rSBM()$adjacencyMatrix
-# sample <- mySampledSBM$rSampling(Y)
-#
-# # # Sampled SBM 2 (MAR):
-# # mySampledSBM  <- sampling_randomPairMAR$new(100, 1/2, FALSE)
-# # Y             <- mySBM$rSBM()$adjacencyMatrix
-# # sample        <- mySampledSBM$rSampling(Y)
-#
-# # VEM :
-# mySBM   <- SBM_BernoulliUndirected.fit$new(100, rep(1, 2)/2, NA)
-# fit     <- SBM_VEMfit$new(mySBM, sample, mySampledSBM)
-# fit$doVEM()
-
 

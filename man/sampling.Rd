@@ -3,24 +3,19 @@
 \docType{data}
 \name{sampling}
 \alias{sampling}
-\title{A class of function which modelisate the sampling design and then missing data in the graph.}
+\title{A sampling}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 sampling
 }
-\description{
-A class of function which modelisate the sampling design and then missing data in the graph.
+\arguments{
+\item{nNodes}{Number of nodes}
+
+\item{missingParam}{Sampling parameters}
+
+\item{directed}{Boolean variable to indicate whether the network is directed or not}
 }
-\section{Fields}{
-
-\describe{
-\item{\code{nNodes}}{number of nodes}
-
-\item{\code{missingParam}}{sampling parameters}
-
-\item{\code{blockProportion}}{vector of block proportion (a.k.a. alpha)}
-
-\item{\code{modelParameters}}{vector of model parameters (a.k.a. theta)}
-}}
-
+\description{
+A R6-class which modelisate the sampling design and then missing data in the graph
+}
 \keyword{datasets}

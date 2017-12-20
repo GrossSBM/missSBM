@@ -1,12 +1,10 @@
-#' a sampled network
+#' @title A sampled network
 #'
-#' @field nNodes
-#' @field nDyads
-#' @field adjacencyMatrix
-#' @field directed
-#' @field missingDyads
-#' @field observedDyads
-#' @field samplingRate
+#' @description A R6-class that create a sampled network object, it collects sampling informations from the sampled matrix and
+#'  is used during the inference
+#'
+#' @param adjacencyMatrix The sampled adjacency matrix
+#' @param directed Boolean variable to indicate whether the network is directed or not
 #'
 #' @importFrom R6 R6Class
 #' @export

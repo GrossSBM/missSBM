@@ -2,7 +2,7 @@
 % Please edit documentation in R/missingSBM.R
 \name{missingSBM}
 \alias{missingSBM}
-\title{Generates \code{\link{SBM_collection}} objects.}
+\title{Inference of Stochastic Block Model from sampled data}
 \usage{
 missingSBM(sampledNetwork, vBlocks, sampling, family, directed)
 }
@@ -25,6 +25,33 @@ by default "undirected" is choosen}
 \code{missingSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix
 }
 \examples{
+## A SBM model : ##
+n <- 300
+Q <- 3
+alpha <- rep(1,Q)/Q                                                                # mixture parameter
+pi <- diag(.45,Q) + .05                                                            # connectivity matrix
+family <- "Bernoulli"                                                              # the emmission law
+directed <- FALSE                                                                  # if the network is directed or not
+mySBM <- SBM_BernoulliUndirected$new(n, alpha, pi)                                 # the model object
+SBMdata <- mySBM$rSBM()                                                            # simulation of the complete data
+
+## Sampling of the data : ##
+sampling_rate <- .5                                                                # the sampling rate
+sampling <- "MAREdge"                                                              # the sampling design
+mySampled  <- sampling_randomPairMAR$new(n, sampling_rate, directed)               # the sampling object
+sample     <- mySampled$rSampling(SBMdata$adjacencyMatrix)                         # simulation of a sampling matrix
+
+## Inference :
+sampledNetwork <- sample$adjacencyMatrix                                           # the adjacency matrix
+vBlocks <- 1:5                                                                     # number of classes
+sbm <- missingSBM(sample$adjacencyMatrix, vBlocks, sampling, family, directed)     # the inference
+
+## Results/Estimation :
+plot(sbm$vICLs)                                                                    # the ICL criterion to select Q
+sbm$getBestModel()                                                                 # estimation of Q
+apply(sbm$models[[Q]]$blockVarParam, 1, which.max)                                 # clustering
+sbm$models[[Q]]$SBM$connectParam                                                   # connectivity matrix
+sbm$models[[Q]]$SBM$mixtureParam                                                   # mixture parameters
 
 }
 \references{

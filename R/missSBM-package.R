@@ -1,6 +1,6 @@
 #' Bayesian calibration for computational codes
 #'
-#' The foo package provides three categories of important functions:
+#' The SBM package provides three categories of important functions:
 #' \code{\link{missingSBM}}.
 #'
 #' @details

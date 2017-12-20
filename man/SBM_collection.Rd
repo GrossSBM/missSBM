@@ -8,7 +8,20 @@
 \usage{
 SBM_collection
 }
+\arguments{
+\item{sampledNetwork}{The sampled network data (a square matrix)}
+
+\item{vBlocks}{The vector of number of blocks considered in the collection}
+
+\item{sampling}{The sampling design for missing data modeling : MAREdge, doubleStandard, MARNode, snowball, starDegree, class}
+
+\item{family}{The emission law of the adjacency matrix : Bernoulli or Poisson}
+
+\item{directed}{Boolean variable to indicate whether the network is directed or not,
+by default "undirected" is choosen}
+}
 \description{
-A collection of adjusted Stochastic Block Model
+A R6-class that creates a collection of SBM with different numbers of groups in order to choose the number of
+groups the fit at best the model (ICL criterion)
 }
 \keyword{datasets}

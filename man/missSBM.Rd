@@ -6,7 +6,7 @@
 \alias{missSBM-package}
 \title{Bayesian calibration for computational codes}
 \description{
-The foo package provides three categories of important functions:
+The SBM package provides three categories of important functions:
 \code{\link{missingSBM}}.
 }
 \details{

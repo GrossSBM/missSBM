@@ -3,18 +3,18 @@
 \docType{data}
 \name{sampledNetwork}
 \alias{sampledNetwork}
-\title{a sampled network}
+\title{A sampled network}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 sampledNetwork
 }
-\description{
-a sampled network
+\arguments{
+\item{adjacencyMatrix}{The sampled adjacency matrix}
+
+\item{directed}{Boolean variable to indicate whether the network is directed or not}
 }
-\section{Fields}{
-
-\describe{
-\item{\code{samplingRate}}{}
-}}
-
+\description{
+A R6-class that create a sampled network object, it collects sampling informations from the sampled matrix and
+ is used during the inference
+}
 \keyword{datasets}

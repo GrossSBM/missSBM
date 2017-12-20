@@ -1,4 +1,14 @@
+#' @title A SBM model
+#'
+#'@description A R6-class that encode the model of SBM that have generated the data
+#'
+#'@param nNodes The number of nodes
+#'@param mixtureParam The mixture weights (commonly named alpha)
+#'@param connectParam The connectivity matrix, i.e. inter and intra clusters parameters
+#'
 #' @export
+#'
+#' @importFrom R6 R6Class
 SBM <-
 R6::R6Class(classname = "SBM",
   public = list(
@@ -28,6 +38,7 @@ R6::R6Class(classname = "SBM",
   )
 )
 
+#' blabla
 #'
 #' @field completeLogLik  a function to compute the completed log-likelihood
 #'

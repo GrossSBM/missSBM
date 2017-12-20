@@ -1,9 +1,10 @@
-#' A class of function which modelisate the sampling design and then missing data in the graph.
+#' @title A sampling
 #'
-#' @field nNodes          number of nodes
-#' @field missingParam    sampling parameters
-#' @field blockProportion vector of block proportion (a.k.a. alpha)
-#' @field modelParameters vector of model parameters (a.k.a. theta)
+#' @description A R6-class which modelisate the sampling design and then missing data in the graph
+#'
+#' @param nNodes          Number of nodes
+#' @param missingParam    Sampling parameters
+#' @param directed Boolean variable to indicate whether the network is directed or not
 #'
 #' @importFrom R6 R6Class
 #' @export
@@ -73,20 +74,6 @@ sampling_doubleStandard <-
             }
           )
   )
-
-# # Undirected :
-# # mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2))
-# # Y <- matrix(round(runif(100, 0,1)),10,10)
-# # samp <- mySBM$rSampling(Y)
-# # ll <- mySBM$samplingLogLik(Y)
-#
-# # # Directed :
-# # mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2), directed = TRUE)
-# # samp <- mySBM$rSampling(matrix(1,10,10))
-# # ll <- mySBM$samplingLogLik(matrix(1,10,10))mySBM <- sampling_doubleStandard$new(10, c(1/4, 1/2))
-# # Y    <- matrix(round(runif(100, 0,1)),10,10)
-# # samp <- mySBM$rSampling(Y)
-# # ll   <- mySBM$samplingLogLik(Y)
 
 
 #' @export
