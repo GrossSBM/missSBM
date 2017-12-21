@@ -125,6 +125,7 @@ SBM_VEMfit$set("public", "SpectralClustering",
 SBM_VEMfit$set("public", "initialization",
                function() {
                  if(self$init == "CAH"){
+                   require(mclust)
                    networkWithZero <- self$completedNetwork; networkWithZero[is.na(networkWithZero)] <- 0
                    D  <- as.matrix(dist(networkWithZero, method="manhattan"))
                    D[networkWithZero == 1] <- D[networkWithZero == 1] - 2

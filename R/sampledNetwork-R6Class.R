@@ -26,7 +26,6 @@ sampledNetwork <-
 
 sampledNetwork$set("public", "initialize",
 function(adjacencyMatrix, directed) {
-  ### TODO : check all arguments consistency
   if (!directed) stopifnot(isSymmetric(adjacencyMatrix))
 
   self$adjacencyMatrix <- adjacencyMatrix
@@ -35,21 +34,15 @@ function(adjacencyMatrix, directed) {
   self$nDyads          <- ifelse(directed,
                                  self$nNodes*(self$nNodes-1),
                                  self$nNodes*(self$nNodes-1)/2)
-  # dyads are either defined on the whole matrix or on the lower triangular,
-  # depending if the network is directed or not
-  # if (directed) {
+
     self$missingDyads  <- which( is.na(adjacencyMatrix))
-    self$observedDyads <- which(!is.na(adjacencyMatrix)) #  & (lower.tri(adjacencyMatrix) | upper.tri(adjacencyMatrix))
-  # } else {
-  #   self$missingDyads  <- which( is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
-  #   self$observedDyads <- which(!is.na(adjacencyMatrix) & lower.tri(adjacencyMatrix) )
-  # }
+    self$observedDyads <- which(!is.na(adjacencyMatrix))
+
   if(!directed){
     self$samplingRate    <- (length(self$observedDyads)-self$nNodes)/(2*self$nDyads)
   } else {
     self$samplingRate    <- (length(self$observedDyads)-self$nNodes)/self$nDyads
   }
-  # browser()
   self$samplingMatrix  <- matrix(0, self$nNodes, self$nNodes)
   self$samplingMatrix[self$observedDyads] <- 1
 
@@ -82,10 +75,10 @@ function(adjacencyMatrix, directed) {
 #   box()
 #   par(mar=c(5.1,4.1,4.1,2.1))
 # })
-#
-# sampledNetwork$set("public", "show",
-# function(){
-#   cat("\n=======================================")
-#   cat("\n", ifelse(directed,"Directed","Undirected"), "network with", nNodes)
-#   cat("\nPercentage of sampling rate:",samplingRate)
-# })
+
+sampledNetwork$set("public", "show",
+function(){
+  cat("\n=======================================")
+  cat("\n", ifelse(directed,"Directed","Undirected"), "network with", nNodes)
+  cat("\nPercentage of sampling rate:",samplingRate)
+})

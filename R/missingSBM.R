@@ -1,6 +1,159 @@
+#' @title Simulation of a Stochastic Block Model
+#'
+#' @description \code{simulateSBM} is a function that generate a matrix (the adjacency matrix of a network) under the SBM
+#'
+#' @param n The number of nodes
+#' @param Q The number of clusters
+#' @param alpha The mixture parameters
+#' @param pi The connectivity matrix (probabilities inter and intra clusters)
+#' @param family The emission law of the adjacency matrix : Bernoulli or Poisson
+#' @param directed Boolean variable to indicate whether the network is directed or not,
+#' by default "undirected" is choosen
+#' @return \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
+#' @author T. Tabouy
+#' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
+#' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
+#' @details The emission law can be :\itemize{\item{Bernoulli:
+#' \deqn{P(Y[i,j] = 1 | Zi = q, Zj = l) = p(Zi,Zj)}}
+#' \item{Poisson:
+#' \deqn{P(Y[i,j] = k | Zi = q, Zj = l) = (\lambda(Z_i,Z_j)^k/(k!)) * exp(-\lambda(Z_i,Z_j))}}
+#' }
+#' @examples
+#' ### A SBM model : ###
+#' n <- 300
+#' Q <- 3
+#' alpha <- rep(1,Q)/Q                                                                # mixture parameter
+#' pi <- diag(.45,Q) + .05                                                            # connectivity matrix
+#' family <- "Bernoulli"                                                              # the emmission law
+#' directed <- FALSE                                                                  # if the network is directed or not
+#' mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+#'
+#'### Results : ###
+#' clusters <-  mySBM$clusters                                                        # clusters
+#' adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+#'
+#'
+#' @export
+simulateSBM <- function(n, alpha, pi, family, directed=FALSE){
+
+  library(R6)
+
+  SBM <- switch(paste0(family, ifelse(directed, "Directed", "Undirected")),
+                "BernoulliUndirected" = SBM_BernoulliUndirected$new(n, alpha, pi),
+                "BernoulliDirected"   = SBM_BernoulliDirected$new(n, alpha, pi),
+                "PoissonUndirected"   = SBM_PoissonUndirected$new(n, alpha, pi),
+                "PoissonDirected"     = SBM_PoissonDirected$new(n, alpha, pi))
+
+  SBM <- SBM$rSBM()
+
+  return(list(clusters = apply(SBM$blocks, 1, which.max), adjacencyMatrix = SBM$adjacencyMatrix))
+}
+#'
+#'
+#'
+#' @title Sampling of a network
+#'
+#' @description \code{samplingSBM} is a function that sample a matrix (the adjacency matrix of a network) under the SBM
+#'
+#' @param adjacencyMatrix The adjacency matrix of the network
+#' @param sampling The sampling design used to sample the adjacency matrix
+#' @param samplingParameters The sampling parameters adapted to each sampling
+#' @param Q The number of clusters in the SBM, only necessary for class sampling, by default equal to NULL
+#' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL
+#' @param directed Boolean variable to indicate whether the network is directed or not,
+#' by default "undirected" is choosen
+#' @return \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
+#' @author T. Tabouy
+#' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
+#' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
+#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered sampling, for
+#' more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{MAREdge: parameter = p
+#' \deqn{p = P(Dyad (i,j) is sampled)}}
+#' \item{MARnode: parameter = p and
+#' \deqn{p = P(Node i is sampled)}}
+#' \item{snowball (one step):
+#' like the MARNode sampling plus we sample neighbours of nodes sampled at the first batch}
+#' }
+#' \item Not Missing At Random (NMAR) \itemize{ \item{doubleStandard: parameter = (p0,p1) and
+#' \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
+#' \item{starDegree: parameter = c(a,b) and
+#' \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
+#' \item{class: parameter = c(p(1),...,p(Q)) and
+#' \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
+#' }}
+#' @examples
+#' ### A SBM model : ###
+#' n <- 300
+#' Q <- 3
+#' alpha <- rep(1,Q)/Q                                                                # mixture parameter
+#' pi <- diag(.45,Q) + .05                                                            # connectivity matrix
+#' family <- "Bernoulli"                                                              # the emmission law
+#' directed <- FALSE                                                                  # if the network is directed or not
+#' mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+#'
+#'### Results : ###
+#' adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+#'
+#' ## Sampling of the data : ##
+#' samplingParameters <- .5                                                           # the sampling rate
+#' sampling <- "MAREdge"                                                              # the sampling design
+#' sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
+#'
+#'
+#' @export
+samplingSBM <- function(adjacencyMatrix, sampling, samplingParameters, Q = NULL, clusters = NULL, directed = FALSE){
+
+  library(R6)
+
+  n <- nrow(adjacencyMatrix)
+  blockVarParam <- NULL
+  family <- ifelse(length(tabulate(adjacencyMatrix)) == 1, "Bernoulli", "Poisson")
+
+  if(!(sampling %in% c("MAREdge", "MARNode", "snowball", "starDegree", "class", "doubleStandard"))) stop("This sampling is not in the list !")
+  if(!(directed | isSymmetric(adjacencyMatrix))) stop("The adjacency matrix is not symmetric !")
+  if(!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
+
+
+  if(sampling == "class"){
+    if(is.null(Q)) stop("For class sampling you must give the number of clusters : Q !")
+    if(is.null(clusters)) stop("For class sampling you must give clusters !")
+    if(!(length(samplingParameters) == Q & length(tabulate(clusters)) <= Q)) stop("For class sampling alpha and Q must be equal, the number of clusters in the parameter clusters must not exceed Q !")
+    if(!is.vector(clusters)) stop("The parameter clusters must be a vector !")
+    if(!(length(clusters) == n)) stop(paste("The parameter clusters must have a length equal to", n,"!"))
+    blockVarParam <- matrix(0,n,Q); blockVarParam[cbind(1:n, clusters)] <- 1
+    }
+
+  testLengthSampParam <- switch(sampling,
+                          "doubleStandard" = ifelse(length(samplingParameters) == 2, TRUE, FALSE),
+                          "starDegree"     = ifelse(length(samplingParameters) == 2, TRUE, FALSE),
+                          "MAREdge"        = ifelse(length(samplingParameters) == 1, TRUE, FALSE),
+                          "MARNode"        = ifelse(length(samplingParameters) == 1, TRUE, FALSE),
+                          "snowball"       = ifelse(length(samplingParameters) == 1, TRUE, FALSE))
+  if(!testLengthSampParam) stop("Sampling parameters have not good length")
+
+  if(!(sampling == "starDegree")){
+    if(any(samplingParameters < 0) | any(samplingParameters > 1)){
+      stop("Sampling parameters must be probabilities (i.e between 0 and 1)")
+    }
+  }
+
+  samplingData   <- switch(sampling,
+                                "doubleStandard" = sampling_doubleStandard$new(n, samplingParameters, directed),
+                                "class"          = sampling_class$new(n, samplingParameters, directed),
+                                "starDegree"     = sampling_starDegree$new(n, samplingParameters, directed),
+                                "MAREdge"        = sampling_randomPairMAR$new(n, samplingParameters, directed),
+                                "MARNode"        = sampling_randomNodesMAR$new(n, samplingParameters, directed),
+                                "snowball"       = sampling_snowball$new(n, rep(samplingParameters, n), directed))
+  if(sampling == "class"){
+    return(samplingData$rSampling(adjacencyMatrix, blockVarParam)$adjacencyMatrix)
+  } else {
+    return(samplingData$rSampling(adjacencyMatrix)$adjacencyMatrix)
+  }
+}
+#'
 #' @title Inference of Stochastic Block Model from sampled data
 #'
-#' @description \code{missingSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix
+#' @description \code{inferSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix
 #'
 #' @param sampledNetwork The sampled network data (a square matrix)
 #' @param vBlocks The vector of number of blocks considered in the collection
@@ -8,71 +161,97 @@
 #' @param family The emission law of the adjacency matrix : Bernoulli or Poisson
 #' @param directed Boolean variable to indicate whether the network is directed or not,
 #' by default "undirected" is choosen
-#' @return \code{missingSBM} returns a \code{\link{SBM_collection}} object.
+#' @param plot Summary of the output of the algorithm, by default TRUE is choosen
+#' @return \code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
+#' and a vector with ICL calculated for all Q in vBlocks
 #' @author T. Tabouy
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
-#' @seealso \code{\link{SBM_collection}}.
-#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered sampling, for
-#' more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{MAREdge:
-#' \deqn{\forall (i,j) \in \{1,\dots,n\}^2,\quad \mathbb{P}(R_{ij}=1)=\rho}}
-#' \item{MARnode:
-#' \deqn{\forall i \in \{1,\dots,n\},\quad \mathbb{P}(S_{i}=1)=\rho}}
-#' \item{snowball (one step):
-#' It is like the MARNode plus you sample the neighbours of nodes sampled at the first batch}
-#' }
-#' \item Not Missing At Random (NMAR) \itemize{ \item{doubleStandard:
-#' \deqn{ \mathbb{P}(R_{ij}=1|X_{ij}=1)=\rho_{1}, \mathbb{P}(R_{ij}=1|X_{ij}=0)=\rho_{0} }}
-#' \item{starDegree:
-#' \deqn{\mathbb{P}(S_{i}=1|D_i)=\mathbb{P}(Z \leqslant a+bD_i) \text{ where } D_i=\sum_j X_{ij}}}
-#' \item{class:
-#' \deqn{\forall i \in \{1,\dots,n\},\quad \mathbb{P}(S_{i}=1)=\rho}}
-#' }}
+#' @seealso \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{SBM_collection}}.
 #' @examples
-#' ## A SBM model : ##
+#' ### A SBM model : ###
 #' n <- 300
 #' Q <- 3
 #' alpha <- rep(1,Q)/Q                                                                # mixture parameter
 #' pi <- diag(.45,Q) + .05                                                            # connectivity matrix
 #' family <- "Bernoulli"                                                              # the emmission law
 #' directed <- FALSE                                                                  # if the network is directed or not
-#' mySBM <- SBM_BernoulliUndirected$new(n, alpha, pi)                                 # the model object
-#' SBMdata <- mySBM$rSBM()                                                            # simulation of the complete data
+#' mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+#'
+#'### Results : ###
+#' adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
 #'
 #' ## Sampling of the data : ##
-#' sampling_rate <- .5                                                                # the sampling rate
+#' samplingParameters <- .5                                                           # the sampling rate
 #' sampling <- "MAREdge"                                                              # the sampling design
-#' mySampled  <- sampling_randomPairMAR$new(n, sampling_rate, directed)               # the sampling object
-#' sample     <- mySampled$rSampling(SBMdata$adjacencyMatrix)                         # simulation of a sampling matrix
+#' sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 #'
 #' ## Inference :
 #' sampledNetwork <- sample$adjacencyMatrix                                           # the adjacency matrix
 #' vBlocks <- 1:5                                                                     # number of classes
-#' sbm <- missingSBM(sample$adjacencyMatrix, vBlocks, sampling, family, directed)     # the inference
+#' sbm <- inferSBM(sample$adjacencyMatrix, vBlocks, sampling, family, directed)     # the inference
 #'
-#' ## Results/Estimation :
-#' plot(sbm$vICLs)                                                                    # the ICL criterion to select Q
-#' sbm$getBestModel()                                                                 # estimation of Q
-#' apply(sbm$models[[Q]]$blockVarParam, 1, which.max)                                 # clustering
-#' sbm$models[[Q]]$SBM$connectParam                                                   # connectivity matrix
-#' sbm$models[[Q]]$SBM$mixtureParam                                                   # mixture parameters
 #'
 #' @export
-missingSBM <- function(sampledNetwork, vBlocks, sampling, family, directed = FALSE){
+inferSBM <- function(sampledNetwork, vBlocks, sampling, family, directed = FALSE, plot = TRUE){
 
   library(R6)
-  library(parallel)
-  library(mclust)
   library(igraph)
+  library(ggplot2)
 
-  if(!directed){
-    if(!isSymmetric(sampledNetwork)){
-      stop("The adjacency matrix is not symmetric !")
-    }
+
+  if(!(sampling %in% c("MAREdge", "MARNode", "snowball", "starDegree", "class", "doubleStandard"))) stop("This sampling is not in the list !")
+  if(!(directed | isSymmetric(sampledNetwork))) stop("The adjacency matrix is not symmetric !")
+  if(!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
+  if(is.null(vBlocks)) stop(" The parameter vBlocks must be a least of length 1 !")
+
+
+  collection <- SBM_collection$new(sampledNetwork, vBlocks, sampling, family, directed)
+
+  collectionList <- lapply(collection$models, function(x){
+    return(list(Q = x$SBM$nBlocks, alpha = x$SBM$mixtureParam, pi = x$SBM$connectParam, clusters = apply(x$blockVarParam, 1, which.max), samplingParameters = x$sampling$missingParam))
+  })
+
+  bestModel <- collectionList[[collection$getBestModel()]]
+
+  if(plot){
+    mode <- ifelse(directed, "directed", "undirected")
+    sampAdjMatZeros <- sampledNetwork; sampAdjMatZeros[is.na(sampAdjMatZeros)] <- 0
+
+    G1 <- graph_from_adjacency_matrix(bestModel$pi, mode = mode, weighted = TRUE, diag = TRUE)
+    G2 <- graph_from_adjacency_matrix(sampAdjMatZeros, mode = mode, weighted = TRUE, diag = TRUE)
+    cl <- bestModel$clusters
+    par(mfrow=c(2,2))
+    plot.igraph(G1,vertex.size=table(cl),edge.width=E(G1)$weight*10, main="connectivity matrix", vertex.color=1:20)
+    image.NA(sampledNetwork[order(cl), order(cl)], axes=FALSE, na.color = "red", main="clustered network + NA")
+    plot(vBlocks,collection$vICLs, type = 'l', main = "Integrated complete Likekihood (ICL)", xlab = "Q", ylab = "ICL")
+    plot.igraph(G2, vertex.color = cl, main="Network structure")
   }
-  if(family == "Poisson"){
-    if(!(sampling %in% c("MAREdge", "MARNode"))){
-      stop("This sampling for Poisson emission law is not available")
-    }
-  }
-  return(SBM_collection$new(sampledNetwork, vBlocks, sampling, family, directed))
+
+  return(list(bestModel = bestModel, models = collectionList, ICL = collection$vICLs))
 }
+
+image.NA <- function(z,  zlim=c(0,1), col=c("white", "midnightblue"), na.color='red', outside.below.color='black', outside.above.color='white',...)
+{
+  zstep <- (zlim[2] - zlim[1]) / length(col); # step in the color palette
+  newz.below.outside <- zlim[1] - 2 * zstep # new z for values below zlim
+  newz.above.outside <- zlim[2] + zstep # new z for values above zlim
+  newz.na <- zlim[2] + 2 * zstep # new z for NA
+
+  z[which(z<zlim[1])] <- newz.below.outside # we affect newz.below.outside
+  z[which(z>zlim[2])] <- newz.above.outside # we affect newz.above.outside
+  z[which(is.na(z>zlim[2]))] <- newz.na # same for newz.na
+
+  zlim[1] <- zlim[1] - 2 * zstep # extend lower limit to include below value
+  zlim[2] <- zlim[2] + 2 * zstep # extend top limit to include the two new values above and na
+
+  col <- c(outside.below.color, col[1], col, outside.above.color, na.color) #correct by including col[1] at bottom of range
+
+  par(mar=c(2.1,8.1,3.1,3.1))
+  image(z[nrow(z):1,],  zlim=zlim, col=col, xaxt="n", yaxt="n", main="clustered network + NA") # we finally call image(...)
+  box()
+  # par(mar=c(5.1,4.1,4.1,2.1))
+}
+
+
+
+
