@@ -1,22 +1,7 @@
-#'@title An adjusted SBM
-#'
-#'@description A R6-class which apply a Variational E-M to a given SBM with a given number of groups.
-#'
-#'@param SBM A R6-class object SBM (of class SBM) which encode the model
-#'@param sampledNetwork A R6-class object sampled Network (of class sampledNetwork) which encode the data
-#'@param sampling A R6-class object sampling (of class sampling) which encode the sampling design
-#'@param init By default doing a spectral clustering ("spectralC"), can also be "CAH" a hierachical clustering more robust than spectral clustering
-#'with sparse networks
-#'@param blockInit By default equal to NULL, ad-hoc clustering to initialize the algorithm
-#'@param controlVEM By default equal to 1e-5, stop criterion to say that the algorithm has converged
-#'@param maxIterVEM By default equal to 100, stop criterion
-#'
-#' @importFrom R6 R6Class
-#' @export
+
 SBM_VEMfit <-
   R6::R6Class(classname = "SBM_VEMfit",
           public = list(
-            ## fields
             completedNetwork = NULL, # the completed adjacency matrix of the initial network
             init             = NULL, # kind of classification for the beginning
             SBM              = NULL, #
@@ -64,7 +49,6 @@ SBM_VEMfit <-
                 self$SBM <- self$SBM$maximization_MAR(self$SBM, self$completedNetwork, self$blockVarParam, self$sampledNetwork$samplingMatrix)
               }
             },
-
             initialize       = function(SBM, sampledNetwork, sampling, init = "spectralC", blockInit = NULL, controlVEM = 1e-5, maxIterVEM = 1000) {
               self$sampledNetwork   <- sampledNetwork
               self$init             <- init

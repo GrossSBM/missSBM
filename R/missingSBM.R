@@ -186,9 +186,9 @@ samplingSBM <- function(adjacencyMatrix, sampling, samplingParameters, Q = NULL,
 #' sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 #'
 #' ## Inference :
-#' sampledNetwork <- sample$adjacencyMatrix                                           # the adjacency matrix
+#' sampledNetwork <- adjacencyMatrix                                                  # the adjacency matrix
 #' vBlocks <- 1:5                                                                     # number of classes
-#' sbm <- inferSBM(sample$adjacencyMatrix, vBlocks, sampling, family, directed)     # the inference
+#' sbm <- inferSBM(sample$adjacencyMatrix, vBlocks, sampling, family, directed)       # the inference
 #'
 #'
 #' @export

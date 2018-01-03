@@ -1,13 +1,4 @@
-#' @title A sampling
-#'
-#' @description A R6-class which modelisate the sampling design and then missing data in the graph
-#'
-#' @param nNodes          Number of nodes
-#' @param missingParam    Sampling parameters
-#' @param directed Boolean variable to indicate whether the network is directed or not
-#'
-#' @importFrom R6 R6Class
-#' @export
+
 sampling <-
   R6::R6Class(classname = "sampling",
           public = list(
@@ -24,7 +15,6 @@ sampling <-
           )
   )
 
-#' @export
 sampling_doubleStandard <-
   R6::R6Class(classname = "sampling_doubleStandard",
           inherit = sampling,
@@ -76,7 +66,6 @@ sampling_doubleStandard <-
   )
 
 
-#' @export
 sampling_class <-
   R6::R6Class(classname = "sampling_class",
           inherit = sampling,
@@ -114,7 +103,6 @@ sampling_class <-
   )
 
 
-#' @export
 sampling_starDegree <-
   R6::R6Class(classname = "sampling_starDegree",
           inherit = sampling,
@@ -170,7 +158,6 @@ sampling_starDegree <-
 
 
 
-#' @export
 sampling_randomPairMAR <-
   R6::R6Class(classname = "sampling_randomPairMAR",
           inherit = sampling,
@@ -230,7 +217,6 @@ sampling_randomPairMAR <-
   )
 
 
-#' @export
 sampling_randomNodesMAR <-
   R6::R6Class(classname = "sampling_randomNodesMAR",
           inherit = sampling,
@@ -276,7 +262,6 @@ sampling_randomNodesMAR <-
   )
 
 
-#' @export
 sampling_snowball <-
   R6::R6Class(classname = "sampling_snowball",
           inherit = sampling,

@@ -1,14 +1,4 @@
-#' @title A SBM model
-#'
-#'@description A R6-class that encode the model of SBM that have generated the data
-#'
-#'@param nNodes The number of nodes
-#'@param mixtureParam The mixture weights (commonly named alpha)
-#'@param connectParam The connectivity matrix, i.e. inter and intra clusters parameters
-#'
-#' @export
-#'
-#' @importFrom R6 R6Class
+
 SBM <-
 R6::R6Class(classname = "SBM",
   public = list(
@@ -38,11 +28,7 @@ R6::R6Class(classname = "SBM",
   )
 )
 
-#' blabla
-#'
-#' @field completeLogLik  a function to compute the completed log-likelihood
-#'
-#' @export
+
 SBM_BernoulliUndirected <-
 R6::R6Class(classname = "SBM_BernoulliUndirected",
   inherit = SBM,
@@ -76,7 +62,6 @@ R6::R6Class(classname = "SBM_BernoulliUndirected",
   )
 )
 
-#' @export
 SBM_BernoulliUndirected.fit <-
   R6::R6Class(classname = "SBM_BernoulliUndirected.fit",
           inherit = SBM_BernoulliUndirected,
@@ -144,7 +129,6 @@ SBM_BernoulliUndirected.fit <-
   )
 
 
-#' @export
 SBM_BernoulliDirected <-
   R6::R6Class(classname = "SBM_BernoulliDirected",
           inherit = SBM,
@@ -176,7 +160,6 @@ SBM_BernoulliDirected <-
           )
   )
 
-#' @export
 SBM_BernoulliDirected.fit <-
   R6::R6Class(classname = "SBM_BernoulliDirected.fit",
           inherit = SBM_BernoulliDirected,
@@ -252,7 +235,6 @@ SBM_BernoulliDirected.fit <-
   )
 
 
-#' @export
 SBM_PoissonDirected <-
   R6::R6Class(classname = "SBM_PoissonDirected",
           inherit = SBM,
@@ -286,7 +268,6 @@ SBM_PoissonDirected <-
   )
 
 
-#' @export
 SBM_PoissonDirected.fit <-
   R6::R6Class(classname = "SBM_PoissonDirected.fit",
           inherit = SBM_PoissonDirected,
@@ -347,7 +328,6 @@ SBM_PoissonDirected.fit <-
   )
 
 
-#' @export
 SBM_PoissonUndirected <-
   R6::R6Class(classname = "SBM_PoissonUndirected",
           inherit = SBM,
@@ -381,7 +361,6 @@ SBM_PoissonUndirected <-
           )
   )
 
-#' @export
 SBM_PoissonUndirected.fit <-
   R6::R6Class(classname = "SBM_PoissonUndirected.fit",
           inherit = SBM_PoissonUndirected,

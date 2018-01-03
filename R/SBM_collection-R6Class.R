@@ -1,18 +1,4 @@
-#' @title A collection of adjusted Stochastic Block Model
-#'
-#'@description A R6-class that creates a collection of SBM with different numbers of groups in order to choose the number of
-#'groups the fit at best the model (ICL criterion)
-#'
-#' @param sampledNetwork The sampled network data (a square matrix)
-#' @param vBlocks The vector of number of blocks considered in the collection
-#' @param sampling The sampling design for missing data modeling : MAREdge, doubleStandard, MARNode, snowball, starDegree, class
-#' @param family The emission law of the adjacency matrix : Bernoulli or Poisson
-#' @param directed Boolean variable to indicate whether the network is directed or not,
-#' by default "undirected" is choosen
-#'
-#' @export
-#'
-#' @importFrom R6 R6Class
+
 SBM_collection <-
   R6::R6Class(classname = "SBM_collection",
     public = list(

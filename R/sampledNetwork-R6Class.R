@@ -1,17 +1,7 @@
-#' @title A sampled network
-#'
-#' @description A R6-class that create a sampled network object, it collects sampling informations from the sampled matrix and
-#'  is used during the inference
-#'
-#' @param adjacencyMatrix The sampled adjacency matrix
-#' @param directed Boolean variable to indicate whether the network is directed or not
-#'
-#' @importFrom R6 R6Class
-#' @export
+
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   public = list(
-    ## fields
     nNodes          = NULL, # number of nodes
     nDyads          = NULL, # number of dyads
     directed        = NULL, # directed network of not
