@@ -47,9 +47,8 @@ sampling <- "MAREdge"                                                           
 sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 
 ## Inference :
-sampledNetwork <- adjacencyMatrix                                                  # the adjacency matrix
 vBlocks <- 1:5                                                                     # number of classes
-sbm <- inferSBM(sample$adjacencyMatrix, vBlocks, sampling, family, directed)       # the inference
+sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family, directed)             # the inference
 
 
 }

@@ -1,4 +1,4 @@
-
+#' @export
 SBM_collection <-
   R6::R6Class(classname = "SBM_collection",
     public = list(

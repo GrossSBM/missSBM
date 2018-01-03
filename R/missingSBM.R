@@ -186,9 +186,8 @@ samplingSBM <- function(adjacencyMatrix, sampling, samplingParameters, Q = NULL,
 #' sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 #'
 #' ## Inference :
-#' sampledNetwork <- adjacencyMatrix                                                  # the adjacency matrix
 #' vBlocks <- 1:5                                                                     # number of classes
-#' sbm <- inferSBM(sample$adjacencyMatrix, vBlocks, sampling, family, directed)       # the inference
+#' sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family, directed)             # the inference
 #'
 #'
 #' @export
@@ -211,7 +210,16 @@ inferSBM <- function(sampledNetwork, vBlocks, sampling, family, directed = FALSE
     return(list(Q = x$SBM$nBlocks, alpha = x$SBM$mixtureParam, pi = x$SBM$connectParam, clusters = apply(x$blockVarParam, 1, which.max), samplingParameters = x$sampling$missingParam))
   })
 
-  bestModel <- collectionList[[collection$getBestModel()]]
+
+  if(length(vBlocks) > 1 & min(vBlocks) == 1){
+    bestModel <- collectionList[[collection$getBestModel()]]
+  }
+  if(min(vBlocks) > 1 & length(vBlocks) != 1){
+    bestModel <- collectionList[[collection$getBestModel() - min(vBlocks) + 1]]
+  }
+  if(length(vBlocks) == 1){
+    bestModel <- collectionList[[1]]
+  }
 
   if(plot){
     mode <- ifelse(directed, "directed", "undirected")
