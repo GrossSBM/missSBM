@@ -109,7 +109,6 @@ SBM_VEMfit$set("public", "SpectralClustering",
 SBM_VEMfit$set("public", "initialization",
                function() {
                  if(self$init == "CAH"){
-                   require(mclust)
                    networkWithZero <- self$completedNetwork; networkWithZero[is.na(networkWithZero)] <- 0
                    D  <- as.matrix(dist(networkWithZero, method="manhattan"))
                    D[networkWithZero == 1] <- D[networkWithZero == 1] - 2
@@ -144,7 +143,7 @@ SBM_VEMfit$set("public", "doVEM",
                  conv    <- vector("numeric", self$maxIterVEM) ; conv[1] <- NA
                  theta   <- vector("list", length = self$maxIterVEM)
 
-                 cl0     <- self$initialization()
+                 self$initialization()
 
                  i <- 0; cond <- FALSE
                  while(!cond){
