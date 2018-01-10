@@ -1,3 +1,5 @@
+zero <- .Machine$double.eps
+
 #' @import R6
 SBM <- # this 'virtual' class is the mother of all subtypes of SBM
 R6Class(classname = "SBM",
@@ -8,8 +10,7 @@ R6Class(classname = "SBM",
     alpha = NULL, # vector of block parameters (a.k.a. alpha)
     pi    = NULL, # matrix of connectivity (a.k.a. pi)
     Z     = NULL, # a sampled indicator of blocks
-    X     = NULL, # a sampled adjacency matrix
-    zero  = .Machine$double.eps
+    X     = NULL  # a sampled adjacency matrix
   ),
   public = list(
     ## constructor
@@ -33,22 +34,20 @@ R6Class(classname = "SBM",
     ## active binding to access fields
     nNodes       = function(value) {private$N}    , # number of nodes
     nBlocks      = function(value) {private$Q}    , # number of blocks
-    mixtureParam = function(value) {private$alpha}, # vector of block parameters (a.k.a. alpha)
-    connectParam = function(value) {private$pi}   , # matrix of connectivity (a.k.a. pi)
+    mixtureParam = function(value) {                # vector of block parameters (a.k.a. alpha)
+      if (missing(value)) return(private$alpha) else private$alpha <- value
+    },
+    connectParam = function(value) {                # matrix of connectivity (a.k.a. pi)
+      if (missing(value)) return(private$pi) else private$pi <- value
+    }   ,
     blocks       = function(value) {                # indicator of blocks
-      if (missing(value))
-        return(private$Z)
-      else
-        private$Z <- value
+      if (missing(value)) return(private$Z) else private$Z <- value
       }    ,
     clusters     = function(value) {                # vector of clusters
       if (!is.null(private$Z)) apply(private$Z, 1, which.max) else NA
     }    ,
     adjacencyMatrix = function(value) {
-      if (missing(value))
-        return(private$X)
-      else
-        private$X <- value
+      if (missing(value)) return(private$X) else private$X <- value
     }
   )
 )

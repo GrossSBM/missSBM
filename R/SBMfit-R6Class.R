@@ -7,23 +7,21 @@ R6Class(classname = "SBM_BernoulliUndirected.fit",
     initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
       super$initialize(nNodes, mixtureParam, connectParam)
     },
-    ## Pourquoi passe-t-on en argument un objet SBM plutôt que de modifier l'objet courant ?
-    maximization = function(SBM, completedNetwork, blockVarParam) {
-      SBM$connectParam <- (t(blockVarParam) %*% completedNetwork %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(private$N))) %*% blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero
-      SBM$connectParam[SBM$connectParam > 1 - private$zero] <- 1 - private$zero
-      SBM$connectParam[SBM$connectParam <     private$zero] <-     private$zero
-      SBM$mixtureParam <-  colMeans(blockVarParam)
-      return(SBM)
+    maximization = function(completedNetwork, blockVarParam) {
+      pi <- (t(blockVarParam) %*% completedNetwork %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(private$N))) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
-    ## Même question
-    maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-      SBM$connectParam <- (t(blockVarParam) %*% (completedNetwork*samplingMatrix) %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(self$nNodes))*samplingMatrix) %*% blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero
-      SBM$connectParam[SBM$connectParam > 1 - private$zero] <- 1 - private$zero
-      SBM$connectParam[SBM$connectParam <     private$zero] <-     private$zero
-      SBM$mixtureParam <- colMeans(blockVarParam)
-      return(SBM)
+    maximization_MAR = function(completedNetwork, blockVarParam, samplingMatrix) {
+      pi <- (t(blockVarParam) %*% (completedNetwork*samplingMatrix) %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(self$nNodes))*samplingMatrix) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
     ## ENCORE...
     fixPoint = function(SBM, blockVarParam, completedNetwork) {
@@ -80,17 +78,21 @@ R6Class(classname = "SBM_BernoulliDirected.fit",
     initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
       super$initialize(nNodes, mixtureParam, connectParam)
     },
-    maximization = function(SBM, completedNetwork, blockVarParam) {
-      SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-      SBM$mixtureParam <-  colMeans(blockVarParam)
-      return(SBM)
+    maximization = function(completedNetwork, blockVarParam) {
+      pi <- (t(blockVarParam) %*% completedNetwork %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(private$N))) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
-    maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-      SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-      SBM$mixtureParam <- colMeans(blockVarParam)
-      return(SBM)
+    maximization_MAR = function(completedNetwork, blockVarParam, samplingMatrix) {
+      pi <- (t(blockVarParam) %*% (completedNetwork*samplingMatrix) %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(self$nNodes))*samplingMatrix) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
     fixPoint = function(SBM, blockVarParam, completedNetwork) {
       completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
@@ -154,17 +156,21 @@ R6Class(classname = "SBM_PoissonDirected.fit",
     initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
       super$initialize(nNodes, mixtureParam, connectParam)
     },
-    maximization = function(SBM, completedNetwork, blockVarParam) {
-      SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-      SBM$mixtureParam <-  colMeans(blockVarParam)
-      return(SBM)
+    maximization = function(completedNetwork, blockVarParam) {
+      pi <- (t(blockVarParam) %*% completedNetwork %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(private$N))) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
-    maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-      SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-      SBM$mixtureParam <- colMeans(blockVarParam)
-      return(SBM)
+    maximization_MAR = function(completedNetwork, blockVarParam, samplingMatrix) {
+      pi <- (t(blockVarParam) %*% (completedNetwork*samplingMatrix) %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(self$nNodes))*samplingMatrix) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
     fixPoint = function(SBM, blockVarParam, completedNetwork) {
       completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
@@ -213,17 +219,21 @@ R6Class(classname = "SBM_PoissonUndirected.fit",
     initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
       super$initialize(nNodes, mixtureParam, connectParam)
     },
-    maximization = function(SBM, completedNetwork, blockVarParam) {
-      SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-      SBM$mixtureParam <-  colMeans(blockVarParam)
-      return(SBM)
+    maximization = function(completedNetwork, blockVarParam) {
+      pi <- (t(blockVarParam) %*% completedNetwork %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(private$N))) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
-    maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-      SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-      SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-      SBM$mixtureParam <- colMeans(blockVarParam)
-      return(SBM)
+    maximization_MAR = function(completedNetwork, blockVarParam, samplingMatrix) {
+      pi <- (t(blockVarParam) %*% (completedNetwork*samplingMatrix) %*% blockVarParam) / (t(blockVarParam) %*% ((1 - diag(self$nNodes))*samplingMatrix) %*% blockVarParam)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(blockVarParam)
     },
     fixPoint = function(SBM, blockVarParam, completedNetwork) {
       completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
