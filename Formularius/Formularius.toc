@@ -1,7 +1,0 @@
-\contentsline {section}{\numberline {1}Binary SBM}{1}
-\contentsline {subsection}{\numberline {1.1}Undirected/\leavevmode {\color {red}Directed}}{1}
-\contentsline {subsubsection}{\numberline {1.1.1}MAR}{1}
-\contentsline {subsubsection}{\numberline {1.1.2}NMAR}{2}
-\contentsline {section}{\numberline {2}Poisson SBM}{5}
-\contentsline {subsection}{\numberline {2.1}Undirected/\leavevmode {\color {red}Directed}}{5}
-\contentsline {subsubsection}{\numberline {2.1.1}MAR}{5}
