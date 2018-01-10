@@ -1,422 +1,207 @@
-
-SBM <-
-R6::R6Class(classname = "SBM",
-  public = list(
-    ## fields
-    nNodes         = NULL, # number of nodes
-    nBlocks        = NULL, # number of blocks
-    mixtureParam   = NULL, # vector of block parameters (a.k.a. alpha)
-    connectParam   = NULL, # vector of model parameters (a.k.a. theta)
-    ## methods
-    initialize = function(nNodes, mixtureParam, connectParam=NA) {
-      self$nNodes       <- nNodes
-      self$mixtureParam <- mixtureParam
-      self$connectParam <- connectParam
-      self$nBlocks      <- length(mixtureParam)
-    },
-    ## a function to generate a vector of clusters indicators
-    rBlocks = function() {
-      return(t(rmultinom(self$nNodes, size = 1, prob = self$mixtureParam)))
-    },
-    ## a function to generate a matrix of block indicators
-    rSBM = function() {
-      return(list(blocks = self$rBlocks(), adjacencyMatrix = NA))
-    }
-  ),
+#' @import R6
+SBM <- # this 'virtual' class is the mother of all subtypes of SBM
+R6Class(classname = "SBM",
+  ## fields for internal use (refering to mathematical notations)
   private = list(
+    N     = NULL, # number of nodes
+    Q     = NULL, # number of blocks
+    alpha = NULL, # vector of block parameters (a.k.a. alpha)
+    pi    = NULL, # matrix of connectivity (a.k.a. pi)
+    Z     = NULL, # a sampled indicator of blocks
+    X     = NULL, # a sampled adjacency matrix
     zero  = .Machine$double.eps
+  ),
+  public = list(
+    ## constructor
+    initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
+      private$N     <- nNodes
+      private$alpha <- mixtureParam
+      private$pi    <- connectParam
+      private$Q     <- length(mixtureParam)
+      private$Z     <- self$rBlocks()
+      private$X     <- self$rAdjMatrix()
+    },
+    ## a method to generate a vector of clusters indicators
+    rBlocks = function() {
+      private$Z <- t(rmultinom(private$N, size = 1, prob = private$alpha))
+      private$Z
+    },
+    ## a "virtual" method to sample an adjacency matrix for the current SBM
+    rAdjMatrix = function() {private$X <- NA}
+  ),
+  active = list(
+    ## active binding to access fields
+    nNodes       = function(value) {private$N}    , # number of nodes
+    nBlocks      = function(value) {private$Q}    , # number of blocks
+    mixtureParam = function(value) {private$alpha}, # vector of block parameters (a.k.a. alpha)
+    connectParam = function(value) {private$pi}   , # matrix of connectivity (a.k.a. pi)
+    blocks       = function(value) {                # indicator of blocks
+      if (missing(value))
+        return(private$Z)
+      else
+        private$Z <- value
+      }    ,
+    clusters     = function(value) {                # vector of clusters
+      if (!is.null(private$Z)) apply(private$Z, 1, which.max) else NA
+    }    ,
+    adjacencyMatrix = function(value) {
+      if (missing(value))
+        return(private$X)
+      else
+        private$X <- value
+    }
   )
 )
 
-
 SBM_BernoulliUndirected <-
-R6::R6Class(classname = "SBM_BernoulliUndirected",
+R6Class(classname = "SBM_BernoulliUndirected",
   inherit = SBM,
   public = list(
-    initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-      super$initialize(nNodes, mixtureParam, connectParam)
+    ## effective method to sample an adjacency matrix for the current SBM
+    rAdjMatrix = function() {
+      X <- matrix(rbinom(private$N^2, 1, private$Z %*% private$pi %*% t(private$Z)), private$N)
+      X <- X * lower.tri(X) + t(X * lower.tri(X))
+      diag(X) <- 0
+      private$X <- X
     },
     completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
       network                 <- sampledNetwork$adjacencyMatrix
       network[is.na(network)] <- 0
-      # network[is.na(sampledNetwork$adjacencyMatrix)] <- (blockIndicators %*% self$connectParam %*% t(blockIndicators))[is.na(sampledNetwork$adjacencyMatrix)]
+      network.bar             <- (1 - network); diag(network.bar) <- 0
+      return(sum(blockIndicators %*% log(private$alpha)) +
+              .5 * sum( network * (blockIndicators %*% log(private$pi) %*% t(blockIndicators)) +
+                network.bar * (blockIndicators %*% log(1 - private$pi) %*% t(blockIndicators))))
+    },
+    completeLogLik = function(completedNetwork, blockIndicators) {
+      network     <- completedNetwork
+      network.bar <- 1 - network ; diag(network.bar) <- 0
+      return(sum(blockIndicators %*% log(private$alpha)) +
+               .5 * sum( network * (blockIndicators %*% log(private$pi) %*% t(blockIndicators)) +
+                 network.bar * (blockIndicators %*% log(1 - private$pi) %*% t(blockIndicators))))
+    }
+  ),
+  active = list(
+    cLogLik = function(value) {
+      X     <- private$X
+      X.bar <- 1 - X ; diag(X.bar) <- 0
+      return(sum(private$Z %*% log(private$alpha)) +
+               .5 * sum( X * (private$Z %*% log(private$pi) %*% t(private$Z)) +
+                           X.bar * (private$Z %*% log(1 - private$pi) %*% t(private$Z))))
+    }
+  )
+)
+
+SBM_BernoulliDirected <-
+R6Class(classname = "SBM_BernoulliDirected",
+  inherit = SBM,
+  public = list(
+    ## a function to sample an adjacency matrix for the current SBM
+    rAdjMatrix = function() {
+      X <- matrix(rbinom(private$N^2,1, private$Z %*% private$pi %*% t(private$Z)), private$N)
+      diag(X) <- 0
+      private$X <- X
+    },
+    completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
+      network                 <- sampledNetwork$adjacencyMatrix
+      network[is.na(sampledNetwork$adjacencyMatrix)] <- (blockIndicators %*% self$connectParam %*% t(blockIndicators))[is.na(sampledNetwork$adjacencyMatrix)]
       network.bar             <- (1 - network); diag(network.bar) <- 0
       return(sum(blockIndicators %*% log(self$mixtureParam)) +
-        .5 * sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
-                    network.bar * (blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
+               sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
+                      network.bar * (blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
     },
     completeLogLik = function(completedNetwork, blockIndicators) {
       network     <- completedNetwork
       network.bar <- 1 - network ; diag(network.bar) <- 0
       return(sum(blockIndicators %*% log(self$mixtureParam)) +
-               .5 * sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
-                             network.bar *(blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
+               sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
+                      network.bar *(blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
     },
-    rSBM = function() {
-      blocks <- super$rSBM()$blocks
-      adjacencyMatrix <- matrix(rbinom(self$nNodes^2,1, blocks %*% self$connectParam %*% t(blocks)),self$nNodes)
-      adjacencyMatrix <- adjacencyMatrix * lower.tri(adjacencyMatrix) + t(adjacencyMatrix * lower.tri(adjacencyMatrix))
-      diag(adjacencyMatrix) <- 0
-      return(list(blocks = blocks, adjacencyMatrix = as.matrix(adjacencyMatrix)))
+    active = list(
+      cLogLik = function(value) {
+        X     <- private$X
+        X.bar <- 1 - X ; diag(X.bar) <- 0
+        return(sum(private$Z %*% log(private$alpha)) +
+                 sum( X * (private$Z %*% log(private$pi) %*% t(private$Z)) +
+                             X.bar * (private$Z %*% log(1 - private$pi) %*% t(private$Z))))
+      }
+    )
+  )
+)
+
+SBM_PoissonDirected <-
+R6Class(classname = "SBM_PoissonDirected",
+  inherit = SBM,
+    public = list(
+      ## a function to sample an adjacency matrix for the current SBM
+      rAdjMatrix = function() {
+        X <- matrix(rpois(private$N^2, private$Z %*% private$pi %*% t(private$Z)), private$N)
+        diag(X) <- 0
+        private$X <- X
+      },
+      completeLogLik = function(completedNetwork, blockIndicators) {
+        loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
+        return(sum(blockIndicators%*%log(self$mixtureParam)) +
+                 sum(completedNetwork*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
+                 sum(log(factorial(completedNetwork))*(blockIndicators%*%matrix(1,self$nBlocks,self$nBlocks)%*%t(blockIndicators))) -
+                 sum(loop.bar*blockIndicators%*%self$connectParam%*%t(blockIndicators)))
+      },
+      completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
+        network     <- sampledNetwork$adjacencyMatrix
+        network[is.na(network)] <- 0;
+        loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
+        return(sum(blockIndicators%*%log(self$mixtureParam)) +
+                 sum(network*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
+                 sum(sampledNetwork$samplingMatrix * log(factorial(network))*(blockIndicators%*%matrix(1,self$nBlocks,self$nBlocks)%*%t(blockIndicators))) -
+                 sum((sampledNetwork$samplingMatrix * loop.bar)*blockIndicators%*%self$connectParam%*%t(blockIndicators)))
+      }
+    ),
+  active = list(
+    cLogLik = function(value) {
+      loop.bar    <- matrix(1,private$N,private$N) ; diag(loop.bar) <- 0
+      return(sum(private$Z %*% log(private$alpha)) +
+               sum(private$X * (private$Z %*% log(private$pi) %*% t(private$Z))) -
+               sum(log(factorial(private$X)) * (private$Z %*% matrix(1,private$N, private$Q) %*% t(private$Z))) -
+               sum(loop.bar * private$Z %*% private$pi %*% t(private$Z)))
     }
   )
 )
 
-SBM_BernoulliUndirected.fit <-
-  R6::R6Class(classname = "SBM_BernoulliUndirected.fit",
-          inherit = SBM_BernoulliUndirected,
-          public = list(
-            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-              super$initialize(nNodes, mixtureParam, connectParam)
-            },
-            maximization = function(SBM, completedNetwork, blockVarParam) {
-              SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <-  colMeans(blockVarParam)
-              return(SBM)
-            },
-            maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-              SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <- colMeans(blockVarParam)
-              return(SBM)
-            },
-            fixPoint = function(SBM, blockVarParam, completedNetwork) {
-              completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
-                                               completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
-              completedNetwork.bar <- (1 - completedNetwork)*samplingMatrix; diag(completedNetwork.bar) <- 0
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
-                                                  completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            updateNu = function(SBM, sampling, sampledNetwork, blockVarParam, completedNetwork, taylorVarParam) {
-              PI                   <- log(SBM$connectParam) - log(1-SBM$connectParam)
-              completedNetwork.new <- completedNetwork
-              networkWithZeros     <- completedNetwork
-              networkWithZeros[sampledNetwork$missingDyads] <- 0
-              pap <- matrix(rowSums(completedNetwork), nrow = self$nNodes, ncol = self$nNodes, byrow = FALSE) - (completedNetwork-networkWithZeros)
-              eph <- switch(class(sampling)[1],
-                            "sampling_doubleStandard" = log(1-sampling$missingParam[2]) - log(1-sampling$missingParam[1]) + blockVarParam %*% PI %*% t(blockVarParam),
-                            "sampling_class"          = blockVarParam %*% PI %*% t(blockVarParam),
-                            "sampling_starDegree"     = blockVarParam %*% PI %*% t(blockVarParam)  - sampling$missingParam[2] + 2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))  + t(2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))))
-              eph <- 1/(1+exp(-eph))
-              completedNetwork.new[sampledNetwork$missingDyads] <- eph[sampledNetwork$missingDyads]
-              return(completedNetwork.new)
-            },
-            updateKsi = function(sampling, completedNetwork, sampledNetwork){
-              networkWithZeros <- completedNetwork
-              networkWithZeros[sampledNetwork$missingDyads] <- 0
-              Dtilde   <- rowSums(completedNetwork)
-              Dchap    <- rowSums((completedNetwork-networkWithZeros)*(1-(completedNetwork-networkWithZeros))) + Dtilde^2
-              ksi      <- sqrt(sampling$missingParam[1]^2 + (sampling$missingParam[2]^2)*Dchap + 2*sampling$missingParam[1]*sampling$missingParam[2]*Dtilde)
-            }
-          ),
-          private = list(
-            g = function(x){
-              return(-(1/(1+exp(-x)) - 0.5)/(0.5*x))
-            }
-          )
-  )
-
-
-SBM_BernoulliDirected <-
-  R6::R6Class(classname = "SBM_BernoulliDirected",
-          inherit = SBM,
-          public = list(
-            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-              super$initialize(nNodes, mixtureParam, connectParam)
-            },
-            completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
-              network                 <- sampledNetwork$adjacencyMatrix
-              network[is.na(sampledNetwork$adjacencyMatrix)] <- (blockIndicators %*% self$connectParam %*% t(blockIndicators))[is.na(sampledNetwork$adjacencyMatrix)]
-              network.bar             <- (1 - network); diag(network.bar) <- 0
-              return(sum(blockIndicators %*% log(self$mixtureParam)) +
-                       sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
-                                   network.bar * (blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
-            },
-            completeLogLik = function(completedNetwork, blockIndicators) {
-              network     <- completedNetwork
-              network.bar <- 1 - network ; diag(network.bar) <- 0
-              return(sum(blockIndicators %*% log(self$mixtureParam)) +
-                       sum( network *(blockIndicators %*% log(self$connectParam) %*% t(blockIndicators)) +
-                                   network.bar *(blockIndicators %*% log(1-self$connectParam) %*% t(blockIndicators))))
-            },
-            rSBM = function() {
-              blocks <- super$rSBM()$blocks
-              adjacencyMatrix <- matrix(rbinom(self$nNodes^2,1, blocks %*% self$connectParam %*% t(blocks)),self$nNodes)
-              diag(adjacencyMatrix) <- 0
-              return(list(blocks = blocks, adjacencyMatrix = adjacencyMatrix))
-            }
-          )
-  )
-
-SBM_BernoulliDirected.fit <-
-  R6::R6Class(classname = "SBM_BernoulliDirected.fit",
-          inherit = SBM_BernoulliDirected,
-          public = list(
-            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-              super$initialize(nNodes, mixtureParam, connectParam)
-            },
-            maximization = function(SBM, completedNetwork, blockVarParam) {
-              SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <-  colMeans(blockVarParam)
-              return(SBM)
-            },
-            maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-              SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam > 1-private$zero] <- 1-private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <- colMeans(blockVarParam)
-              return(SBM)
-            },
-            fixPoint = function(SBM, blockVarParam, completedNetwork) {
-              completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
-                                                  completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)) +
-                                                  t(completedNetwork) %*% blockVarParam %*% t(log(t(SBM$connectParam))) +
-                                                  t(completedNetwork.bar) %*% blockVarParam %*% t(log(1-t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
-
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
-              completedNetwork.bar <- (1 - completedNetwork)*samplingMatrix; diag(completedNetwork.bar) <- 0
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
-                                                  completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)) +
-                                                  t(completedNetwork) %*% blockVarParam %*% t(log(t(SBM$connectParam))) +
-                                                  t(completedNetwork.bar) %*% blockVarParam %*% t(log(1-t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
-
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            updateNu = function(SBM, sampling, sampledNetwork, blockVarParam, completedNetwork, taylorVarParam) {
-              PI                   <- log(SBM$connectParam) - log(1-SBM$connectParam)
-              completedNetwork.new <- completedNetwork
-              networkWithZeros     <- completedNetwork
-              networkWithZeros[sampledNetwork$missingDyads] <- 0
-              pap <- matrix(rowSums(completedNetwork), nrow = self$nNodes, ncol = self$nNodes, byrow = FALSE) - (completedNetwork-networkWithZeros)
-              eph <- switch(class(sampling)[1],
-                            "sampling_doubleStandard" = log(1-sampling$missingParam[2]) - log(1-sampling$missingParam[1]) + blockVarParam %*% PI %*% t(blockVarParam),
-                            "sampling_class"          = blockVarParam %*% PI %*% t(blockVarParam),
-                            "sampling_starDegree"     = blockVarParam %*% PI %*% t(blockVarParam)  - sampling$missingParam[2] +
-                              2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))  +
-                              t(2*private$g(taylorVarParam)*(sampling$missingParam[1]*sampling$missingParam[2] + (sampling$missingParam[2]^2)*(1+ pap))))
-              eph <- 1/(1+exp(-eph))
-              completedNetwork.new[sampledNetwork$missingDyads] <- eph[sampledNetwork$missingDyads]
-              return(completedNetwork.new)
-            },
-            updateKsi = function(sampling, completedNetwork, sampledNetwork){
-              networkWithZeros <- completedNetwork
-              networkWithZeros[sampledNetwork$missingDyads] <- 0
-              Dtilde   <- rowSums(completedNetwork)
-              Dchap    <- rowSums((completedNetwork-networkWithZeros)*(1-(completedNetwork-networkWithZeros))) + Dtilde^2
-              ksi      <- sqrt(sampling$missingParam[1]^2 + (sampling$missingParam[2]^2)*Dchap + 2*sampling$missingParam[1]*sampling$missingParam[2]*Dtilde)
-            }
-          ),
-          private = list(
-            g = function(x){
-              return(-(1/(1+exp(-x)) - 0.5)/(0.5*x))
-            }
-          )
-  )
-
-
-SBM_PoissonDirected <-
-  R6::R6Class(classname = "SBM_PoissonDirected",
-          inherit = SBM,
-          public = list(
-            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-              super$initialize(nNodes, mixtureParam, connectParam)
-            },
-            completeLogLik = function(completedNetwork, blockIndicators) {
-                loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
-                return(sum(blockIndicators%*%log(self$mixtureParam)) +
-                  sum(completedNetwork*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
-                  sum(log(factorial(completedNetwork))*(blockIndicators%*%matrix(1,self$nBlocks,self$nBlocks)%*%t(blockIndicators))) -
-                  sum(loop.bar*blockIndicators%*%self$connectParam%*%t(blockIndicators)))
-            },
-            completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
-                network     <- sampledNetwork$adjacencyMatrix
-                network[is.na(network)] <- 0;
-                loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
-                return(sum(blockIndicators%*%log(self$mixtureParam)) +
-                         sum(network*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
-                         sum(sampledNetwork$samplingMatrix * log(factorial(network))*(blockIndicators%*%matrix(1,self$nBlocks,self$nBlocks)%*%t(blockIndicators))) -
-                         sum((sampledNetwork$samplingMatrix * loop.bar)*blockIndicators%*%self$connectParam%*%t(blockIndicators)))
-            },
-            rSBM = function() {
-              blocks <- super$rSBM()$blocks
-              adjacencyMatrix <- matrix(rpois(self$nNodes^2, blocks %*% self$connectParam %*% t(blocks)) ,self$nNodes)
-              diag(adjacencyMatrix) <- 0
-              return(list(blocks = blocks, adjacencyMatrix = adjacencyMatrix))
-            }
-          )
-  )
-
-
-SBM_PoissonDirected.fit <-
-  R6::R6Class(classname = "SBM_PoissonDirected.fit",
-          inherit = SBM_PoissonDirected,
-          public = list(
-            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-              super$initialize(nNodes, mixtureParam, connectParam)
-            },
-            maximization = function(SBM, completedNetwork, blockVarParam) {
-              SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <-  colMeans(blockVarParam)
-              return(SBM)
-            },
-            maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-              SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <- colMeans(blockVarParam)
-              return(SBM)
-            },
-            fixPoint = function(SBM, blockVarParam, completedNetwork) {
-              completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
-                                                  log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
-                                                  (matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes)) %*% blockVarParam %*% t((SBM$connectParam + t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
-                                                  log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
-                                                  (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t((SBM$connectParam + t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
-
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            updateNu = function(SBM, sampling, sampledNetwork, blockVarParam, completedNetwork, taylorVarParam) {
-              PI                   <- log(SBM$connectParam) - log(1-SBM$connectParam)
-              completedNetwork.new <- completedNetwork
-              # networkWithZeros     <- completedNetwork
-              # networkWithZeros[sampledNetwork$missingDyads] <- 0
-              # pap <- matrix(rowSums(completedNetwork), nrow = self$nNodes, ncol = self$nNodes, byrow = FALSE) - (completedNetwork-networkWithZeros)
-              eph <- switch(class(sampling)[1],
-                            "sampling_doubleStandard" = warning("Sampling not meaningfull in this context"),
-                            "sampling_class"          = blockVarParam %*% PI %*% t(blockVarParam),
-                            "sampling_starDegree"     = warning("Sampling not meaningfull in this context"))
-              eph <- 1/(1+exp(-eph))
-              completedNetwork.new[sampledNetwork$missingDyads] <- eph[sampledNetwork$missingDyads]
-              return(completedNetwork.new)
-            },
-            updateKsi = function(sampling, completedNetwork, sampledNetwork){
-              warning("Sampling not meaningfull in this context")
-            }
-          )
-  )
-
-
 SBM_PoissonUndirected <-
-  R6::R6Class(classname = "SBM_PoissonUndirected",
-          inherit = SBM,
-          public = list(
-            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-              super$initialize(nNodes, mixtureParam, connectParam)
-            },
-            completeLogLik = function(completedNetwork, blockIndicators) {
-              loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
-              return(sum(blockIndicators%*%log(self$mixtureParam)) +
-                       .5 * (sum(completedNetwork*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
+R6Class(classname = "SBM_PoissonUndirected",
+  inherit = SBM,
+  public = list(
+    ## a function to sample an adjacency matrix for the current SBM
+    rAdjMatrix = function() {
+      X <- matrix(rpois(private$N^2, private$Z %*% private$pi %*% t(private$Z)), private$N)
+      X <- X * lower.tri(X) + t(X * lower.tri(X))
+      diag(X) <- 0
+      private$X <- X
+    },
+    completeLogLik = function(completedNetwork, blockIndicators) {
+      loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
+      return(sum(blockIndicators%*%log(self$mixtureParam)) +
+               .5 * (sum(completedNetwork*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
                        sum(log(factorial(completedNetwork))*(blockIndicators%*%matrix(1,self$nBlocks,self$nBlocks)%*%t(blockIndicators))) -
                        sum(loop.bar*blockIndicators%*%self$connectParam%*%t(blockIndicators))))
-            },
-            completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
-              network     <- sampledNetwork$adjacencyMatrix
-              network[is.na(network)] <- 0;
-              loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
-              return(sum(blockIndicators%*%log(self$mixtureParam)) +
-                       .5 * (sum(network*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
+    },
+    completeLogLik_MAR = function(blockIndicators, sampledNetwork) {
+      network     <- sampledNetwork$adjacencyMatrix
+      network[is.na(network)] <- 0;
+      loop.bar    <- matrix(1,self$nNodes,self$nNodes) ; diag(loop.bar) <- 0
+      return(sum(blockIndicators%*%log(self$mixtureParam)) +
+               .5 * (sum(network*(blockIndicators%*%log(self$connectParam)%*%t(blockIndicators))) -
                        sum(sampledNetwork$samplingMatrix * log(factorial(network))*(blockIndicators%*%matrix(1,self$nBlocks,self$nBlocks)%*%t(blockIndicators))) -
                        sum((sampledNetwork$samplingMatrix * loop.bar)*blockIndicators%*%self$connectParam%*%t(blockIndicators))))
-            },
-            rSBM = function() {
-              blocks <- super$rSBM()$blocks
-              adjacencyMatrix <- matrix(rpois(self$nNodes^2, blocks %*% self$connectParam %*% t(blocks)) ,self$nNodes)
-              adjacencyMatrix <- adjacencyMatrix * lower.tri(adjacencyMatrix) + t(adjacencyMatrix * lower.tri(adjacencyMatrix))
-              diag(adjacencyMatrix) <- 0
-              return(list(blocks = blocks, adjacencyMatrix = adjacencyMatrix))
-            }
-          )
+    },
+    active = list(
+      cLogLik = function(value) {
+        loop.bar    <- matrix(1,private$N,private$N) ; diag(loop.bar) <- 0
+        return(sum(private$Z %*% log(private$alpha)) +
+                 .5 * (sum(private$X * (private$Z %*% log(private$pi) %*% t(private$Z))) -
+                       sum(log(factorial(private$X)) * (private$Z %*% matrix(1,private$N, private$Q) %*% t(private$Z))) -
+                       sum(loop.bar * private$Z %*% private$pi %*% t(private$Z))))
+      }
+    )
   )
-
-SBM_PoissonUndirected.fit <-
-  R6::R6Class(classname = "SBM_PoissonUndirected.fit",
-          inherit = SBM_PoissonUndirected,
-          public = list(
-            initialize = function(nNodes=NA, mixtureParam=NA, connectParam=NA) {
-              super$initialize(nNodes, mixtureParam, connectParam)
-            },
-            maximization = function(SBM, completedNetwork, blockVarParam) {
-              SBM$connectParam <- (t(blockVarParam)%*% completedNetwork %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes)))%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <-  colMeans(blockVarParam)
-              return(SBM)
-            },
-            maximization_MAR = function(SBM, completedNetwork, blockVarParam, samplingMatrix) {
-              SBM$connectParam <- (t(blockVarParam)%*% (completedNetwork*samplingMatrix) %*%blockVarParam) / (t(blockVarParam)%*%((1-diag(self$nNodes))*samplingMatrix)%*%blockVarParam)
-              SBM$connectParam[is.nan(SBM$connectParam)] <- private$zero ; SBM$connectParam[SBM$connectParam < private$zero] <- private$zero
-              SBM$mixtureParam <- colMeans(blockVarParam)
-              return(SBM)
-            },
-            fixPoint = function(SBM, blockVarParam, completedNetwork) {
-              completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) + (t(completedNetwork) %*% blockVarParam %*% log(SBM$connectParam)) -
-                                                  log(factorial(completedNetwork)*t(factorial(completedNetwork))) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
-                                                  (matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes)) %*% blockVarParam %*% t((SBM$connectParam + t(SBM$connectParam))),2,log(SBM$mixtureParam),"+"))
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
-              blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) -
-                                                  log(factorial(completedNetwork)) %*% blockVarParam %*% matrix(1,self$nBlocks,self$nBlocks) -
-                                                  (samplingMatrix*(matrix(1,self$nNodes,self$nNodes) - diag(self$nNodes) )) %*% blockVarParam %*% t(SBM$connectParam),2,log(SBM$mixtureParam),"+"))
-              num                  <- rowSums(blockVarParam.new)
-              blockVarParam.new    <- blockVarParam.new/num
-              blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-              return(blockVarParam.new)
-            },
-            updateNu = function(SBM, sampling, sampledNetwork, blockVarParam, completedNetwork, taylorVarParam) {
-              PI                   <- log(SBM$connectParam) - log(1-SBM$connectParam)
-              completedNetwork.new <- completedNetwork
-              # networkWithZeros     <- completedNetwork
-              # networkWithZeros[sampledNetwork$missingDyads] <- 0
-              # pap <- matrix(rowSums(completedNetwork), nrow = self$nNodes, ncol = self$nNodes, byrow = FALSE) - (completedNetwork-networkWithZeros)
-              eph <- switch(class(sampling)[1],
-                            "sampling_doubleStandard" = warning("Sampling not meaningfull in this context"),
-                            "sampling_class"          = blockVarParam %*% PI %*% t(blockVarParam),
-                            "sampling_starDegree"     = warning("Sampling not meaningfull in this context"))
-              eph <- 1/(1+exp(-eph))
-              completedNetwork.new[sampledNetwork$missingDyads] <- eph[sampledNetwork$missingDyads]
-              return(completedNetwork.new)
-            },
-            updateKsi = function(sampling, completedNetwork, sampledNetwork){
-              warning("Sampling not meaningfull in this context")
-            }
-          )
-  )
-
+)
 
