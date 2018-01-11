@@ -7,7 +7,7 @@ R6Class(classname = "SBM_fit",
     tau = NULL # variational parameters for posterior probablility of class belonging
   ),
   public = list(
-    maximization = function() {
+    get_argmin = function() {
       pi <- (t(private$tau) %*% private$X %*% private$tau) / (t(private$tau) %*% (1 - diag(private$N)) %*% private$tau)
       pi[is.nan(pi)] <- zero
       pi[pi > 1 - zero] <- 1 - zero
@@ -25,7 +25,6 @@ R6Class(classname = "SBM_fit",
       JX <- sum( log( private$d_law(private$X[private$edges], (private$tau %*% private$pi %*% t(private$tau))[private$edges])  ) )
       JZ + JX
     }
-    #
     # fixPoint = function(SBM, blockVarParam, completedNetwork) {
     #   completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
     #   blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
@@ -35,15 +34,6 @@ R6Class(classname = "SBM_fit",
     #   blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
     #   return(blockVarParam.new)
     # },
-    # fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
-    #   completedNetwork.bar <- (1 - completedNetwork)*samplingMatrix; diag(completedNetwork.bar) <- 0
-    #   blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
-    #                                       completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
-    #   num                  <- rowSums(blockVarParam.new)
-    #   blockVarParam.new    <- blockVarParam.new/num
-    #   blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-    #   return(blockVarParam.new)
-    # }
   ),
   active = list(
     blockVarPar = function(value) {
