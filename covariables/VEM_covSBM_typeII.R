@@ -42,27 +42,31 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1){
 
       ### MAJ alpha/beta :
 
-      fr <- function(x) {
-        b <- matrix(x, nrow=N, ncol=Q-1, byrow=F)
-        a <- drawAlpha(n,Q,b,cov)
-        return(sum(Tau*log(a)))
-      }
-      grr <- function(x) {
-        b <- matrix(x, nrow=N, ncol=Q-1, byrow=F)
-        grad <- NULL
-        for(q in 1:(Q-1)){
-          acc <- 0
-          for(i in 1:n){
-            acc <- acc + cov[,i]*Tau[i,q]*(1 - exp(t(beta[,q]) %*% cov[,i])/(1 + sum(exp(t(beta) %*% cov[,i]))))
-          }
-          grad <- cbind(grad, acc)
+      if(Q != 1){
+        fr <- function(x) {
+          b <- matrix(x, nrow=N, ncol=Q-1, byrow=F)
+          a <- drawAlpha(n,Q,b,cov)
+          return(sum(Tau*log(a)))
         }
-        return(as.numeric(grad))
-      }
-      Optim <- optim(beta, fr, grr, method = "BFGS", control = list(fnscale = -1))
+        grr <- function(x) {
+          b <- matrix(x, nrow=N, ncol=Q-1, byrow=F)
+          grad <- NULL
+          for(q in 1:(Q-1)){
+            acc <- 0
+            for(i in 1:n){
+              acc <- acc + c(cov[,i]*Tau[i,q]*(1 - exp(t(beta[,q]) %*% cov[,i])/(1 + sum(exp(t(beta) %*% cov[,i])))))
+            }
+            grad <- cbind(grad, acc)
+          }
+          return(as.numeric(grad))
+        }
+        Optim <- optim(beta, fr, grr, method = "BFGS", control = list(fnscale = -1))
 
-      beta <- matrix(Optim$par, nrow=N, ncol=Q-1, byrow=F)
-      alpha <-  drawAlpha(n,Q,beta,cov)
+        beta <- matrix(Optim$par, nrow=N, ncol=Q-1, byrow=F)
+        alpha <-  drawAlpha(n,Q,beta,cov)
+      } else {
+        alpha <-  drawAlpha(n,Q,beta,cov)
+      }
 
       ###
 

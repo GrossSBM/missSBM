@@ -16,5 +16,5 @@ sbm <- drawCovSBM(N,n,Q,pi,X,beta)
 
 ### Inférence :
 
-infer <- func_missSBM.CovII(sbm$Y, 2, X)
+infer <- func_missSBM.CovII(sbm$Y, 1, X)
 adjustedRandIndex(getClusters(infer@models[[1]]), sbm$cl)
