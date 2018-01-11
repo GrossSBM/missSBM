@@ -1,5 +1,57 @@
 #' @include SBM-R6Class.R
 
+SBM_fit <-
+R6Class(classname = "SBM_fit",
+  inherit = SBM_new,
+  private = list(
+    tau = NULL # variational parameters for posterior probablility of class belonging
+  ),
+  public = list(
+    maximization = function() {
+      pi <- (t(private$tau) %*% private$X %*% private$tau) / (t(private$tau) %*% (1 - diag(private$N)) %*% private$tau)
+      pi[is.nan(pi)] <- zero
+      pi[pi > 1 - zero] <- 1 - zero
+      pi[pi <     zero] <-     zero
+      self$connectParam <- pi
+      self$mixtureParam <-  colMeans(private$tau)
+    },
+    cLogLik = function() {
+      loglikZ <- sum(private$Z %*% log(private$alpha))
+      loglikX <- sum( log( private$d_law(private$X[private$edges], (private$Z %*% private$pi %*% t(private$Z))[private$edges] )  ) )
+      loglikZ + loglikX
+    },
+    lowerBound = function() {
+      JZ <- sum(private$tau %*% log(private$alpha))
+      JX <- sum( log( private$d_law(private$X[private$edges], (private$tau %*% private$pi %*% t(private$tau))[private$edges])  ) )
+      JZ + JX
+    }
+    #
+    # fixPoint = function(SBM, blockVarParam, completedNetwork) {
+    #   completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
+    #   blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
+    #                                       completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
+    #   num                  <- rowSums(blockVarParam.new)
+    #   blockVarParam.new    <- blockVarParam.new/num
+    #   blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
+    #   return(blockVarParam.new)
+    # },
+    # fixPoint_MAR = function(SBM, blockVarParam, completedNetwork, samplingMatrix) {
+    #   completedNetwork.bar <- (1 - completedNetwork)*samplingMatrix; diag(completedNetwork.bar) <- 0
+    #   blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
+    #                                       completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
+    #   num                  <- rowSums(blockVarParam.new)
+    #   blockVarParam.new    <- blockVarParam.new/num
+    #   blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
+    #   return(blockVarParam.new)
+    # }
+  ),
+  active = list(
+    blockVarPar = function(value) {
+      if (missing(value)) return(private$tau) else  private$tau <- value
+    }
+  )
+)
+
 SBM_BernoulliUndirected.fit <-
 R6Class(classname = "SBM_BernoulliUndirected.fit",
   inherit = SBM_BernoulliUndirected,

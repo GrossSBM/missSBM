@@ -33,15 +33,13 @@
 #'
 #'
 #' @export
-simulateSBM <- function(n, alpha, pi, family, directed=FALSE){
+simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 
-  SBM <- switch(paste0(family, ifelse(directed, "Directed", "Undirected")),
-                "BernoulliUndirected" = SBM_BernoulliUndirected$new(n, alpha, pi),
-                "BernoulliDirected"   = SBM_BernoulliDirected$new(n, alpha, pi),
-                "PoissonUndirected"   = SBM_PoissonUndirected$new(n, alpha, pi),
-                "PoissonDirected"     = SBM_PoissonDirected$new(n, alpha, pi))
+  mySBM <- SBM_new$new(family, directed, n, alpha, pi)
+  mySBM$rBlocks()
+  mySBM$rAdjMatrix()
 
-  return(list(clusters = SBM$clusters, adjacencyMatrix = SBM$adjacencyMatrix))
+  return(list(clusters = mySBM$clusters, adjacencyMatrix = mySBM$adjacencyMatrix))
 }
 
 #' @title Sampling of a network
