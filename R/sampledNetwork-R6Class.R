@@ -1,4 +1,4 @@
-
+#' @import R6
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   public = list(

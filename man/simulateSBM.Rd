@@ -17,14 +17,12 @@ simulateSBM(n, alpha, pi, family, directed = FALSE)
 
 \item{directed}{Boolean variable to indicate whether the network is directed or not,
 by default "undirected" is choosen}
-
-\item{Q}{The number of clusters}
 }
 \value{
 \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
 }
 \description{
-\code{simulateSBM} is a function that generate a matrix (the adjacency matrix of a network) under the SBM
+\code{simulateSBM} is a function that generates a matrix (the adjacency matrix of a network) under the SBM
 }
 \details{
 The emission law can be :\itemize{\item{Bernoulli:

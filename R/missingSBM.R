@@ -1,9 +1,8 @@
 #' @title Simulation of a Stochastic Block Model
 #'
-#' @description \code{simulateSBM} is a function that generate a matrix (the adjacency matrix of a network) under the SBM
+#' @description \code{simulateSBM} is a function that generates a matrix (the adjacency matrix of a network) under the SBM
 #'
 #' @param n The number of nodes
-#' @param Q The number of clusters
 #' @param alpha The mixture parameters
 #' @param pi The connectivity matrix (probabilities inter and intra clusters)
 #' @param family The emission law of the adjacency matrix : Bernoulli or Poisson
@@ -34,23 +33,15 @@
 #'
 #'
 #' @export
-simulateSBM <- function(n, alpha, pi, family, directed=FALSE){
+simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 
-  library(R6)
+  mySBM <- SBM_new$new(family, directed, n, alpha, pi)
+  mySBM$rBlocks()
+  mySBM$rAdjMatrix()
 
-  SBM <- switch(paste0(family, ifelse(directed, "Directed", "Undirected")),
-                "BernoulliUndirected" = SBM_BernoulliUndirected$new(n, alpha, pi),
-                "BernoulliDirected"   = SBM_BernoulliDirected$new(n, alpha, pi),
-                "PoissonUndirected"   = SBM_PoissonUndirected$new(n, alpha, pi),
-                "PoissonDirected"     = SBM_PoissonDirected$new(n, alpha, pi))
-
-  SBM <- SBM$rSBM()
-
-  return(list(clusters = apply(SBM$blocks, 1, which.max), adjacencyMatrix = SBM$adjacencyMatrix))
+  return(list(clusters = mySBM$clusters, adjacencyMatrix = mySBM$adjacencyMatrix))
 }
-#'
-#'
-#'
+
 #' @title Sampling of a network
 #'
 #' @description \code{samplingSBM} is a function that sample a matrix (the adjacency matrix of a network) under the SBM
@@ -103,25 +94,23 @@ simulateSBM <- function(n, alpha, pi, family, directed=FALSE){
 #' @export
 samplingSBM <- function(adjacencyMatrix, sampling, samplingParameters, Q = NULL, clusters = NULL, directed = FALSE){
 
-  library(R6)
-
   n <- nrow(adjacencyMatrix)
   blockVarParam <- NULL
   family <- ifelse(length(tabulate(adjacencyMatrix)) == 1, "Bernoulli", "Poisson")
 
-  if(!(sampling %in% c("MAREdge", "MARNode", "snowball", "starDegree", "class", "doubleStandard"))) stop("This sampling is not in the list !")
-  if(!(directed | isSymmetric(adjacencyMatrix))) stop("The adjacency matrix is not symmetric !")
-  if(!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
+  if (!(sampling %in% c("MAREdge", "MARNode", "snowball", "starDegree", "class", "doubleStandard"))) stop("This sampling is not in the list !")
+  if (!(directed | isSymmetric(adjacencyMatrix))) stop("The adjacency matrix is not symmetric !")
+  if (!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
 
 
-  if(sampling == "class"){
-    if(is.null(Q)) stop("For class sampling you must give the number of clusters : Q !")
-    if(is.null(clusters)) stop("For class sampling you must give clusters !")
-    if(!(length(samplingParameters) == Q & length(tabulate(clusters)) <= Q)) stop("For class sampling alpha and Q must be equal, the number of clusters in the parameter clusters must not exceed Q !")
-    if(!is.vector(clusters)) stop("The parameter clusters must be a vector !")
-    if(!(length(clusters) == n)) stop(paste("The parameter clusters must have a length equal to", n,"!"))
+  if (sampling == "class"){
+    if (is.null(Q)) stop("For class sampling you must give the number of clusters : Q !")
+    if (is.null(clusters)) stop("For class sampling you must give clusters !")
+    if (!(length(samplingParameters) == Q & length(tabulate(clusters)) <= Q)) stop("For class sampling alpha and Q must be equal, the number of clusters in the parameter clusters must not exceed Q !")
+    if (!is.vector(clusters)) stop("The parameter clusters must be a vector !")
+    if (!(length(clusters) == n)) stop(paste("The parameter clusters must have a length equal to", n,"!"))
     blockVarParam <- matrix(0,n,Q); blockVarParam[cbind(1:n, clusters)] <- 1
-    }
+  }
 
   testLengthSampParam <- switch(sampling,
                           "doubleStandard" = ifelse(length(samplingParameters) == 2, TRUE, FALSE),
@@ -150,7 +139,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, samplingParameters, Q = NULL,
     return(samplingData$rSampling(adjacencyMatrix)$adjacencyMatrix)
   }
 }
-#'
+
 #' @title Inference of Stochastic Block Model from sampled data
 #'
 #' @description \code{inferSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix
@@ -198,10 +187,10 @@ inferSBM <- function(sampledNetwork, vBlocks, sampling, family, directed = FALSE
   library(ggplot2)
 
 
-  if(!(sampling %in% c("MAREdge", "MARNode", "snowball", "starDegree", "class", "doubleStandard"))) stop("This sampling is not in the list !")
-  if(!(directed | isSymmetric(sampledNetwork))) stop("The adjacency matrix is not symmetric !")
-  if(!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
-  if(is.null(vBlocks)) stop(" The parameter vBlocks must be a least of length 1 !")
+  if (!(sampling %in% c("MAREdge", "MARNode", "snowball", "starDegree", "class", "doubleStandard"))) stop("This sampling is not in the list !")
+  if (!(directed | isSymmetric(sampledNetwork))) stop("The adjacency matrix is not symmetric !")
+  if (!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
+  if (is.null(vBlocks)) stop(" The parameter vBlocks must be a least of length 1 !")
 
 
   collection <- SBM_collection$new(sampledNetwork, vBlocks, sampling, family, directed)
@@ -211,17 +200,17 @@ inferSBM <- function(sampledNetwork, vBlocks, sampling, family, directed = FALSE
   })
 
 
-  if(length(vBlocks) > 1 & min(vBlocks) == 1){
+  if (length(vBlocks) > 1 & min(vBlocks) == 1) {
     bestModel <- collectionList[[collection$getBestModel()]]
   }
-  if(min(vBlocks) > 1 & length(vBlocks) != 1){
+  if (min(vBlocks) > 1 & length(vBlocks) != 1) {
     bestModel <- collectionList[[collection$getBestModel() - min(vBlocks) + 1]]
   }
-  if(length(vBlocks) == 1){
+  if (length(vBlocks) == 1) {
     bestModel <- collectionList[[1]]
   }
 
-  if(plot){
+  if (plot) {
     mode <- ifelse(directed, "directed", "undirected")
     sampAdjMatZeros <- sampledNetwork; sampAdjMatZeros[is.na(sampAdjMatZeros)] <- 0
 
