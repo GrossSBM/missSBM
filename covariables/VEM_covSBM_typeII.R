@@ -4,7 +4,7 @@
 
 source("~/SVN/Code/code_these/functions/func_missSBM.R")
 
-func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1){
+func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, directed = FALSE){
 
   n <- nrow(X)
   N <- nrow(cov)
@@ -54,7 +54,7 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1){
           for(q in 1:(Q-1)){
             acc <- 0
             for(i in 1:n){
-              acc <- acc + c(cov[,i]*Tau[i,q]*(1 - exp(t(beta[,q]) %*% cov[,i])/(1 + sum(exp(t(beta) %*% cov[,i])))))
+              acc <- acc + cov[,i]*Tau[i,q]*(1 - exp(t(beta[,q]) %*% cov[,i])/(1 + sum(exp(t(beta) %*% cov[,i]))))
             }
             grad <- cbind(grad, acc)
           }
@@ -65,7 +65,7 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1){
         beta <- matrix(Optim$par, nrow=N, ncol=Q-1, byrow=F)
         alpha <-  drawAlpha(n,Q,beta,cov)
       } else {
-        alpha <-  drawAlpha(n,Q,beta,cov)
+        alpha <-  colMeans(Tau)
       }
 
       ###
@@ -74,7 +74,11 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1){
       while(!cond.FP){
         Tau.old <- Tau
         iter <- iter + 1
-        Tau <- exp(sweep(X1 %*% Tau %*% t(log(pi)) + X0 %*% Tau %*% t(log(1-pi)),2,log(alpha),"+"))
+        if(!directed){
+          Tau <- exp(sweep(X1 %*% Tau %*% t(log(pi)) + X0 %*% Tau %*% t(log(1-pi)) + t(X1) %*% Tau %*% log(pi) + t(X0) %*% Tau %*% log(1-pi),2,log(alpha),"+"))
+        } else {
+          Tau <- exp(sweep(X1 %*% Tau %*% t(log(pi)) + X0 %*% Tau %*% t(log(1-pi)),2,log(alpha),"+"))
+        }
         num <- rowSums(Tau)
         Tau <- Tau/num
         Tau[is.nan(Tau)] <- 0.5

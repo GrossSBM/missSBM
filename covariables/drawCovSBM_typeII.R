@@ -22,9 +22,9 @@ drawAlpha <- function(n,Q,beta,X){
 }
 
 ### Exemple :
-N <- 5
-n <- 20
-Q <- 2
+N  <- 5
+n  <- 20
+Q  <- 2
 pi <- diag(.45, Q) +.05
 
 X     <- drawCov(N,n)
@@ -36,17 +36,41 @@ drawCovSBM <- function(N,n,Q,pi,X=NULL,beta=NULL,directed=FALSE) {
   if(is.null(X))    X    <- drawCov(N,n)
   if(is.null(beta)) beta <- drawbeta(N,Q)
   alpha <- drawAlpha(n,Q,beta,X)
-  
+
   Z <- do.call(rbind, lapply(1:n, function(i){ t(rmultinom(1, 1, alpha[i,])) }))
   Znum <- Z %*% c(1:Q)
-  
+
   Y <- matrix(rbinom(n^2,1,Z %*% pi %*% t(Z)),n)
   if(!directed) Y <- Y * lower.tri(Y) + t(Y * lower.tri(Y))
   diag(X) <- 0
-  
+
   return(list(Y=Y,cl=as.numeric(Znum),Z=Z))
 }
 
 ### Exemple :
-sbm <- drawCovSBM(N,n,Q,pi,X,beta)
+sbm <- drawCovSBM(N,n,Q,pi,X,beta,TRUE)
 ###
+
+drawTheta <- function(N,m=0,s=1){
+  theta  <- rnorm(N,m,s)
+  return(theta)
+}
+
+sampleCovSBM_Node <- function(Y,X, theta=NULL, directed=FALSE){
+  if(is.null(theta)) theta <- drawTheta(nrow(X))
+  sampP  <- 1/(1+exp(-t(theta) %*% X))
+  obsNodes <- which(runif(ncol(X)) < sampP)
+  samplingMatrix <- matrix(0,ncol(X),ncol(X)) ; samplingMatrix[obsNodes,] <- 1
+  diag(samplingMatrix) <- 1
+  if(!directed){
+    samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
+  }
+  return(samplingMatrix)
+}
+
+### Exemple :
+sampMat <- sampleCovSBM_Node(sbm$Y,X, directed=T)
+###
+
+
+
