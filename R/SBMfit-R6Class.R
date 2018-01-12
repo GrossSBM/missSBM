@@ -24,22 +24,73 @@ R6Class(classname = "SBM_fit",
       JZ <- sum(private$tau %*% log(private$alpha))
       JX <- sum( log( private$d_law(private$X[private$edges], (private$tau %*% private$pi %*% t(private$tau))[private$edges])  ) )
       JZ + JX
-    }
-    # fixPoint = function(SBM, blockVarParam, completedNetwork) {
-    #   completedNetwork.bar <- 1 - completedNetwork; diag(completedNetwork.bar) <- 0
-    #   blockVarParam.new    <- exp(sweep(completedNetwork %*% blockVarParam %*% t(log(SBM$connectParam)) +
-    #                                       completedNetwork.bar %*% blockVarParam %*% t(log(1-SBM$connectParam)),2,log(SBM$mixtureParam),"+"))
-    #   num                  <- rowSums(blockVarParam.new)
-    #   blockVarParam.new    <- blockVarParam.new/num
-    #   blockVarParam.new[is.nan(blockVarParam.new)] <- 0.5
-    #   return(blockVarParam.new)
-    # },
-  ),
+    }),
   active = list(
     blockVarPar = function(value) {
       if (missing(value)) return(private$tau) else  private$tau <- value
     }
   )
+)
+
+
+SBM_fit$set("public", "initialize",
+  function(sampledNetwork, nBlocks, clusterInit="SpectralClustering") {
+    nNodes <- nrow(sampledNetwork)
+    if (isSymmetric(sampledNetwork)) directed <- FALSE else directed <- TRUE
+    if (length(table(sampledNetwork)) > 2) family <- "Poisson" else family <- "Bernoulli"
+
+    if (is.character(clusterInit)) {
+      clusterInit <-
+        switch(clusterInit,
+               "CAH"    = net_CAH(sampledNetwork, nBlocks),
+               "Kmeans" = net_kmeans(sampledNetwork, nBlocks),
+               SpectralClustering(sampledNetwork, nBlocks)
+        )
+    }
+
+    Z <- matrix(0,nNodes,nBlocks)
+    Z[cbind(1:nNodes, clusterInit)] <- 1
+    pi0 <- (t(Z) %*% sampledNetwork %*% Z) / (t(Z) %*% (1 - diag(nNodes)) %*% Z)
+    alpha0 <-  colMeans(Z)
+
+    super$initialize(family, directed, nNodes = nNodes, mixtureParam = alpha0, connectParam = pi0)
+    private$tau <- Z
+    private$Z   <- Z
+    private$X   <- sampledNetwork
+  }
+)
+
+SBM_fit$set("public", "fixPoint",
+  function() {
+
+    if (private$family == "Bernoulli") {
+      ## Bernoulli undirected
+      tau <- private$X %*% private$tau %*% t(log(private$pi)) + bar(private$X) %*% private$tau %*% t(log(1 - private$pi))
+      if (private$directed) {
+        ## Bernoulli directed
+        tau <- tau + t(private$X) %*% private$tau %*% t(log(t(private$pi))) + t(bar(private$X)) %*% private$tau %*% t(log(1 - t(private$pi)))
+      }
+    }
+
+    if (private$family == "Poisson") {
+      ## Poisson undirected
+      tau <- private$X %*% private$tau %*% t(log(private$pi)) + (t(private$X) %*% private$tau %*% log(private$pi)) -
+        log(factorial(private$X)*t(factorial(private$X))) %*% private$tau %*% matrix(1,private$Q, private$Q) -
+        (matrix(1,private$N, private$N) - diag(private$N)) %*% private$tau %*% t((private$pi + t(private$pi)))
+      # if (private$directed) {
+      #   ## Poisson directed
+      #   tau <- tau + t(private$X) %*% private$tau %*% t(log(private$pi)) + (t(private$X) %*% private$tau %*% log(private$pi)) -
+      #            log(factorial(private$X)*t(factorial(private$X))) %*% private$tau %*% matrix(1,private$Q,private$Q) -
+      #            (matrix(1,private$N, private$N) - diag(private$N)) %*% private$tau %*% t((private$pi + t(private$pi)))
+      # }
+    }
+
+    tau <- exp(sweep(tau, 2, log(private$alpha),"+"))
+    tau <- tau/rowSums(tau)
+    tau[is.nan(tau)] <- .5
+    private$tau <- tau
+    tau
+  }
 )
 
 SBM_BernoulliUndirected.fit <-

@@ -18,4 +18,5 @@ Collate:
     'missingSBM.R'
     'sampledNetwork-R6Class.R'
     'sampling-R6Class.R'
+    'utils.R'
 RoxygenNote: 6.0.1

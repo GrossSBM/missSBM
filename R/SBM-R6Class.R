@@ -69,8 +69,8 @@ R6Class(classname = "SBM_new",
     family   = NULL, # emission law
     d_law    = NULL, # the density of the emission law of the edges
     r_law    = NULL, # random generation for the emission law of the edges
-    Z        = NULL, # a sampled indicator of blocks
-    X        = NULL  # a sampled adjacency matrix
+    Z        = NULL, # the sampled indicator of blocks
+    X        = NULL  # the sampled adjacency matrix
   ),
   public = list(
     ## constructor

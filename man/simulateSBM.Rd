@@ -4,7 +4,7 @@
 \alias{simulateSBM}
 \title{Simulation of a Stochastic Block Model}
 \usage{
-simulateSBM(n, alpha, pi, family, directed = FALSE)
+simulateSBM(n, alpha, pi, family = "Bernoulli", directed = FALSE)
 }
 \arguments{
 \item{n}{The number of nodes}
