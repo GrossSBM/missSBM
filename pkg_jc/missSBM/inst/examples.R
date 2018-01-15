@@ -15,6 +15,7 @@ samplingParameters <- .5                                                        
 sampling <- "MAREdge"                                                              # the sampling design
 sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 
-## Inference :
-vBlocks <- 1:5                                                                     # number of classes
-sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling)             # the inference
+
+# ## Inference :
+# vBlocks <- 1:5                                                                     # number of classes
+# sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling)             # the inference

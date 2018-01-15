@@ -127,6 +127,7 @@ SBM_VEMfit$set("public", "initialization",
       Dchap               <- rowSums((self$completedNetwork - networkWithZeros)*(1 - (self$completedNetwork - networkWithZeros))) + Dtilde^2
       self$taylorVarParam <- sqrt(self$sampling$missingParam[1]^2 + (self$sampling$missingParam[2]^2)*Dchap + 2*self$sampling$missingParam[1]*self$sampling$missingParam[2]*Dtilde)
     }
+
     self$completedNetwork[is.na(self$completedNetwork)] <- 0
     theta <- (t(self$blockVarParam) %*% self$completedNetwork %*% self$blockVarParam) / (t(self$blockVarParam) %*% ((1 - diag(self$SBM$nNodes))) %*% self$blockVarParam)
     if (!(class(self$SBM)[2] %in% c("SBM_PoissonDirected", "SBM_PoissonUndirected")) & !(class(self$sampling)[1] == "sampling_snowball")) {
@@ -140,34 +141,30 @@ SBM_VEMfit$set("public", "doVEM",
   function() {
 
     conv    <- vector("numeric", self$maxIterVEM) ; conv[1] <- NA
-    theta   <- vector("list", length = self$maxIterVEM)
 
     self$initialization()
 
     i <- 0; cond <- FALSE
-    while(!cond){
+    while (!cond) {
       i <- i + 1
+
+      pi_old <- self$SBM$connectParam
 
       self$Mstep()
       self$VEstep()
 
-      theta[[i]] <- self$SBM$connectParam
-
       if (i > 1) {
-        conv[i] <- sqrt(sum((theta[[i]]-theta[[i-1]])^2)) / sqrt(sum((theta[[i-1]])^2))
+        conv[i] <- sqrt(sum((self$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
         cond    <- (i > self$maxIterVEM) |  (conv[i] < self$controlVEM)
       }
     }
-    if (!(class(self$sampling)[1] == "sampling_snowball")){
-      self$vICL <- -2 * (self$compLogLik[length(self$compLogLik)] + self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork, self$blockVarParam)) +
-        self$sampling$penality(self$SBM$nBlocks)
-    } else {
-      self$vICL <- -2 * self$compLogLik[length(self$compLogLik)] + self$sampling$penality(self$SBM$nBlocks)
-
-    }
+    self$vICL <- -2 * (self$compLogLik[length(self$compLogLik)] +
+      self$sampling$samplingLogLik(self$sampledNetwork, self$completedNetwork, self$blockVarParam)) +
+      self$sampling$penality(self$SBM$nBlocks)
   }
 )
 
+## THIS THING SHOULD NOT EXIT IF PROPER OO CODE IS MADE...
 SBM_VEMfit$set("public", "doVEMPoisson",
   function() {
 

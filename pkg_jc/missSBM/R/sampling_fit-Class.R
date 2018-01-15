@@ -1,10 +1,12 @@
 #' @import R6
-sampling <-
+#' @include sam
+#' @export
+sampling_model <-
 R6Class(classname = "sampling",
   public = list(
     ## fields
     nNodes         = NULL,  # number of nodes
-    missingParam   = NULL,  # vector of missing parameters (a.k.a. alpha)
+    missingParam   = NULL,  # vector of missing parameters (a.k.a. psi)
     directed       = FALSE, #
     ## methods
     initialize = function(nNodes = NA, missingParam = NA, directed = FALSE) {
@@ -15,9 +17,15 @@ R6Class(classname = "sampling",
   )
 )
 
-sampling_doubleStandard <-
+#' @export
+sampling_fit <-
+R6Class(classname = "sampling",
+  inherit = sampling_model
+)
+
+sampling_model_doubleStandard <-
 R6Class(classname = "sampling_doubleStandard",
-  inherit = sampling,
+  inherit = sampling_model,
   public = list(
     rSampling = function(adjMatrix) {
       samplingMatrix <- matrix(0, self$nNodes, self$nNodes)

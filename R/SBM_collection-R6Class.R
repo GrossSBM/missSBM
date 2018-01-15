@@ -16,10 +16,12 @@ SBM_collection <-
 
 SBM_collection$set("public", "initialize",
   function(sample, vBlocks, sampling, family, directed) {
+
     self$family   <- family
     self$vBlocks  <- vBlocks
     self$sampling <- sampling
     self$sampledNetwork <- sampledNetwork$new(sample, directed)
+
     self$samplingData   <- switch(sampling,
                             "doubleStandard" = sampling_doubleStandard$new(self$sampledNetwork$nNodes, c(.5,.5), directed),
                             "class"          = sampling_class$new(self$sampledNetwork$nNodes, .5, directed),
@@ -28,18 +30,23 @@ SBM_collection$set("public", "initialize",
                             "MARNode"        = sampling_randomNodesMAR$new(self$sampledNetwork$nNodes, .5, directed),
                             "snowball"       = sampling_snowball$new(self$sampledNetwork$nNodes, rep(.5, self$sampledNetwork$nNodes), directed))
     self$models <- mclapply(self$vBlocks, function(i){
+
       SBM <- switch(paste0(self$family, ifelse(self$sampledNetwork$directed, "Directed", "Undirected")),
                     "BernoulliUndirected" = SBM_BernoulliUndirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
                     "BernoulliDirected"   = SBM_BernoulliDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
                     "PoissonUndirected"   = SBM_PoissonUndirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05),
-                    "PoissonDirected"     = SBM_PoissonDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05))
+                    "PoissonDirected"     = SBM_PoissonDirected.fit$new(self$sampledNetwork$nNodes, rep(1, i)/i, diag(.45,i)+.05)
+                    )
+
       SBM_VEMfit <- SBM_VEMfit$new(SBM, self$sampledNetwork, self$samplingData, init = "CAH")
+
       if(self$family == "Bernoulli"){
         SBM_VEMfit$doVEM()
       } else {
         SBM_VEMfit$doVEMPoisson()
       }
-      return(SBM_VEMfit)
+
+      SBM_VEMfit
     }
     , mc.cores = 1)
     self$vICLs <- sapply(self$models, function(x){x$vICL})
