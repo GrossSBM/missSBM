@@ -48,11 +48,8 @@ simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 #'
 #' @param adjacencyMatrix The adjacency matrix of the network
 #' @param sampling The sampling design used to sample the adjacency matrix
-#' @param samplingParameters The sampling parameters adapted to each sampling
-#' @param Q The number of clusters in the SBM, only necessary for class sampling, by default equal to NULL
+#' @param parameters The sampling parameters adapted to each sampling
 #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL
-#' @param directed Boolean variable to indicate whether the network is directed or not,
-#' by default "undirected" is choosen
 #' @return \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
 #' @author T. Tabouy
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
@@ -92,52 +89,46 @@ simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 #'
 #'
 #' @export
-samplingSBM <- function(adjacencyMatrix, sampling, samplingParameters, Q = NULL, clusters = NULL, directed = FALSE){
+samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 
-  n <- nrow(adjacencyMatrix)
-  blockVarParam <- NULL
+  ## TODO: postponed all the checks to the Class sampling_model
   family <- ifelse(length(tabulate(adjacencyMatrix)) == 1, "Bernoulli", "Poisson")
 
-  if (!(sampling %in% c("MAREdge", "MARNode", "snowball", "starDegree", "class", "doubleStandard"))) stop("This sampling is not in the list !")
-  if (!(directed | isSymmetric(adjacencyMatrix))) stop("The adjacency matrix is not symmetric !")
-  if (!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
+  if (!(sampling %in% available_samplings)) stop("This sampling is not in the list !")
+  if (!(family == "Bernoulli" | sampling %in% c("edge", "node"))) stop("This sampling for Poisson emission law is not available !")
 
+  N <- nrow(adjacencyMatrix)
 
-  if (sampling == "class"){
-    if (is.null(Q)) stop("For class sampling you must give the number of clusters : Q !")
+  if (sampling == "block"){
     if (is.null(clusters)) stop("For class sampling you must give clusters !")
-    if (!(length(samplingParameters) == Q & length(tabulate(clusters)) <= Q)) stop("For class sampling alpha and Q must be equal, the number of clusters in the parameter clusters must not exceed Q !")
-    if (!is.vector(clusters)) stop("The parameter clusters must be a vector !")
-    if (!(length(clusters) == n)) stop(paste("The parameter clusters must have a length equal to", n,"!"))
-    blockVarParam <- matrix(0,n,Q); blockVarParam[cbind(1:n, clusters)] <- 1
+    Q <- nlevels(as.factor(clusters))
+    if (!(length(clusters) == N)) stop(paste("The parameter clusters must have a length equal to", N,"!"))
   }
 
-  testLengthSampParam <- switch(sampling,
-                          "doubleStandard" = ifelse(length(samplingParameters) == 2, TRUE, FALSE),
-                          "starDegree"     = ifelse(length(samplingParameters) == 2, TRUE, FALSE),
-                          "MAREdge"        = ifelse(length(samplingParameters) == 1, TRUE, FALSE),
-                          "MARNode"        = ifelse(length(samplingParameters) == 1, TRUE, FALSE),
-                          "snowball"       = ifelse(length(samplingParameters) == 1, TRUE, FALSE))
-  if(!testLengthSampParam) stop("Sampling parameters have not good length")
+  if (!switch(sampling,
+        "double_standard" = ifelse(length(parameters) == 2, TRUE, FALSE),
+        "degree"          = ifelse(length(parameters) == 2, TRUE, FALSE),
+        "block"           = ifelse(length(parameters) == Q, TRUE, FALSE),
+        "dyad"            = ifelse(length(parameters) == 1, TRUE, FALSE),
+        "node"            = ifelse(length(parameters) == 1, TRUE, FALSE),
+        "snowball"        = ifelse(length(parameters) == 1, TRUE, FALSE))) {
+    stop("Sampling parameters have not good length")
+  }
 
-  if(!(sampling == "starDegree")){
-    if(any(samplingParameters < 0) | any(samplingParameters > 1)){
+  if (sampling != "degree") {
+    if(any(parameters < 0) | any(parameters > 1)){
       stop("Sampling parameters must be probabilities (i.e between 0 and 1)")
     }
   }
 
-  samplingData   <- switch(sampling,
-                                "doubleStandard" = sampling_doubleStandard$new(n, samplingParameters, directed),
-                                "class"          = sampling_class$new(n, samplingParameters, directed),
-                                "starDegree"     = sampling_starDegree$new(n, samplingParameters, directed),
-                                "MAREdge"        = sampling_randomPairMAR$new(n, samplingParameters, directed),
-                                "MARNode"        = sampling_randomNodesMAR$new(n, samplingParameters, directed),
-                                "snowball"       = sampling_snowball$new(n, rep(samplingParameters, n), directed))
-  if(sampling == "class"){
-    return(samplingData$rSampling(adjacencyMatrix, blockVarParam)$adjacencyMatrix)
+  mySampling <- sampling_model$new(sampling, parameters)
+
+  if(sampling == "block"){
+    mySampling$rSampling(adjacencyMatrix, clusters)
   } else {
-    return(samplingData$rSampling(adjacencyMatrix)$adjacencyMatrix)
+    mySampling$rSampling(adjacencyMatrix)
   }
+  mySampling$sampledNetwok$adjacencyMatrix
 }
 
 #' @title Inference of Stochastic Block Model from sampled data

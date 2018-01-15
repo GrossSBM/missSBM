@@ -2,38 +2,14 @@
 #' @export
 #' @export
 sampling_fit <-
-R6Class(classname = "sampling",
+R6Class(classname = "sampling_fit",
   inherit = sampling_model
 )
-
 
 sampling_model_doubleStandard <-
 R6Class(classname = "sampling_doubleStandard",
   inherit = sampling_model,
   public = list(
-    rSampling = function(adjMatrix) {
-      samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-      if (!self$directed) {
-        areOne  <- (adjMatrix == 1) & upper.tri(adjMatrix)
-        areZero <- (adjMatrix == 0) & upper.tri(adjMatrix)
-
-        samplingMatrix[areOne]  <- runif(sum(areOne))  < self$missingParam[2]
-        samplingMatrix[areZero] <- runif(sum(areZero)) < self$missingParam[1]
-        samplingMatrix <- t(samplingMatrix) | samplingMatrix
-        diag(samplingMatrix) <- 1
-      } else {
-        areOne  <- (adjMatrix == 1)
-        areZero <- (adjMatrix == 0)
-
-        samplingMatrix[areOne]  <- runif(sum(areOne))  < self$missingParam[2]
-        samplingMatrix[areZero] <- runif(sum(areZero)) < self$missingParam[1]
-        diag(samplingMatrix) <- 1
-      }
-
-      sampAdjMatrix  <- adjMatrix
-      sampAdjMatrix[which(samplingMatrix == 0)] <- NA
-      return(sampledNetwork$new(sampAdjMatrix, self$directed))
-    },
     samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
 
       ll <- sum(log(self$missingParam[2]) * completedNetwork[sampledNetwork$observedDyads] + log(self$missingParam[1]) * (1-completedNetwork[sampledNetwork$observedDyads])) +
@@ -55,24 +31,10 @@ R6Class(classname = "sampling_doubleStandard",
   )
 )
 
-
 sampling_class <-
 R6Class(classname = "sampling_class",
   inherit = sampling,
   public = list(
-    rSampling = function(adjMatrix, blockVarParam) {
-      samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-      sampProb <- runif(self$nNodes) < self$missingParam[apply(blockVarParam, 1, which.max)]
-      obsNodes <- which(runif(self$nNodes) < sampProb)
-
-      samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
-      diag(samplingMatrix) <- 1
-      samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
-
-      sampAdjMatrix  <- adjMatrix
-      sampAdjMatrix[which(samplingMatrix == 0)] <- NA
-      return(sampledNetwork$new(sampAdjMatrix, self$directed))
-    },
     samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
       return(sum(t(sampledNetwork$samplingVector) %*% blockVarParam %*% log(self$missingParam) + t(1-sampledNetwork$samplingVector) %*% blockVarParam %*% log(1-self$missingParam)))
     },
@@ -93,19 +55,6 @@ sampling_starDegree <-
 R6Class(classname = "sampling_starDegree",
   inherit = sampling,
   public = list(
-    rSampling = function(adjMatrix) {
-      samplingMatrix      <- matrix(0, self$nNodes, self$nNodes)
-      sampProb            <- self$missingParam[1]+self$missingParam[2]*rowSums(adjMatrix)
-      samprob             <- 1/(1+exp(-sampProb))
-      obsNodes            <- which(runif(self$nNodes) < sampProb)
-
-      samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
-      diag(samplingMatrix) <- 1
-      samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
-
-      sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
-      return(sampledNetwork$new(sampAdjMatrix, self$directed))
-    },
     samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
       sampProb       <- self$missingParam[1]+self$missingParam[2]*rowSums(completedNetwork)
       samprob        <- 1/(1+exp(-sampProb))
@@ -143,22 +92,6 @@ sampling_randomPairMAR <-
 R6Class(classname = "sampling_randomPairMAR",
   inherit = sampling,
   public = list(
-    rSampling = function(adjMatrix) {
-      samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-      if(!self$directed){
-        edgeSamp <- sample(which(lower.tri(adjMatrix)), floor((self$nNodes*(self$nNodes-1)/2)*self$missingParam))
-      } else {
-        edgeSamp <- sample(which(lower.tri(adjMatrix) | upper.tri(adjMatrix)), floor((self$nNodes^2 - self$nNodes)*self$missingParam))
-      }
-
-      samplingMatrix <- matrix(0,self$nNodes,self$nNodes)
-      samplingMatrix[edgeSamp] <- 1
-      if(!self$directed){ samplingMatrix <- t(samplingMatrix) | samplingMatrix }
-      diag(samplingMatrix) <- 1
-
-      sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
-      return(sampledNetwork$new(sampAdjMatrix, self$directed))
-    },
     samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
       logPsi    <- ifelse (self$missingParam < .Machine$double.eps, 0, log(self$missingParam))
       log1mPsi  <- ifelse (self$missingParam > 1-.Machine$double.eps, 0, log(1-self$missingParam))
@@ -198,17 +131,6 @@ sampling_randomNodesMAR <-
 R6Class(classname = "sampling_randomNodesMAR",
   inherit = sampling,
     public = list(
-      rSampling = function(adjMatrix) {
-        samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-        obsNodes       <- sample(1:self$nNodes, floor((self$nNodes)*self$missingParam))
-
-        samplingMatrix <- matrix(0,self$nNodes,self$nNodes) ; samplingMatrix[obsNodes,] <- 1
-        diag(samplingMatrix) <- 1
-        samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
-
-        sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
-        return(sampledNetwork$new(sampAdjMatrix, self$directed))
-      },
       samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
         logPsi         <- ifelse (self$missingParam < .Machine$double.eps, 0, log(self$missingParam))
         log1mPsi       <- ifelse (self$missingParam > 1-.Machine$double.eps, 0, log(1-self$missingParam))
@@ -239,25 +161,6 @@ sampling_snowball <-
 R6Class(classname = "sampling_snowball",
   inherit = sampling,
   public = list(
-    rSampling = function(adjMatrix) {
-      samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
-      # browser()
-
-      # First step :
-      obsNodes       <- which(runif(self$nNodes) < self$missingParam)
-      samplingMatrix[obsNodes,] <- 1
-      samplingMatrix[,obsNodes] <- 1
-
-      # Second step :
-      obsNeighbours <- apply(adjMatrix[obsNodes, ], 1, function(x) which(x != 0))
-      obsNeighbours <- unique(unlist(obsNeighbours))
-      samplingMatrix[obsNeighbours, ] <- samplingMatrix[, obsNeighbours] <- 1
-
-      diag(samplingMatrix) <- 1
-
-      sampAdjMatrix  <- adjMatrix ; sampAdjMatrix[which(samplingMatrix == 0)] <- NA
-      return(sampledNetwork$new(sampAdjMatrix, self$directed))
-    },
     samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
       0
     },

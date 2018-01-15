@@ -40,7 +40,7 @@ R6Class(classname = "SBM",
     rBlocks = function() {
       private$Z <- t(rmultinom(private$N, size = 1, prob = private$alpha))
     },
-    ## a "virtual" method to sample an adjacency matrix for the current SBM
+    ## a method to sample an adjacency matrix for the current SBM
     rAdjMatrix = function() {
       X <- matrix(private$r_law(private$N^2, private$Z %*% private$pi %*% t(private$Z)), private$N)
       if (!private$directed) X <- X * lower.tri(X) + t(X * lower.tri(X))
