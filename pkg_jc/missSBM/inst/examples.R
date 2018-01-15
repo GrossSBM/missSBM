@@ -10,10 +10,12 @@ mySBM <- simulateSBM(n, alpha, pi, family, directed)                            
 ### Results : ###
 adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
 
+A <- sampledNetwork$new(adjacencyMatrix)
+
 ## Sampling of the data : ##
-samplingParameters <- .5                                                           # the sampling rate
-sampling <- "MAREdge"                                                              # the sampling design
-sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
+# samplingParameters <- .5                                                           # the sampling rate
+# sampling <- "MAREdge"                                                              # the sampling design
+# sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 
 
 # ## Inference :

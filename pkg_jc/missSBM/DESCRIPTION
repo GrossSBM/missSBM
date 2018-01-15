@@ -11,10 +11,11 @@ Encoding: UTF-8
 LazyData: true
 Collate: 
     'SBM-Class.R'
-    'SBMfit-Class.R'
+    'SBM_fit-Class.R'
     'missSBM-package.R'
     'missingSBM.R'
-    'sampledNetwork-R6Class.R'
-    'sampling-R6Class.R'
+    'sampledNetwork-Class.R'
+    'sampling_fit-Class.R'
+    'sampling_model-Class.R'
     'utils.R'
 RoxygenNote: 6.0.1

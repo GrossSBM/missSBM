@@ -1,5 +1,4 @@
 #' @import R6
-#' @include sam
 #' @export
 sampling_model <-
 R6Class(classname = "sampling",
