@@ -1,26 +1,11 @@
 #' @import R6
 #' @export
-sampling_model <-
-R6Class(classname = "sampling",
-  public = list(
-    ## fields
-    nNodes         = NULL,  # number of nodes
-    missingParam   = NULL,  # vector of missing parameters (a.k.a. psi)
-    directed       = FALSE, #
-    ## methods
-    initialize = function(nNodes = NA, missingParam = NA, directed = FALSE) {
-      self$nNodes         <- nNodes
-      self$missingParam   <- missingParam
-      self$directed       <- directed
-    }
-  )
-)
-
 #' @export
 sampling_fit <-
 R6Class(classname = "sampling",
   inherit = sampling_model
 )
+
 
 sampling_model_doubleStandard <-
 R6Class(classname = "sampling_doubleStandard",
