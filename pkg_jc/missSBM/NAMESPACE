@@ -2,6 +2,7 @@
 
 export(SBM)
 export(SBM_fit)
+export(image_NA)
 export(inferSBM)
 export(sampledNetwork)
 export(samplingSBM)

@@ -1,9 +1,9 @@
-#' @include sampledNetwork.R
+#' @include sampledNetwork-Class.R
 #' @include utils.R
 #' @import R6
 #' @export
 sampling_model <-
-R6Class(classname = "sampling",
+R6Class(classname = "sampling_model",
   ## fields
   private = list(
     name  = NULL, # type of sampling
@@ -12,12 +12,28 @@ R6Class(classname = "sampling",
   ),
   public = list(
     ## methods
-    initialize = function(type = NA, params = NA) {
+    initialize = function(type = NA, parameters = NA) {
 
       stopifnot(type %in% available_samplings)
-
       private$name <- type
-      private$psi  <- params
+
+      if (!switch(type,
+                  "double_standard" = ifelse(length(parameters) == 2, TRUE, FALSE),
+                  "degree"          = ifelse(length(parameters) == 2, TRUE, FALSE),
+                  "dyad"            = ifelse(length(parameters) == 1, TRUE, FALSE),
+                  "block"           = TRUE, ## handled in rSampling once clusters is known
+                  "node"            = ifelse(length(parameters) == 1, TRUE, FALSE),
+                  "snowball"        = ifelse(length(parameters) == 1, TRUE, FALSE))) {
+        stop("Sampling parameters does not have the required size.")
+      }
+
+      if (type != "degree") {
+        if (any(parameters < 0) | any(parameters > 1)) {
+          stop("Sampling parameters must be probabilities (i.e between 0 and 1)")
+        }
+      }
+      private$psi  <- parameters
+
       self$rSampling <- switch(type,
       "dyad" = function(adjMatrix) {
         N <- ncol(adjMatrix)
@@ -69,6 +85,12 @@ R6Class(classname = "sampling",
       },
       "block" = function(adjMatrix, clusters) {
         N <- nrow(adjMatrix)
+        if (length(clusters) != N)
+          stop(paste("The vector 'clusters' must have ", N," entries!"))
+
+        if (length(self$parameters) != length(unique(clusters)))
+          stop("Sampling parameters does not have the required size.")
+
         R <- diag(N)
 
         N_obs <- which(runif(N) < self$parameters[clusters])
@@ -82,7 +104,7 @@ R6Class(classname = "sampling",
         N <- nrow(adjMatrix)
         R <- diag(N)
 
-        N_obs <- which(runif(N) < 1/(1 + exp(-self$parameters[1] + self$parameters[2]*rowSums(adjMatrix))))
+        N_obs <- which(runif(N) < logistic(self$parameters[1] + self$parameters[2]*rowSums(adjMatrix)))
         R[N_obs,] <- 1
         R <- t(R) | R
 

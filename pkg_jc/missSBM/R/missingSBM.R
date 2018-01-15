@@ -54,19 +54,19 @@ simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 #' @author T. Tabouy
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
-#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered sampling, for
-#' more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{MAREdge: parameter = p
+#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings, for
+#' more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{edge: parameter = p
 #' \deqn{p = P(Dyad (i,j) is sampled)}}
-#' \item{MARnode: parameter = p and
+#' \item{node: parameter = p and
 #' \deqn{p = P(Node i is sampled)}}
 #' \item{snowball (one step):
 #' like the MARNode sampling plus we sample neighbours of nodes sampled at the first batch}
 #' }
-#' \item Not Missing At Random (NMAR) \itemize{ \item{doubleStandard: parameter = (p0,p1) and
+#' \item Not Missing At Random (NMAR) \itemize{ \item{double_standard: parameter = (p0,p1) and
 #' \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
-#' \item{starDegree: parameter = c(a,b) and
+#' \item{degree: parameter = c(a,b) and
 #' \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
-#' \item{class: parameter = c(p(1),...,p(Q)) and
+#' \item{block: parameter = c(p(1),...,p(Q)) and
 #' \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
 #' }}
 #' @examples
@@ -84,51 +84,31 @@ simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 #'
 #' ## Sampling of the data : ##
 #' samplingParameters <- .5                                                           # the sampling rate
-#' sampling <- "MAREdge"                                                              # the sampling design
-#' sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
+#' sampling <- "edge"                                                              # the sampling design
+#' sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 #'
 #'
 #' @export
 samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 
-  ## TODO: postponed all the checks to the Class sampling_model
+  if (!(sampling %in% available_samplings))
+    stop("This sampling is not in the list !")
+
   family <- ifelse(length(tabulate(adjacencyMatrix)) == 1, "Bernoulli", "Poisson")
+  if ((family == "Poisson") & !(sampling %in% c("edge", "node")))
+    stop("This sampling is not (yet) available for the Poisson emission law!")
 
-  if (!(sampling %in% available_samplings)) stop("This sampling is not in the list !")
-  if (!(family == "Bernoulli" | sampling %in% c("edge", "node"))) stop("This sampling for Poisson emission law is not available !")
-
-  N <- nrow(adjacencyMatrix)
-
-  if (sampling == "block"){
+  if (sampling == "block") {
     if (is.null(clusters)) stop("For class sampling you must give clusters !")
-    Q <- nlevels(as.factor(clusters))
-    if (!(length(clusters) == N)) stop(paste("The parameter clusters must have a length equal to", N,"!"))
-  }
-
-  if (!switch(sampling,
-        "double_standard" = ifelse(length(parameters) == 2, TRUE, FALSE),
-        "degree"          = ifelse(length(parameters) == 2, TRUE, FALSE),
-        "block"           = ifelse(length(parameters) == Q, TRUE, FALSE),
-        "dyad"            = ifelse(length(parameters) == 1, TRUE, FALSE),
-        "node"            = ifelse(length(parameters) == 1, TRUE, FALSE),
-        "snowball"        = ifelse(length(parameters) == 1, TRUE, FALSE))) {
-    stop("Sampling parameters have not good length")
-  }
-
-  if (sampling != "degree") {
-    if(any(parameters < 0) | any(parameters > 1)){
-      stop("Sampling parameters must be probabilities (i.e between 0 and 1)")
-    }
   }
 
   mySampling <- sampling_model$new(sampling, parameters)
-
-  if(sampling == "block"){
+  if (sampling == "block") {
     mySampling$rSampling(adjacencyMatrix, clusters)
   } else {
     mySampling$rSampling(adjacencyMatrix)
   }
-  mySampling$sampledNetwok$adjacencyMatrix
+  mySampling$sampledNetwok
 }
 
 #' @title Inference of Stochastic Block Model from sampled data
@@ -206,7 +186,7 @@ inferSBM <- function(sampledNetwork, vBlocks, sampling, plot = TRUE){
     cl <- bestModel$clusters
     par(mfrow=c(2,2))
     plot.igraph(G1,vertex.size=table(cl),edge.width=E(G1)$weight*10, main="connectivity matrix", vertex.color=1:20)
-    image.NA(sampledNetwork[order(cl), order(cl)], axes=FALSE, na.color = "red", main="clustered network + NA")
+    image_NA(sampledNetwork[order(cl), order(cl)], axes=FALSE, na.color = "red", main="clustered network + NA")
     plot(vBlocks,collection$vICLs, type = 'l', main = "Integrated complete Likekihood (ICL)", xlab = "Q", ylab = "ICL")
     plot.igraph(G2, vertex.color = cl, main="Network structure")
   }
@@ -214,27 +194,6 @@ inferSBM <- function(sampledNetwork, vBlocks, sampling, plot = TRUE){
   return(list(bestModel = bestModel, models = collectionList, ICL = collection$vICLs))
 }
 
-image.NA <- function(z,  zlim=c(0,1), col=c("white", "midnightblue"), na.color='red', outside.below.color='black', outside.above.color='white',...)
-{
-  zstep <- (zlim[2] - zlim[1]) / length(col); # step in the color palette
-  newz.below.outside <- zlim[1] - 2 * zstep # new z for values below zlim
-  newz.above.outside <- zlim[2] + zstep # new z for values above zlim
-  newz.na <- zlim[2] + 2 * zstep # new z for NA
-
-  z[which(z<zlim[1])] <- newz.below.outside # we affect newz.below.outside
-  z[which(z>zlim[2])] <- newz.above.outside # we affect newz.above.outside
-  z[which(is.na(z>zlim[2]))] <- newz.na # same for newz.na
-
-  zlim[1] <- zlim[1] - 2 * zstep # extend lower limit to include below value
-  zlim[2] <- zlim[2] + 2 * zstep # extend top limit to include the two new values above and na
-
-  col <- c(outside.below.color, col[1], col, outside.above.color, na.color) #correct by including col[1] at bottom of range
-
-  par(mar=c(2.1,8.1,3.1,3.1))
-  image(z[nrow(z):1,],  zlim=zlim, col=col, xaxt="n", yaxt="n", main="clustered network + NA") # we finally call image(...)
-  box()
-  # par(mar=c(5.1,4.1,4.1,2.1))
-}
 
 
 
