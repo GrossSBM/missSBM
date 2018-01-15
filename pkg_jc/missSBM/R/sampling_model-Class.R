@@ -8,7 +8,7 @@ R6Class(classname = "sampling_model",
   private = list(
     name  = NULL, # type of sampling
     psi   = NULL, # vector of missing parameters
-    X     = NULL  # the sampled Network (as a sampeldNetwork object)
+    net   = NULL  # the sampled Network (as a sampledNetwork object)
   ),
   public = list(
     ## methods
@@ -50,7 +50,7 @@ R6Class(classname = "sampling_model",
         if (isSymmetric(adjMatrix))  R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$X <- sampledNetwork$new(adjMatrix)
+        private$net <- sampledNetwork$new(adjMatrix)
       },
       "double_standard" = function(adjMatrix) {
         N <- ncol(adjMatrix)
@@ -68,7 +68,7 @@ R6Class(classname = "sampling_model",
         if (isSymmetric(adjMatrix))  R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$X <- sampledNetwork$new(adjMatrix)
+        private$net <- sampledNetwork$new(adjMatrix)
       },
       "node" = function(adjMatrix) {
         N <- ncol(adjMatrix)
@@ -81,7 +81,7 @@ R6Class(classname = "sampling_model",
         R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$X <- sampledNetwork$new(adjMatrix)
+        private$net <- sampledNetwork$new(adjMatrix)
       },
       "block" = function(adjMatrix, clusters) {
         N <- nrow(adjMatrix)
@@ -98,7 +98,7 @@ R6Class(classname = "sampling_model",
         R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$X <- sampledNetwork$new(adjMatrix)
+        private$net <- sampledNetwork$new(adjMatrix)
       },
       "degree" = function(adjMatrix) {
         N <- nrow(adjMatrix)
@@ -109,7 +109,7 @@ R6Class(classname = "sampling_model",
         R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$X <- sampledNetwork$new(adjMatrix)
+        private$net <- sampledNetwork$new(adjMatrix)
       },
       "snowball" = function(adjMatrix) {
         N <- nrow(adjMatrix)
@@ -124,7 +124,7 @@ R6Class(classname = "sampling_model",
         R[N_obs,] <- 1; R[,N_obs] <- 1
 
         adjMatrix[R == 0] <- NA
-        private$X <- sampledNetwork$new(adjMatrix)
+        private$net <- sampledNetwork$new(adjMatrix)
       })
     },
     rSampling = NULL ## the sampling function
@@ -136,7 +136,7 @@ R6Class(classname = "sampling_model",
     parameters = function(value) {
       if (missing(value)) return(private$psi) else private$psi <- value
     },
-    sampledNetwok = function(value) {private$X}
+    sampledNetwok = function(value) {private$net}
   )
 )
 

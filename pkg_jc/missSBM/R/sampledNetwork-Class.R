@@ -42,7 +42,7 @@ R6::R6Class(classname = "sampledNetwork",
     # matrix of observed and non-observed edges
     samplingMatrix  = function(value) {private$R},
     # vector of observed and non-observed nodes
-    samplingVector  = function(value) {private$S}
+    observedNodes   = function(value) {private$S}
   ),
   ## Constructor
   public = list(
@@ -51,15 +51,20 @@ R6::R6Class(classname = "sampledNetwork",
       if (isSymmetric(adjacencyMatrix)) private$directed <- FALSE else private$directed <- TRUE
 
       private$X      <- adjacencyMatrix
-      private$D_miss <- which( is.na(adjacencyMatrix))
-      private$D_obs  <- which(!is.na(adjacencyMatrix))
+      if (private$directed) {
+        private$D_miss <- which( is.na(adjacencyMatrix))
+        private$D_obs  <- which(!is.na(adjacencyMatrix))
+      } else {
+        private$D_miss <- which( is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix))
+        private$D_obs  <- which(!is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix))
+      }
 
       R <- matrix(0, self$nNodes, self$nNodes)
       R[private$D_obs] <- 1
       private$R <- R
 
-      S <- rep(0, self$nNodes)
-      S <- S[which(!is.na(rowSums(adjacencyMatrix)))] <- 1
+      S <- rep(FALSE, self$nNodes)
+      S <- S[which(!is.na(rowSums(adjacencyMatrix)))] <- TRUE
       private$S <- S
 
     }

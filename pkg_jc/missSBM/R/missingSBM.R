@@ -161,8 +161,6 @@ inferSBM <- function(sampledNetwork, vBlocks, sampling, plot = TRUE){
 
   collection <- SBM_collection$new(sampledNetwork, vBlocks, sampling, family, directed)
 
-
-
   collectionList <- lapply(collection$models, function(x){
     return(list(Q = x$SBM$nBlocks, alpha = x$SBM$mixtureParam, pi = x$SBM$connectParam, clusters = apply(x$blockVarParam, 1, which.max), samplingParameters = x$sampling$missingParam))
   })
