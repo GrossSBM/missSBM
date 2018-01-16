@@ -133,55 +133,55 @@ R6Class(classname = "sampling_fit_block",
   )
 )
 
+#' @export
 sampling_fit_degree <-
 R6Class(classname = "sampling_fit_degree",
-  inherit = sampling,
+  inherit = sampling_fit,
+  private = list(
+    ksi      = NULL, # additional variational parameter for approximation in the logistic function
+    degree_o = NULL  # estimation of the degrees on the observed part of the network
+  ),
   public = list(
-    vLogLik = function(completedNetwork) {
-      prob <- logistic(private$psi[1] + private$psi[2] * rowSums(completedNetwork))
+    initialize = function(adjMatrix) {
+      super$initialize(adjMatrix)
+      private$name <- "degree"
+
+      ## will remain the same
+      private$degree_o <- rowSums(private$net$adjacencyMatrix, na.rm = TRUE)
+
+      ## will fluctuate along the algorithm
+      private$psi <- coefficients(glm(1*(private$net$observedNodes) ~ private$degree_o, family = binomial(link = "logit")))
+      nu <- matrix(NA, private$net$nNodes, private$net$nNodes)
+      nu[private$net$missingDyads] <- mean(private$net$adjacencyMatrix, na.rm = TRUE)
+    },
+    update_missing = function(nu) {
+      D  <- rowSums(nu, na.rm = TRUE) + private$degree_o
+      D2 <- rowSums(nu * (1 - nu), na.rm = TRUE) + D^2
+      private$ksi <- sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * D)
+      C <- .5 * private$net$nNodes - sum(!private$net$observedNodes)
+      s_hksi     <- sum(h(private$ksi))
+      s_hksiD    <- sum(h(private$ksi) * D)
+      s_hksiDhat <- sum(h(private$ksi) * D2)
+      b <- (2 * C * s_hksiD  - (.5 * sum(D) - sum(D[!private$net$observedNodes])) * s_hksi) / (2 * s_hksiDhat * s_hksi - (2 * s_hksiD)^2)
+      a <- -(b * s_hksiD + C) / s_hksi
+      private$psi    <- c(a, b)
+    }
+  ),
+  active = list(
+    vLogLik = function() {
+      prob <- logistic(private$psi[1] + private$psi[2] * private$D)
       res  <- log( prob^private$net$observedNodes %*% (1 - prob)^(!private$net$observedNodes) )
       res
     }
-    # updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
-    #   networkWithZeros     <- completedNetwork
-    #   networkWithZeros[sampledNetwork$missingDyads] <- 0
-    #   Dtilde <- rowSums(completedNetwork)
-    #   Dchap  <- rowSums((completedNetwork-networkWithZeros)*(1-(completedNetwork-networkWithZeros))) + Dtilde^2
-    #   Nmiss  <- length(which(sampledNetwork$samplingVector == 0))
-    #   b1     <- ( (((2*sum(private$g(taylorVarParam)*Dtilde))*(-length(Nmiss) + 0.5*sampledNetwork$nNodes)))/(sum(private$g(taylorVarParam))) - (-sum(Dtilde[Nmiss]) + sum(Dtilde)*0.5) )
-    #   b2     <- ( 2*sum(private$g(taylorVarParam)*Dchap) - (((2*sum(private$g(taylorVarParam)*Dtilde))^2 ))/(sum(private$g(taylorVarParam))))
-    #   b      <- b1/b2
-    #   a      <- -(b*(2*sum(private$g(taylorVarParam)*Dtilde)) + (-length(Nmiss) + 0.5*sampledNetwork$nNodes))/(sum(private$g(taylorVarParam)))
-    #   psi    <- c(a,b)
-    #   return(psi)
-    # },
-    # penality = function(nBlocks) {
-    #   if(self$directed){
-    #     return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + 2*(nBlocks-1)*log(self$nNodes))
-    #   } else {
-    #     return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
-    #   }
-    # }
   )
 )
 
 sampling_fit_snowball <-
 R6Class(classname = "sampling_fit_snowball",
-  inherit = sampling,
-  public = list(
-    samplingLogLik = function() {
-      0
-    },
-    # samplingLogLik = function(sampledNetwork, completedNetwork) {
-    #   return(log((self$missingParam^sampledNetwork$samplingVector)%*%((1-self$missingParam)^(1-sampledNetwork$samplingVector))))
-    # },
-    penality = function(nBlocks) {
-      if(self$directed){
-        return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + nBlocks*log(self$nNodes))
-      }
-      else {
-        return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
-      }
+  inherit = sampling_fit,
+  active = list(
+    vLogLik = function(value) {
+      NA
     }
   )
 )

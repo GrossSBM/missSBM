@@ -7,7 +7,9 @@ bar <- function(X) {
   X.bar
 }
 
-logistic <- function(x) 1/(1 + exp(-x))
+logistic <- function(x) {1/(1 + exp(-x))}
+h <- function(x) {-.5 * (logistic(x) - 0.5) / x}
+
 
 logx <- function(x) ifelse(x < .Machine$double.eps, 0, log(x))
 

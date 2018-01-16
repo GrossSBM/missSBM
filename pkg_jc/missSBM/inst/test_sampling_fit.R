@@ -48,8 +48,15 @@ fittedSampling_block$df
 fittedSampling_block$penalty
 fittedSampling_block$vLogLik + fittedSampling_dyad$penalty
 
-#
-# degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
+
+sampledNet_degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
+fittedSampling_degree <- sampling_fit_degree$new(sampledNet_degree)
+fittedSampling_degree$vLogLik
+fittedSampling_degree$parameters
+fittedSampling_degree$df
+fittedSampling_degree$penalty
+fittedSampling_degree$vLogLik + fittedSampling_dyad$penalty
+
 #
 # snowball <- samplingSBM(adjacencyMatrix,"snowball", .3)
 
