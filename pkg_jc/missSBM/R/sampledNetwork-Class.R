@@ -48,25 +48,29 @@ R6::R6Class(classname = "sampledNetwork",
   public = list(
     initialize = function(adjacencyMatrix) {
 
+      ## adjacency matrix
       if (isSymmetric(adjacencyMatrix)) private$directed <- FALSE else private$directed <- TRUE
+      private$X  <- adjacencyMatrix
 
-      private$X      <- adjacencyMatrix
+      ## sets of observed / unobserved dyads
       if (private$directed) {
-        private$D_miss <- which( is.na(adjacencyMatrix))
-        private$D_obs  <- which(!is.na(adjacencyMatrix))
+        ## remove diagonal( no loops)
+        private$D_miss <- which( is.na(adjacencyMatrix) & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
+        private$D_obs  <- which(!is.na(adjacencyMatrix) & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
       } else {
         private$D_miss <- which( is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix))
         private$D_obs  <- which(!is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix))
       }
 
+      ## sets of observed / unobserved nodes
+      S <- rep(FALSE, self$nNodes)
+      S[!is.na(rowSums(adjacencyMatrix))] <- TRUE
+      private$S <- S
+
+      ## sampling matrix (indicating who is observed) : USELESS ??
       R <- matrix(0, self$nNodes, self$nNodes)
       R[private$D_obs] <- 1
       private$R <- R
-
-      S <- rep(FALSE, self$nNodes)
-      S <- S[which(!is.na(rowSums(adjacencyMatrix)))] <- TRUE
-      private$S <- S
-
     }
   )
 )

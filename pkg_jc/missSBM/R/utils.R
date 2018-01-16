@@ -7,7 +7,11 @@ bar <- function(X) {
   X.bar
 }
 
-logistic <- function(x) {1/(1+exp(-x))}
+logistic <- function(x) 1/(1 + exp(-x))
+
+logx <- function(x) ifelse(x < .Machine$double.eps, 0, log(x))
+
+log1mx <- function(x) ifelse(x > 1 - .Machine$double.eps, 0, log(1 - x))
 
 init_spectral <- function(X, K) {
 

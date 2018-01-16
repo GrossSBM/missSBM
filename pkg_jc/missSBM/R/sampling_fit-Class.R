@@ -1,67 +1,135 @@
+#' @include sampling_model-Class.R
 #' @import R6
-#' @export
 #' @export
 sampling_fit <-
 R6Class(classname = "sampling_fit",
   inherit = sampling_model,
   public = list(
-    initialize = function(type = NA, parameters = NA, adjMatrix = NA) {
-      super$inittialize(type, parameters)
+    initialize = function(adjMatrix) {
       private$net <- sampledNetwork$new(adjMatrix)
     }
+  ),
+  active = list(
+    ## degree of freedom are just the size of the vector of missing parameters
+    df = function(value) {length(private$psi)},
+    ## nDyads automatically handle the directed/undirected cases
+    penalty = function(value) {log(private$net$nDyads) * self$df}
   )
 )
 
-sampling_fit_double_standard <-
-R6Class(classname = "sampling_fit_double_standard",
-  inherit = sampling_model,
+#' @export
+sampling_fit_dyad <-
+R6Class(classname = "sampling_fit_dyad",
+  inherit = sampling_fit,
   private = list(
-    So     = NULL, ## statistics computed on the observed part of the network
-    So.bar = NULL
+    card_D_o = NULL, # stats required by the likelihood
+    card_D_m = NULL  # number of observed, repectively missing dyads
   ),
   public = list(
-    initialize = function(type = NA, parameters = NA, adjMatrix = NA) {
-      super$initialize(type, parametres, adjMatrix)
-      private$So     <- sum(    private$net$adjacencyMatrix[private$net$D_obs])
-      private$So.bar <- sum(1 - private$net$adjacencyMatrix[private$net$D_obs])
+    initialize = function(adjMatrix) {
+      super$initialize(adjMatrix)
+      private$name <- "dyad"
+      private$card_D_o <- length(private$net$observedDyads)
+      private$card_D_m <- length(private$net$missingDyads )
+      private$psi <- private$card_D_o / private$net$nDyads
     }
-    vLogLik = function(Y) {
-      Sm     <- sum(    Y[private$net$D_miss])
-      Sm.bar <- sum(1 - Y[private$net$D_miss])
-      res <- log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
-        log(1 - private$psi[2]) * Sm + log(1 - private$psi[1]) * Sm.bar
+  ),
+  active = list(
+    vLogLik = function() {
+      res <- (private$card_D_o - private$net$nNodes) * logx(private$psi) + private$card_D_m * log1mx(private$psi)
       res
     }
-    # ,
-    # updatePsi = function(completedNetwork, sampledNetwork, blockVarparam, taylorVarParam) {
-    #   num   <- c(sum(1-completedNetwork[sampledNetwork$observedDyads])-self$nNodes, sum(completedNetwork[sampledNetwork$observedDyads]))
-    #   denom <- c(sum(1-completedNetwork)-self$nNodes, sum(completedNetwork))
-    #   return(num/denom)
-    # },
-    # penality = function(nBlocks) {
-    #   return((2 + nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + (nBlocks-1)*log(self$nNodes))
-    # }
   )
 )
 
+#' @export
+sampling_fit_node <-
+R6Class(classname = "sampling_fit_node",
+  inherit = sampling_fit,
+  private = list(
+    card_N_o = NULL, # stats required by the likelihood
+    card_N_m = NULL  # number of observed, repectively missing nodes
+  ),
+  public = list(
+    initialize = function(adjMatrix) {
+      super$initialize(adjMatrix)
+      private$name <- "node"
+      private$card_N_o <- sum( private$net$observedNodes)
+      private$card_N_m <- sum(!private$net$observedNodes)
+      private$psi <- private$card_N_o / (private$card_N_o + private$card_N_m)
+    }
+  ),
+  active = list(
+    vLogLik = function() {
+### SHOULD'NT BE A SQUARE FOR N_obs SOMEWHERE?
+### THE LOGLIK IS HIGH COMPARED TO THE ONE IN THE DYAD CASE...
+      res <- private$card_N_o * logx(private$psi) + private$card_N_m * log1mx(private$psi)
+      res
+    }
+  )
+)
+
+#' @export
+sampling_fit_double_standard <-
+R6Class(classname = "sampling_fit_double_standard",
+  inherit = sampling_fit,
+  private = list(
+    So     = NULL, ## statistics only requiring the observed part of the network
+    So.bar = NULL, ## can be computed once for all during the initialization
+    Sm     = NULL, ## these ones will be updated during the algorithm
+    Sm.bar = NULL
+  ),
+  public = list(
+    initialize = function(adjMatrix, missingInit = NA) {
+      super$initialize(adjMatrix)
+      private$name <- "double_standard"
+      private$So     <- sum(    private$net$adjacencyMatrix[private$net$observedDyads])
+      private$So.bar <- sum(1 - private$net$adjacencyMatrix[private$net$observedDyads])
+      ## SEE HOW TO "COMPLETE" THE NETWORK AT START-UP IN ORDER TO INITIALIZE PSI
+      if (is.na(missingInit))
+        missingInit <- rep(mean(private$net$adjacencyMatrix, na.rm = TRUE), length(private$net$missingDyads))
+      self$update_missing(missingInit)
+    },
+    update_missing = function(nu) {
+      private$Sm     <- sum(    nu)
+      private$Sm.bar <- sum(1 - nu)
+      private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
+    }
+  ),
+  active = list(
+    vLogLik = function(value) {
+      res <- logx(private$psi[2]) * private$So + logx(private$psi[1]) * private$So.bar +
+        log1mx(private$psi[2]) * private$Sm + log1mx(private$psi[1]) * private$Sm.bar
+      res
+    }
+  )
+)
+
+#' @export
 sampling_fit_block <-
 R6Class(classname = "sampling_fit_block",
-  inherit = sampling,
+  inherit = sampling_fit,
+  private = list(
+    So = NULL, ## sum_(i in Nobs ) Z_iq
+    Sm = NULL  ## sum_(i in Nmiss) Z_iq
+  ),
   public = list(
-    vLogLik = function(tau) {
-      return(sum(tau[ private$net$observedNodes, ] %*% log(private$psi)) +
-             sum(tau[!private$net$observedNodes, ] %*% log(1 - private$psi)))
+    initialize = function(adjMatrix, blockInit) {
+      super$initialize(adjMatrix)
+      private$name <- "block"
+      self$update_missing(blockInit)
+    },
+    update_missing = function(Z) {
+      private$So <- colSums(Z[ private$net$observedNodes, ])
+      private$Sm <- colSums(Z[!private$net$observedNodes, ])
+      private$psi <- private$So / (private$So + private$Sm)
     }
-    # updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
-    #   return(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam))
-    # },
-    # penality = function(nBlocks) {
-    #   if(self$directed){
-    #     return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + 2*(nBlocks-1)*log(self$nNodes))
-    #   } else {
-    #     return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
-    #   }
-    # }
+  ),
+  active = list(
+    vLogLik = function() {
+      res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
+      res
+    }
   )
 )
 
@@ -69,12 +137,11 @@ sampling_fit_degree <-
 R6Class(classname = "sampling_fit_degree",
   inherit = sampling,
   public = list(
-    samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
-      sampProb       <- self$missingParam[1]+self$missingParam[2]*rowSums(completedNetwork)
-      samprob        <- 1/(1+exp(-sampProb))
-      return(log((sampProb^sampledNetwork$samplingVector)%*%((1-sampProb)^(1-sampledNetwork$samplingVector))) )
+    vLogLik = function(completedNetwork) {
+      prob <- logistic(private$psi[1] + private$psi[2] * rowSums(completedNetwork))
+      res  <- log( prob^private$net$observedNodes %*% (1 - prob)^(!private$net$observedNodes) )
+      res
     }
-
     # updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
     #   networkWithZeros     <- completedNetwork
     #   networkWithZeros[sampledNetwork$missingDyads] <- 0
@@ -95,88 +162,14 @@ R6Class(classname = "sampling_fit_degree",
     #     return((nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + 2*(nBlocks-1)*log(self$nNodes))
     #   }
     # }
-  ),
-  private = list(
-    g = function(x){
-      return(-(1/(1+exp(-x)) - 0.5)/(0.5*x))
-    }
   )
-)
-
-sampling_fit_dyad <-
-R6Class(classname = "sampling_fit_dyad",
-  inherit = sampling,
-  public = list(
-    samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
-      logPsi    <- ifelse (self$missingParam < .Machine$double.eps, 0, log(self$missingParam))
-      log1mPsi  <- ifelse (self$missingParam > 1-.Machine$double.eps, 0, log(1-self$missingParam))
-      ll        <- (length(sampledNetwork$observedDyads)-sampledNetwork$nNodes)*logPsi + length(sampledNetwork$missingDyads)*log1mPsi
-      if(!self$directed){
-        return(ll/2)
-      } else {
-        return(ll)
-      }
-    },
-    updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
-      if(!sampledNetwork$directed){
-        return(length(sampledNetwork$observedDyads)/(2*sampledNetwork$nDyads))
-      } else {
-        return(length(sampledNetwork$observedDyads)/sampledNetwork$nDyads)
-      }
-    },
-    penality = function(nBlocks) {
-      if(self$directed){
-        return((1 + (nBlocks^2))*log(self$nNodes*(self$nNodes-1)) + (nBlocks-1)*log(self$nNodes))
-      } else {
-        return((1 + nBlocks*(nBlocks+1)/2)*log(self$nNodes*(self$nNodes-1)/2) + (nBlocks-1)*log(self$nNodes))
-      }
-    },
-    penalityPoisson = function(nBlocks, samplingMatrix) {
-      nObsDyads <- length(which(!is.na(samplingMatrix)))-nrow(samplingMatrix)
-      if(self$directed){
-        return((nBlocks^2)*log(nObsDyads) + (nBlocks-1)*log(self$nNodes))
-      } else {
-        return((nBlocks*(nBlocks+1)/2)*log((nObsDyads)/2) + (nBlocks-1)*log(nObsDyads))
-      }
-    }
-  )
-)
-
-sampling_fit_node <-
-R6Class(classname = "sampling_fit_node",
-  inherit = sampling,
-    public = list(
-      samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
-        logPsi         <- ifelse (self$missingParam < .Machine$double.eps, 0, log(self$missingParam))
-        log1mPsi       <- ifelse (self$missingParam > 1-.Machine$double.eps, 0, log(1-self$missingParam))
-        return(logPsi*sum(sampledNetwork$samplingVector) + log1mPsi * sum(1-sampledNetwork$samplingVector))
-      },
-      updatePsi = function(completedNetwork, sampledNetwork, blockVarParam, taylorVarParam) {
-        return(mean(colSums(blockVarParam*sampledNetwork$samplingVector)/colSums(blockVarParam)))
-      },
-      penality = function(nBlocks) {
-        if(self$directed){
-          return((nBlocks^2)*log(self$nNodes*(self$nNodes-1)) + nBlocks*log(self$nNodes))
-        } else {
-          return(nBlocks*(nBlocks+1)/2*log(self$nNodes*(self$nNodes-1)/2) + nBlocks*log(self$nNodes))
-        }
-      },
-      penalityPoisson = function(nBlocks, samplingMatrix) {
-        nObsDyads <- length(which(is.na(samplingMatrix)))
-        if(self$directed){
-          return((nBlocks^2)*log(nObsDyads*(nObsDyads-1)) + nBlocks*log(self$nNodes))
-        } else {
-          return((nBlocks*(nBlocks+1)/2)*log(nObsDyads*(nObsDyads-1)/2) + nBlocks*log(nObsDyads))
-        }
-      }
-    )
 )
 
 sampling_fit_snowball <-
 R6Class(classname = "sampling_fit_snowball",
   inherit = sampling,
   public = list(
-    samplingLogLik = function(sampledNetwork, completedNetwork, blockVarParam) {
+    samplingLogLik = function() {
       0
     },
     # samplingLogLik = function(sampledNetwork, completedNetwork) {

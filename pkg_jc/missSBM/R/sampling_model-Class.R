@@ -21,7 +21,7 @@ R6Class(classname = "sampling_model",
                   "double_standard" = ifelse(length(parameters) == 2, TRUE, FALSE),
                   "degree"          = ifelse(length(parameters) == 2, TRUE, FALSE),
                   "dyad"            = ifelse(length(parameters) == 1, TRUE, FALSE),
-                  "block"           = TRUE, ## handled in rSampling once clusters is known
+                  "block"           = TRUE, ## handled in rSampling once the vector 'clusters' is known
                   "node"            = ifelse(length(parameters) == 1, TRUE, FALSE),
                   "snowball"        = ifelse(length(parameters) == 1, TRUE, FALSE))) {
         stop("Sampling parameters does not have the required size.")
@@ -127,7 +127,7 @@ R6Class(classname = "sampling_model",
         private$net <- sampledNetwork$new(adjMatrix)
       })
     },
-    rSampling = NULL ## the sampling function
+    rSampling = NULL ## the sampling function (initialize with in the constructor)
   ),
   active = list(
     type = function(value) {
