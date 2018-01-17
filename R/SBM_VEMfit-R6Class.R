@@ -164,7 +164,7 @@ SBM_VEMfit$set("public", "doVEM",
   }
 )
 
-## THIS THING SHOULD NOT EXIT IF PROPER OO CODE IS MADE...
+## THIS THING SHOULD NOT EXIT IF PROPER OO CODE IS MADE...   Answer : yes ...
 SBM_VEMfit$set("public", "doVEMPoisson",
   function() {
 

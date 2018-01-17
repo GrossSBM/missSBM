@@ -66,9 +66,9 @@ function(adjacencyMatrix, directed) {
 #   par(mar=c(5.1,4.1,4.1,2.1))
 # })
 
-sampledNetwork$set("public", "show",
-function(){
-  cat("\n=======================================")
-  cat("\n", ifelse(directed,"Directed","Undirected"), "network with", nNodes)
-  cat("\nPercentage of sampling rate:",samplingRate)
-})
+# sampledNetwork$set("public", "show",
+# function(){
+#   cat("\n=======================================")
+#   cat("\n", ifelse(directed,"Directed","Undirected"), "network with", nNodes)
+#   cat("\nPercentage of sampling rate:",samplingRate)
+# })

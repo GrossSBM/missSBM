@@ -206,7 +206,7 @@ sampling_randomNodesMAR <-
 R6Class(classname = "sampling_randomNodesMAR",
   inherit = sampling,
     public = list(
-      rSampling = function(adjMatrix) {
+      rSampling = function(adjMatrix) {blockVarParam*sampledNetwork$samplingVector
         samplingMatrix <- matrix(0, self$nNodes, self$nNodes)
         obsNodes       <- sample(1:self$nNodes, floor((self$nNodes)*self$missingParam))
 
