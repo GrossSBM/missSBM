@@ -5,11 +5,10 @@ SBM_fit <-
 R6Class(classname = "SBM_fit",
   inherit = SBM,
   private = list(
-    tau = NULL, # variational parameters for posterior probablility of class belonging
-    nu  = NULL  # variational parameters for posterior probablility of missing edges
+    tau = NULL # variational parameters for posterior probablility of class belonging
   ),
   public = list(
-    get_argmin = function() {
+    update_model = function() {
       pi <- (t(private$tau) %*% private$X %*% private$tau) / (t(private$tau) %*% (1 - diag(private$N)) %*% private$tau)
       pi[is.nan(pi)] <- zero
       pi[pi > 1 - zero] <- 1 - zero
@@ -22,7 +21,7 @@ R6Class(classname = "SBM_fit",
       loglikX <- sum( log( private$d_law(private$X[private$edges], (private$Z %*% private$pi %*% t(private$Z))[private$edges] )  ) )
       loglikZ + loglikX
     },
-    lowerBound = function() {
+    vLogLik = function() {
       JZ <- sum(private$tau %*% log(private$alpha))
       JX <- sum( log( private$d_law(private$X[private$edges], (private$tau %*% private$pi %*% t(private$tau))[private$edges])  ) )
       JZ + JX
@@ -63,7 +62,7 @@ SBM_fit$set("public", "initialize",
   }
 )
 
-SBM_fit$set("public", "fixPoint",
+SBM_fit$set("public", "update_blocks",
   function() {
 
     if (private$family == "Bernoulli") {
@@ -92,7 +91,6 @@ SBM_fit$set("public", "fixPoint",
     tau <- tau/rowSums(tau)
     tau[is.nan(tau)] <- .5
     private$tau <- tau
-    tau
   }
 )
 

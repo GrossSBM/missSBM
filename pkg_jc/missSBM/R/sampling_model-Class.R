@@ -1,9 +1,17 @@
+#' Definition of R6 Class 'sampling_model'
+#'
+#' This class is use to define a sampling model. Inherits from 'sampling'
+#' it has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
+#'
+#' @include sampling-Class.R
+#'
 #' @include sampledNetwork-Class.R
 #' @include utils.R
 #' @import R6
 #' @export
 sampling_model <-
 R6Class(classname = "sampling_model",
+  inherit = sampling,
   ## fields
   private = list(
     name  = NULL, # type of sampling
@@ -13,9 +21,7 @@ R6Class(classname = "sampling_model",
   public = list(
     ## methods
     initialize = function(type = NA, parameters = NA) {
-
-      stopifnot(type %in% available_samplings)
-      private$name <- type
+      super$initialize(type = type)
 
       if (!switch(type,
                   "double_standard" = ifelse(length(parameters) == 2, TRUE, FALSE),
@@ -35,7 +41,7 @@ R6Class(classname = "sampling_model",
       private$psi  <- parameters
 
       self$rSampling <- switch(type,
-      "dyad" = function(adjMatrix) {
+      "dyad" = function(adjMatrix, ...) {
         N <- ncol(adjMatrix)
         R <- diag(N)
 
@@ -50,9 +56,9 @@ R6Class(classname = "sampling_model",
         if (isSymmetric(adjMatrix))  R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$net <- sampledNetwork$new(adjMatrix)
+        sampledNetwork$new(adjMatrix)
       },
-      "double_standard" = function(adjMatrix) {
+      "double_standard" = function(adjMatrix, ...) {
         N <- ncol(adjMatrix)
         R <- diag(N)
 
@@ -68,9 +74,9 @@ R6Class(classname = "sampling_model",
         if (isSymmetric(adjMatrix))  R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$net <- sampledNetwork$new(adjMatrix)
+        sampledNetwork$new(adjMatrix)
       },
-      "node" = function(adjMatrix) {
+      "node" = function(adjMatrix, ...) {
         N <- ncol(adjMatrix)
         R <- diag(N)
 
@@ -81,7 +87,7 @@ R6Class(classname = "sampling_model",
         R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$net <- sampledNetwork$new(adjMatrix)
+        sampledNetwork$new(adjMatrix)
       },
       "block" = function(adjMatrix, clusters) {
         N <- nrow(adjMatrix)
@@ -98,9 +104,9 @@ R6Class(classname = "sampling_model",
         R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$net <- sampledNetwork$new(adjMatrix)
+        sampledNetwork$new(adjMatrix)
       },
-      "degree" = function(adjMatrix) {
+      "degree" = function(adjMatrix, ...) {
         N <- nrow(adjMatrix)
         R <- diag(N)
 
@@ -109,9 +115,10 @@ R6Class(classname = "sampling_model",
         R <- t(R) | R
 
         adjMatrix[R == 0] <- NA
-        private$net <- sampledNetwork$new(adjMatrix)
+        sampledNetwork$new(adjMatrix)
       },
-      "snowball" = function(adjMatrix) {
+      ### TODO: add a parameter for the number of waves
+      "snowball" = function(adjMatrix, ...) {
         N <- nrow(adjMatrix)
         R <- diag(N)
 
@@ -124,19 +131,9 @@ R6Class(classname = "sampling_model",
         R[N_obs,] <- 1; R[,N_obs] <- 1
 
         adjMatrix[R == 0] <- NA
-        private$net <- sampledNetwork$new(adjMatrix)
+        sampledNetwork$new(adjMatrix)
       })
     },
     rSampling = NULL ## the sampling function (initialize with in the constructor)
-  ),
-  active = list(
-    type = function(value) {
-      if (missing(value)) return(private$psi) else private$psi <- value
-    },
-    parameters = function(value) {
-      if (missing(value)) return(private$psi) else private$psi <- value
-    },
-    sampledNetwok = function(value) {private$net}
   )
 )
-

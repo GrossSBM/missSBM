@@ -70,6 +70,7 @@ R6::R6Class(classname = "sampledNetwork",
       ## sampling matrix (indicating who is observed) : USELESS ??
       R <- matrix(0, self$nNodes, self$nNodes)
       R[private$D_obs] <- 1
+      if (!private$directed)  R <- t(R) | R
       private$R <- R
     }
   )

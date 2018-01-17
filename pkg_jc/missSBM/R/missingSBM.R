@@ -34,12 +34,10 @@
 #'
 #' @export
 simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
-
-  mySBM <- SBM$new(family, directed, n, alpha, pi)
+  mySBM <- SBM_sample$new(family, directed, n, alpha, pi)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
-
-  return(list(clusters = mySBM$clusters, adjacencyMatrix = mySBM$adjacencyMatrix))
+  mySBM
 }
 
 #' @title Sampling of a network
@@ -98,17 +96,11 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
   if ((family == "Poisson") & !(sampling %in% c("edge", "node")))
     stop("This sampling is not (yet) available for the Poisson emission law!")
 
-  if (sampling == "block") {
-    if (is.null(clusters)) stop("For class sampling you must give clusters !")
-  }
+  if (sampling == "block" & is.null(clusters))
+    stop("For class sampling you must give clusters !")
 
   mySampling <- sampling_model$new(sampling, parameters)
-  if (sampling == "block") {
-    mySampling$rSampling(adjacencyMatrix, clusters)
-  } else {
-    mySampling$rSampling(adjacencyMatrix)
-  }
-  mySampling$sampledNetwok
+  mySampling$rSampling(adjacencyMatrix, clusters)
 }
 
 #' @title Inference of Stochastic Block Model from sampled data

@@ -1,17 +1,19 @@
-#' @include sampling_model-Class.R
+#' Definition of R6 Class 'sampling_fit'
+#'
+#' This class is use to define a sampling fit. Inherits from 'sampling'
+#'
+#' @include sampling-Class.R
 #' @import R6
 #' @export
 sampling_fit <-
 R6Class(classname = "sampling_fit",
-  inherit = sampling_model,
+  inherit = sampling,
   public = list(
     initialize = function(adjMatrix) {
       private$net <- sampledNetwork$new(adjMatrix)
     }
   ),
   active = list(
-    ## degree of freedom are just the size of the vector of missing parameters
-    df = function(value) {length(private$psi)},
     ## nDyads automatically handle the directed/undirected cases
     penalty = function(value) {log(private$net$nDyads) * self$df}
   )
