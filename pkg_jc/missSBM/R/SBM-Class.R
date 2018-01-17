@@ -41,7 +41,9 @@ R6Class(classname = "SBM",
     },
     connectParam = function(value) {                    # matrix of connectivity (a.k.a. pi)
       if (missing(value)) return(private$pi) else private$pi <- value
-    }
+    },
+    df_mixtureParams = function(value) {private$Q - 1},
+    df_connectParams = function(value) {ifelse(private$directed, private$Q^2, private$Q*(private$Q + 1)/2)}
   )
 )
 

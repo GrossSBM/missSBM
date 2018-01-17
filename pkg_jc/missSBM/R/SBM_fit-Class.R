@@ -30,7 +30,7 @@ R6Class(classname = "SBM_fit",
       if (missing(value)) return(private$tau) else  private$tau <- value
     },
     memberships = function(value) {apply(private$tau, 1, which.max)},
-    penalty = function(value) {log(self$N) * self$df}
+    penalty = function(value) {self$df_connectParams * log(sum(private$dyads)) + self$df_mixtureParams * log(private$N)}
   )
 )
 
