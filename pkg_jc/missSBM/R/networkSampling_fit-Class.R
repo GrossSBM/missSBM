@@ -1,13 +1,16 @@
-#' Definition of R6 Class 'sampling_fit'
+#' Definition of R6 Class 'networkSampling_fit'
 #'
-#' This class is use to define a sampling fit. Inherits from 'sampling'
+#' This class is use to define a fit for a networkSampling. Inherits from 'networkSampling'
 #'
-#' @include sampling-Class.R
+#' @include networkSampling-Class.R
 #' @import R6
 #' @export
-sampling_fit <-
-R6Class(classname = "sampling_fit",
-  inherit = sampling,
+networkSampling_fit <-
+R6Class(classname = "networkSampling_fit",
+  inherit = networkSampling,
+  private = list(
+    net = NULL # the sampled network as an sampledNetwork object
+  ),
   public = list(
     initialize = function(adjMatrix) {
       private$net <- sampledNetwork$new(adjMatrix)
@@ -20,9 +23,9 @@ R6Class(classname = "sampling_fit",
 )
 
 #' @export
-sampling_fit_dyad <-
-R6Class(classname = "sampling_fit_dyad",
-  inherit = sampling_fit,
+dyadSampling_fit <-
+R6Class(classname = "dyadSampling_fit",
+  inherit = networkSampling_fit,
   private = list(
     card_D_o = NULL, # stats required by the likelihood
     card_D_m = NULL  # number of observed, repectively missing dyads
@@ -45,9 +48,9 @@ R6Class(classname = "sampling_fit_dyad",
 )
 
 #' @export
-sampling_fit_node <-
-R6Class(classname = "sampling_fit_node",
-  inherit = sampling_fit,
+nodeSampling_fit <-
+R6Class(classname = "nodeSampling_fit",
+  inherit = networkSampling_fit,
   private = list(
     card_N_o = NULL, # stats required by the likelihood
     card_N_m = NULL  # number of observed, repectively missing nodes
@@ -72,9 +75,9 @@ R6Class(classname = "sampling_fit_node",
 )
 
 #' @export
-sampling_fit_double_standard <-
-R6Class(classname = "sampling_fit_double_standard",
-  inherit = sampling_fit,
+doubleStandardSampling_fit <-
+R6Class(classname = "doubleStandardSampling_fit",
+  inherit = networkSampling_fit,
   private = list(
     So     = NULL, ## statistics only requiring the observed part of the network
     So.bar = NULL, ## can be computed once for all during the initialization
@@ -108,9 +111,9 @@ R6Class(classname = "sampling_fit_double_standard",
 )
 
 #' @export
-sampling_fit_block <-
-R6Class(classname = "sampling_fit_block",
-  inherit = sampling_fit,
+blockSampling_fit <-
+R6Class(classname = "blockSampling_fit",
+  inherit = networkSampling_fit,
   private = list(
     So = NULL, ## sum_(i in Nobs ) Z_iq
     Sm = NULL  ## sum_(i in Nmiss) Z_iq
@@ -136,9 +139,9 @@ R6Class(classname = "sampling_fit_block",
 )
 
 #' @export
-sampling_fit_degree <-
-R6Class(classname = "sampling_fit_degree",
-  inherit = sampling_fit,
+degreeSampling_fit <-
+R6Class(classname = "degreeSampling_fit",
+  inherit = networkSampling_fit,
   private = list(
     ksi      = NULL, # additional variational parameter for approximation in the logistic function
     degree_o = NULL  # estimation of the degrees on the observed part of the network
@@ -178,9 +181,10 @@ R6Class(classname = "sampling_fit_degree",
   )
 )
 
-sampling_fit_snowball <-
-R6Class(classname = "sampling_fit_snowball",
-  inherit = sampling_fit,
+## TODO: handle multiple waves
+snowballSampling_fit <-
+R6Class(classname = "snowballSampling_fit",
+  inherit = networkSampling_fit,
   active = list(
     vLogLik = function(value) {
       NA

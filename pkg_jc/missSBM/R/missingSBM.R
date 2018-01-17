@@ -31,10 +31,9 @@
 #' clusters <-  mySBM$clusters                                                        # clusters
 #' adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
 #'
-#'
 #' @export
 simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
-  mySBM <- SBM_sample$new(family, directed, n, alpha, pi)
+  mySBM <- SBM_sampler$new(family, directed, n, alpha, pi)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM
@@ -99,7 +98,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
   if (sampling == "block" & is.null(clusters))
     stop("For class sampling you must give clusters !")
 
-  mySampling <- sampling_model$new(sampling, parameters)
+  mySampling <- networkSampling_sampler$new(sampling, parameters)
   mySampling$rSampling(adjacencyMatrix, clusters)
 }
 

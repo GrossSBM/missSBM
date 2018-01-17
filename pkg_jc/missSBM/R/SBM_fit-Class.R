@@ -27,9 +27,10 @@ R6Class(classname = "SBM_fit",
       JZ + JX
     }),
   active = list(
-    blockVarPar = function(value) {
+    blocks = function(value) {
       if (missing(value)) return(private$tau) else  private$tau <- value
-    }
+    },
+    memberships = function(value) {apply(private$tau, 1, which.max)}
   )
 )
 

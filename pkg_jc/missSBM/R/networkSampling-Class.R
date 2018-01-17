@@ -1,13 +1,13 @@
-#' definition of R6 Class 'sampling'
+#' definition of R6 Class 'networkSampling'
 #'
-#' this virtual class is the mother of all subtypes of sampling (either model or fit)
+#' this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
 #'
 #' @include utils.R
 #'
 #' @import R6
 #' @export
-sampling <-
-R6Class(classname = "sampling",
+networkSampling <-
+R6Class(classname = "networkSampling",
   ## fields
   private = list(
     name  = NULL, # type of sampling

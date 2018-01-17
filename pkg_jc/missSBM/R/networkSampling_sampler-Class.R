@@ -1,22 +1,20 @@
-#' Definition of R6 Class 'sampling_model'
+#' Definition of R6 Class 'networkSampling_sampler'
 #'
-#' This class is use to define a sampling model. Inherits from 'sampling'
+#' This class is use to define a sampling model for a network. Inherits from 'networkSampling'
 #' it has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
 #'
-#' @include sampling-Class.R
-#'
+#' @include networkSampling-Class.R
 #' @include sampledNetwork-Class.R
 #' @include utils.R
 #' @import R6
 #' @export
-sampling_model <-
-R6Class(classname = "sampling_model",
-  inherit = sampling,
+networkSampling_sampler <-
+R6Class(classname = "networkSampling_sampler",
+  inherit = networkSampling,
   ## fields
   private = list(
     name  = NULL, # type of sampling
-    psi   = NULL, # vector of missing parameters
-    net   = NULL  # the sampled Network (as a sampledNetwork object)
+    psi   = NULL  # vector of missing parameters
   ),
   public = list(
     ## methods
