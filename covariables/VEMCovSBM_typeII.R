@@ -4,9 +4,9 @@
 
 source("~/SVN/Code/code_these/functions/func_missSBM.R")
 
-func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, directed = FALSE){
+func_missSBM.CovII <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, directed = FALSE){
 
-  n <- nrow(X)
+  n <- nrow(Y)
   N <- nrow(cov)
 
   eps        <- 1e-3
@@ -17,15 +17,15 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, 
   zero       <- .Machine$double.eps
   if(is.character(cl.init)) stopifnot(cl.init %in% c("CAH", "spectral"))
 
-  R  <- 1*(!is.na(X)); diag(R) <- 1
-  X1 <- X; X1[is.na(X)] <- 0
-  X0 <- (1-X1); diag(X0) <- 0; X0 <- X0 * R
+  R  <- 1*(!is.na(Y)); diag(R) <- 1
+  Y1 <- Y; Y1[is.na(Y)] <- 0
+  Y0 <- (1-Y1); diag(Y0) <- 0; Y0 <- Y0 * R
 
   models <- mclapply(seq.Q, function(Q) {
 
     cl0 <- switch(cl.init,
-                  "spectral"     = SpectralClustering(X, Q),
-                  "CAH"          = graphCAH(X, Q))
+                  "spectral"     = SpectralClustering(Y, Q),
+                  "CAH"          = graphCAH(Y, Q))
 
     Tau  <- matrix(0,n,Q); Tau[cbind(1:n, cl0)] <- 1
     beta <- matrix(rnorm(N*(Q-1)), nrow=N, ncol=Q-1)
@@ -37,7 +37,7 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, 
     i <- 0; cond <- FALSE
     while(!cond){
       i <- i+1
-      pi <- (t(Tau)%*% X1 %*%Tau) / (t(Tau)%*%((1-diag(n))*R)%*%Tau)
+      pi <- (t(Tau)%*% Y1 %*%Tau) / (t(Tau)%*%((1-diag(n))*R)%*%Tau)
       pi[is.nan(pi)] <- zero ; pi[pi > 1-zero] <- 1-zero ; pi[pi < zero] <- zero
 
       ### MAJ alpha/beta :
@@ -52,7 +52,7 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, 
           b <- matrix(x, nrow=N, ncol=Q-1, byrow=F)
           grad <- NULL
           for(q in 1:(Q-1)){
-            acc <- 0
+            acc <- rep(0,N)
             for(i in 1:n){
               acc <- acc + cov[,i]*Tau[i,q]*(1 - exp(t(beta[,q]) %*% cov[,i])/(1 + sum(exp(t(beta) %*% cov[,i]))))
             }
@@ -75,9 +75,9 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, 
         Tau.old <- Tau
         iter <- iter + 1
         if(!directed){
-          Tau <- exp(sweep(X1 %*% Tau %*% t(log(pi)) + X0 %*% Tau %*% t(log(1-pi)) + t(X1) %*% Tau %*% log(pi) + t(X0) %*% Tau %*% log(1-pi),2,log(alpha),"+"))
+          Tau <- exp(sweep(Y1 %*% Tau %*% t(log(pi)) + Y0 %*% Tau %*% t(log(1-pi)) + t(Y1) %*% Tau %*% log(pi) + t(Y0) %*% Tau %*% log(1-pi),2,log(alpha),"+"))
         } else {
-          Tau <- exp(sweep(X1 %*% Tau %*% t(log(pi)) + X0 %*% Tau %*% t(log(1-pi)),2,log(alpha),"+"))
+          Tau <- exp(sweep(Y1 %*% Tau %*% t(log(pi)) + Y0 %*% Tau %*% t(log(1-pi)),2,log(alpha),"+"))
         }
         num <- rowSums(Tau)
         Tau <- Tau/num
@@ -94,7 +94,7 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, 
       }
     }
 
-    ICL <- -2 * (sum(Tau*log(alpha)) + .5 * sum( X1 *(Tau %*% log(pi) %*% t(Tau)) + X0 * (Tau %*% log(1-pi) %*% t(Tau)))) +
+    ICL <- -2 * (sum(Tau*log(alpha)) + .5 * sum( Y1 *(Tau %*% log(pi) %*% t(Tau)) + Y0 * (Tau %*% log(1-pi) %*% t(Tau)))) +
       Q*(Q+1)/2*log((sum(R)-n)/2) + (Q-1)*log(n)
 
     return(new(Class = "SBM.fit",
@@ -111,8 +111,8 @@ func_missSBM.CovII <- function(X, seq.Q, cov, cl.init = "spectral", mc.cores=1, 
   return(new(Class = "missSBM",
              missingness = "mar",
              algorithm   = "Variational Expectation-Maximization",
-             obs.rate    = sum(!is.na(X))/length(X),
-             network     = Matrix(X),
+             obs.rate    = sum(!is.na(Y))/length(Y),
+             network     = Matrix(Y),
              ICLs        = setNames(sapply(models, function(model) model@ICL),as.character(seq.Q)),
              models      = models
   ))

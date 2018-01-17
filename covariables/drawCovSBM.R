@@ -22,11 +22,11 @@ drawAlpha <- function(n,Q,beta,X){
 }
 
 ### Exemple :
-N  <- 5
-n  <- 100
-Q  <- 2
-pi <- diag(.2, Q) +.05
-alpha <- rep(1,Q)/Q
+# N  <- 5
+# n  <- 100
+# Q  <- 2
+# pi <- diag(.2, Q) +.05
+# alpha <- rep(1,Q)/Q
 
 # X     <- drawCov(N,n)
 # beta  <- drawBeta(N,Q)
@@ -43,7 +43,7 @@ drawCovSBM_typeII <- function(N,n,Q,pi,X=NULL,beta=NULL,directed=FALSE) {
 
   Y <- matrix(rbinom(n^2,1,Z %*% pi %*% t(Z)),n)
   if(!directed) Y <- Y * lower.tri(Y) + t(Y * lower.tri(Y))
-  diag(X) <- 0
+  diag(Y) <- 0
 
   return(list(Y=Y,cl=as.numeric(Znum),Z=Z, alpha=alpha, beta=beta))
 }
@@ -57,7 +57,7 @@ drawTheta <- function(N,m=0,s=1){
   return(theta)
 }
 
-sampleCovSBM <- function(Y,X,theta=NULL,beta1=NULL,beta2=NULL,intercept=NULL,directed=FALSE,Node=TRUE){
+sampleCovSBMI <- function(Y,X,theta=NULL,beta1=NULL,beta2=NULL,intercept=NULL,directed=FALSE,Node=FALSE){
   n <- nrow(Y)
   if(Node){
     if(is.null(theta)) theta <- drawTheta(nrow(X))
@@ -89,31 +89,64 @@ sampleCovSBM <- function(Y,X,theta=NULL,beta1=NULL,beta2=NULL,intercept=NULL,dir
   return(samplingMatrix)
 }
 
+sampleCovSBMII <- function(Y,X,theta=NULL,intercept=NULL,directed=FALSE,Node=TRUE){
+  n <- nrow(Y)
+  if(is.null(theta)) theta <- drawTheta(dim(X)[3])
+
+  if(is.null(intercept)) intercept <- matrix(rnorm(n^2),n,n)
+
+  P <- 1/(1+exp(-intercept - rP(X,theta)))
+
+  samplingMatrix <- 1*(P > matrix(runif(n^2),n,n))
+  diag(samplingMatrix) <- 1
+  if(!directed){
+    samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
+  }
+  return(samplingMatrix)
+}
+
 
 ### Exemple :
-sampMat <- sampleCovSBM(sbm$Y,X,Node=FALSE)
+# sampMat <- sampleCovSBM(sbm$Y,X,Node=FALSE)
 ###
 
-drawCovSBM_typeI <- function(N,n,Q,alpha,pi,X=NULL,beta1=NULL,beta2=NULL,directed=FALSE) {
-  if(is.null(X))    X    <- drawCov(N,n)
-  if(is.null(beta1)){beta1 <- drawBeta(N,Q); beta2 <- drawBeta(N,Q)}
+phi <- function(cov){
+  n <- ncol(cov)
+  N <- nrow(cov)
+  X <- array(0, c(n,n,N))
+  for(i in 1:n){
+    for(j in 1:n){
+      X[i,j,] <- -abs(cov[,i]-cov[,j])
+    }
+  }
+  return(X)
+}
+
+drawCovSBM_typeI <- function(N,n,Q,alpha,gamma,X=NULL,beta=NULL,directed=FALSE) {
+  if(is.null(X)) {
+    cov    <- drawCov(N,n)
+    X <- phi(cov)
+  }
+  if(is.null(beta)) beta <- drawBeta(N,Q)
 
   Z <- t(rmultinom(n, size = 1, prob = alpha))
   Znum <- Z %*% c(1:Q)
 
-  P <- matrix(0,n,n)
-  for(i in 1:n){
-    for(j in 1:n){
-      P[i,j] <- 1/(1+exp(-pi[Znum[i], Znum[j]] - t(beta1) %*% X[,i] - t(beta2) %*% X[,j]))
-    }
-  }
+  # P <- matrix(0,n,n)
+  # for(i in 1:n){
+  #   for(j in 1:n){
+  #     P[i,j] <- 1/(1+exp(-gamma[Znum[i], Znum[j]] - t(beta) %*% X[i,j,]))
+  #   }
+  # }
+  # browser()
+  P <- 1/(1+exp(-Z%*%gamma%*%t(Z) - rP(X,beta)))
 
   Y <- 1*(P > matrix(runif(n^2),n,n))
 
   if(!directed) Y <- Y * lower.tri(Y) + t(Y * lower.tri(Y))
-  diag(X) <- 0
+  diag(Y) <- 0
 
-  return(list(Y=Y,cl=as.numeric(Znum),Z=Z, beta1=beta1, beta2=beta2))
+  return(list(Y=Y,cl=as.numeric(Znum),Z=Z, beta=beta))
 }
 
 ### Exemple :

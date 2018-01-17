@@ -1,7 +1,8 @@
 rm(list = ls())
 library(mclust)
-source("~/Git/missSBM/covariables/drawCovSBM_typeII.R")
-source("~/Git/missSBM/covariables/VEM_covSBM_typeII.R")
+source("~/Git/missSBM/covariables/drawCovSBM.R")
+source("~/Git/missSBM/covariables/VEMCovSBM_typeII.R")
+source("~/Git/missSBM/covariables/VEMCovSBM_typeI.R")
 
 N <- 3
 n <- 200
@@ -16,17 +17,19 @@ pi <- diag(.45, Q) +.05
 ### Simulation d'un graphe :
 
 X     <- drawCov(N,n)
-beta  <- drawBeta(N,Q)
-alpha <- drawAlpha(n,Q,beta,X)
+X <- phi(X)
+beta  <- drawTheta(N)
+# alpha <- drawAlpha(n,Q,beta,X)
+alpha <- rep(1,3)/3
 
-sbm <- drawCovSBM_typeII(N,n,Q,pi,X,beta)
-sampMat <- sampleCovSBM(sbm$Y,X)
+sbm <- drawCovSBM_typeI(N,n,Q,alpha,pi,X,beta)
+sampMat <- sampleCovSBMII(sbm$Y,X)
 
-Y <- sbm$Y; Y[sampMat == 1] <- NA
+Y <- sbm$Y; Y[sampMat == 0] <- NA
 
 ### Inférence :
 
-infer <- func_missSBM.CovII(Y, 1:4, X)
+infer <- func_missSBM.CovI(Y, 3, X)
 # getBeta(infer@models[[1]])
 plot(infer@ICLs)
 adjustedRandIndex(getClusters(infer@models[[3]]), sbm$cl)
