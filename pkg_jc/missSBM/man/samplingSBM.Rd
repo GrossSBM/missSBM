@@ -4,22 +4,16 @@
 \alias{samplingSBM}
 \title{Sampling of a network}
 \usage{
-samplingSBM(adjacencyMatrix, sampling, samplingParameters, Q = NULL,
-  clusters = NULL, directed = FALSE)
+samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL)
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
 
 \item{sampling}{The sampling design used to sample the adjacency matrix}
 
-\item{samplingParameters}{The sampling parameters adapted to each sampling}
-
-\item{Q}{The number of clusters in the SBM, only necessary for class sampling, by default equal to NULL}
+\item{parameters}{The sampling parameters adapted to each sampling}
 
 \item{clusters}{Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL}
-
-\item{directed}{Boolean variable to indicate whether the network is directed or not,
-by default "undirected" is choosen}
 }
 \value{
 \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
@@ -28,19 +22,19 @@ by default "undirected" is choosen}
 \code{samplingSBM} is a function that sample a matrix (the adjacency matrix of a network) under the SBM
 }
 \details{
-The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered sampling, for
-more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{MAREdge: parameter = p
+The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings, for
+more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{edge: parameter = p
 \deqn{p = P(Dyad (i,j) is sampled)}}
-\item{MARnode: parameter = p and
+\item{node: parameter = p and
 \deqn{p = P(Node i is sampled)}}
 \item{snowball (one step):
 like the MARNode sampling plus we sample neighbours of nodes sampled at the first batch}
 }
-\item Not Missing At Random (NMAR) \itemize{ \item{doubleStandard: parameter = (p0,p1) and
+\item Not Missing At Random (NMAR) \itemize{ \item{double_standard: parameter = (p0,p1) and
 \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
-\item{starDegree: parameter = c(a,b) and
+\item{degree: parameter = c(a,b) and
 \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
-\item{class: parameter = c(p(1),...,p(Q)) and
+\item{block: parameter = c(p(1),...,p(Q)) and
 \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
 }}
 }
@@ -59,8 +53,8 @@ adjacencyMatrix <- mySBM$adjacencyMatrix                                        
 
 ## Sampling of the data : ##
 samplingParameters <- .5                                                           # the sampling rate
-sampling <- "MAREdge"                                                              # the sampling design
-sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
+sampling <- "edge"                                                              # the sampling design
+sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 
 
 }
