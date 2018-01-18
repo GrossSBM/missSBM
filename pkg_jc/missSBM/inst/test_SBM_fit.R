@@ -19,8 +19,8 @@ mySBM <- simulateSBM(n, alpha, pi, family, directed)                            
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, sample(mySBM$memberships))
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 print(NID(mySBM_fit$memberships, mySBM$memberships))
-mySBM_fit$vICL(adjacencyMatrix)
-mySBM_fit$vLogLik(adjacencyMatrix)
+mySBM_fit$vICL(mySBM$adjacencyMatrix)
+mySBM_fit$vLogLik(mySBM$adjacencyMatrix)
 
 ## spectral clustering
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, "spectral")

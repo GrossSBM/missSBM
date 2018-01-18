@@ -59,11 +59,14 @@ R6::R6Class(classname = "sampledNetwork",
       private$nas <- is.na(adjacencyMatrix)
       if (private$directed) {
         ## remove diagonal( no loops)
-        private$D_miss <- which( private$nas & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
-        private$D_obs  <- which(!private$nas & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
+        private$D <- upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)
+        private$D_miss <- which( private$nas & private$D )
+        private$D_obs  <- which(!private$nas & private$D )
       } else {
-        private$D_miss <- which( private$nas & upper.tri(adjacencyMatrix))
-        private$D_obs  <- which(!private$nas & upper.tri(adjacencyMatrix))
+        private$D <- upper.tri(adjacencyMatrix)
+
+        private$D_miss <- which( private$nas & private$D)
+        private$D_obs  <- which(!private$nas & private$D)
       }
 
       ## sets of observed / unobserved nodes

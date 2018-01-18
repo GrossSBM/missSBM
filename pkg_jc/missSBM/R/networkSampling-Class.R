@@ -21,12 +21,8 @@ R6Class(classname = "networkSampling",
     }
   ),
   active = list(
-    type = function(value) {
-      if (missing(value)) return(private$psi) else private$psi <- value
-    },
-    parameters = function(value) {
-      if (missing(value)) return(private$psi) else private$psi <- value
-    },
+    type = function(value) {private$name},
+    parameters = function(value) {private$psi},
     ## degree of freedom are just the size of the vector of missing parameters
     df = function(value) {length(private$psi)}
   )

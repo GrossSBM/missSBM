@@ -16,18 +16,18 @@ R6Class(classname = "networkSampling_fit",
     initialize = function(adjMatrix) {
       ## Construciton of the sampeldNetwork object
       private$sampledNet <- sampledNetwork$new(adjMatrix)
-      ## basic imputation for initialization
+      ## No imputation for initialization
       private$imputedNet <- private$sampledNet$adjacencyMatrix
-      private$imputedNet[private$sampledNet$NAs] <- mean(private$sampledNet$adjacencyMatrix, na.rm = TRUE)
     },
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
-    update_parameters = function(...) {},
-    update_imputation = function(...) {}
+    update_parameters = function(...) {invisible(self)},
+    update_imputation = function(...) {invisible(self)}
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
     penalty = function(value) {log(private$sampledNet$nDyads) * self$df},
+    sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet}
   )
 )
@@ -91,7 +91,7 @@ R6Class(classname = "doubleStandardSampling_fit",
   private = list(
     So     = NULL, ## statistics only requiring the observed part of the network
     So.bar = NULL, ## can be computed once for all during the initialization
-    Sm     = NULL, ## these ones will be updated during the algorithm
+    Sm     = NULL, ## these ones will be updated during the optimization
     Sm.bar = NULL
   ),
   public = list(
@@ -100,6 +100,7 @@ R6Class(classname = "doubleStandardSampling_fit",
       private$name <- "double_standard"
       private$So     <- sum(    private$sampledNet$adjacencyMatrix[private$sampledNet$observedDyads])
       private$So.bar <- sum(1 - private$sampledNet$adjacencyMatrix[private$sampledNet$observedDyads])
+      private$imputedNet[private$sampledNet$NAs] <- mean(private$sampledNet$adjacencyMatrix, na.rm = TRUE)
       self$update_parameters()
     },
     update_parameters = function(...) {
