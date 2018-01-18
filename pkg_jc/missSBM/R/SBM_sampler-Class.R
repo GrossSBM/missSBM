@@ -9,10 +9,18 @@ R6Class(classname = "SBM_sampler",
   inherit = SBM,
   ## fields for internal use (refering to mathematical notations)
   private = list(
-    Z = NULL, # the sampled indicator of blocks
-    X = NULL  # the sampled adjacency matrix
+    Z     = NULL, # the sampled indicator of blocks
+    X     = NULL, # the sampled adjacency matrix
+    r_law = NULL  # random generation for the emission law of the edges
   ),
   public = list(
+    initialize = function(family = "Bernoulli", directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA) {
+      super$initialize(family, directed, nNodes, mixtureParam, connectParam)
+      private$r_law <- switch(family,
+        "Bernoulli" = function(n, prob) {rbinom(n, 1, prob)},
+        "Poisson"   = function(n, prob) {rpois( n,    prob)}
+        )
+    },
     ## constructor is the same as the above, so no need to specify initialize
     ## a method to generate a vector of clusters indicators
     rBlocks = function() {

@@ -9,8 +9,7 @@ R6Class(classname = "SBM",
     alpha    = NULL, # vector of block parameters (a.k.a. alpha)
     pi       = NULL, # matrix of connectivity (a.k.a. pi)
     directed = NULL, # directed or undirected network
-    family   = NULL, # emission law
-    r_law    = NULL  # random generation for the emission law of the edges
+    family   = NULL  # emission law
   ),
   public = list(
     ## constructor
@@ -21,16 +20,13 @@ R6Class(classname = "SBM",
       private$Q        <- length(mixtureParam)
       private$family   <- family
       private$directed <- directed
-      private$r_law <- switch(family,
-            "Bernoulli" = function(n, prob) {rbinom(n, 1, prob)},
-            "Poisson"   = function(n, prob) {rpois( n,    prob)})
     }
   ),
   active = list(
     ## active binding to access fields outside the class
     nNodes       = function(value) {private$N}        , # number of nodes
     nBlocks      = function(value) {private$Q}        , # number of blocks
-    direction    = function(value) {if(private$directed) "directed" else "undirected"} , # directed network or not
+    direction    = function(value) {if (private$directed) "directed" else "undirected"} , # directed network or not
     emissionLaw  = function(value) {private$family}   , # emission law
     ## the following fields may change if a SBM is fitted
     mixtureParam = function(value) {                    # vector of block parameters (a.k.a. alpha)

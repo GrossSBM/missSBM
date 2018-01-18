@@ -26,10 +26,10 @@ image_NA(node$samplingMatrix , main = "sampling matrix")
 image_NA(node$adjacencyMatrix, main = "adjacency matrix")
 title(main = paste("\nnode sampling, sampling rate:", signif(node$samplingRate,3)), outer = TRUE)
 
-block <- samplingSBM(adjacencyMatrix,"block", c(.1, .2, .7), mySBM$clusters)
+block <- samplingSBM(adjacencyMatrix, "block", c(.1, .2, .7), mySBM$memberships)
 par(mfrow = c(1,2))
-image_NA(block$samplingMatrix[order(mySBM$clusters),order(mySBM$clusters)] , main = "sampling matrix")
-image_NA(block$adjacencyMatrix[order(mySBM$clusters),order(mySBM$clusters)], main = "adjacency matrix")
+image_NA(block$samplingMatrix[order(mySBM$memberships),order(mySBM$memberships)] , main = "sampling matrix")
+image_NA(block$adjacencyMatrix[order(mySBM$memberships),order(mySBM$memberships)], main = "adjacency matrix")
 title(main = paste("\nblock sampling, sampling rate:", signif(block$samplingRate,3)), outer = TRUE)
 
 double_standard <- samplingSBM(adjacencyMatrix,"double_standard", c(0.1, 0.5))

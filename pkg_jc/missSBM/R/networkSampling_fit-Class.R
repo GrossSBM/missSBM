@@ -1,24 +1,13 @@
-#' Definition of R6 Class 'networkSampling_fit'
-#'
-#' This class is use to define a fit for a networkSampling. Inherits from 'networkSampling'
-#'
+#' Virtual class use to define a family of networkSampling_fit
 #' @include networkSampling-Class.R
 #' @import R6
-#' @export
 networkSampling_fit <-
 R6Class(classname = "networkSampling_fit",
   inherit = networkSampling,
   private = list(
-    sampledNet = NULL, # the sampled network as an sampledNetwork object
-    imputedNet = NULL  # adjacency matrix with imputed NA
+    card_D = NULL # number of possible dyads in the network
   ),
   public = list(
-    initialize = function(adjMatrix) {
-      ## Construciton of the sampeldNetwork object
-      private$sampledNet <- sampledNetwork$new(adjMatrix)
-      ## No imputation for initialization
-      private$imputedNet <- private$sampledNet$adjacencyMatrix
-    },
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(self)},
@@ -26,32 +15,34 @@ R6Class(classname = "networkSampling_fit",
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
-    penalty = function(value) {log(private$sampledNet$nDyads) * self$df},
-    sampledNetwork = function(value) {private$sampledNet},
-    imputedNetwork = function(value) {private$imputedNet}
+    penalty = function(value) {log(private$card_D) * self$df}
   )
 )
 
+#' Definition of R6 Class 'networkSampling_fit'
+#'
+#' This class is use to define a fit for a networkSampling. Inherits from 'networkSampling'
 #' @export
 dyadSampling_fit <-
 R6Class(classname = "dyadSampling_fit",
   inherit = networkSampling_fit,
   private = list(
     card_D_o = NULL, # stats required by the likelihood
-    card_D_m = NULL  # number of observed, repectively missing dyads
+    card_D_m = NULL, # number of nodes, number of observed, repectively missing dyads
+    card_D   = NULL
   ),
   public = list(
-    initialize = function(adjMatrix, ...) {
-      super$initialize(adjMatrix)
+    initialize = function(sampledNetwork, ...) {
       private$name <- "dyad"
-      private$card_D_o <- length(private$sampledNet$observedDyads)
-      private$card_D_m <- length(private$sampledNet$missingDyads )
-      private$psi <- private$card_D_o / private$sampledNet$nDyads
+      private$card_D_o <- length(sampledNetwork$observedDyads)
+      private$card_D_m <- length(sampledNetwork$missingDyads )
+      private$card_D   <- sampledNetwork$nDyads
+      private$psi      <- private$card_D_o / private$card_D
     }
   ),
   active = list(
     vLogLik = function() {
-      res <- (private$card_D_o - private$sampledNet$nNodes) * logx(private$psi) + private$card_D_m * log1mx(private$psi)
+      res <- private$card_D_o * logx(private$psi) + private$card_D_m * log1mx(private$psi)
       res
     }
   )
@@ -63,14 +54,16 @@ R6Class(classname = "nodeSampling_fit",
   inherit = networkSampling_fit,
   private = list(
     card_N_o = NULL, # stats required by the likelihood
-    card_N_m = NULL  # number of observed, repectively missing nodes
+    card_N_m = NULL,  # number of observed, repectively missing nodes
+    card_D   = NULL, #
+    N        = NULL  #
   ),
   public = list(
-    initialize = function(adjMatrix, ...) {
-      super$initialize(adjMatrix)
+    initialize = function(sampledNetwork, ...) {
       private$name <- "node"
-      private$card_N_o <- sum( private$sampledNet$observedNodes)
-      private$card_N_m <- sum(!private$sampledNet$observedNodes)
+      private$card_N_o <- sum( sampledNetwork$observedNodes)
+      private$card_N_m <- sum(!sampledNetwork$observedNodes)
+      private$card_D   <- sampledNetwork$nDyads
       private$psi <- private$card_N_o / (private$card_N_o + private$card_N_m)
     }
   ),
@@ -89,28 +82,31 @@ doubleStandardSampling_fit <-
 R6Class(classname = "doubleStandardSampling_fit",
   inherit = networkSampling_fit,
   private = list(
+    NAs    = NULL, ## where are the missing entries
+    card_D = NULL, ## number of dyads
     So     = NULL, ## statistics only requiring the observed part of the network
     So.bar = NULL, ## can be computed once for all during the initialization
     Sm     = NULL, ## these ones will be updated during the optimization
     Sm.bar = NULL
   ),
   public = list(
-    initialize = function(adjMatrix, ...) {
-      super$initialize(adjMatrix)
+    initialize = function(sampledNetwork, ...) {
       private$name <- "double_standard"
-      private$So     <- sum(    private$sampledNet$adjacencyMatrix[private$sampledNet$observedDyads])
-      private$So.bar <- sum(1 - private$sampledNet$adjacencyMatrix[private$sampledNet$observedDyads])
-      private$imputedNet[private$sampledNet$NAs] <- mean(private$sampledNet$adjacencyMatrix, na.rm = TRUE)
-      self$update_parameters()
+      private$card_D <- sampledNetwork$nDyads
+      private$NAs    <- sampledNetwork$NAs
+      private$So     <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
+      private$So.bar <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
+      nu <- rep(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), length(sampledNetwork$missingDyads))
+      self$update_parameters(nu)
     },
-    update_parameters = function(...) {
-      private$Sm     <- sum(    private$imputedNet[private$sampledNet$missingDyads])
-      private$Sm.bar <- sum(1 - private$imputedNet[private$sampledNet$missingDyads])
+    update_parameters = function(nu, ...) {
+      private$Sm     <- sum(    nu)
+      private$Sm.bar <- sum(1 - nu)
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     update_imputation = function(Z, pi) {
       nu <- logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + Z %*% log(pi/(1 - pi)) %*% t(Z))
-      private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
+      nu[private$NAs]
     }
   ),
   active = list(
@@ -127,23 +123,28 @@ blockSampling_fit <-
 R6Class(classname = "blockSampling_fit",
   inherit = networkSampling_fit,
   private = list(
-    So = NULL, ## sum_(i in Nobs ) Z_iq
-    Sm = NULL  ## sum_(i in Nmiss) Z_iq
+    NAs    = NULL, ## where are the missing entries
+    card_D = NULL, ## number of dyads
+    N_obs  = NULL, ## boolean for observed nodes
+    So     = NULL, ## sum_(i in Nobs ) Z_iq
+    Sm     = NULL  ## sum_(i in Nmiss) Z_iq
   ),
   public = list(
-    initialize = function(adjMatrix, blockInit) {
-      super$initialize(adjMatrix)
+    initialize = function(sampledNetwork, blockInit) {
       private$name <- "block"
+      private$card_D <- sampledNetwork$nDyads
+      private$NAs    <- sampledNetwork$NAs
+      private$N_obs  <- sampledNetwork$observedNodes
       self$update_parameters(blockInit)
     },
     update_parameters = function(Z) {
-      private$So <- colSums(Z[ private$sampledNet$observedNodes, ])
-      private$Sm <- colSums(Z[!private$sampledNet$observedNodes, ])
+      private$So <- colSums(Z[ private$N_obs, ])
+      private$Sm <- colSums(Z[!private$N_obs, ])
       private$psi <- private$So / (private$So + private$Sm)
     },
     update_imputation = function(Z, pi) {
       nu <- logistic(Z %*% log(pi/(1 - pi)) %*% t(Z))
-      private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
+      nu[private$NAs]
     }
   ),
   active = list(

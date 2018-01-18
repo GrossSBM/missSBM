@@ -11,11 +11,6 @@
 networkSampling_sampler <-
 R6Class(classname = "networkSampling_sampler",
   inherit = networkSampling,
-  ## fields
-  private = list(
-    name  = NULL, # type of sampling
-    psi   = NULL  # vector of missing parameters
-  ),
   public = list(
     ## methods
     initialize = function(type = NA, parameters = NA) {
@@ -67,7 +62,7 @@ R6Class(classname = "networkSampling_sampler",
           D_obs_0 <- which(runif(sum(adjMatrix == 0)) < self$parameters[1])
           D_obs_1 <- which(runif(sum(adjMatrix == 1)) < self$parameters[2])
         }
-
+## Check THIS...
         R[union(D_obs_0, D_obs_1)] <- 1
         if (isSymmetric(adjMatrix))  R <- t(R) | R
 

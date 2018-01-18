@@ -1,13 +1,13 @@
 #' @import R6
 #' @export
 sampledNetwork <-
-R6::R6Class(classname = "sampledNetwork",
+R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
   private = list(
     X        = NULL, # adjacency matrix
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
-    nas      = NULL, # all NA is X
+    nas      = NULL, # all NA in X
     D_obs    = NULL, # array indices of missing dyads
     D_miss   = NULL, # array indices of observed dyads
     R        = NULL, # matrix of observed and non-observed edges
@@ -16,14 +16,7 @@ R6::R6Class(classname = "sampledNetwork",
   ## Basically getters and setters for private fields
   active = list(
     ## percentage of observed dyads
-    samplingRate = function(value) {
-      if (!private$directed) {
-        res <- (length(private$D_obs) - self$nNodes)/(2*self$nDyads)
-      } else {
-        res <- (length(private$D_obs) - self$nNodes)/self$nDyads
-      }
-      res
-    },
+    samplingRate = function(value) {length(private$D_obs)/self$nDyads},
     # number of nodes
     nNodes = function(value) {ncol(private$X)},
     # number of dyads
@@ -58,13 +51,12 @@ R6::R6Class(classname = "sampledNetwork",
       ## sets of observed / unobserved dyads
       private$nas <- is.na(adjacencyMatrix)
       if (private$directed) {
-        ## remove diagonal( no loops)
+        ## remove diagonal (no loops)
         private$D <- upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)
         private$D_miss <- which( private$nas & private$D )
         private$D_obs  <- which(!private$nas & private$D )
       } else {
         private$D <- upper.tri(adjacencyMatrix)
-
         private$D_miss <- which( private$nas & private$D)
         private$D_obs  <- which(!private$nas & private$D)
       }
