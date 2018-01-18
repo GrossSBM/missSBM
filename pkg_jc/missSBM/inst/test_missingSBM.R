@@ -14,5 +14,6 @@ mySBM <- simulateSBM(n, alpha, pi, family, directed)                            
 adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
 
 ## Draw
-sampledNet_dyad <- samplingSBM(adjacencyMatrix, "dyad", 0.1)
+sampledNet_dyad <- samplingSBM(adjacencyMatrix, "dyad", 0.6)
 obj <- missingSBM_fit$new(sampledNet_dyad$adjacencyMatrix, 3, "dyad")
+obj$doVEM()

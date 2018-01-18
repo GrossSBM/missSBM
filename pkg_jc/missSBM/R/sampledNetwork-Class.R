@@ -7,6 +7,7 @@ R6::R6Class(classname = "sampledNetwork",
     X        = NULL, # adjacency matrix
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
+    nas      = NULL, # all NA is X
     D_obs    = NULL, # array indices of missing dyads
     D_miss   = NULL, # array indices of observed dyads
     R        = NULL, # matrix of observed and non-observed edges
@@ -42,7 +43,9 @@ R6::R6Class(classname = "sampledNetwork",
     # matrix of observed and non-observed edges
     samplingMatrix  = function(value) {private$R},
     # vector of observed and non-observed nodes
-    observedNodes   = function(value) {private$S}
+    observedNodes   = function(value) {private$S},
+    # boolean for NA entries in the adjacencyMatrix
+    NAs             = function(value) {private$nas}
   ),
   ## Constructor
   public = list(
@@ -53,13 +56,14 @@ R6::R6Class(classname = "sampledNetwork",
       private$X  <- adjacencyMatrix
 
       ## sets of observed / unobserved dyads
+      private$nas <- is.na(adjacencyMatrix)
       if (private$directed) {
         ## remove diagonal( no loops)
-        private$D_miss <- which( is.na(adjacencyMatrix) & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
-        private$D_obs  <- which(!is.na(adjacencyMatrix) & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
+        private$D_miss <- which( private$nas & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
+        private$D_obs  <- which(!private$nas & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) )
       } else {
-        private$D_miss <- which( is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix))
-        private$D_obs  <- which(!is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix))
+        private$D_miss <- which( private$nas & upper.tri(adjacencyMatrix))
+        private$D_obs  <- which(!private$nas & upper.tri(adjacencyMatrix))
       }
 
       ## sets of observed / unobserved nodes

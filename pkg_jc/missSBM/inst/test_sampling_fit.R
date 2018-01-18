@@ -47,7 +47,6 @@ fittedSampling_block$df
 fittedSampling_block$penalty
 fittedSampling_block$vLogLik + fittedSampling_dyad$penalty
 
-
 sampledNet_degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
 fittedSampling_degree <- degreeSampling_fit$new(sampledNet_degree$adjacencyMatrix)
 fittedSampling_degree$vLogLik

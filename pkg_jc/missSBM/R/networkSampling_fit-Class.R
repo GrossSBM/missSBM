@@ -9,16 +9,26 @@ networkSampling_fit <-
 R6Class(classname = "networkSampling_fit",
   inherit = networkSampling,
   private = list(
-    net = NULL # the sampled network as an sampledNetwork object
+    sampledNet = NULL, # the sampled network as an sampledNetwork object
+    imputedNet = NULL  # adjacency matrix with imputed NA
   ),
   public = list(
     initialize = function(adjMatrix) {
-      private$net <- sampledNetwork$new(adjMatrix)
-    }
+      ## Construciton of the sampeldNetwork object
+      private$sampledNet <- sampledNetwork$new(adjMatrix)
+      ## basic imputation for initialization
+      private$imputedNet <- private$sampledNet$adjacencyMatrix
+      private$imputedNet[private$sampledNet$NAs] <- mean(private$sampledNet$adjacencyMatrix, na.rm = TRUE)
+    },
+    ## initialize estimation and imputation function
+    ## by default, nothing to do (corresponds to MAR sampling)
+    update_parameters = function(...) {},
+    update_imputation = function(...) {}
   ),
   active = list(
-    ## nDyads automatically handle the directed/undirected cases
-    penalty = function(value) {log(private$net$nDyads) * self$df}
+    ## nDyads automatically handles the directed/undirected cases
+    penalty = function(value) {log(private$sampledNet$nDyads) * self$df},
+    imputedNetwork = function(value) {private$imputedNet}
   )
 )
 
@@ -31,17 +41,17 @@ R6Class(classname = "dyadSampling_fit",
     card_D_m = NULL  # number of observed, repectively missing dyads
   ),
   public = list(
-    initialize = function(adjMatrix) {
+    initialize = function(adjMatrix, ...) {
       super$initialize(adjMatrix)
       private$name <- "dyad"
-      private$card_D_o <- length(private$net$observedDyads)
-      private$card_D_m <- length(private$net$missingDyads )
-      private$psi <- private$card_D_o / private$net$nDyads
+      private$card_D_o <- length(private$sampledNet$observedDyads)
+      private$card_D_m <- length(private$sampledNet$missingDyads )
+      private$psi <- private$card_D_o / private$sampledNet$nDyads
     }
   ),
   active = list(
     vLogLik = function() {
-      res <- (private$card_D_o - private$net$nNodes) * logx(private$psi) + private$card_D_m * log1mx(private$psi)
+      res <- (private$card_D_o - private$sampledNet$nNodes) * logx(private$psi) + private$card_D_m * log1mx(private$psi)
       res
     }
   )
@@ -56,17 +66,17 @@ R6Class(classname = "nodeSampling_fit",
     card_N_m = NULL  # number of observed, repectively missing nodes
   ),
   public = list(
-    initialize = function(adjMatrix) {
+    initialize = function(adjMatrix, ...) {
       super$initialize(adjMatrix)
       private$name <- "node"
-      private$card_N_o <- sum( private$net$observedNodes)
-      private$card_N_m <- sum(!private$net$observedNodes)
+      private$card_N_o <- sum( private$sampledNet$observedNodes)
+      private$card_N_m <- sum(!private$sampledNet$observedNodes)
       private$psi <- private$card_N_o / (private$card_N_o + private$card_N_m)
     }
   ),
   active = list(
     vLogLik = function() {
-### SHOULD'NT BE A SQUARE FOR N_obs SOMEWHERE?
+### SHOULD'NT THERE BE A SQUARE FOR N_obs SOMEWHERE?
 ### THE LOGLIK IS HIGH COMPARED TO THE ONE IN THE DYAD CASE...
       res <- private$card_N_o * logx(private$psi) + private$card_N_m * log1mx(private$psi)
       res
@@ -85,20 +95,21 @@ R6Class(classname = "doubleStandardSampling_fit",
     Sm.bar = NULL
   ),
   public = list(
-    initialize = function(adjMatrix, missingInit = NA) {
+    initialize = function(adjMatrix, ...) {
       super$initialize(adjMatrix)
       private$name <- "double_standard"
-      private$So     <- sum(    private$net$adjacencyMatrix[private$net$observedDyads])
-      private$So.bar <- sum(1 - private$net$adjacencyMatrix[private$net$observedDyads])
-      ## SEE HOW TO "COMPLETE" THE NETWORK AT START-UP IN ORDER TO INITIALIZE PSI
-      if (is.na(missingInit))
-        missingInit <- rep(mean(private$net$adjacencyMatrix, na.rm = TRUE), length(private$net$missingDyads))
-      self$update_missing(missingInit)
+      private$So     <- sum(    private$sampledNet$adjacencyMatrix[private$sampledNet$observedDyads])
+      private$So.bar <- sum(1 - private$sampledNet$adjacencyMatrix[private$sampledNet$observedDyads])
+      self$update_parameters()
     },
-    update_missing = function(nu) {
-      private$Sm     <- sum(    nu)
-      private$Sm.bar <- sum(1 - nu)
+    update_parameters = function(...) {
+      private$Sm     <- sum(    private$imputedNet[private$sampledNet$missingDyads])
+      private$Sm.bar <- sum(1 - private$imputedNet[private$sampledNet$missingDyads])
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
+    },
+    update_imputation = function(Z, pi) {
+      nu <- logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + Z %*% log(pi/(1 - pi)) %*% t(Z))
+      private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
     }
   ),
   active = list(
@@ -122,12 +133,16 @@ R6Class(classname = "blockSampling_fit",
     initialize = function(adjMatrix, blockInit) {
       super$initialize(adjMatrix)
       private$name <- "block"
-      self$update_missing(blockInit)
+      self$update_parameters(blockInit)
     },
-    update_missing = function(Z) {
-      private$So <- colSums(Z[ private$net$observedNodes, ])
-      private$Sm <- colSums(Z[!private$net$observedNodes, ])
+    update_parameters = function(Z) {
+      private$So <- colSums(Z[ private$sampledNet$observedNodes, ])
+      private$Sm <- colSums(Z[!private$sampledNet$observedNodes, ])
       private$psi <- private$So / (private$So + private$Sm)
+    },
+    update_imputation = function(Z, pi) {
+      nu <- logistic(Z %*% log(pi/(1 - pi)) %*% t(Z))
+      private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
     }
   ),
   active = list(
@@ -147,35 +162,44 @@ R6Class(classname = "degreeSampling_fit",
     degree_o = NULL  # estimation of the degrees on the observed part of the network
   ),
   public = list(
-    initialize = function(adjMatrix) {
+    initialize = function(adjMatrix, ...) {
       super$initialize(adjMatrix)
       private$name <- "degree"
 
       ## will remain the same
-      private$degree_o <- rowSums(private$net$adjacencyMatrix, na.rm = TRUE)
+      private$degree_o <- rowSums(private$sampledNet$adjacencyMatrix, na.rm = TRUE)
 
       ## will fluctuate along the algorithm
-      private$psi <- coefficients(glm(1*(private$net$observedNodes) ~ private$degree_o, family = binomial(link = "logit")))
-      nu <- matrix(NA, private$net$nNodes, private$net$nNodes)
-      nu[private$net$missingDyads] <- mean(private$net$adjacencyMatrix, na.rm = TRUE)
+      private$psi <- coefficients(glm(1*(private$sampledNet$observedNodes) ~ private$degree_o, family = binomial(link = "logit")))
+
+      self$update_parameters()
     },
-    update_missing = function(nu) {
+    update_parameters = function(...) {
+      nu <- private$imputedNet; nu[private$sampledNet$observedDyads] <- NA
       D  <- rowSums(nu, na.rm = TRUE) + private$degree_o
       D2 <- rowSums(nu * (1 - nu), na.rm = TRUE) + D^2
       private$ksi <- sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * D)
-      C <- .5 * private$net$nNodes - sum(!private$net$observedNodes)
+      C <- .5 * private$sampledNet$nNodes - sum(!private$sampledNet$observedNodes)
       s_hksi     <- sum(h(private$ksi))
       s_hksiD    <- sum(h(private$ksi) * D)
       s_hksiDhat <- sum(h(private$ksi) * D2)
-      b <- (2 * C * s_hksiD  - (.5 * sum(D) - sum(D[!private$net$observedNodes])) * s_hksi) / (2 * s_hksiDhat * s_hksi - (2 * s_hksiD)^2)
+      b <- (2 * C * s_hksiD  - (.5 * sum(D) - sum(D[!private$sampledNet$observedNodes])) * s_hksi) / (2 * s_hksiDhat * s_hksi - (2 * s_hksiD)^2)
       a <- -(b * s_hksiD + C) / s_hksi
       private$psi    <- c(a, b)
+    },
+    update_imputation = function(Z, pi) {
+      nu  <- private$imputedNet; nu[private$sampledNet$observedDyads] <- 0
+      Dij <- matrix(rowSums(nu) + private$degree_o, private$sampledNet$nNodes, private$sampledNet$nNodes) - nu
+      C <- 2 * h(private$ksi) * (private$ksi[1] * private$ksi[2] + private$ksi[2]^2 * (1 + Dij))
+      nu <- logistic(Z %*% log(pi/(1 - pi)) %*% t(Z) - private$psi[2] + C + t(C) )
+      private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
     }
   ),
   active = list(
     vLogLik = function() {
       prob <- logistic(private$psi[1] + private$psi[2] * private$D)
-      res  <- log( prob^private$net$observedNodes %*% (1 - prob)^(!private$net$observedNodes) )
+      ## ????
+      res  <- log( prob^private$sampledNet$observedNodes %*% (1 - prob)^(!private$sampledNet$observedNodes) )
       res
     }
   )
