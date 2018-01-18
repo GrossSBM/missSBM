@@ -146,7 +146,7 @@ drawCovSBM_typeI <- function(N,n,Q,alpha,gamma,X=NULL,beta=NULL,directed=FALSE) 
   if(!directed) Y <- Y * lower.tri(Y) + t(Y * lower.tri(Y))
   diag(Y) <- 0
 
-  return(list(Y=Y,cl=as.numeric(Znum),Z=Z, beta=beta))
+  return(list(Y=Y,cl=as.numeric(Znum),Z=Z, beta=beta, P=P))
 }
 
 ### Exemple :
