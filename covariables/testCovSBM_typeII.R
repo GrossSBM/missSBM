@@ -32,7 +32,7 @@ Y <- sbm$Y; Y[sampMat == 0] <- NA
 infer <- func_missSBM.CovI(Y, 3, X)
 # getBeta(infer@models[[1]])
 plot(infer@ICLs)
-adjustedRandIndex(getClusters(infer@models[[3]]), sbm$cl)
+adjustedRandIndex(getClusters(infer@models[[1]]), sbm$cl)
 sum(sampMat)/n^2
 
 
