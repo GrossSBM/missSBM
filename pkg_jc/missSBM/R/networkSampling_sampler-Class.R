@@ -56,13 +56,15 @@ R6Class(classname = "networkSampling_sampler",
         R <- diag(N)
 
         if (isSymmetric(adjMatrix)) {
-          D_obs_0 <- which(runif(sum((adjMatrix == 0) & upper.tri(adjMatrix))) < self$parameters[1])
-          D_obs_1 <- which(runif(sum((adjMatrix == 1) & upper.tri(adjMatrix))) < self$parameters[2])
+          D_0 <- which((adjMatrix == 0) & upper.tri(adjMatrix))
+          D_1 <- which((adjMatrix == 1) & upper.tri(adjMatrix))
         } else {
-          D_obs_0 <- which(runif(sum(adjMatrix == 0)) < self$parameters[1])
-          D_obs_1 <- which(runif(sum(adjMatrix == 1)) < self$parameters[2])
+          D_0 <- which((adjMatrix == 0) & (upper.tri(adjMatrix) | lower.tri(adjMatrix)))
+          D_1 <- which((adjMatrix == 1) & (upper.tri(adjMatrix) | lower.tri(adjMatrix)))
         }
-## Check THIS...
+        D_obs_0 <- D_0[runif(length(D_0)) < self$parameters[1]]
+        D_obs_1 <- D_1[runif(length(D_1)) < self$parameters[2]]
+
         R[union(D_obs_0, D_obs_1)] <- 1
         if (isSymmetric(adjMatrix))  R <- t(R) | R
 
