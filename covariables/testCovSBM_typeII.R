@@ -35,6 +35,8 @@ plot(infer@ICLs)
 adjustedRandIndex(getClusters(infer@models[[1]]), sbm$cl)
 sum(sampMat)/n^2
 
+sum((getPi(infer@models[[1]])-sbm$P)^2)/sum((getPi(infer@models[[1]]))^2)
+
 
 ########################################################################################
 ### Test VEM with covariates type II :

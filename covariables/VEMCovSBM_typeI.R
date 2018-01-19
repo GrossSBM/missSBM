@@ -96,8 +96,8 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
         iter <- iter + 1
         Tau.old <- Tau
 
-        # browser()
-        Tau <-exp(sweep((Y1-matrix(.5,n,n)+diag(.5,n))%*%Tau %*%t(gamma) - (R*g(ksi)*(matrix(1,n,n) + 2*rP(cov,beta)))%*%Tau%*%t(gamma^2) ,2,log(alpha),"+"))
+        browser()
+        Tau <- exp(sweep((Y1-matrix(.5,n,n)+diag(.5,n))%*%Tau %*%t(gamma) - (R*g(ksi)*(matrix(1,n,n) + 2*rP(cov,beta)))%*%Tau%*%t(gamma^2) ,2,log(alpha),"+")+200)*exp(-200)
 
         num <- rowSums(Tau)
         Tau <- Tau/num
@@ -105,7 +105,6 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
         cond.FP <- (iter > maxIter.FP) | (sum((Tau.old - Tau)^2)/sum(Tau^2) < eps.FP)
       }
 
-      # browser()
       ksi <- sqrt((Tau%*%gamma%*%t(Tau) + rP(cov,beta))^2)
       Tau.all[[i]] <- Tau
       theta[[i]]   <- list(pi=pi, alpha=alpha, gamma=gamma)
