@@ -4,15 +4,15 @@
 \alias{inferSBM}
 \title{Inference of Stochastic Block Model from sampled data}
 \usage{
-inferSBM(sampledNetwork, vBlocks, sampling, plot = TRUE)
+inferSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral")
 }
 \arguments{
-\item{sampledNetwork}{The sampled network data (a square matrix)}
-
 \item{vBlocks}{The vector of number of blocks considered in the collection}
 
 \item{sampling}{The sampling design for missing data modeling : MAREdge, doubleStandard, MARNode, snowball, starDegree, class
 by default "undirected" is choosen}
+
+\item{sampledNetwork}{The sampled network data (a square matrix)}
 
 \item{plot}{Summary of the output of the algorithm, by default TRUE is choosen}
 }

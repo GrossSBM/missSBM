@@ -141,49 +141,31 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #' @import R6
 #' @import igraph
 #' @export
-inferSBM <- function(sampledNetwork, vBlocks, sampling, plot = TRUE){
+inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral"){
 
-  if (isSymmetric(sampledNetwork)) directed <- FALSE else directed <- TRUE
-  if (length(table(sampledNetwork)) > 2) family <- "Poisson" else family <- "Bernoulli"
+  sampledNet <- sampledNetwork$new(adjacencyMatrix)
+  cat("\n")
+  cat("\n Adjusting Variational EM for Stochastic Block Model\n")
+  cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
+  cat("\n")
+  models <- lapply(vBlocks,
+    function(nBlocks) {
+    cat(" Initialization of model with", nBlocks," blocks.", "\r")
+      missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
+    }
+  )
 
-  if (!(sampling %in% available_samplings)) stop("This sampling is not in the list !")
-  if (!(family == "Bernoulli" | sampling %in% c("MAREdge", "MARNode"))) stop("This sampling for Poisson emission law is not available !")
-  if (is.null(vBlocks)) stop(" The parameter vBlocks must be a least of length 1 !")
+  cat("\n")
+  res_optim <- do.call(rbind, lapply(models,
+    function(model) {
+      cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
+      res <- model$doVEM()
+      res$nBlocks <- model$fittedSBM$nBlocks
+      res$iteration <- 1:nrow(res)
+      res
+    }
+  ))
 
-  collection <- SBM_collection$new(sampledNetwork, vBlocks, sampling, family, directed)
-
-  collectionList <- lapply(collection$models, function(x){
-    return(list(Q = x$SBM$nBlocks, alpha = x$SBM$mixtureParam, pi = x$SBM$connectParam, clusters = apply(x$blockVarParam, 1, which.max), samplingParameters = x$sampling$missingParam))
-  })
-
-  if (length(vBlocks) > 1 & min(vBlocks) == 1) {
-    bestModel <- collectionList[[collection$getBestModel()]]
-  }
-  if (min(vBlocks) > 1 & length(vBlocks) != 1) {
-    bestModel <- collectionList[[collection$getBestModel() - min(vBlocks) + 1]]
-  }
-  if (length(vBlocks) == 1) {
-    bestModel <- collectionList[[1]]
-  }
-
-  if (plot) {
-    mode <- ifelse(directed, "directed", "undirected")
-    sampAdjMatZeros <- sampledNetwork; sampAdjMatZeros[is.na(sampAdjMatZeros)] <- 0
-
-    G1 <- graph_from_adjacency_matrix(bestModel$pi, mode = mode, weighted = TRUE, diag = TRUE)
-    G2 <- graph_from_adjacency_matrix(sampAdjMatZeros, mode = mode, weighted = TRUE, diag = TRUE)
-    cl <- bestModel$clusters
-    par(mfrow=c(2,2))
-    plot.igraph(G1,vertex.size=table(cl),edge.width=E(G1)$weight*10, main="connectivity matrix", vertex.color=1:20)
-    image_NA(sampledNetwork[order(cl), order(cl)], axes=FALSE, na.color = "red", main="clustered network + NA")
-    plot(vBlocks,collection$vICLs, type = 'l', main = "Integrated complete Likekihood (ICL)", xlab = "Q", ylab = "ICL")
-    plot.igraph(G2, vertex.color = cl, main="Network structure")
-  }
-
-  return(list(bestModel = bestModel, models = collectionList, ICL = collection$vICLs))
+  return(models)
 }
-
-
-
-
 

@@ -14,19 +14,19 @@ R6Class(classname = "missingSBM_fit",
     SBM        = NULL  # object of class SBM_fit
   ),
   public = list(
-    initialize = function(adjMatrix = NA, nBlocks = NA, netSampling = NA, clusterInit = "spectral") {
+    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "spectral") {
 
       stopifnot(netSampling %in% available_samplings)
+      stopifnot(inherits(sampledNet, "sampledNetwork"))
+      stopifnot(length(nBlocks) == 1 & nBlocks > 1 & is.numeric(nBlocks))
 
-      ## Turn the adjacency matrix to a proper sampledNetwork object
-      private$sampledNet <- sampledNetwork$new(adjMatrix)
+      ## Save the sampledNetwork object in the current environment
+      private$sampledNet <- sampledNet
 
-      ## network data with basic imputation in NMAR sampling. No imputation need for MAR sampling
-      private$imputedNet <- adjMatrix
-      # if (netSampling %in% c("double_standard", "degree", "block"))
-      #   imputedNet[is.na(adjMatrix)] <- mean(imputedNet[!is.na(adjMatrix)])
+      ## network data without any imputation at startup
+      private$imputedNet <- sampledNet$adjacencyMatrix
 
-      ## construct the SBM fit
+      ## construct and initialize the SBM fit
       private$SBM <- SBM_fit$new(private$imputedNet, nBlocks, clusterInit)
 
       ## construct the network sampling fit
@@ -53,7 +53,7 @@ R6Class(classname = "missingSBM_fit",
 
 #' @export
 missingSBM_fit$set("public", "doVEM",
-  function(threshold = 1e-5, maxIter = 100, fixPointIter = 5, trace = FALSE) {
+  function(threshold = 1e-5, maxIter = 100, fixPointIter = 1, trace = FALSE) {
 
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
@@ -93,5 +93,25 @@ missingSBM_fit$set("public", "doVEM",
     if (trace) cat("\n")
     res <- data.frame(delta = delta[1:i], objective = objective[1:i])
     res
+  }
+)
+
+#' @import igraph
+#' @export
+missingSBM_fit$set("public", "plot",
+  function(type = c("imputedNetwork", "connectivity")) {
+    type <- match.arg(type)
+    if (type == "imputedNetwork") {
+      gg_image_NA(private$imputedNet, private$SBM$memberships)
+    }
+    if (type == "connectivity") {
+      plot(
+        graph_from_adjacency_matrix(
+          private$SBM$connectParam,
+          mode = ifelse(private$sampledNet$is_directed, "directed", "undirected"),
+          weighted = TRUE, diag = TRUE
+        ), main = "SBM connectivity matrix"
+      )
+    }
   }
 )

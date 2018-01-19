@@ -45,6 +45,7 @@ R6Class(classname = "sampledNetwork",
     initialize = function(adjacencyMatrix) {
 
       ## adjacency matrix
+      stopifnot(is.matrix(adjacencyMatrix))
       if (isSymmetric(adjacencyMatrix)) private$directed <- FALSE else private$directed <- TRUE
       private$X  <- adjacencyMatrix
 
