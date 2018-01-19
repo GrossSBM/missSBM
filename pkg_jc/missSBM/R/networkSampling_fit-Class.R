@@ -10,8 +10,8 @@ R6Class(classname = "networkSampling_fit",
   public = list(
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
-    update_parameters = function(...) {invisible(self)},
-    update_imputation = function(...) {invisible(self)}
+    update_parameters = function(...) {invisible(NULL)},
+    update_imputation = function(...) {NA}
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
@@ -44,7 +44,9 @@ R6Class(classname = "dyadSampling_fit",
     vLogLik = function() {
       res <- private$card_D_o * logx(private$psi) + private$card_D_m * log1mx(private$psi)
       res
-    }
+    },
+    ## overloading the penalty in MAR case
+    penalty = function(value) {log(private$card_D_o) * self$df}
   )
 )
 
@@ -54,7 +56,8 @@ R6Class(classname = "nodeSampling_fit",
   inherit = networkSampling_fit,
   private = list(
     card_N_o = NULL, # stats required by the likelihood
-    card_N_m = NULL,  # number of observed, repectively missing nodes
+    card_N_m = NULL, # number of observed, repectively missing nodes
+    card_D_o = NULL, #
     card_D   = NULL, #
     N        = NULL  #
   ),
@@ -63,6 +66,7 @@ R6Class(classname = "nodeSampling_fit",
       private$name <- "node"
       private$card_N_o <- sum( sampledNetwork$observedNodes)
       private$card_N_m <- sum(!sampledNetwork$observedNodes)
+      private$card_D_o <- length(sampledNetwork$observedDyads)
       private$card_D   <- sampledNetwork$nDyads
       private$psi <- private$card_N_o / (private$card_N_o + private$card_N_m)
     }
@@ -73,7 +77,9 @@ R6Class(classname = "nodeSampling_fit",
 ### THE LOGLIK IS HIGH COMPARED TO THE ONE IN THE DYAD CASE...
       res <- private$card_N_o * logx(private$psi) + private$card_N_m * log1mx(private$psi)
       res
-    }
+    },
+    ## overloading the penalty in MAR case
+    penalty = function(value) {log(private$card_N_o) * self$df}
   )
 )
 
@@ -96,12 +102,12 @@ R6Class(classname = "doubleStandardSampling_fit",
       private$NAs    <- sampledNetwork$NAs
       private$So     <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
       private$So.bar <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
-      nu <- rep(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), length(sampledNetwork$missingDyads))
-      self$update_parameters(nu)
+      ImputedNet     <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+      self$update_parameters(ImputedNet)
     },
-    update_parameters = function(nu, ...) {
-      private$Sm     <- sum(    nu)
-      private$Sm.bar <- sum(1 - nu)
+    update_parameters = function(ImputedNet, ...) {
+      private$Sm     <- sum(    ImputedNet[private$NAs])
+      private$Sm.bar <- sum(1 - ImputedNet[private$NAs])
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     update_imputation = function(Z, pi) {
@@ -135,9 +141,9 @@ R6Class(classname = "blockSampling_fit",
       private$card_D <- sampledNetwork$nDyads
       private$NAs    <- sampledNetwork$NAs
       private$N_obs  <- sampledNetwork$observedNodes
-      self$update_parameters(blockInit)
+      self$update_parameters(NA, blockInit)
     },
-    update_parameters = function(Z) {
+    update_parameters = function(imputedNet, Z) {
       private$So <- colSums(Z[ private$N_obs, ])
       private$Sm <- colSums(Z[!private$N_obs, ])
       private$psi <- private$So / (private$So + private$Sm)
