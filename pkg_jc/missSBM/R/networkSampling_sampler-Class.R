@@ -74,7 +74,7 @@ R6Class(classname = "networkSampling_sampler",
         if (length(self$parameters) != length(unique(clusters)))
           stop("Sampling parameters does not have the required size.")
         N_obs <- which(runif(N) < self$parameters[clusters])
-        D_obs <- as.matrix(expand.grid(N_obs, N_obs))
+        D_obs <- as.matrix(expand.grid(N_obs, 1:N))
       },
       "degree" = function(adjMatrix, ...) {
         N_obs <- which(runif(nrow(adjMatrix)) < logistic(self$parameters[1] + self$parameters[2]*rowSums(adjMatrix)))
