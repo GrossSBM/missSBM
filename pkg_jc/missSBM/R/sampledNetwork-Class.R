@@ -71,6 +71,12 @@ R6Class(classname = "sampledNetwork",
       R[private$D_obs] <- 1
       if (!private$directed)  R <- t(R) | R
       private$R <- R
+    },
+    plot = function(title = "Network sampling") {
+      par(mfrow = c(1,2))
+      image_NA(self$samplingMatrix , main = "sampling matrix")
+      image_NA(self$adjacencyMatrix, main = "adjacency matrix")
+      title(main = paste("\n",title,"with sampling rate:", signif(self$samplingRate,3)), outer = TRUE)
     }
   )
 )

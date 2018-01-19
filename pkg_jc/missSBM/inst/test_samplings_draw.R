@@ -15,37 +15,20 @@ adjacencyMatrix <- mySBM$adjacencyMatrix                                        
 
 ## Draw
 dyad <- samplingSBM(adjacencyMatrix, "dyad", 0.1)
-par(mfrow = c(1,2))
-image_NA(dyad$samplingMatrix , main = "sampling matrix")
-image_NA(dyad$adjacencyMatrix, main = "adjacency matrix")
-title(main = paste("\ndyad sampling, sampling rate:", signif(dyad$samplingRate,3)), outer = TRUE)
+dyad$plot("Dyad sampling")
 
 node <- samplingSBM(adjacencyMatrix, "node", 0.1)
-par(mfrow = c(1,2))
-image_NA(node$samplingMatrix , main = "sampling matrix")
-image_NA(node$adjacencyMatrix, main = "adjacency matrix")
-title(main = paste("\nnode sampling, sampling rate:", signif(node$samplingRate,3)), outer = TRUE)
+node$plot("Node sampling")
 
 block <- samplingSBM(adjacencyMatrix, "block", c(.1, .2, .7), mySBM$memberships)
-par(mfrow = c(1,2))
-image_NA(block$samplingMatrix[order(mySBM$memberships),order(mySBM$memberships)] , main = "sampling matrix")
-image_NA(block$adjacencyMatrix[order(mySBM$memberships),order(mySBM$memberships)], main = "adjacency matrix")
-title(main = paste("\nblock sampling, sampling rate:", signif(block$samplingRate,3)), outer = TRUE)
+block$plot("Block sampling")
 
 double_standard <- samplingSBM(adjacencyMatrix,"double_standard", c(0.1, 0.5))
-par(mfrow = c(1,2))
-image_NA(double_standard$samplingMatrix , main = "sampling matrix")
-image_NA(double_standard$adjacencyMatrix, main = "adjacency matrix")
-title(main = paste("\ndouble_standard sampling, sampling rate:", signif(double_standard$samplingRate,3)), outer = TRUE)
+double_standard$plot("Double standard sampling")
 
 degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
-par(mfrow = c(1,2))
-image_NA(degree$samplingMatrix , main = "sampling matrix")
-image_NA(degree$adjacencyMatrix, main = "adjacency matrix")
-title(main = paste("\ndegree sampling, sampling rate:", signif(degree$samplingRate,3)), outer = TRUE)
+degree$plot("Degree standard sampling")
 
 snowball <- samplingSBM(adjacencyMatrix,"snowball", .3)
-par(mfrow = c(1,2))
-image_NA(snowball$samplingMatrix , main = "sampling matrix")
-image_NA(snowball$adjacencyMatrix, main = "adjacency matrix")
-title(main = paste("\nsnowball sampling, sampling rate:", signif(snowball$samplingRate, 3)), outer = TRUE)
+snowball$plot("Snowball standard sampling")
+
