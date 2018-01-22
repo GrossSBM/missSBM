@@ -162,56 +162,8 @@ The variationnal approximation is
 
 \paragraph{Likelihood of Random-Pair sampling}
 \begin{equation*}
-p_{\rho}(R)=\prod_{1\leq i < j \leq n}p_{\rho}(R_{ij})=\left( \prod_{\MAO}\rho \right) \left( \prod_{\MAM}(1-\rho) \right)=\rho^{\text{card($\MAO$)}}(1-\rho)^{\text{card($\MAM$)}}
+p_{\rho}(R)=\left( \prod_{\MAO}\rho \right) \left( \prod_{\MAM}(1-\rho) \right)
 \end{equation*}
-\textcolor{red}{  \begin{equation}\nonumber
-\begin{equation*}
-p_{\rho}(R)=\prod_{1\leq i \neq j \leq n}p_{\rho}(R_{ij})=\left( \prod_{\MAO}\rho \right) \left( \prod_{\MAM}(1-\rho) \right)=\rho^{\text{card($\MAO$)}}(1-\rho)^{\text{card($\MAM$)}}
-\end{equation*}}
-
-\paragraph{Likelihood of star sampling}
-The likelihood is the same in symmetric and non-symmetric context.
-\begin{equation*}
-p_{\rho}(S)=\prod_{1\leq i \leq n}p_{\rho}(S_{i})=\left( \prod_{i,S_i = 1}\rho \right) \left( \prod_{i,S_i = 0}(1-\rho) \right)=\rho^{\sum_i S_i}(1-\rho)^{\sum_i (1-S_i)}
-\end{equation*}
-
-\paragraph{ICL in random-pair sampling case}
-\
-\begin{proposition}
-\label{prop:ICL_MAR2}
-  For      an      SBM      with     $Q$      blocks      and      for
-  $\hat{\theta}=\argmax \log p_{\theta}(\MAO,Z,R)$, the ICL criterion is
-  given by
-  \begin{equation}\nonumber
-    \mathrm{ICL}(Q)   =    -2   \mathbb{E}_{\tilde   p_\tau}\left[\log
-      p_{\hat\theta}(\MAO,  Z, R   ;  Q)\right]   +  (1+\frac{Q(Q+1)}{2})\log
-    \card{\dyadO} + (Q-1)\log \card{\nodeO}. 
-  \end{equation}
-  \textcolor{red}{  \begin{equation}\nonumber
-    \mathrm{ICL}(Q)   =    -2   \mathbb{E}_{\tilde   p_\tau}\left[\log
-      p_{\hat\theta}(\MAO,  Z, R   ;  Q)\right]   +  (1+Q^2)\log
-    \card{\dyadO} + (Q-1)\log \card{\nodeO}. 
-  \end{equation}}
-\end{proposition}
-
-\paragraph{ICL in star sampling case}
-\
-\begin{proposition}
-\label{prop:ICL_MAR2}
-  For      an      SBM      with     $Q$      blocks      and      for
-  $\hat{\theta}=\argmax \log p_{\theta}(\MAO,Z,R)$, the ICL criterion is
-  given by
-  \begin{equation}\nonumber
-    \mathrm{ICL}(Q)   =    -2   \mathbb{E}_{\tilde   p_\tau}\left[\log
-      p_{\hat\theta}(\MAO,  Z, R   ;  Q)\right]   +  \frac{Q(Q+1)}{2}\log
-    \card{\dyadO} + Q\log \card{\nodeO}. 
-  \end{equation}
-  \textcolor{red}{  \begin{equation}\nonumber
-    \mathrm{ICL}(Q)   =    -2   \mathbb{E}_{\tilde   p_\tau}\left[\log
-      p_{\hat\theta}(\MAO,  Z, R   ;  Q)\right]   +  Q^2\log
-    \card{\dyadO} + Q\log \card{\nodeO}. 
-  \end{equation}}
-\end{proposition}
 
 \subsubsection{NMAR}
 \textcolor{red}{Notice that $\dyadO$ and $\dyadM$ are changing in the following (i.e don't forget that the matrix is not symmetric: $\MA_{ij}$
@@ -396,19 +348,6 @@ $h(x) =  \frac{-1}{2\zeta}\left[ \text{logistic}(\zeta)  - \frac{1}{2}
 with $\zeta = \left(  \zeta_i, i\in\node\right)$ such that $\zeta_i>0$
 is an  additional set  of variational  parameters used  to approximate
 $-\log(1+e^{-x})$.
-
-By gathering all this, we have
-
-\begin{equation*}
-  \begin{aligned}
-    J_\zeta & =
-     C_{miss} + \sum_{i=1}^n \Ebb_{\tilde{p}}\left[ \text{logistic}(\zeta_i) + \frac{(a+bD_i)-\zeta_i}{2} + h(\zeta_i)((a+bD_i)^2 - \zeta_i^2) \right], \\
-    & = C_{miss} + \sum_{i=1}^n \left[ \text{logistic}(\zeta_i) + \frac{(a+b\tilde{D}_i)-\zeta_i}{2} + h(\zeta_i)(a^2 + 2ab\tilde{D}_i + b^{2}\hat{D}_i - \zeta_i^2) \right],
-  \end{aligned}
-\end{equation*}
-where ${C}_{miss} = \sum_{i \in \nodeM} \left( a+b\tilde{D}_i \right)$ and $\hat{D}_i =\Ebb_{\tilde{p}}\left[ {D_i}^2 \right] = \mathbb{V}_{\tilde{p}}\left( D_i \right) + {\mathbb{E}_{\tilde{p}}\left[ {D_i} \right]}^2 
- =  \sum_{j \in  \nodeM} \nu_{ij}(1-\nu_{ij})  + \left(  \sum_{i \in
-     \nodeM} \nu_{ij} + \sum_{i \in \nodeO} \MA_{ij} \right)^2$.
 
 \begin{proposition}\label{prop:nmar_degree}
   Consider     the     maximization     of     the     lower     bound

@@ -1,0 +1,11 @@
+\contentsline {section}{\numberline {1}Binary SBM}{1}
+\contentsline {subsection}{\numberline {1.1}Undirected/\leavevmode {\color {red}Directed}}{1}
+\contentsline {subsubsection}{\numberline {1.1.1}MAR}{1}
+\contentsline {paragraph}{Likelihood of Random-Pair sampling}{2}
+\contentsline {paragraph}{Likelihood of star sampling}{2}
+\contentsline {paragraph}{ICL in random-pair sampling case}{2}
+\contentsline {paragraph}{ICL in star sampling case}{2}
+\contentsline {subsubsection}{\numberline {1.1.2}NMAR}{3}
+\contentsline {section}{\numberline {2}Poisson SBM}{6}
+\contentsline {subsection}{\numberline {2.1}Undirected/\leavevmode {\color {red}Directed}}{6}
+\contentsline {subsubsection}{\numberline {2.1.1}MAR}{6}
