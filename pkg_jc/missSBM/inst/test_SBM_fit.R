@@ -18,6 +18,11 @@ mySBM <- simulateSBM(n, alpha, pi, family, directed)                            
 ## random
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, sample(mySBM$memberships))
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
+
+par(mfrow = c(1,2))
+plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
+plot(out$objective, type = "l", main = "Variational bound along the VEM")
+
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 mySBM_fit$vICL(mySBM$adjacencyMatrix)
 mySBM_fit$vLogLik(mySBM$adjacencyMatrix)
