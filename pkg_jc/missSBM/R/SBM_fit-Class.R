@@ -28,14 +28,20 @@ R6Class(classname = "SBM_fit",
       NAs <- is.na(adjMatrix)
       JZ <- sum(private$tau %*% log(private$alpha))
       JX <- sum( log( private$d_law(adjMatrix[private$dyads & !NAs], (private$tau %*% private$pi %*% t(private$tau))[private$dyads & !NAs])  ) )
-      JZ + JX
+      JZ + JX + self$entropy
+    },
+    vBIC = function(adjMatrix) {
+      -2 * self$vLogLik(adjMatrix) + self$penalty
     },
     vICL = function(adjMatrix) {
-      -2 * self$vLogLik(adjMatrix) + self$penalty
+      -2 * (self$vLogLik(adjMatrix) - self$entropy) + self$penalty
     }),
   active = list(
     blocks = function(value) {
       if (missing(value)) return(private$tau) else  private$tau <- value
+    },
+    entropy = function(value) {
+      -sum(private$tau * logx(private$tau))
     },
     memberships = function(value) {apply(private$tau, 1, which.max)},
     penalty = function(value) {self$df_connectParams * log(sum(private$dyads)) + self$df_mixtureParams * log(private$N)}

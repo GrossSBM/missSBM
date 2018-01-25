@@ -21,6 +21,7 @@ out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 mySBM_fit$vICL(mySBM$adjacencyMatrix)
 mySBM_fit$vLogLik(mySBM$adjacencyMatrix)
+mySBM_fit$vBIC(mySBM$adjacencyMatrix)
 
 ## spectral clustering
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, "spectral")
