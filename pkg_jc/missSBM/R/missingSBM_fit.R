@@ -47,7 +47,9 @@ R6Class(classname = "missingSBM_fit",
     imputedNetwork = function(value) {private$imputedNet},
     vLogLik = function(value) {private$SBM$vLogLik(private$imputedNet) + private$sampling$vLogLik},
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
-    vICL = function(value) {-2 * self$vLogLik + self$penalty}
+    vBIC = function(value) {- 2 * self$vLogLik + self$penalty},
+    ## probably not the good one, check
+    vICL = function(value) {- 2 * (self$vLogLik - private$SBM$entropy) + self$penalty}
   )
 )
 

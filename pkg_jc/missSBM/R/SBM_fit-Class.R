@@ -9,9 +9,11 @@ SBM_fit <-
 R6Class(classname = "SBM_fit",
   inherit = SBM,
   private = list(
-    d_law = NULL, # the density of the emission law of the edges
-    dyads = NULL, # set of dyads (differ according directed/undirected graph )
-    tau   = NULL  # variational parameters for posterior probablility of class belonging
+    d_law    = NULL, # the density of the emission law of the edges
+    dyads    = NULL, # set of dyads (differ according directed/undirected graph )
+    tau      = NULL,  # variational parameters for posterior probablility of class belonging
+    card_D_o = NULL, # required to compute the penalty in the MAR case
+    card_N_o = NULL
   ),
   public = list(
     update_parameters = function(adjMatrix) {
@@ -44,7 +46,7 @@ R6Class(classname = "SBM_fit",
       -sum(private$tau * logx(private$tau))
     },
     memberships = function(value) {apply(private$tau, 1, which.max)},
-    penalty = function(value) {self$df_connectParams * log(sum(private$dyads)) + self$df_mixtureParams * log(private$N)}
+    penalty = function(value) {self$df_connectParams * log(sum(private$card_D_o)) + self$df_mixtureParams * log(private$card_N_o)}
   )
 )
 
@@ -62,6 +64,8 @@ SBM_fit$set("public", "initialize",
     dyads <- matrix(TRUE, nNodes, nNodes); diag(dyads) <- FALSE
     if (!private$directed) dyads[lower.tri(dyads)] <- FALSE
     private$dyads <- dyads
+    private$card_D_o <- sum(dyads)
+    private$card_N_o <- sum(!is.na(rowSums(adjacencyMatrix)))
 
     private$d_law <- switch(family,
           "Bernoulli" = function(x, prob) {prob^x * (1 - prob)^(1 - x)},

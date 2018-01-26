@@ -71,8 +71,6 @@ R6Class(classname = "nodeSampling_fit",
   ),
   active = list(
     vLogLik = function() {
-### SHOULD'NT THERE BE A SQUARE FOR N_obs SOMEWHERE?
-### THE LOGLIK IS HIGH COMPARED TO THE ONE IN THE DYAD CASE...
       res <- private$card_N_o * logx(private$psi) + private$card_N_m * log1mx(private$psi)
       res
     },
