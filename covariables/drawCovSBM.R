@@ -35,7 +35,9 @@ drawAlpha <- function(n,Q,beta,X){
 
 drawCovSBM_typeII <- function(N,n,Q,pi,X=NULL,beta=NULL,directed=FALSE) {
   if(is.null(X))    X    <- drawCov(N,n)
-  if(is.null(beta)) beta <- drawbeta(N,Q)
+  if(is.null(beta)) beta <- drawBeta(N,Q)
+  # browser()
+
   alpha <- drawAlpha(n,Q,beta,X)
 
   Z <- do.call(rbind, lapply(1:n, function(i){ t(rmultinom(1, 1, alpha[i,])) }))
@@ -57,7 +59,39 @@ drawTheta <- function(N,m=0,s=1){
   return(theta)
 }
 
-sampleCovSBMI <- function(Y,X,theta=NULL,beta1=NULL,beta2=NULL,intercept=NULL,directed=FALSE,Node=FALSE){
+# sampleCovSBMI <- function(Y,X,theta=NULL,beta1=NULL,beta2=NULL,intercept=NULL,directed=FALSE,Node=FALSE){
+#   n <- nrow(Y)
+#   if(Node){
+#     if(is.null(theta)) theta <- drawTheta(nrow(X))
+#     if(is.null(intercept)) intercept <- rnorm(n)
+#
+#     sampP  <- 1/(1+exp(-intercept - t(theta) %*% X))
+#     obsNodes <- which(runif(ncol(X)) < sampP)
+#     samplingMatrix <- matrix(0,ncol(X),ncol(X)) ; samplingMatrix[obsNodes,] <- 1
+#     diag(samplingMatrix) <- 1
+#   } else {
+#     if(is.null(theta)){
+#       beta1 <- drawTheta(nrow(X))
+#       beta2 <- drawTheta(nrow(X))
+#     }
+#     if(is.null(intercept)) intercept <- matrix(rnorm(n^2),n,n)
+#
+#     P <- matrix(0,n,n)
+#     for(i in 1:n){
+#       for(j in 1:n){
+#         P[i,j] <- 1/(1+exp(-intercept[i,j] - t(beta1) %*% X[,i] - t(beta2) %*% X[,j]))
+#       }
+#     }
+#     samplingMatrix <- 1*(P > matrix(runif(n^2),n,n))
+#     diag(samplingMatrix) <- 1
+#   }
+#   if(!directed){
+#     samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
+#   }
+#   return(samplingMatrix)
+# }
+
+sampleCovSBM <- function(Y,X,theta=NULL,intercept=NULL,directed=FALSE,Node=FALSE){
   n <- nrow(Y)
   if(Node){
     if(is.null(theta)) theta <- drawTheta(nrow(X))
@@ -68,41 +102,18 @@ sampleCovSBMI <- function(Y,X,theta=NULL,beta1=NULL,beta2=NULL,intercept=NULL,di
     samplingMatrix <- matrix(0,ncol(X),ncol(X)) ; samplingMatrix[obsNodes,] <- 1
     diag(samplingMatrix) <- 1
   } else {
-    if(is.null(theta)){
-      beta1 <- drawTheta(nrow(X))
-      beta2 <- drawTheta(nrow(X))
-    }
+    if(is.null(theta)) theta <- drawTheta(dim(X)[3])
     if(is.null(intercept)) intercept <- matrix(rnorm(n^2),n,n)
 
-    P <- matrix(0,n,n)
-    for(i in 1:n){
-      for(j in 1:n){
-        P[i,j] <- 1/(1+exp(-intercept[i,j] - t(beta1) %*% X[,i] - t(beta2) %*% X[,j]))
-      }
-    }
+    P <- 1/(1+exp(-intercept - rP(X,theta)))
+
     samplingMatrix <- 1*(P > matrix(runif(n^2),n,n))
     diag(samplingMatrix) <- 1
+    if(!directed){
+      samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
+    }
+    return(samplingMatrix)
   }
-  if(!directed){
-    samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
-  }
-  return(samplingMatrix)
-}
-
-sampleCovSBMII <- function(Y,X,theta=NULL,intercept=NULL,directed=FALSE,Node=TRUE){
-  n <- nrow(Y)
-  if(is.null(theta)) theta <- drawTheta(dim(X)[3])
-
-  if(is.null(intercept)) intercept <- matrix(rnorm(n^2),n,n)
-
-  P <- 1/(1+exp(-intercept - rP(X,theta)))
-
-  samplingMatrix <- 1*(P > matrix(runif(n^2),n,n))
-  diag(samplingMatrix) <- 1
-  if(!directed){
-    samplingMatrix <- (t(samplingMatrix) | samplingMatrix)*1
-  }
-  return(samplingMatrix)
 }
 
 
@@ -122,31 +133,24 @@ phi <- function(cov){
   return(X)
 }
 
-drawCovSBM_typeI <- function(N,n,Q,alpha,gamma,X=NULL,beta=NULL,directed=FALSE) {
+drawCovSBM_typeI <- function(N,n,Q,alpha,gamma,X=NULL,Theta=NULL,directed=FALSE) {
+  N <- dim(X)[3]
   if(is.null(X)) {
     cov    <- drawCov(N,n)
     X <- phi(cov)
   }
-  if(is.null(beta)) beta <- drawBeta(N,Q)
+  if(is.null(Theta)) Theta <- drawTheta(N)
 
   Z <- t(rmultinom(n, size = 1, prob = alpha))
   Znum <- Z %*% c(1:Q)
 
-  # P <- matrix(0,n,n)
-  # for(i in 1:n){
-  #   for(j in 1:n){
-  #     P[i,j] <- 1/(1+exp(-gamma[Znum[i], Znum[j]] - t(beta) %*% X[i,j,]))
-  #   }
-  # }
-  # browser()
-  P <- 1/(1+exp(-Z%*%gamma%*%t(Z) - rP(X,beta)))
-
+  P <- 1/(1+exp(-Z%*%gamma%*%t(Z) - rP(X,Theta)))
   Y <- 1*(P > matrix(runif(n^2),n,n))
 
   if(!directed) Y <- Y * lower.tri(Y) + t(Y * lower.tri(Y))
   diag(Y) <- 0
 
-  return(list(Y=Y,cl=as.numeric(Znum),Z=Z, beta=beta, P=P))
+  return(list(Y=Y,cl=as.numeric(Znum),Z=Z, Theta=Theta, P=P))
 }
 
 ### Exemple :
