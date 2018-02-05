@@ -2,7 +2,8 @@
 ### VARIATIONAL E-M FOR THE Covariate SBM (type I) CASE
 ### ===================================================================================
 
-source("~/SVN/Code/code_these/functions/func_missSBM.R")
+library(msm)
+source("~/Documents/samplesbm/Code/code_these/functions/func_missSBM.R")
 
 rP <- function(X,beta){
   if(is.matrix(X)) {
@@ -20,12 +21,16 @@ g <- function(x){
 #   return(apply(X,c(1,2),function(x){ x %*% t(x) }))
 # }
 
-sysA <- function(X,ksi,R){
+sysA <- function(X,ksi,R,Tau,Q){
   K <- dim(X)[3]
-  acc <- matrix(0,K,K)
+  acc <- rep(0,K)
   for (i in 1:n) {
     for (j in 1:n) {
-      acc <- acc + (X[i,j,] %*% t(X[i,j,]))*ksi[i,j]*R[i,j]
+      for (q in 1:Q) {
+        for (l in 1:Q) {
+          acc <- acc + -2*R[i,j]*Tau[i,q]*Tau[j,l]*ksi[i,j]*(X[i,j,]^2)
+        }
+      }
     }
   }
   return(acc)
@@ -34,10 +39,15 @@ sysA <- function(X,ksi,R){
 sysB <- function(Y,ksi,Tau,gamma,X,R){
   n <- dim(X)[1]
   K <- dim(X)[3]
+  Q <- nrow(gamma)
   acc <- rep(0,K)
   for (i in 1:n) {
     for (j in 1:n) {
-      acc <- acc + R[i,j]*(Y[i,j] - .5 - 2*g(ksi[i,j])*(Tau[i,]%*%gamma%*%Tau[j,]))*X[i,j,]
+      for (q in 1:Q) {
+        for (l in 1:Q) {
+          acc <- acc + R[i,j]*Tau[i,q]*Tau[j,l]*(Y[i,j] - .5 - 2*g(ksi[i,j])*(gamma[q,l]))*X[i,j,]
+        }
+      }
     }
   }
   return(acc)
@@ -71,6 +81,7 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
     beta <- rnorm(N)
     pi   <- (t(Tau)%*% Y1 %*%Tau) / (t(Tau)%*%((1-diag(n))*R)%*%Tau); pi[pi > 1-zero] <- 1-zero ; pi[pi < zero] <- zero
     gamma <- log(pi)-log(1-pi)
+    # browser()
     ksi  <- sqrt((Tau%*%gamma%*%t(Tau) + rP(cov,beta))^2)
 
     Tau.all <- vector("list", length = maxIter)
@@ -84,9 +95,9 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
     while(!cond){
       pi.old   <- pi
       i <- i+1
-
-      gamma <- .5*(t(Tau)%*% (R*(Y1-matrix(.5,n,n)+diag(.5,n))) %*%Tau)/((t(Tau)%*% (R*(g(ksi)*(matrix(1,n,n)+2*rP(cov,beta)))) %*%Tau))
-      beta  <- solve(sysA(cov,ksi,R), sysB(Y1,ksi,Tau,gamma,cov,R))
+      # browser()
+      gamma <- -.5*(t(Tau)%*% (R*(Y1-matrix(.5,n,n)+diag(.5,n) + 2*g(ksi)*rP(cov,beta))) %*%Tau)/((t(Tau)%*% (R*g(ksi)) %*%Tau))
+      beta  <- sysB(Y1,ksi,Tau,gamma,cov,R)/sysA(cov,ksi,R,Tau,Q)
 
       pi <- 1/(1+exp(-(Tau%*%gamma%*%t(Tau) + rP(cov,beta))))
       alpha <-  colMeans(Tau)
