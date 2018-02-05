@@ -1,8 +1,8 @@
 rm(list = ls())
 library(mclust)
-source("~/Documents/missSBM/covariables/drawCovSBM.R")
+source("~/Git/missSBM/covariables/drawCovSBM.R")
 # source("~/Documents/missSBM/covariables/VEMCovSBM_typeII.R")
-source("~/Documents/missSBM/covariables/VEMCovSBM_typeI.R")
+source("~/Git/missSBM/covariables/VEMCovSBM_typeI.R")
 
 N <- 3
 n <- 100

@@ -3,7 +3,7 @@
 ### ===================================================================================
 
 library(msm)
-source("~/Documents/samplesbm/Code/code_these/functions/func_missSBM.R")
+source("~/SVN/Code/code_these/functions/func_missSBM.R")
 
 rP <- function(X,beta){
   if(is.matrix(X)) {
@@ -59,7 +59,7 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
   n <- nrow(Y)
   N <- dim(cov)[3]
 
-  eps        <- .4
+  eps        <- .05
   maxIter    <- 50
   eps.FP     <- 1e-2
   maxIter.FP <- 5
@@ -73,14 +73,18 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
 
   models <- mclapply(seq.Q, function(Q) {
 
-    cl0 <- switch(cl.init,
-                  "spectral"     = SpectralClustering(Y, Q),
-                  "CAH"          = graphCAH(Y, Q))
+    # cl0 <- switch(cl.init,
+    #               "spectral"     = SpectralClustering(Y, Q),
+    #               "CAH"          = graphCAH(Y, Q))
+
+    cl0 <- sbm$cl
+    cl0[91:100] <- sample(1:3,10, replace = T)
 
     Tau  <- matrix(0,n,Q); Tau[cbind(1:n, cl0)] <- 1
     beta <- rnorm(N)
     pi   <- (t(Tau)%*% Y1 %*%Tau) / (t(Tau)%*%((1-diag(n))*R)%*%Tau); pi[pi > 1-zero] <- 1-zero ; pi[pi < zero] <- zero
     gamma <- log(pi)-log(1-pi)
+    # gamma <- gamma
     # browser()
     ksi  <- sqrt((Tau%*%gamma%*%t(Tau) + rP(cov,beta))^2)
 
@@ -93,8 +97,9 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
 
     i <- 0; cond <- FALSE
     while(!cond){
-      pi.old   <- pi
       i <- i+1
+      pi.old <- pi
+
       # browser()
       gamma <- -.5*(t(Tau)%*% (R*(Y1-matrix(.5,n,n)+diag(.5,n) + 2*g(ksi)*rP(cov,beta))) %*%Tau)/((t(Tau)%*% (R*g(ksi)) %*%Tau))
       beta  <- sysB(Y1,ksi,Tau,gamma,cov,R)/sysA(cov,ksi,R,Tau,Q)
@@ -113,9 +118,10 @@ func_missSBM.CovI <- function(Y, seq.Q, cov, cl.init = "spectral", mc.cores=1, d
 
         num <- rowSums(Tau)
         Tau <- Tau/num
-        Tau[is.nan(Tau)] <- 0.5
+        # Tau[is.nan(Tau)] <- 0.5
         cond.FP <- (iter > maxIter.FP) | (sum((Tau.old - Tau)^2)/sum(Tau^2) < eps.FP)
       }
+
 
       ksi <- sqrt((Tau%*%gamma%*%t(Tau) + rP(cov,beta))^2)
       Tau.all[[i]] <- Tau
