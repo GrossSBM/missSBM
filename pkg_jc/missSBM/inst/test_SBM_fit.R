@@ -46,13 +46,12 @@ out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
-
 ## Testing model selection criterion
 vBlocks <- 2:6
 cat("\n Number of blocks =")
 models <- lapply(vBlocks, function(nBlocks) {
   cat("", nBlocks)
-  myFit <- SBM_fit$new(mySBM$adjacencyMatrix, nBlocks, "hierarchical")
+  myFit <- SBM_fit$new(mySBM$adjacencyMatrix, nBlocks)
   myFit$doVEM(mySBM$adjacencyMatrix)
   myFit
 })
