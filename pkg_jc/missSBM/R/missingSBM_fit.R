@@ -8,14 +8,15 @@
 missingSBM_fit <-
 R6Class(classname = "missingSBM_fit",
   private = list(
-    sampledNet = NULL, # network data with convenient encoding
-    imputedNet = NULL, # imputed network data
-    sampling   = NULL, # object of class networkSampling_fit
-    SBM        = NULL  # object of class SBM_fit
+    sampledNet = NULL, # network data with convenient encoding (object of class 'sampledNetwork')
+    imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
+    sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
+    SBM        = NULL  # fit of the current stochastic block model (object of class 'SBM_fit')
   ),
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "spectral") {
 
+      ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(sampledNet, "sampledNetwork"))
       stopifnot(length(nBlocks) == 1 & nBlocks > 1 & is.numeric(nBlocks))
@@ -47,9 +48,9 @@ R6Class(classname = "missingSBM_fit",
     imputedNetwork = function(value) {private$imputedNet},
     vLogLik = function(value) {private$SBM$vLogLik(private$imputedNet) + private$sampling$vLogLik},
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
-    vBIC = function(value) {- 2 * self$vLogLik + self$penalty},
+    vBIC = function(value) {-2 * self$vLogLik + self$penalty},
     ## probably not the good one, check
-    vICL = function(value) {- 2 * (self$vLogLik - private$SBM$entropy) + self$penalty}
+    vICL = function(value) {-2 * (self$vLogLik - private$SBM$entropy) + self$penalty}
   )
 )
 
@@ -63,13 +64,13 @@ missingSBM_fit$set("public", "doVEM",
     i <- 0; cond <- FALSE
     ## Starting the Variational EM algorithm
     if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-    if (trace) cat("\n\tDyads are distributed according to a '",private$SBM$direction,"' SBM with a '" , private$SBM$emissionLaw,"' distribution.\n", sep = "")
+    if (trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM with a '" , private$SBM$emissionLaw,"' distribution.\n", sep = "")
     if (trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
     while (!cond) {
       i <- i + 1
       if (trace) cat(" iteration #:", i, "\r")
 
-      pi_old <- private$SBM$connectParam # save old value of parameters to assess convergence
+      pi_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
       ## ______________________________________________________
       ## Variational E-Step
       #

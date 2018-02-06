@@ -89,7 +89,7 @@ simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 
   if (!(sampling %in% available_samplings))
-    stop("This sampling is not in the list !")
+    stop("This sampling is not available!")
 
   family <- ifelse(length(tabulate(adjacencyMatrix)) == 1, "Bernoulli", "Poisson")
   if ((family == "Poisson") & !(sampling %in% c("edge", "node")))
@@ -139,7 +139,6 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #' sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family, directed)             # the inference
 #'
 #' @import R6
-#' @import igraph
 #' @export
 inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral"){
 
@@ -166,6 +165,6 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
     }
   ))
 
-  return(models)
+  return(list(models = models, monitor = res_optim))
 }
 

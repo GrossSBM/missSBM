@@ -6,8 +6,8 @@ R6Class(classname = "SBM",
   private = list(
     N        = NULL, # number of nodes
     Q        = NULL, # number of blocks
-    alpha    = NULL, # vector of block parameters (a.k.a. alpha)
-    pi       = NULL, # matrix of connectivity (a.k.a. pi)
+    alpha    = NULL, # vector of block parameters
+    pi       = NULL, # matrix of connectivity
     directed = NULL, # directed or undirected network
     family   = NULL  # emission law
   ),

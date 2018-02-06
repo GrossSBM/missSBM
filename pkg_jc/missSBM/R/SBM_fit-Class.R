@@ -9,11 +9,9 @@ SBM_fit <-
 R6Class(classname = "SBM_fit",
   inherit = SBM,
   private = list(
-    d_law    = NULL, # the density of the emission law of the edges
-    dyads    = NULL, # set of dyads (differ according directed/undirected graph )
-    tau      = NULL,  # variational parameters for posterior probablility of class belonging
-    card_D_o = NULL, # required to compute the penalty in the MAR case
-    card_N_o = NULL
+    d_law    = NULL, # the probability density distribution of the emission law of the edges
+    dyads    = NULL, # set of dyads (differ according to directed/undirected graphs)
+    tau      = NULL  # variational parameters for posterior probablility of class belonging
   ),
   public = list(
     update_parameters = function(adjMatrix) {
@@ -28,25 +26,32 @@ R6Class(classname = "SBM_fit",
     },
     vLogLik = function(adjMatrix) {
       NAs <- is.na(adjMatrix)
-      JZ <- sum(private$tau %*% log(private$alpha))
+      S <- rep(FALSE, ncol(adjMatrix))
+      S[!is.na(rowSums(adjMatrix))] <- TRUE
+      JZ <- sum(private$tau[S, ] %*% log(private$alpha))
       JX <- sum( log( private$d_law(adjMatrix[private$dyads & !NAs], (private$tau %*% private$pi %*% t(private$tau))[private$dyads & !NAs])  ) )
-      JZ + JX + self$entropy
+      JZ + JX + self$entropy(adjMatrix)
     },
     vBIC = function(adjMatrix) {
-      -2 * self$vLogLik(adjMatrix) + self$penalty
+      -2 * self$vLogLik(adjMatrix) + self$penalty(adjMatrix)
     },
     vICL = function(adjMatrix) {
-      -2 * (self$vLogLik(adjMatrix) - self$entropy) + self$penalty
-    }),
+      -2 * (self$vLogLik(adjMatrix) - self$entropy(adjMatrix)) + self$penalty(adjMatrix)
+    },
+    entropy = function(adjMatrix) {
+      S <- rep(FALSE, ncol(adjMatrix))
+      S[!is.na(rowSums(adjMatrix))] <- TRUE
+      -sum(private$tau[S, ] * logx(private$tau[S,]))
+    },
+    penalty = function(adjMatrix) {
+      card_N_obs <- sum(!is.na(rowSums(adjMatrix)))
+      card_D_obs <- sum(!is.na(adjMatrix) & private$dyads)
+      self$df_connectParams * log(sum(card_D_obs)) + self$df_mixtureParams * log(card_N_obs)
+    }
+  ),
   active = list(
-    blocks = function(value) {
-      if (missing(value)) return(private$tau) else  private$tau <- value
-    },
-    entropy = function(value) {
-      -sum(private$tau * logx(private$tau))
-    },
-    memberships = function(value) {apply(private$tau, 1, which.max)},
-    penalty = function(value) {self$df_connectParams * log(sum(private$card_D_o)) + self$df_mixtureParams * log(private$card_N_o)}
+    blocks = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
+    memberships = function(value) {apply(private$tau, 1, which.max)}
   )
 )
 
@@ -64,8 +69,6 @@ SBM_fit$set("public", "initialize",
     dyads <- matrix(TRUE, nNodes, nNodes); diag(dyads) <- FALSE
     if (!private$directed) dyads[lower.tri(dyads)] <- FALSE
     private$dyads <- dyads
-    private$card_D_o <- sum(dyads)
-    private$card_N_o <- sum(!is.na(rowSums(adjacencyMatrix)))
 
     private$d_law <- switch(family,
           "Bernoulli" = function(x, prob) {prob^x * (1 - prob)^(1 - x)},
@@ -86,6 +89,8 @@ SBM_fit$set("public", "initialize",
 
     ## Initialize parameters
     self$update_parameters(adjacencyMatrix)
+
+    invisible(self)
   }
 )
 
@@ -156,4 +161,3 @@ SBM_fit$set("public", "doVEM",
   }
 )
 
-## TODO: add a variationl Bayes procedure ??

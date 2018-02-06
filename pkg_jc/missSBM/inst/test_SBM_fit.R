@@ -47,3 +47,19 @@ cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
 
+## Testing model selection criterion
+vBlocks <- 2:6
+cat("\n Number of blocks =")
+models <- lapply(vBlocks, function(nBlocks) {
+  cat("", nBlocks)
+  myFit <- SBM_fit$new(mySBM$adjacencyMatrix, nBlocks, "hierarchical")
+  myFit$doVEM(mySBM$adjacencyMatrix)
+  myFit
+})
+
+vICLs <- sapply(models, function(model) model$vICL(mySBM$adjacencyMatrix))
+vBICs <- sapply(models, function(model) model$vBIC(mySBM$adjacencyMatrix))
+par(mfrow=c(1,2))
+plot(vBlocks, vICLs, type="l")
+plot(vBlocks, vBICs, type="l")
+

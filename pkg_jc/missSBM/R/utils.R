@@ -94,7 +94,8 @@ image_NA <- function(z,  zlim = c(0,1), col = c("white", "midnightblue"), na.col
 }
 
 
-#' @import ggplot2 igraph dplyr viridis
+#' @import ggplot2 igraph viridis
+#' @importFrom dplyr inner_join mutate select arrange
 gg_image_NA <- function(adjacencyMatrix, memberships) {
 
 
