@@ -36,7 +36,7 @@ fittedSampling_double_standard$vBound
 fittedSampling_double_standard$parameters
 fittedSampling_double_standard$df
 fittedSampling_double_standard$penalty
-fittedSampling_double_standard$vBound + fittedSampling_dyad$penalty
+-2 * fittedSampling_double_standard$vBound + fittedSampling_dyad$penalty
 
 sampledNet_block <- samplingSBM(adjacencyMatrix,"block", c(.1, .2, .7), mySBM$memberships)
 Z0 <- matrix(0, n, Q); Z0[cbind(1:n, mySBM$memberships)] <- 1

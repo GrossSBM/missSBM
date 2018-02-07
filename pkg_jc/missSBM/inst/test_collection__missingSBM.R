@@ -20,7 +20,7 @@ adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 psi <- 0.1
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 
-vBlocks <- 2:10
+vBlocks <- 1:10
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
 models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)
@@ -35,7 +35,7 @@ best$plot()
 psi <- c(.3, .6)
 sampledNet <- samplingSBM(adjacencyMatrix, "double_standard", psi)
 
-vBlocks <- 2:10
+vBlocks <- 1:10
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
 models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)

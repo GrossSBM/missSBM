@@ -6,6 +6,7 @@ R6Class(classname = "networkSampling_fit",
   inherit = networkSampling,
   private = list(
     NAs      = NULL, # where are the missing entries
+    dyads    = NULL, # set of dyads (differ according to directed/undirected graphs)
     card_D_o = NULL, # stats required by the likelihood
     card_D   = NULL  # number of possible dyads in the network
   ),
@@ -41,7 +42,7 @@ R6Class(classname = "dyadSampling_fit",
     }
   ),
   active = list(
-    vBound = function() {
+    logLik = function() {
       res <- private$card_D_o * logx(private$psi) + private$card_D_m * log1mx(private$psi)
       res
     },
@@ -70,7 +71,7 @@ R6Class(classname = "nodeSampling_fit",
     }
   ),
   active = list(
-    vBound = function() {
+    logLik = function() {
       res <- private$card_N_o * logx(private$psi) + private$card_N_m * log1mx(private$psi)
       res
     },
@@ -94,14 +95,15 @@ R6Class(classname = "doubleStandardSampling_fit",
       private$name <- "double_standard"
       private$card_D <- sampledNetwork$nDyads
       private$NAs    <- sampledNetwork$NAs
+      private$dyads  <- sampledNetwork$dyads
       private$So     <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
       private$So.bar <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
       imputedNet     <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
       self$update_parameters(imputedNet)
     },
     update_parameters = function(ImputedNet, ...) {
-      private$Sm     <- sum(    ImputedNet[private$NAs])
-      private$Sm.bar <- sum(1 - ImputedNet[private$NAs])
+      private$Sm     <- sum(    ImputedNet[private$NAs & private$dyads])
+      private$Sm.bar <- sum(1 - ImputedNet[private$NAs & private$dyads])
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     update_imputation = function(Z, pi) {
@@ -110,7 +112,7 @@ R6Class(classname = "doubleStandardSampling_fit",
     }
   ),
   active = list(
-    vBound = function(value) {
+    logLik = function(value) {
       res <- logx(private$psi[2]) * private$So + logx(private$psi[1]) * private$So.bar +
         log1mx(private$psi[2]) * private$Sm + log1mx(private$psi[1]) * private$Sm.bar
       res
@@ -146,7 +148,7 @@ R6Class(classname = "blockSampling_fit",
     }
   ),
   active = list(
-    vBound = function() {
+    logLik = function() {
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
       res
     }
@@ -205,7 +207,7 @@ R6Class(classname = "degreeSampling_fit",
     }
   ),
   active = list(
-    vBound = function() {
+    logLik = function() {
       prob <- logistic(private$psi[1] + private$psi[2] * private$D)
       ## ????
       res  <- log( prob^private$N_obs %*% (1 - prob)^(!private$N_obs) )
@@ -219,7 +221,7 @@ snowballSampling_fit <-
 R6Class(classname = "snowballSampling_fit",
   inherit = networkSampling_fit,
   active = list(
-    vBound = function(value) {
+    logLik = function(value) {
       NA
     }
   )

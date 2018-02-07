@@ -46,7 +46,7 @@ R6Class(classname = "missingSBM_fit",
     fittedSampling = function(value) {private$sampling}  ,
     sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet},
-    vBound = function(value) {private$SBM$vBound(private$imputedNet) + private$sampling$vBound},
+    vBound = function(value) {private$SBM$vBound(private$imputedNet) + private$sampling$logLik},
     penalty = function(value) {private$SBM$penalty(private$imputedNet) + private$sampling$penalty},
     vBIC = function(value) {-2 * self$vBound + self$penalty},
     ## probably not the good one, check
