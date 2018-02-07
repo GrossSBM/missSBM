@@ -2,8 +2,8 @@ library(missSBM)
 library(aricode)
 
 ### A SBM model : ###
-n <- 300
-Q <- 3
+n <- 400
+Q <- 5
 alpha <- rep(1,Q)/Q       # mixture parameter
 pi <- diag(.45,Q) + .05   # connectivity matrix
 family <- "Bernoulli"     # the emmission law
@@ -20,7 +20,7 @@ adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 psi <- 0.1
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 ## Perform inference
-missSBM <- missingSBM_fit$new(sampledNet, 3, "dyad")
+missSBM <- missingSBM_fit$new(sampledNet, Q, "dyad")
 out <- missSBM$doVEM(trace = TRUE)
 
 par(mfrow = c(1,2))
@@ -40,7 +40,7 @@ print(sum((missSBM$fittedSBM$connectParam - pi)^2))
 psi <- 0.1
 sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
 ## Perform inference
-missSBM <- missingSBM_fit$new(sampledNet, 3, "node")
+missSBM <- missingSBM_fit$new(sampledNet, Q, "node")
 out <- missSBM$doVEM(trace = TRUE)
 
 par(mfrow = c(1,2))
@@ -60,8 +60,8 @@ print(sum((missSBM$fittedSBM$connectParam - pi)^2))
 psi <- c(.3, .6)
 sampledNet <- samplingSBM(adjacencyMatrix, "double_standard", psi)
 ## Perform inference
-missSBM <- missingSBM_fit$new(sampledNet, 3, "double_standard")
-out <- missSBM$doVEM(trace = TRUE)
+missSBM <- missingSBM_fit$new(sampledNet, Q, "double_standard")
+out <- missSBM$doVEM(fixPointIter = 3, trace = TRUE)
 
 par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
@@ -77,10 +77,10 @@ print(sum((missSBM$fittedSBM$connectParam - pi)^2))
 ## BLOCK SAMPLING
 
 ## Draw random missing entries: NMAR case (blocks)
-psi <- c(.1, .2, .7)
+psi <- c(.1, .3, .2, .5, .7)
 sampledNet <- samplingSBM(adjacencyMatrix, "block", psi, mySBM$memberships)
 ## Perform inference
-missSBM <- missingSBM_fit$new(sampledNet, 3, "block")
+missSBM <- missingSBM_fit$new(sampledNet, Q, "block")
 out <- missSBM$doVEM(trace = TRUE)
 
 par(mfrow = c(1,2))
@@ -92,7 +92,6 @@ missSBM$plot("imputedNetwork")
 NID(missSBM$fittedSBM$memberships, mySBM$memberships)
 print(abs(missSBM$fittedSampling$parameters - psi))
 print(sum((missSBM$fittedSBM$connectParam - pi)^2))
-
 
 ## ______________________________________________________________________
 ## DEGREE SAMPLING

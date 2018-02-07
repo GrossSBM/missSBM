@@ -49,14 +49,13 @@ R6Class(classname = "missingSBM_fit",
     vBound = function(value) {private$SBM$vBound(private$imputedNet) + private$sampling$logLik},
     penalty = function(value) {private$SBM$penalty(private$imputedNet) + private$sampling$penalty},
     vBIC = function(value) {-2 * self$vBound + self$penalty},
-    ## probably not the good one, check
     vICL = function(value) {-2 * (self$vBound - private$SBM$entropy(private$imputedNet)) + self$penalty}
   )
 )
 
 #' @export
 missingSBM_fit$set("public", "doVEM",
-  function(threshold = 1e-5, maxIter = 100, fixPointIter = 1, trace = FALSE) {
+  function(threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = FALSE) {
 
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
