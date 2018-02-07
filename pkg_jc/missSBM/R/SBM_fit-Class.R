@@ -24,7 +24,7 @@ R6Class(classname = "SBM_fit",
       private$pi    <- pi
       private$alpha <- colMeans(private$tau)
     },
-    vLogLik = function(adjMatrix) {
+    vBound = function(adjMatrix) {
       NAs <- is.na(adjMatrix)
       S <- rep(FALSE, ncol(adjMatrix))
       S[!is.na(rowSums(adjMatrix))] <- TRUE
@@ -33,10 +33,10 @@ R6Class(classname = "SBM_fit",
       JZ + JX + self$entropy(adjMatrix)
     },
     vBIC = function(adjMatrix) {
-      -2 * self$vLogLik(adjMatrix) + self$penalty(adjMatrix)
+      -2 * self$vBound(adjMatrix) + self$penalty(adjMatrix)
     },
     vICL = function(adjMatrix) {
-      -2 * (self$vLogLik(adjMatrix) - self$entropy(adjMatrix)) + self$penalty(adjMatrix)
+      -2 * (self$vBound(adjMatrix) - self$entropy(adjMatrix)) + self$penalty(adjMatrix)
     },
     entropy = function(adjMatrix) {
       S <- rep(FALSE, ncol(adjMatrix))
@@ -44,7 +44,7 @@ R6Class(classname = "SBM_fit",
       -sum(private$tau[S, , drop = FALSE] * logx(private$tau[S, , drop = FALSE]))
     },
     penalty = function(adjMatrix) {
-      card_N_obs <- sum(!is.na(rowSums(adjMatrix)))
+      card_N_obs <- sum(rowSums(!is.na(adjMatrix)) > 0)
       card_D_obs <- sum(!is.na(adjMatrix) & private$dyads)
       self$df_connectParams * log(sum(card_D_obs)) + self$df_mixtureParams * log(card_N_obs)
     }
@@ -130,7 +130,7 @@ SBM_fit$set("public", "update_blocks",
 )
 
 SBM_fit$set("public", "doVEM",
-  function(adjMatrix, threshold = 1e-5, maxIter = 100, fixPointIter = 5, trace = FALSE) {
+  function(adjMatrix, threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = FALSE) {
 
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
@@ -153,7 +153,7 @@ SBM_fit$set("public", "doVEM",
       ## Check convergence
       delta[i] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
       cond     <- (i > maxIter) |  (delta[i] < threshold)
-      objective[i] <- self$vLogLik(adjMatrix)
+      objective[i] <- self$vBound(adjMatrix)
     }
     if (trace) cat("\n")
     res <- data.frame(delta = delta[1:i], objective = objective[1:i])

@@ -21,7 +21,8 @@ psi <- 0.1
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 
 vBlocks <- 2:10
-models <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
+models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)
 plot(vBlocks, vICLs, type = "l")
 best <- models[[which.min(vICLs)]]
@@ -35,7 +36,8 @@ psi <- c(.3, .6)
 sampledNet <- samplingSBM(adjacencyMatrix, "double_standard", psi)
 
 vBlocks <- 2:10
-models <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
+models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)
 plot(vBlocks, vICLs, type = "l")
 best <- models[[which.min(vICLs)]]

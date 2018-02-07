@@ -46,11 +46,11 @@ R6Class(classname = "missingSBM_fit",
     fittedSampling = function(value) {private$sampling}  ,
     sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet},
-    vLogLik = function(value) {private$SBM$vLogLik(private$imputedNet) + private$sampling$vLogLik},
+    vBound = function(value) {private$SBM$vBound(private$imputedNet) + private$sampling$vBound},
     penalty = function(value) {private$SBM$penalty(private$imputedNet) + private$sampling$penalty},
-    vBIC = function(value) {-2 * self$vLogLik + self$penalty},
+    vBIC = function(value) {-2 * self$vBound + self$penalty},
     ## probably not the good one, check
-    vICL = function(value) {-2 * (self$vLogLik - private$SBM$entropy) + self$penalty}
+    vICL = function(value) {-2 * (self$vBound - private$SBM$entropy(private$imputedNet)) + self$penalty}
   )
 )
 
@@ -91,7 +91,7 @@ missingSBM_fit$set("public", "doVEM",
       ## Check convergence
       delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
       cond     <- (i > maxIter) |  (delta[i] < threshold)
-      objective[i] <- self$vLogLik
+      objective[i] <- self$vBound
     }
     if (trace) cat("\n")
     res <- data.frame(delta = delta[1:i], objective = objective[1:i])

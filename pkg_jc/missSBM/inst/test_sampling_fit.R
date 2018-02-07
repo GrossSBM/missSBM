@@ -16,44 +16,44 @@ adjacencyMatrix <- mySBM$adjacencyMatrix                                        
 ## Draw
 sampledNet_dyad <- samplingSBM(adjacencyMatrix, "dyad", 0.1)
 fittedSampling_dyad <- dyadSampling_fit$new(sampledNet_dyad)
-fittedSampling_dyad$vLogLik
+fittedSampling_dyad$vBound
 fittedSampling_dyad$parameters
 fittedSampling_dyad$df
 fittedSampling_dyad$penalty
--2 * fittedSampling_dyad$vLogLik + fittedSampling_dyad$penalty
+-2 * fittedSampling_dyad$vBound + fittedSampling_dyad$penalty
 
 sampledNet_node <- samplingSBM(adjacencyMatrix, "node", 0.1)
 fittedSampling_node <- nodeSampling_fit$new(sampledNet_node)
-fittedSampling_node$vLogLik
+fittedSampling_node$vBound
 fittedSampling_node$parameters
 fittedSampling_node$df
 fittedSampling_node$penalty
-fittedSampling_node$vLogLik + fittedSampling_dyad$penalty
+fittedSampling_node$vBound + fittedSampling_dyad$penalty
 
-sampledNet_double_standard <- samplingSBM(adjacencyMatrix,"double_standard", c(0.1, 0.5))
+sampledNet_double_standard <- samplingSBM(adjacencyMatrix, "double_standard", c(0.1, 0.5))
 fittedSampling_double_standard <- doubleStandardSampling_fit$new(sampledNet_double_standard)
-fittedSampling_double_standard$vLogLik
+fittedSampling_double_standard$vBound
 fittedSampling_double_standard$parameters
 fittedSampling_double_standard$df
 fittedSampling_double_standard$penalty
-fittedSampling_double_standard$vLogLik + fittedSampling_dyad$penalty
+fittedSampling_double_standard$vBound + fittedSampling_dyad$penalty
 
 sampledNet_block <- samplingSBM(adjacencyMatrix,"block", c(.1, .2, .7), mySBM$memberships)
 Z0 <- matrix(0, n, Q); Z0[cbind(1:n, mySBM$memberships)] <- 1
 fittedSampling_block <- blockSampling_fit$new(sampledNet_block, Z0)
-fittedSampling_block$vLogLik
+fittedSampling_block$vBound
 fittedSampling_block$parameters
 fittedSampling_block$df
 fittedSampling_block$penalty
-fittedSampling_block$vLogLik + fittedSampling_dyad$penalty
+fittedSampling_block$vBound + fittedSampling_dyad$penalty
 
 sampledNet_degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
 fittedSampling_degree <- degreeSampling_fit$new(sampledNet_degree$adjacencyMatrix)
-fittedSampling_degree$vLogLik
+fittedSampling_degree$vBound
 fittedSampling_degree$parameters
 fittedSampling_degree$df
 fittedSampling_degree$penalty
-fittedSampling_degree$vLogLik + fittedSampling_dyad$penalty
+fittedSampling_degree$vBound + fittedSampling_dyad$penalty
 
 #
 # snowball <- samplingSBM(adjacencyMatrix,"snowball", .3)

@@ -41,7 +41,7 @@ R6Class(classname = "dyadSampling_fit",
     }
   ),
   active = list(
-    vLogLik = function() {
+    vBound = function() {
       res <- private$card_D_o * logx(private$psi) + private$card_D_m * log1mx(private$psi)
       res
     },
@@ -70,7 +70,7 @@ R6Class(classname = "nodeSampling_fit",
     }
   ),
   active = list(
-    vLogLik = function() {
+    vBound = function() {
       res <- private$card_N_o * logx(private$psi) + private$card_N_m * log1mx(private$psi)
       res
     },
@@ -110,7 +110,7 @@ R6Class(classname = "doubleStandardSampling_fit",
     }
   ),
   active = list(
-    vLogLik = function(value) {
+    vBound = function(value) {
       res <- logx(private$psi[2]) * private$So + logx(private$psi[1]) * private$So.bar +
         log1mx(private$psi[2]) * private$Sm + log1mx(private$psi[1]) * private$Sm.bar
       res
@@ -146,7 +146,7 @@ R6Class(classname = "blockSampling_fit",
     }
   ),
   active = list(
-    vLogLik = function() {
+    vBound = function() {
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
       res
     }
@@ -205,7 +205,7 @@ R6Class(classname = "degreeSampling_fit",
     }
   ),
   active = list(
-    vLogLik = function() {
+    vBound = function() {
       prob <- logistic(private$psi[1] + private$psi[2] * private$D)
       ## ????
       res  <- log( prob^private$N_obs %*% (1 - prob)^(!private$N_obs) )
@@ -219,7 +219,7 @@ snowballSampling_fit <-
 R6Class(classname = "snowballSampling_fit",
   inherit = networkSampling_fit,
   active = list(
-    vLogLik = function(value) {
+    vBound = function(value) {
       NA
     }
   )
