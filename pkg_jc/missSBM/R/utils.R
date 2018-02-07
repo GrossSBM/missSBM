@@ -21,7 +21,7 @@ init_spectral <- function(X, K) {
   if (anyNA(X)) X[is.na(X)] <- 0
 
   ## handling lonely souls
-  cl.final <- rep(NA, ncol(X))
+  cl0 <- rep(NA, ncol(X))
   unconnected <- which(rowSums(X) == 0)
   connected <- setdiff(1:ncol(X), unconnected)
 
@@ -43,25 +43,26 @@ init_spectral <- function(X, K) {
 
     ## Applying the K-means in the eigenspace
     cl <- kmeans(U, K, nstart = 10, iter.max = 30)$cluster
+    ## handing lonely souls
+    cl0[connected] <- cl
+    cl0[unconnected] <- which.min(rowsum(D,cl))
   } else {
-    cl <- as.factor(rep(1,ncol(X)))
+    cl0 <- rep(1,ncol(X))
   }
-
-  ## handing lonely souls
-  cl.final[connected] <- cl
-  cl.final[unconnected] <- which.min(rowsum(D,cl))
-
-  as.factor(cl.final)
+  as.factor(cl0)
 }
 
 init_hierarchical <- function(X, K) {
 
   ## basic handling of missing values
   if (anyNA(X)) X[is.na(X)] <- 0
-
-  D  <- as.matrix(dist(X, method = "manhattan"))
-  D[X == 1] <- D[X == 1] - 2 ## does not make sense for Poisson models ..
-  cl0 <- cutree(hclust(as.dist(D), method = "ward.D"), K)
+  if (K > 1) {
+    D  <- as.matrix(dist(X, method = "manhattan"))
+    D[X == 1] <- D[X == 1] - 2 ## does not make sense for Poisson models ..
+    cl0 <- cutree(hclust(as.dist(D), method = "ward.D"), K)
+  } else {
+    cl0 <- rep(1,ncol(X))
+  }
   as.factor(cl0)
 }
 

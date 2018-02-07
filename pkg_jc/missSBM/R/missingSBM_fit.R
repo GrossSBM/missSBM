@@ -19,7 +19,7 @@ R6Class(classname = "missingSBM_fit",
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(sampledNet, "sampledNetwork"))
-      stopifnot(length(nBlocks) == 1 & nBlocks > 1 & is.numeric(nBlocks))
+      stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
@@ -47,7 +47,7 @@ R6Class(classname = "missingSBM_fit",
     sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet},
     vLogLik = function(value) {private$SBM$vLogLik(private$imputedNet) + private$sampling$vLogLik},
-    penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
+    penalty = function(value) {private$SBM$penalty(private$imputedNet) + private$sampling$penalty},
     vBIC = function(value) {-2 * self$vLogLik + self$penalty},
     ## probably not the good one, check
     vICL = function(value) {-2 * (self$vLogLik - private$SBM$entropy) + self$penalty}

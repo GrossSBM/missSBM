@@ -28,7 +28,7 @@ R6Class(classname = "SBM_fit",
       NAs <- is.na(adjMatrix)
       S <- rep(FALSE, ncol(adjMatrix))
       S[!is.na(rowSums(adjMatrix))] <- TRUE
-      JZ <- sum(private$tau[S, ] %*% log(private$alpha))
+      JZ <- sum(private$tau[S, , drop = FALSE] %*% log(private$alpha))
       JX <- sum( log( private$d_law(adjMatrix[private$dyads & !NAs], (private$tau %*% private$pi %*% t(private$tau))[private$dyads & !NAs])  ) )
       JZ + JX + self$entropy(adjMatrix)
     },
@@ -41,7 +41,7 @@ R6Class(classname = "SBM_fit",
     entropy = function(adjMatrix) {
       S <- rep(FALSE, ncol(adjMatrix))
       S[!is.na(rowSums(adjMatrix))] <- TRUE
-      -sum(private$tau[S, ] * logx(private$tau[S,]))
+      -sum(private$tau[S, , drop = FALSE] * logx(private$tau[S, , drop = FALSE]))
     },
     penalty = function(adjMatrix) {
       card_N_obs <- sum(!is.na(rowSums(adjMatrix)))
@@ -112,7 +112,7 @@ SBM_fit$set("public", "update_blocks",
       if (private$family == "Poisson") {
         ## Poisson undirected
         tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + (t(adjMatrix) %*% private$tau %*% log(private$pi)) -
-          log(factorial(adjMatrix)*t(factorial(adjMatrix))) %*% private$tau %*% matrix(1,private$Q, private$Q) -
+          log(factorial(adjMatrix) * t(factorial(adjMatrix))) %*% private$tau %*% matrix(1,private$Q, private$Q) -
           (matrix(1,private$N, private$N) - diag(private$N)) %*% private$tau %*% t((private$pi + t(private$pi)))
         # if (private$directed) {
         #   ## Poisson directed
@@ -141,7 +141,7 @@ SBM_fit$set("public", "doVEM",
     if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
     while (!cond) {
       i <- i + 1
-      if (trace) cat("iteration #:", i, "\r")
+      if (trace) cat(" iteration #:", i, "\r")
 
       pi_old <- private$pi # save old value of parameters to assess convergence
 

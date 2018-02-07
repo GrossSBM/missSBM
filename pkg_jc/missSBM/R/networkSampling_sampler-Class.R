@@ -82,10 +82,10 @@ R6Class(classname = "networkSampling_sampler",
       },
       ### TODO: add a parameter for the number of waves
       "snowball" = function(adjMatrix, ...) {
-        # First wave
+        # initial set
         N <- nrow(adjMatrix)
         wave1 <- which(runif(N) < self$parameters)
-        # Second wave
+        # first wave
         wave2 <- unique(unlist(adjMatrix[wave1, ] != 0, 1, function(x) which(x != 0)))
         N_obs <- union(wave1, wave2)
         D_obs <- as.matrix(expand.grid(N_obs,1:N))

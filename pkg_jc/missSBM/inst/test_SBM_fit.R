@@ -16,6 +16,7 @@ mySBM <- simulateSBM(n, alpha, pi, family, directed)                            
 
 ## testing the different initializations
 ## random
+cat("\n VEM randomly initialized")
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, sample(mySBM$memberships))
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 
@@ -29,25 +30,29 @@ mySBM_fit$vLogLik(mySBM$adjacencyMatrix)
 mySBM_fit$vBIC(mySBM$adjacencyMatrix)
 
 ## spectral clustering
+cat("\n VEM initialized with spectral clustering")
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, "spectral")
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
 ## Hierarchical clustering
+cat("\n VEM initialized with hierarchical clustering")
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, "hierarchical")
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
 ## K-means clustering
+cat("\n VEM initialized with K-means clustering")
 mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, 3, "kmeans")
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
 ## Testing model selection criterion
-vBlocks <- 2:6
+cat("\n Assessing model selection - VEM on varying number of blocks.")
+vBlocks <- 1:6
 cat("\n Number of blocks =")
 models <- lapply(vBlocks, function(nBlocks) {
   cat("", nBlocks)

@@ -20,7 +20,7 @@ fittedSampling_dyad$vLogLik
 fittedSampling_dyad$parameters
 fittedSampling_dyad$df
 fittedSampling_dyad$penalty
-fittedSampling_dyad$vLogLik + fittedSampling_dyad$penalty
+-2 * fittedSampling_dyad$vLogLik + fittedSampling_dyad$penalty
 
 sampledNet_node <- samplingSBM(adjacencyMatrix, "node", 0.1)
 fittedSampling_node <- nodeSampling_fit$new(sampledNet_node)
