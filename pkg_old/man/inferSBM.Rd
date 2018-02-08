@@ -4,15 +4,20 @@
 \alias{inferSBM}
 \title{Inference of Stochastic Block Model from sampled data}
 \usage{
-inferSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral")
+inferSBM(sampledNetwork, vBlocks, sampling, family, directed = FALSE,
+  plot = TRUE)
 }
 \arguments{
+\item{sampledNetwork}{The sampled network data (a square matrix)}
+
 \item{vBlocks}{The vector of number of blocks considered in the collection}
 
-\item{sampling}{The sampling design for missing data modeling : MAREdge, doubleStandard, MARNode, snowball, starDegree, class
-by default "undirected" is choosen}
+\item{sampling}{The sampling design for missing data modeling : MAREdge, doubleStandard, MARNode, snowball, starDegree, class}
 
-\item{sampledNetwork}{The sampled network data (a square matrix)}
+\item{family}{The emission law of the adjacency matrix : Bernoulli or Poisson}
+
+\item{directed}{Boolean variable to indicate whether the network is directed or not,
+by default "undirected" is choosen}
 
 \item{plot}{Summary of the output of the algorithm, by default TRUE is choosen}
 }
@@ -44,6 +49,7 @@ sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)  
 ## Inference :
 vBlocks <- 1:5                                                                     # number of classes
 sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family, directed)             # the inference
+
 
 }
 \references{

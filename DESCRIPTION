@@ -10,15 +10,15 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Collate: 
-    'SBM-R6Class.R'
-    'SBM-class_prop.R'
-    'SBM_VEMfit-R6Class.R'
-    'SBM_collection-R6Class.R'
-    'SBMfit-R6Class.R'
-    'SBMfit-class_prop.R'
+    'SBM-Class.R'
+    'SBM_fit-Class.R'
+    'SBM_sampler-Class.R'
     'missSBM-package.R'
     'missingSBM.R'
-    'sampledNetwork-R6Class.R'
-    'sampling-R6Class.R'
     'utils.R'
+    'networkSampling-Class.R'
+    'networkSampling_fit-Class.R'
+    'missingSBM_fit.R'
+    'sampledNetwork-Class.R'
+    'networkSampling_sampler-Class.R'
 RoxygenNote: 6.0.1

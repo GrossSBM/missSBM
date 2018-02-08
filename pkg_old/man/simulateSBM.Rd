@@ -45,6 +45,7 @@ mySBM <- simulateSBM(n, alpha, pi, family, directed)                            
 clusters <-  mySBM$clusters                                                        # clusters
 adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
 
+
 }
 \references{
 [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
