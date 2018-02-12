@@ -29,6 +29,21 @@ best <- models[[which.min(vICLs)]]
 best$plot()
 
 ## ______________________________________________________________________
+## NODE SAMPLING
+
+## Draw random missing entries: MAR case (nodes)
+psi <- 0.1
+sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
+
+vBlocks <- 1:10
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "node")
+models <- out$models
+vICLs <- sapply(models, function(model) model$vICL)
+plot(vBlocks, vICLs, type = "l")
+best <- models[[which.min(vICLs)]]
+best$plot()
+
+## ______________________________________________________________________
 ## DOUBLE-STANDARD SAMPLING
 
 ## Draw random missing entries: NMAR case (double_standard)
@@ -36,7 +51,7 @@ psi <- c(.3, .6)
 sampledNet <- samplingSBM(adjacencyMatrix, "double_standard", psi)
 
 vBlocks <- 1:10
-out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "double_standard")
 models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)
 plot(vBlocks, vICLs, type = "l")
@@ -51,7 +66,7 @@ psi <- c(.1, .3, .2, .5, .7)
 sampledNet <- samplingSBM(adjacencyMatrix, "block", psi, mySBM$memberships)
 
 vBlocks <- 1:10
-out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "block")
 models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)
 plot(vBlocks, vICLs, type = "l")

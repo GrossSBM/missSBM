@@ -76,8 +76,7 @@ missingSBM_fit$set("public", "doVEM",
       # update the variational parameters for block memberships (a.k.a tau)
       private$SBM$update_blocks(private$imputedNet, fixPointIter)
       # update the variational parameters for missing entries (a.k.a nu)
-      nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
-      private$imputedNet[private$sampledNet$NAs] <- nu
+      private$imputedNet[private$sampledNet$NAs] <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
 
       ## ______________________________________________________
       ## M-step
@@ -93,7 +92,7 @@ missingSBM_fit$set("public", "doVEM",
       objective[i] <- self$vBound
     }
     if (trace) cat("\n")
-    res <- data.frame(delta = delta[1:i], objective = objective[1:i])
+    res <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]))
     res
   }
 )

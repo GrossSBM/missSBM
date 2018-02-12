@@ -10,10 +10,16 @@ bar <- function(X) {
 logistic <- function(x) {1/(1 + exp(-x))}
 h <- function(x) {-.5 * (logistic(x) - 0.5) / x}
 
-
 logx <- function(x) ifelse(x < .Machine$double.eps, 0, log(x))
 
 log1mx <- function(x) ifelse(x > 1 - .Machine$double.eps, 0, log(1 - x))
+
+check_boundaries <- function(x) {
+  x[is.nan(x)] <- zero
+  x[x > 1 - zero] <- 1 - zero
+  x[x <     zero] <-     zero
+  x
+}
 
 init_spectral <- function(X, K) {
 

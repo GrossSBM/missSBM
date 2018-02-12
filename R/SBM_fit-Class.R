@@ -14,14 +14,15 @@ R6Class(classname = "SBM_fit",
     tau      = NULL  # variational parameters for posterior probablility of class belonging
   ),
   public = list(
-    update_parameters = function(adjMatrix) {
-      NAs <- is.na(adjMatrix)
-      adjMatrix[NAs] <- 0
+    init_parameters = function(adjMatrix) { ## let the possibiulmity
+      NAs <- is.na(adjMatrix); adjMatrix[NAs] <- 0
       pi <- (t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(private$N)) * !NAs) %*% private$tau)
-      pi[is.nan(pi)] <- zero
-      pi[pi > 1 - zero] <- 1 - zero
-      pi[pi <     zero] <-     zero
-      private$pi    <- pi
+      private$pi    <- check_boundaries(pi)
+      private$alpha <- colMeans(private$tau)
+    },
+    update_parameters = function(adjMatrix) {
+      pi <- (t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(private$N)) %*% private$tau)
+      private$pi    <- check_boundaries(pi)
       private$alpha <- colMeans(private$tau)
     },
     vBound = function(adjMatrix) {
@@ -88,7 +89,7 @@ SBM_fit$set("public", "initialize",
     private$tau <- Z
 
     ## Initialize parameters
-    self$update_parameters(adjacencyMatrix)
+    self$init_parameters(adjacencyMatrix)
 
     invisible(self)
   }

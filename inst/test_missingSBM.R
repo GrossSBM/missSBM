@@ -90,17 +90,17 @@ plot(out$objective, type = "l", main = "Variational bound along the VEM")
 missSBM$plot("imputedNetwork")
 
 NID(missSBM$fittedSBM$memberships, mySBM$memberships)
-print(abs(missSBM$fittedSampling$parameters - psi))
+print(abs(sort(missSBM$fittedSampling$parameters) - sort(psi)))
 print(sum((missSBM$fittedSBM$connectParam - pi)^2))
 
 ## ______________________________________________________________________
 ## DEGREE SAMPLING
 
 ## Draw random missing entries: NMAR case (blocks)
-psi <- c(.01, .01)
+psi <- c(-5, .01)
 sampledNet <- samplingSBM(adjacencyMatrix, "degree", psi)
 ## Perform inference
-missSBM <- missingSBM_fit$new(sampledNet, 3, "degree")
+missSBM <- missingSBM_fit$new(sampledNet, 5, "degree")
 out <- missSBM$doVEM(trace = TRUE)
 
 par(mfrow = c(1,2))
