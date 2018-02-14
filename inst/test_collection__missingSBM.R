@@ -24,7 +24,10 @@ vBlocks <- 1:10
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
 models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)
+par(mfrow=c(1,2))
 plot(vBlocks, vICLs, type = "l")
+plot(out$monitor$objective[out$monitor$nBlocks == ], type = "l")
+
 best <- models[[which.min(vICLs)]]
 best$plot()
 

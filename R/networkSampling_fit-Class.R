@@ -50,12 +50,12 @@ R6Class(classname = "dyadSampling_fit",
     }
   ),
   active = list(
-    logLik = function() {
+    logLik = function(value) {
       res <- private$card_D_o * logx(private$psi) + private$card_D_m * log1mx(private$psi)
       res
-    },
+    }#,
     ## overloading the penalty in MAR case
-    penalty = function(value) {log(private$card_D_o) * self$df}
+    # penalty = function(value) {log(private$card_D_o) * self$df}
   )
 )
 
@@ -81,7 +81,8 @@ R6Class(classname = "nodeSampling_fit",
       res
     },
     ## overloading the penalty in MAR case
-    penalty = function(value) {log(private$card_N_o) * self$df}
+    penalty = function(value) {log(private$card_N) * self$df}
+    # penalty = function(value) {log(private$card_N_o) * self$df}
   )
 )
 
