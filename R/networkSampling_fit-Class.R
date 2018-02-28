@@ -7,21 +7,25 @@ R6Class(classname = "networkSampling_fit",
   private = list(
     NAs      = NULL, # where are the missing entries
     dyads    = NULL, # set of dyads (differ according to directed/undirected graphs)
-    card_D   = NULL  # number of possible dyads in the network
+    missing  = NULL, # the missing dyads
+    card_D   = NULL, # number of possible dyads in the network
+    card_N   = NULL  # number of nodes in the network
   ),
   public = list(
     initialize = function(sampledNetwork, name) {
-      private$name   <- name
-      private$NAs    <- sampledNetwork$NAs
-      private$dyads  <- sampledNetwork$dyads
-      private$card_D <- sampledNetwork$nDyads
+      private$name    <- name
+      private$NAs     <- sampledNetwork$NAs
+      private$dyads   <- sampledNetwork$dyads
+      private$missing <- sampledNetwork$missingDyads
+      private$card_D  <- sampledNetwork$nDyads
+      private$card_N  <- sampledNetwork$nNodes
     },
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(NULL)},
     update_imputation = function(Z, pi) { ## good for MCAR on node, dyads and NMAR with blocks
-      nu <- logistic(Z %*% log(pi/(1 - pi)) %*% t(Z))
-      nu[private$NAs]
+      nu <- logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z))
+      nu
     }
   ),
   active = list(
@@ -46,16 +50,14 @@ R6Class(classname = "dyadSampling_fit",
       super$initialize(sampledNetwork, "dyad")
       private$card_D_o <- length(sampledNetwork$observedDyads)
       private$card_D_m <- length(sampledNetwork$missingDyads )
-      private$psi      <- private$card_D_o / (private$card_D_m + private$card_D_m)
+      private$psi      <- private$card_D_o / (private$card_D_m + private$card_D_o)
     }
   ),
   active = list(
     logLik = function(value) {
-      res <- private$card_D_o * logx(private$psi) + private$card_D_m * log1mx(private$psi)
+      res <- private$card_D_o * log(private$psi) + private$card_D_m * log(1 - private$psi)
       res
-    }#,
-    ## overloading the penalty in MAR case
-    # penalty = function(value) {log(private$card_D_o) * self$df}
+    }
   )
 )
 
@@ -77,12 +79,11 @@ R6Class(classname = "nodeSampling_fit",
   ),
   active = list(
     logLik = function() {
-      res <- private$card_N_o * logx(private$psi) + private$card_N_m * log1mx(private$psi)
+      res <- private$card_N_o * log(private$psi) + private$card_N_m * log(1 - private$psi)
       res
     },
     ## overloading the penalty in MAR case
     penalty = function(value) {log(private$card_N) * self$df}
-    # penalty = function(value) {log(private$card_N_o) * self$df}
   )
 )
 
@@ -99,25 +100,26 @@ R6Class(classname = "doubleStandardSampling_fit",
   public = list(
     initialize = function(sampledNetwork, ...) {
       super$initialize(sampledNetwork, "double_standard")
-      private$So     <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
-      private$So.bar <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
-      imputedNet     <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+      private$So      <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
+      private$So.bar  <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
+      ## can we do better than that?
+      imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
       self$update_parameters(imputedNet)
     },
     update_parameters = function(ImputedNet, ...) {
-      private$Sm     <- sum(    ImputedNet[private$NAs & private$dyads])
-      private$Sm.bar <- sum(1 - ImputedNet[private$NAs & private$dyads])
+      private$Sm     <- sum(    ImputedNet[private$missing])
+      private$Sm.bar <- sum(1 - ImputedNet[private$missing])
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     update_imputation = function(Z, pi) {
       nu <- logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + Z %*% log(pi/(1 - pi)) %*% t(Z))
-      nu[private$NAs]
+      nu
     }
   ),
   active = list(
     logLik = function(value) {
-      res <- logx(private$psi[2]) * private$So + logx(private$psi[1]) * private$So.bar +
-        log1mx(private$psi[2]) * private$Sm + log1mx(private$psi[1]) * private$Sm.bar
+      res <- log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
+        log(1 - private$psi[2]) * private$Sm + log(1 - private$psi[1]) * private$Sm.bar
       res
     }
   )
@@ -139,8 +141,8 @@ R6Class(classname = "blockSampling_fit",
       self$update_parameters(NA, blockInit)
     },
     update_parameters = function(imputedNet, Z) {
-      private$So <- colSums(Z[ private$N_obs, ])
-      private$Sm <- colSums(Z[!private$N_obs, ])
+      private$So <- colSums(Z[ private$N_obs, , drop = FALSE])
+      private$Sm <- colSums(Z[!private$N_obs, , drop = FALSE])
       private$psi <- private$So / (private$So + private$Sm)
     }
   ),
@@ -148,7 +150,9 @@ R6Class(classname = "blockSampling_fit",
     logLik = function() {
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
       res
-    }
+    },
+    ## overloading the penalty in MAR case
+    penalty = function(value) {log(private$card_N) * self$df}
   )
 )
 
@@ -197,7 +201,7 @@ R6Class(classname = "degreeSampling_fit",
     update_imputation = function(Z, pi) {
       C <- 2 * h(private$ksi) * (private$ksi[1] * private$ksi[2] + private$ksi[2]^2 * (1 + private$Dij))
       nu <- logistic(Z %*% log(pi/(1 - pi)) %*% t(Z) - private$psi[2] + C + t(C) )
-      nu[private$NAs]
+      nu
     }
   ),
   active = list(

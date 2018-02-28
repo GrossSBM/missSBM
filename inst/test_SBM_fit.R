@@ -61,10 +61,12 @@ models <- lapply(vBlocks, function(nBlocks) {
   myFit
 })
 
+vJs   <- sapply(models, function(model) model$vBound(mySBM$adjacencyMatrix))
 vICLs <- sapply(models, function(model) model$vICL(mySBM$adjacencyMatrix))
 vBICs <- sapply(models, function(model) model$vBIC(mySBM$adjacencyMatrix))
-par(mfrow=c(1,2))
-plot(vBlocks, vICLs, type = "l", log = "y")
-plot(vBlocks, vBICs, type = "l", log = "y")
+par(mfrow = c(1,3))
+plot(vBlocks, -2*vJs, type = "l")
+plot(vBlocks, vBICs , type = "l")
+plot(vBlocks, vICLs , type = "l")
 bestICL <- models[[which.min(vICLs)]]
 

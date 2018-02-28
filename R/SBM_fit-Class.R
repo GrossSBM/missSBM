@@ -14,51 +14,50 @@ R6Class(classname = "SBM_fit",
     tau      = NULL  # variational parameters for posterior probablility of class belonging
   ),
   public = list(
-    init_parameters = function(adjMatrix) { ## let the possibiulmity
+    init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
       NAs <- is.na(adjMatrix); adjMatrix[NAs] <- 0
       pi <- (t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(private$N)) * !NAs) %*% private$tau)
       private$pi    <- check_boundaries(pi)
       private$alpha <- colMeans(private$tau)
     },
-    update_parameters = function(adjMatrix) {
+    update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix
       pi <- (t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(private$N)) %*% private$tau)
       private$pi    <- check_boundaries(pi)
       private$alpha <- colMeans(private$tau)
     },
     vBound = function(adjMatrix) {
-      NAs <- is.na(adjMatrix)
-      S <- rep(FALSE, ncol(adjMatrix))
-      S[!is.na(rowSums(adjMatrix))] <- TRUE
-      JZ <- sum(private$tau[S, , drop = FALSE] %*% log(private$alpha))
-      JX <- sum( log( private$d_law(adjMatrix[private$dyads & !NAs], (private$tau %*% private$pi %*% t(private$tau))[private$dyads & !NAs])  ) )
-      JZ + JX + self$entropy(adjMatrix)
+      JZ <- sum(private$tau %*% log(private$alpha))
+      JX <- sum( log( private$d_law(adjMatrix, (private$tau %*% private$pi %*% t(private$tau)))  ) )
+      JZ + JX + self$entropy
     },
+    # vBound = function(adjMatrix) {
+    #   NAs <- is.na(adjMatrix)
+    #   S <- rep(FALSE, ncol(adjMatrix))
+    #   S[!is.na(rowSums(adjMatrix))] <- TRUE
+    #   JZ <- sum(private$tau[S, , drop = FALSE] %*% log(private$alpha))
+    #   JX <- sum( log( private$d_law(adjMatrix[private$dyads & !NAs], (private$tau %*% private$pi %*% t(private$tau))[private$dyads & !NAs])  ) )
+    #   JZ + JX + self$entropy(adjMatrix)
+    # },
     vBIC = function(adjMatrix) {
-      -2 * self$vBound(adjMatrix) + self$penalty(adjMatrix)
+      -2 * self$vBound(adjMatrix) + self$penalty
     },
     vICL = function(adjMatrix) {
-      -2 * (self$vBound(adjMatrix) - self$entropy(adjMatrix)) + self$penalty(adjMatrix)
-    },
-    entropy = function(adjMatrix) {
-      S <- rep(FALSE, ncol(adjMatrix))
-      S[!is.na(rowSums(adjMatrix))] <- TRUE
-      -sum(private$tau[S, , drop = FALSE] * logx(private$tau[S, , drop = FALSE]))
-    },
-    penalty = function(adjMatrix) {
-      card_N_obs <- sum(rowSums(!is.na(adjMatrix)) > 0)
-      card_D_obs <- sum(!is.na(adjMatrix) & private$dyads)
-      self$df_connectParams * log(sum(card_D_obs)) + self$df_mixtureParams * log(card_N_obs)
+      -2 * (self$vBound(adjMatrix) - self$entropy) + self$penalty
     }
   ),
   active = list(
     blocks = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
-    memberships = function(value) {apply(private$tau, 1, which.max)}
+    memberships = function(value) {apply(private$tau, 1, which.max)},
+    penalty = function(value) {
+      self$df_connectParams * log(sum(private$dyads)) + self$df_mixtureParams * log(nrow(private$tau))
+    },
+    entropy = function(value) { -sum(private$tau * log(private$tau))}
   )
 )
 
 ## overwrite the SBM initialize function
 SBM_fit$set("public", "initialize",
-  function(adjacencyMatrix, nBlocks, clusterInit="spectral") {
+  function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
 
     # Basic fields nitialization and call to super constructor
     nNodes <- nrow(adjacencyMatrix)
@@ -84,8 +83,12 @@ SBM_fit$set("public", "initialize",
                                 init_spectral(    adjacencyMatrix, nBlocks)
         )
     }
-    Z <- matrix(0,nNodes,nBlocks)
-    Z[cbind(1:nNodes, clusterInit)] <- 1
+    if (nBlocks > 1) {
+      Z <- matrix(0,nNodes,nBlocks)
+      Z[cbind(1:nNodes, clusterInit)] <- 1
+    } else {
+      Z <- matrix(1,nNodes,nBlocks)
+    }
     private$tau <- Z
 
     ## Initialize parameters
@@ -96,14 +99,14 @@ SBM_fit$set("public", "initialize",
 )
 
 SBM_fit$set("public", "update_blocks",
-  function(adjMatrix, fixPointIter) {
+  function(adjMatrix, fixPointIter, lambda = matrix(1, private$N, private$Q)) {
     NAs <- is.na(adjMatrix)
     adjMatrix[NAs] <- 0
     adjMatrix_bar <- bar(adjMatrix) * !NAs
     for (i in 1:fixPointIter) {
       if (private$family == "Bernoulli") {
         ## Bernoulli undirected
-        tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi))
+        tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log(lambda)
         if (private$directed) {
           ## Bernoulli directed
           tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))

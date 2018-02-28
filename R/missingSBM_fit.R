@@ -46,16 +46,21 @@ R6Class(classname = "missingSBM_fit",
     fittedSampling = function(value) {private$sampling}  ,
     sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet},
-    vBound = function(value) {private$SBM$vBound(private$imputedNet) + private$sampling$logLik},
-    penalty = function(value) {private$SBM$penalty(private$imputedNet) + private$sampling$penalty},
+    entropyImputed = function(value) {
+      nu <- private$imputedNet[private$sampledNet$NAs]
+      res <- -sum(xlogx(nu) + xlogx(1-nu))
+      res
+    },
+    vBound = function(value) {private$SBM$vBound(private$imputedNet) + self$entropyImputed + private$sampling$logLik},
+    penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     vBIC = function(value) {-2 * self$vBound + self$penalty},
-    vICL = function(value) {-2 * (self$vBound - private$SBM$entropy(private$imputedNet)) + self$penalty}
+    vICL = function(value) {-2 * (self$vBound - private$SBM$entropy - self$entropyImputed ) + self$penalty}
   )
 )
 
 #' @export
 missingSBM_fit$set("public", "doVEM",
-  function(threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = FALSE) {
+  function(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE) {
 
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
@@ -76,7 +81,9 @@ missingSBM_fit$set("public", "doVEM",
       # update the variational parameters for block memberships (a.k.a tau)
       private$SBM$update_blocks(private$imputedNet, fixPointIter)
       # update the variational parameters for missing entries (a.k.a nu)
-      private$imputedNet[private$sampledNet$NAs] <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
+      nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
+      private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
+
 
       ## ______________________________________________________
       ## M-step
