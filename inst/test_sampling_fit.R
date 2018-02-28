@@ -38,7 +38,7 @@ fittedSampling_double_standard$df
 fittedSampling_double_standard$penalty
 -2 * fittedSampling_double_standard$logLik + fittedSampling_double_standard$penalty
 
-sampledNet_block <- samplingSBM(adjacencyMatrix,"block", c(.1, .2, .7), mySBM$memberships)
+sampledNet_block <- samplingSBM(adjacencyMatrix,"block", c(.1, .2, .3, .5, .7), mySBM$memberships)
 Z0 <- matrix(0, n, Q); Z0[cbind(1:n, mySBM$memberships)] <- 1
 fittedSampling_block <- blockSampling_fit$new(sampledNet_block, Z0)
 fittedSampling_block$logLik
@@ -47,8 +47,8 @@ fittedSampling_block$df
 fittedSampling_block$penalty
 -2 * fittedSampling_block$logLik + fittedSampling_block$penalty
 
-# sampledNet_degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
-# fittedSampling_degree <- degreeSampling_fit$new(sampledNet_degree$adjacencyMatrix)
+sampledNet_degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
+# fittedSampling_degree <- degreeSampling_fit$new(sampledNet_degree)
 # fittedSampling_degree$vBound
 # fittedSampling_degree$parameters
 # fittedSampling_degree$df
