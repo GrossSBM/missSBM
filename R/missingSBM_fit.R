@@ -78,12 +78,11 @@ missingSBM_fit$set("public", "doVEM",
       ## ______________________________________________________
       ## Variational E-Step
       #
-      # update the variational parameters for block memberships (a.k.a tau)
-      private$SBM$update_blocks(private$imputedNet, fixPointIter)
       # update the variational parameters for missing entries (a.k.a nu)
       nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
       private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
-
+      # update the variational parameters for block memberships (a.k.a tau)
+      private$SBM$update_blocks(private$imputedNet, fixPointIter)
 
       ## ______________________________________________________
       ## M-step

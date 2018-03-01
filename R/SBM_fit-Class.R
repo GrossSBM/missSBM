@@ -21,18 +21,13 @@ R6Class(classname = "SBM_fit",
       private$pi    <- check_boundaries((t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(self$nNodes)) %*% private$tau))
       private$alpha <- colMeans(private$tau)
     },
-    vBound = function(adjMatrix) {
-      JZ <- sum(private$tau %*% log(private$alpha))
+    vExpec = function(adjMatrix) {
       prob <- private$tau %*% private$pi %*% t(private$tau)
-      JX <- sum( adjMatrix * log(prob) + (1 - adjMatrix) *  log(1 - prob))
-      JZ + JX + self$entropy
+      sum(private$tau %*% log(private$alpha)) +  sum( adjMatrix * log(prob) + (1 - adjMatrix) *  log(1 - prob))
     },
-    vBIC = function(adjMatrix) {
-      -2 * self$vBound(adjMatrix) + self$penalty
-    },
-    vICL = function(adjMatrix) {
-      -2 * (self$vBound(adjMatrix) - self$entropy) + self$penalty
-    }
+    vBound = function(adjMatrix) {self$vExpec(adjMatrix) + self$entropy},
+    vBIC   = function(adjMatrix) {-2 * self$vBound(adjMatrix) + self$penalty},
+    vICL   = function(adjMatrix) {-2 * self$vExpec(adjMatrix) + self$penalty}
   ),
   active = list(
     blocks      = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
@@ -60,15 +55,15 @@ SBM_fit$set("public", "initialize",
     )
 
     ## Initial Clustering
-    if (is.character(clusterInit)) {
-      clusterInit <-
-        switch(clusterInit,
-               "hierarchical" = init_hierarchical(adjacencyMatrix, self$nBlocks),
-               "kmeans"       = init_kmeans(      adjacencyMatrix, self$nBlocks),
-                                init_spectral(    adjacencyMatrix, self$nBlocks)
-        )
-    }
     if (self$nBlocks > 1) {
+      if (is.character(clusterInit)) {
+        clusterInit <-
+          switch(clusterInit,
+            "hierarchical" = init_hierarchical(adjacencyMatrix, self$nBlocks),
+            "kmeans"       = init_kmeans(      adjacencyMatrix, self$nBlocks),
+                             init_spectral(    adjacencyMatrix, self$nBlocks)
+          )
+      }
       Z <- matrix(0,self$nNodes,self$nBlocks)
       Z[cbind(1:self$nNodes, clusterInit)] <- 1
     } else {
@@ -83,11 +78,10 @@ SBM_fit$set("public", "initialize",
   }
 )
 
+### !!!TODO!!! Write this in C++ and update each individual coordinate-wise
 SBM_fit$set("public", "update_blocks",
   function(adjMatrix, fixPointIter, log_lambda = 0) {
-    NAs <- is.na(adjMatrix)
-    adjMatrix[NAs] <- 0
-    adjMatrix_bar <- bar(adjMatrix) * !NAs
+    adjMatrix_bar <- bar(adjMatrix)
     for (i in 1:fixPointIter) {
       ## Bernoulli undirected
       tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log_lambda
@@ -95,7 +89,6 @@ SBM_fit$set("public", "update_blocks",
         ## Bernoulli directed
         tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
       }
-
       tau <- exp(sweep(tau, 2, log(private$alpha),"+"))
       tau <- tau/rowSums(tau)
     }
@@ -124,7 +117,7 @@ SBM_fit$set("public", "doVEM",
       # M-step
       self$update_parameters(adjMatrix)
 
-      ## Check convergence
+      ## Assess convergence
       delta[i] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
       cond     <- (i > maxIter) |  (delta[i] < threshold)
       objective[i] <- self$vBound(adjMatrix)
