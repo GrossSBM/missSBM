@@ -9,25 +9,22 @@ SBM_fit <-
 R6Class(classname = "SBM_fit",
   inherit = SBM,
   private = list(
-    d_law    = NULL, # the probability density distribution of the emission law of the edges
-    dyads    = NULL, # set of dyads (differ according to directed/undirected graphs)
-    tau      = NULL  # variational parameters for posterior probablility of class belonging
+    tau = NULL  # variational parameters for posterior probablility of class belonging
   ),
   public = list(
     init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
       NAs <- is.na(adjMatrix); adjMatrix[NAs] <- 0
-      pi <- (t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(private$N)) * !NAs) %*% private$tau)
-      private$pi    <- check_boundaries(pi)
+      private$pi    <- check_boundaries((t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(self$nNodes)) * !NAs) %*% private$tau))
       private$alpha <- colMeans(private$tau)
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
-      pi <- (t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(private$N)) %*% private$tau)
-      private$pi    <- check_boundaries(pi)
+      private$pi    <- check_boundaries((t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(self$nNodes)) %*% private$tau))
       private$alpha <- colMeans(private$tau)
     },
     vBound = function(adjMatrix) {
       JZ <- sum(private$tau %*% log(private$alpha))
-      JX <- sum( log( private$d_law(adjMatrix, (private$tau %*% private$pi %*% t(private$tau)))  ) )
+      prob <- private$tau %*% private$pi %*% t(private$tau)
+      JX <- sum( adjMatrix * log(prob) + (1 - adjMatrix) *  log(1 - prob))
       JZ + JX + self$entropy
     },
     vBIC = function(adjMatrix) {
@@ -38,12 +35,10 @@ R6Class(classname = "SBM_fit",
     }
   ),
   active = list(
-    blocks = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
+    blocks      = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
     memberships = function(value) {apply(private$tau, 1, which.max)},
-    penalty = function(value) {
-      self$df_connectParams * log(sum(private$dyads)) + self$df_mixtureParams * log(nrow(private$tau))
-    },
-    entropy = function(value) { -sum(xlogx(private$tau))}
+    penalty     = function(value) {self$df_connectParams * log(self$nDyads) + self$df_mixtureParams * log(self$nNodes)},
+    entropy     = function(value) {-sum(xlogx(private$tau))}
   )
 )
 
@@ -57,29 +52,27 @@ SBM_fit$set("public", "initialize",
     )
 
     # Basic fields intialization and call to super constructor
-    nNodes <- nrow(adjacencyMatrix)
-    if (isSymmetric(adjacencyMatrix)) directed <- FALSE else directed <- TRUE
-    super$initialize(directed, nNodes = nNodes,
-                     mixtureParam = rep(NA,nBlocks), connectParam = matrix(NA,nBlocks,nBlocks))
-    dyads <- matrix(TRUE, nNodes, nNodes); diag(dyads) <- FALSE
-    if (!private$directed) dyads[lower.tri(dyads)] <- FALSE
-    private$dyads <- dyads
-    private$d_law <-  function(x, prob) {prob^x * (1 - prob)^(1 - x)}
+    super$initialize(
+      directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
+      nNodes       = nrow(adjacencyMatrix),
+      mixtureParam = rep(NA,nBlocks),
+      connectParam = matrix(NA,nBlocks,nBlocks)
+    )
 
     ## Initial Clustering
     if (is.character(clusterInit)) {
       clusterInit <-
         switch(clusterInit,
-               "hierarchical" = init_hierarchical(adjacencyMatrix, nBlocks),
-               "kmeans"       = init_kmeans(      adjacencyMatrix, nBlocks),
-                                init_spectral(    adjacencyMatrix, nBlocks)
+               "hierarchical" = init_hierarchical(adjacencyMatrix, self$nBlocks),
+               "kmeans"       = init_kmeans(      adjacencyMatrix, self$nBlocks),
+                                init_spectral(    adjacencyMatrix, self$nBlocks)
         )
     }
-    if (nBlocks > 1) {
-      Z <- matrix(0,nNodes,nBlocks)
-      Z[cbind(1:nNodes, clusterInit)] <- 1
+    if (self$nBlocks > 1) {
+      Z <- matrix(0,self$nNodes,self$nBlocks)
+      Z[cbind(1:self$nNodes, clusterInit)] <- 1
     } else {
-      Z <- matrix(1,nNodes,nBlocks)
+      Z <- matrix(1, self$nNodes, self$nBlocks)
     }
     private$tau <- Z
 

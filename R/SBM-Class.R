@@ -20,9 +20,10 @@ R6Class(classname = "SBM",
   ),
   active = list(
     ## active binding to access fields outside the class
-    nNodes       = function(value) {private$N}        , # number of nodes
-    nBlocks      = function(value) {length(private$alpha)}, # number of blocks
-    direction    = function(value) {if (private$directed) "directed" else "undirected"} , # directed network or not
+    nNodes    = function(value) {private$N}        , # number of nodes
+    nBlocks   = function(value) {length(private$alpha)}, # number of blocks
+    nDyads    = function(value) {ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)},
+    direction = function(value) {if (private$directed) "directed" else "undirected"} , # directed network or not
     ## the following fields may change if a SBM is fitted
     mixtureParam = function(value) {                    # vector of block parameters (a.k.a. alpha)
       if (missing(value)) return(private$alpha) else private$alpha <- value

@@ -10,13 +10,11 @@ R6Class(classname = "SBM_sampler",
   ## fields for internal use (refering to mathematical notations)
   private = list(
     Z     = NULL, # the sampled indicator of blocks
-    X     = NULL, # the sampled adjacency matrix
-    r_law = NULL  # random generation for the emission law of the edges
+    X     = NULL  # the sampled adjacency matrix
   ),
   public = list(
     initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA) {
       super$initialize(directed, nNodes, mixtureParam, connectParam)
-      private$r_law <- function(n, prob) {rbinom(n, 1, prob)}
     },
     ## constructor is the same as the above, so no need to specify initialize
     ## a method to generate a vector of clusters indicators
@@ -25,7 +23,8 @@ R6Class(classname = "SBM_sampler",
     },
     ## a method to sample an adjacency matrix for the current SBM
     rAdjMatrix = function() {
-      X <- matrix(private$r_law(private$N^2, private$Z %*% private$pi %*% t(private$Z)), private$N)
+      ## TODO : only draw n*n(-1) edge for directed graph and n(n-1)/2 for undirected rather than post-symmetrizing and removing diagonal
+      X <- matrix(rbinom(private$N^2, 1, private$Z %*% private$pi %*% t(private$Z)), private$N)
       if (!private$directed) X <- X * lower.tri(X) + t(X * lower.tri(X))
       diag(X) <- 0
       private$X <- X
