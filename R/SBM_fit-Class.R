@@ -30,14 +30,6 @@ R6Class(classname = "SBM_fit",
       JX <- sum( log( private$d_law(adjMatrix, (private$tau %*% private$pi %*% t(private$tau)))  ) )
       JZ + JX + self$entropy
     },
-    # vBound = function(adjMatrix) {
-    #   NAs <- is.na(adjMatrix)
-    #   S <- rep(FALSE, ncol(adjMatrix))
-    #   S[!is.na(rowSums(adjMatrix))] <- TRUE
-    #   JZ <- sum(private$tau[S, , drop = FALSE] %*% log(private$alpha))
-    #   JX <- sum( log( private$d_law(adjMatrix[private$dyads & !NAs], (private$tau %*% private$pi %*% t(private$tau))[private$dyads & !NAs])  ) )
-    #   JZ + JX + self$entropy(adjMatrix)
-    # },
     vBIC = function(adjMatrix) {
       -2 * self$vBound(adjMatrix) + self$penalty
     },
@@ -59,20 +51,20 @@ R6Class(classname = "SBM_fit",
 SBM_fit$set("public", "initialize",
   function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
 
-    # Basic fields nitialization and call to super constructor
+    try(
+      !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
+      stop("Only binary graphs are supported.")
+    )
+
+    # Basic fields intialization and call to super constructor
     nNodes <- nrow(adjacencyMatrix)
     if (isSymmetric(adjacencyMatrix)) directed <- FALSE else directed <- TRUE
-    if (length(table(adjacencyMatrix)) > 2) family <- "Poisson" else family <- "Bernoulli"
-
-    super$initialize(family, directed, nNodes = nNodes,
+    super$initialize(directed, nNodes = nNodes,
                      mixtureParam = rep(NA,nBlocks), connectParam = matrix(NA,nBlocks,nBlocks))
     dyads <- matrix(TRUE, nNodes, nNodes); diag(dyads) <- FALSE
     if (!private$directed) dyads[lower.tri(dyads)] <- FALSE
     private$dyads <- dyads
-
-    private$d_law <- switch(family,
-          "Bernoulli" = function(x, prob) {prob^x * (1 - prob)^(1 - x)},
-          "Poisson"   = function(x, prob) {dpois( x,    prob)})
+    private$d_law <-  function(x, prob) {prob^x * (1 - prob)^(1 - x)}
 
     ## Initial Clustering
     if (is.character(clusterInit)) {
@@ -104,26 +96,11 @@ SBM_fit$set("public", "update_blocks",
     adjMatrix[NAs] <- 0
     adjMatrix_bar <- bar(adjMatrix) * !NAs
     for (i in 1:fixPointIter) {
-      if (private$family == "Bernoulli") {
-        ## Bernoulli undirected
-        tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log(lambda)
-        if (private$directed) {
-          ## Bernoulli directed
-          tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
-        }
-      }
-
-      if (private$family == "Poisson") {
-        ## Poisson undirected
-        tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + (t(adjMatrix) %*% private$tau %*% log(private$pi)) -
-          log(factorial(adjMatrix) * t(factorial(adjMatrix))) %*% private$tau %*% matrix(1,private$Q, private$Q) -
-          (matrix(1,private$N, private$N) - diag(private$N)) %*% private$tau %*% t((private$pi + t(private$pi)))
-        # if (private$directed) {
-        #   ## Poisson directed
-        #   tau <- tau + t(private$X) %*% private$tau %*% t(log(private$pi)) + (t(private$X) %*% private$tau %*% log(private$pi)) -
-        #            log(factorial(private$X)*t(factorial(private$X))) %*% private$tau %*% matrix(1,private$Q,private$Q) -
-        #            (matrix(1,private$N, private$N) - diag(private$N)) %*% private$tau %*% t((private$pi + t(private$pi)))
-        # }
+      ## Bernoulli undirected
+      tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log(lambda)
+      if (private$directed) {
+        ## Bernoulli directed
+        tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
       }
 
       tau <- exp(sweep(tau, 2, log(private$alpha),"+"))

@@ -5,11 +5,9 @@
 #' @param n The number of nodes
 #' @param alpha The mixture parameters
 #' @param pi The connectivity matrix (probabilities inter and intra clusters)
-#' @param family The emission law of the adjacency matrix : Bernoulli or Poisson
 #' @param directed Boolean variable to indicate whether the network is directed or not,
 #' by default "undirected" is choosen
 #' @return \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
-#' @author T. Tabouy
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
 #' @details The emission law can be :\itemize{\item{Bernoulli:
@@ -21,19 +19,18 @@
 #' ### A SBM model : ###
 #' n <- 300
 #' Q <- 3
-#' alpha <- rep(1,Q)/Q                                                                # mixture parameter
-#' pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-#' family <- "Bernoulli"                                                              # the emmission law
-#' directed <- FALSE                                                                  # if the network is directed or not
-#' mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+#' alpha <- rep(1,Q)/Q                                      # mixture parameter
+#' pi <- diag(.45,Q) + .05                                  # connectivity matrix
+#' directed <- FALSE
+#' mySBM <- simulateSBM(n, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
 #'
 #'### Results : ###
-#' clusters <-  mySBM$clusters                                                        # clusters
-#' adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+#' clusters <-  mySBM$clusters                              # clusters
+#' adjacencyMatrix <- mySBM$adjacencyMatrix                 # the adjacency matrix
 #'
 #' @export
-simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
-  mySBM <- SBM_sampler$new(family, directed, n, alpha, pi)
+simulateSBM <- function(n, alpha, pi, directed=FALSE){
+  mySBM <- SBM_sampler$new(directed, n, alpha, pi)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM
@@ -48,7 +45,6 @@ simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 #' @param parameters The sampling parameters adapted to each sampling
 #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL
 #' @return \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
-#' @author T. Tabouy
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
 #' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings, for
@@ -70,30 +66,24 @@ simulateSBM <- function(n, alpha, pi, family="Bernoulli", directed=FALSE){
 #' ### A SBM model : ###
 #' n <- 300
 #' Q <- 3
-#' alpha <- rep(1,Q)/Q                                                                # mixture parameter
-#' pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-#' family <- "Bernoulli"                                                              # the emmission law
-#' directed <- FALSE                                                                  # if the network is directed or not
-#' mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+#' alpha <- rep(1,Q)/Q                                  # mixture parameter
+#' pi <- diag(.45,Q) + .05                              # connectivity matrix
+#' directed <- FALSE                                    # if the network is directed or not
+#' mySBM <- simulateSBM(n, alpha, pi, directed)         # simulation of ad Bernoulli non-directed SBM
 #'
 #'### Results : ###
-#' adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+#' adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 #'
 #' ## Sampling of the data : ##
-#' samplingParameters <- .5                                                           # the sampling rate
-#' sampling <- "edge"                                                              # the sampling design
-#' sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
-#'
+#' samplingParameters <- .5                             # the sampling rate
+#' sampling <- "edge"                                   # the sampling design
+#' sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 #'
 #' @export
 samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 
   if (!(sampling %in% available_samplings))
     stop("This sampling is not available!")
-
-  family <- ifelse(length(tabulate(adjacencyMatrix)) == 1, "Bernoulli", "Poisson")
-  if ((family == "Poisson") & !(sampling %in% c("edge", "node")))
-    stop("This sampling is not (yet) available for the Poisson emission law!")
 
   if (sampling == "block" & is.null(clusters))
     stop("For class sampling you must give clusters !")
@@ -113,18 +103,16 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #' @param plot Summary of the output of the algorithm, by default TRUE is choosen
 #' @return \code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
 #' and a vector with ICL calculated for all Q in vBlocks
-#' @author T. Tabouy
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{SBM_collection}}.
 #' @examples
 #' ### A SBM model : ###
 #' n <- 300
 #' Q <- 3
-#' alpha <- rep(1,Q)/Q                                                                # mixture parameter
-#' pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-#' family <- "Bernoulli"                                                              # the emmission law
-#' directed <- FALSE                                                                  # if the network is directed or not
-#' mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+#' alpha <- rep(1,Q)/Q                                      # mixture parameter
+#' pi <- diag(.45,Q) + .05                                  # connectivity matrix
+#' directed <- FALSE
+#' mySBM <- simulateSBM(n, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
 #'
 #'### Results : ###
 #' adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
@@ -136,7 +124,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #'
 #' ## Inference :
 #' vBlocks <- 1:5                                                                     # number of classes
-#' sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family, directed)             # the inference
+#' sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling)
 #'
 #' @import R6
 #' @export

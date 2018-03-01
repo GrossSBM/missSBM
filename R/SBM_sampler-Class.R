@@ -14,12 +14,9 @@ R6Class(classname = "SBM_sampler",
     r_law = NULL  # random generation for the emission law of the edges
   ),
   public = list(
-    initialize = function(family = "Bernoulli", directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA) {
-      super$initialize(family, directed, nNodes, mixtureParam, connectParam)
-      private$r_law <- switch(family,
-        "Bernoulli" = function(n, prob) {rbinom(n, 1, prob)},
-        "Poisson"   = function(n, prob) {rpois( n,    prob)}
-        )
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA) {
+      super$initialize(directed, nNodes, mixtureParam, connectParam)
+      private$r_law <- function(n, prob) {rbinom(n, 1, prob)}
     },
     ## constructor is the same as the above, so no need to specify initialize
     ## a method to generate a vector of clusters indicators

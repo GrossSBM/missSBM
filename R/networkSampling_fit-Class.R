@@ -36,12 +36,12 @@ R6Class(classname = "networkSamplingNodes_fit",
   inherit = networkSampling,
   private = list(
     card_N = NULL, # number of nodes in the network
-    N_obs  = NULL ## boolean for observed nodes
+    N_obs  = NULL  # boolean for observed nodes
   ),
   public = list(
     initialize = function(sampledNetwork, name) {
       private$name   <- name
-      private$N_obs  <- sampledNet$observedNodes
+      private$N_obs  <- sampledNetwork$observedNodes
       private$card_N <- sampledNetwork$nNodes
     },
     ## initialize estimation and imputation function

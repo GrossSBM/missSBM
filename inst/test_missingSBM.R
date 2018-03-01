@@ -6,18 +6,17 @@ n <- 400
 Q <- 5
 alpha <- rep(1,Q)/Q       # mixture parameter
 pi <- diag(.45,Q) + .05   # connectivity matrix
-family <- "Bernoulli"     # the emmission law
 directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
-mySBM <- simulateSBM(n, alpha, pi, family, directed) # simulation of ad Bernoulli non-directed SBM
+mySBM <- simulateSBM(n, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 
 ## ______________________________________________________________________
 ## DYAD SAMPLING
 
 ## Draw random missing entries: MAR case (dyads)
-psi <- 0.1
+psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, Q, "dyad")
@@ -37,7 +36,7 @@ print(sum((missSBM$fittedSBM$connectParam - pi)^2))
 ## NODE SAMPLING
 
 ## Draw random missing entries: MAR case (node)
-psi <- 0.1
+psi <- 0.2
 sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, Q, "node")

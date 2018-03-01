@@ -3,15 +3,14 @@ library(missSBM)
 ### A SBM model : ###
 n <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q                                                                # mixture parameter
-pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-family <- "Bernoulli"                                                              # the emmission law
-directed <- FALSE                                                                  # if the network is directed or not
+alpha <- rep(1,Q)/Q                     # mixture parameter
+pi <- diag(.45,Q) + .05                 # connectivity matrix
+directed <- FALSE
 
-### Draw a SBM model
-mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+### Draw a SBM model (Bernoulli, undirected)
+mySBM <- simulateSBM(n, alpha, pi, directed)
 
-adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+adjacencyMatrix <- mySBM$adjacencyMatrix
 
 ## Draw
 dyad <- samplingSBM(adjacencyMatrix, "dyad", 0.1)

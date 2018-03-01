@@ -8,17 +8,15 @@ R6Class(classname = "SBM",
     Q        = NULL, # number of blocks
     alpha    = NULL, # vector of block parameters
     pi       = NULL, # matrix of connectivity
-    directed = NULL, # directed or undirected network
-    family   = NULL  # emission law
+    directed = NULL  # directed or undirected network
   ),
   public = list(
     ## constructor
-    initialize = function(family = "Bernoulli", directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA) {
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA) {
       private$N        <- nNodes
       private$alpha    <- mixtureParam
       private$pi       <- connectParam
       private$Q        <- length(mixtureParam)
-      private$family   <- family
       private$directed <- directed
     }
   ),
@@ -27,7 +25,6 @@ R6Class(classname = "SBM",
     nNodes       = function(value) {private$N}        , # number of nodes
     nBlocks      = function(value) {private$Q}        , # number of blocks
     direction    = function(value) {if (private$directed) "directed" else "undirected"} , # directed network or not
-    emissionLaw  = function(value) {private$family}   , # emission law
     ## the following fields may change if a SBM is fitted
     mixtureParam = function(value) {                    # vector of block parameters (a.k.a. alpha)
       if (missing(value)) return(private$alpha) else private$alpha <- value

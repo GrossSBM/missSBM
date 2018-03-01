@@ -1,3 +1,4 @@
+rm(list=ls())
 library(missSBM)
 library(aricode)
 
@@ -6,13 +7,12 @@ set.seed(1111)
 ### A SBM model : ###
 n <- 400
 Q <- 5
-alpha <- rep(1,Q)/Q                                                                # mixture parameter
-pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-family <- "Bernoulli"                                                              # the emmission law
-directed <- FALSE                                                                  # if the network is directed or not
+alpha <- rep(1,Q)/Q                     # mixture parameter
+pi <- diag(.45,Q) + .05                 # connectivity matrix
+directed <- FALSE
 
-### Draw a SBM model
-mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+### Draw a undirected SBM model
+mySBM <- simulateSBM(n, alpha, pi, directed)
 
 ## testing the different initializations
 ## random
