@@ -9,7 +9,7 @@ SBM_fit <-
 R6Class(classname = "SBM_fit",
   inherit = SBM,
   private = list(
-    tau = NULL  # variational parameters for posterior probablility of class belonging
+    tau  = NULL  # variational parameters for posterior probablility of class belonging
   ),
   public = list(
     init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
@@ -23,7 +23,8 @@ R6Class(classname = "SBM_fit",
     },
     vExpec = function(adjMatrix) {
       prob <- private$tau %*% private$pi %*% t(private$tau)
-      sum(private$tau %*% log(private$alpha)) +  sum( adjMatrix * log(prob) + (1 - adjMatrix) *  log(1 - prob))
+      factor <- ifelse(private$directed, 1, .5)
+      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix * log(prob) + (1 - adjMatrix) *  log(1 - prob))
     },
     vBound = function(adjMatrix) {self$vExpec(adjMatrix) + self$entropy},
     vICL   = function(adjMatrix) {-2 * self$vExpec(adjMatrix) + self$penalty}

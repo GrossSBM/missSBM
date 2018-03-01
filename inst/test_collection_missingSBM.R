@@ -88,8 +88,26 @@ best$plot()
 psi <- c(.1, .3, .2, .5, .7)
 sampledNet <- samplingSBM(adjacencyMatrix, "block", psi, mySBM$memberships)
 
-vBlocks <- 1:10
+vBlocks <- 1:8
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "block")
+models <- out$models
+vICLs <- sapply(models, function(model) model$vICL)
+vJ <- sapply(out$models, function(model) model$vBound)
+par(mfrow=c(1,2))
+plot(vBlocks, vICLs, type = "l")
+plot(vBlocks, vJ, type = "l")
+best <- models[[which.min(vICLs)]]
+best$plot()
+
+## ______________________________________________________________________
+## DEGREE SAMPLING
+
+## Draw random missing entries: NMAR case (blocks)
+psi <- c(-5, .1)
+sampledNet <- samplingSBM(adjacencyMatrix, "degree", psi)
+## Perform inference
+vBlocks <- 1:8
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "degree")
 models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)
 vJ <- sapply(out$models, function(model) model$vBound)
