@@ -20,7 +20,7 @@ R6Class(classname = "SBM_fit",
       private$pi    <- check_boundaries(pi)
       private$alpha <- colMeans(private$tau)
     },
-    update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix
+    update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
       pi <- (t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(private$N)) %*% private$tau)
       private$pi    <- check_boundaries(pi)
       private$alpha <- colMeans(private$tau)
@@ -43,7 +43,7 @@ R6Class(classname = "SBM_fit",
     penalty = function(value) {
       self$df_connectParams * log(sum(private$dyads)) + self$df_mixtureParams * log(nrow(private$tau))
     },
-    entropy = function(value) { -sum(private$tau * log(private$tau))}
+    entropy = function(value) { -sum(xlogx(private$tau))}
   )
 )
 
@@ -91,13 +91,13 @@ SBM_fit$set("public", "initialize",
 )
 
 SBM_fit$set("public", "update_blocks",
-  function(adjMatrix, fixPointIter, lambda = matrix(1, private$N, private$Q)) {
+  function(adjMatrix, fixPointIter, log_lambda = 0) {
     NAs <- is.na(adjMatrix)
     adjMatrix[NAs] <- 0
     adjMatrix_bar <- bar(adjMatrix) * !NAs
     for (i in 1:fixPointIter) {
       ## Bernoulli undirected
-      tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log(lambda)
+      tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log_lambda
       if (private$directed) {
         ## Bernoulli directed
         tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
