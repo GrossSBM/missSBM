@@ -96,7 +96,7 @@ print(sum((missSBM$fittedSBM$connectParam - pi)^2))
 ## DEGREE SAMPLING
 
 ## Draw random missing entries: NMAR case (blocks)
-psi <- c(-5, .01)
+psi <- c(-5, .1)
 sampledNet <- samplingSBM(adjacencyMatrix, "degree", psi)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, 5, "degree")
@@ -111,4 +111,8 @@ missSBM$plot("imputedNetwork")
 NID(missSBM$fittedSBM$memberships, mySBM$memberships)
 print(abs(missSBM$fittedSampling$parameters - psi))
 print(sum((missSBM$fittedSBM$connectParam - pi)^2))
+missSBM$fittedSBM$connectParam
 
+plot(logistic(psi[1] + psi[2] * rowSums(adjacencyMatrix)),
+     logistic(missSBM$fittedSampling$parameters[1] + missSBM$fittedSampling$parameters[2] * rowSums(missSBM$imputedNetwork)))
+abline(0,1)

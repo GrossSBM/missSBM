@@ -21,7 +21,7 @@ R6Class(classname = "sampledNetwork",
     nNodes = function(value) {ncol(private$X)},
     # number of dyads
     nDyads = function(value) {
-      ifelse(directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)
+      ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)
     },
     # direction
     is_directed = function(value) {private$directed},

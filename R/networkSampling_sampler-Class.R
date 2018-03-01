@@ -63,7 +63,6 @@ R6Class(classname = "networkSampling_sampler",
       "node" = function(adjMatrix, ...) {
         N <- ncol(adjMatrix)
         N_obs <- which(runif(N) < self$parameters)
-        N_obs <- sample(1:N, floor(N * self$parameters))
         D_obs <- as.matrix(expand.grid(N_obs, 1:N))
       },
       "block" = function(adjMatrix, clusters) {
@@ -77,8 +76,9 @@ R6Class(classname = "networkSampling_sampler",
         D_obs <- as.matrix(expand.grid(N_obs, 1:N))
       },
       "degree" = function(adjMatrix, ...) {
-        N_obs <- which(runif(nrow(adjMatrix)) < logistic(self$parameters[1] + self$parameters[2]*rowSums(adjMatrix)))
-        D_obs <- as.matrix(expand.grid(N_obs, 1:nrow(adjMatrix)))
+        N <- nrow(adjMatrix)
+        N_obs <- which(runif(N) < logistic(self$parameters[1] + self$parameters[2]*rowSums(adjMatrix)))
+        D_obs <- as.matrix(expand.grid(N_obs, 1:N))
       },
       ### TODO: add a parameter for the number of waves
       "snowball" = function(adjMatrix, ...) {

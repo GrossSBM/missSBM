@@ -73,7 +73,7 @@ missingSBM_fit$set("public", "doVEM",
     while (!cond) {
       i <- i + 1
       if (trace) cat(" iteration #:", i, "\r")
-
+# browser()
       pi_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
       ## ______________________________________________________
       ## Variational E-Step
