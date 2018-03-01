@@ -1,3 +1,4 @@
+rm(list=ls())
 library(missSBM)
 library(aricode)
 

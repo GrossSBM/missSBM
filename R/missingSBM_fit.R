@@ -47,7 +47,7 @@ R6Class(classname = "missingSBM_fit",
     sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet},
     entropyImputed = function(value) {
-      nu <- private$imputedNet[private$sampledNet$NAs]
+      nu <- private$imputedNet[private$sampledNet$missingDyads]
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
       res
     },
