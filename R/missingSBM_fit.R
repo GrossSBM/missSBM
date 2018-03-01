@@ -51,10 +51,10 @@ R6Class(classname = "missingSBM_fit",
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
       res
     },
-    vBound = function(value) {private$SBM$vBound(private$imputedNet) + self$entropyImputed + private$sampling$logLik},
+    vBound  = function(value) {private$SBM$vBound(private$imputedNet) + self$entropyImputed + private$sampling$logLik},
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     vBIC = function(value) {-2 * self$vBound + self$penalty},
-    vICL = function(value) {-2 * (self$vBound - private$SBM$entropy - self$entropyImputed ) + self$penalty}
+    vICL = function(value) {-2 * (private$SBM$vExpec(private$imputedNet) + private$sampling$logLik) + self$penalty}
   )
 )
 
@@ -82,7 +82,7 @@ missingSBM_fit$set("public", "doVEM",
       nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
       private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
       # update the variational parameters for block memberships (a.k.a tau)
-      private$SBM$update_blocks(private$imputedNet, fixPointIter)
+      private$SBM$update_blocks(private$imputedNet, fixPointIter, log_lambda = private$sampling$log_lambda)
 
       ## ______________________________________________________
       ## M-step

@@ -7,7 +7,7 @@ R6Class(classname = "networkSamplingDyads_fit",
   private = list(
     card_D = NULL, # number of possible dyads in the network
     D_miss = NULL  # where are the missing dyads
-  ),
+),
   public = list(
     initialize = function(sampledNetwork, name) {
       private$name    <- name
@@ -24,7 +24,8 @@ R6Class(classname = "networkSamplingDyads_fit",
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
-    penalty = function(value) {log(private$card_D) * self$df}
+    penalty = function(value) {log(private$card_D) * self$df},
+    log_lambda = function(value) {0}
   )
 )
 
@@ -54,7 +55,8 @@ R6Class(classname = "networkSamplingNodes_fit",
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
-    penalty = function(value) {log(private$card_N) * self$df}
+    penalty = function(value) {log(private$card_N) * self$df},
+    log_lambda = function(value) {0}
   )
 )
 
@@ -169,6 +171,10 @@ R6Class(classname = "blockSampling_fit",
   active = list(
     logLik = function() {
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
+      res
+    },
+    log_lambda = function(value) {
+      res <- sapply(private$psi, function(psi) ifelse(private$N_obs, log(psi), log(1 - psi)))
       res
     }
   )

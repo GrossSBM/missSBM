@@ -3,7 +3,7 @@ library(missSBM)
 library(aricode)
 
 ### A SBM model : ###
-n <- 300
+n <- 400
 Q <- 5
 alpha <- rep(1,Q)/Q       # mixture parameter
 pi <- diag(.45,Q) + .05   # connectivity matrix
@@ -20,7 +20,7 @@ adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 
-vBlocks <- 1:10
+vBlocks <- 1:8
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
 models <- out$models
 vpens <- sapply(models, function(model) model$penalty)
@@ -45,7 +45,7 @@ best$plot()
 psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
 
-vBlocks <- 1:10
+vBlocks <- 1:8
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "node")
 models <- out$models
 vJ_SBM <- sapply(models, function(model) model$fittedSBM$vBound(model$imputedNetwork))
@@ -70,7 +70,7 @@ best$plot()
 psi <- c(.3, .6)
 sampledNet <- samplingSBM(adjacencyMatrix, "double_standard", psi)
 
-vBlocks <- 1:10
+vBlocks <- 1:8
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "double_standard")
 models <- out$models
 vICLs <- sapply(models, function(model) model$vICL)

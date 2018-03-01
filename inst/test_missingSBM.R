@@ -80,7 +80,7 @@ psi <- c(.1, .3, .2, .5, .7)
 sampledNet <- samplingSBM(adjacencyMatrix, "block", psi, mySBM$memberships)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, Q, "block")
-out <- missSBM$doVEM(trace = TRUE)
+out <- missSBM$doVEM(trace = TRUE, fixPointIter = 10, threshold = 1e-10)
 
 par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
