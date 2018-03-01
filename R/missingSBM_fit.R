@@ -36,7 +36,7 @@ R6Class(classname = "missingSBM_fit",
         "node"            = nodeSampling_fit$new(private$sampledNet),
         "block"           = blockSampling_fit$new(private$sampledNet, private$SBM$blocks),
         "double_standard" = doubleStandardSampling_fit$new(private$sampledNet),
-        "degree"          = degreeSampling_fit$new(private$sampledNet),
+        "degree"          = degreeSampling_fit$new(private$sampledNet, private$SBM$blocks, private$SBM$connectParam),
         "snowball"        = snowballSampling_fit$new(private$sampledNet)
       )
     }
@@ -51,10 +51,10 @@ R6Class(classname = "missingSBM_fit",
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
       res
     },
-    vBound  = function(value) {private$SBM$vBound(private$imputedNet) + self$entropyImputed + private$sampling$logLik},
+    vBound  = function(value) {private$SBM$vBound(private$imputedNet) + self$entropyImputed + private$sampling$vExpec},
+    vExpec  = function(value) {private$SBM$vExpec(private$imputedNet) + private$sampling$vExpec},
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
-    vBIC = function(value) {-2 * self$vBound + self$penalty},
-    vICL = function(value) {-2 * (private$SBM$vExpec(private$imputedNet) + private$sampling$logLik) + self$penalty}
+    vICL    = function(value) {-2 * self$vExpec + self$penalty}
   )
 )
 

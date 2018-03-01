@@ -16,7 +16,7 @@ adjacencyMatrix <- mySBM$adjacencyMatrix
 ## Draw
 sampledNet_dyad <- samplingSBM(adjacencyMatrix, "dyad", 0.1)
 fittedSampling_dyad <- dyadSampling_fit$new(sampledNet_dyad)
-fittedSampling_dyad$logLik
+fittedSampling_dyad$vExpec
 fittedSampling_dyad$parameters
 fittedSampling_dyad$df
 fittedSampling_dyad$penalty
@@ -24,7 +24,7 @@ fittedSampling_dyad$penalty
 
 sampledNet_node <- samplingSBM(adjacencyMatrix, "node", 0.1)
 fittedSampling_node <- nodeSampling_fit$new(sampledNet_node)
-fittedSampling_node$logLik
+fittedSampling_node$vExpec
 fittedSampling_node$parameters
 fittedSampling_node$df
 fittedSampling_node$penalty
@@ -32,7 +32,7 @@ fittedSampling_node$penalty
 
 sampledNet_double_standard <- samplingSBM(adjacencyMatrix, "double_standard", c(0.1, 0.5))
 fittedSampling_double_standard <- doubleStandardSampling_fit$new(sampledNet_double_standard)
-fittedSampling_double_standard$logLik
+fittedSampling_double_standard$vExpec
 fittedSampling_double_standard$parameters
 fittedSampling_double_standard$df
 fittedSampling_double_standard$penalty
@@ -41,20 +41,18 @@ fittedSampling_double_standard$penalty
 sampledNet_block <- samplingSBM(adjacencyMatrix,"block", c(.1, .2, .3, .5, .7), mySBM$memberships)
 Z0 <- matrix(0, n, Q); Z0[cbind(1:n, mySBM$memberships)] <- 1
 fittedSampling_block <- blockSampling_fit$new(sampledNet_block, Z0)
-fittedSampling_block$logLik
+fittedSampling_block$vExpec
 fittedSampling_block$parameters
 fittedSampling_block$df
 fittedSampling_block$penalty
 -2 * fittedSampling_block$logLik + fittedSampling_block$penalty
 
-sampledNet_degree <- samplingSBM(adjacencyMatrix,"degree", c(0.01,0.01))
-# fittedSampling_degree <- degreeSampling_fit$new(sampledNet_degree)
-# fittedSampling_degree$vBound
-# fittedSampling_degree$parameters
-# fittedSampling_degree$df
-# fittedSampling_degree$penalty
-# fittedSampling_degree$vBound + fittedSampling_dyad$penalty
-
-#
-# snowball <- samplingSBM(adjacencyMatrix,"snowball", .3)
+sampledNet_degree <- samplingSBM(adjacencyMatrix,"degree", c(-.5,0.01))
+Z0 <- matrix(0, n, Q); Z0[cbind(1:n, mySBM$memberships)] <- 1
+fittedSampling_degree <- degreeSampling_fit$new(sampledNet_degree, Z0, mySBM$connectParam)
+fittedSampling_degree$vExpec
+fittedSampling_degree$parameters
+fittedSampling_degree$df
+fittedSampling_degree$penalty
+-2 * fittedSampling_degree$vExpec + fittedSampling_degree$penalty
 

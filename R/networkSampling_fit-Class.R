@@ -25,6 +25,7 @@ R6Class(classname = "networkSamplingDyads_fit",
   active = list(
     ## nDyads automatically handles the directed/undirected cases
     penalty = function(value) {log(private$card_D) * self$df},
+##    entropy = function(value) {-sum(xlogx(private$nu[private$NAs]) + xlogx(1 - private$nu[private$NAs]))}
     log_lambda = function(value) {0}
   )
 )
@@ -80,7 +81,7 @@ R6Class(classname = "dyadSampling_fit",
     }
   ),
   active = list(
-    logLik = function(value) {
+    vExpec = function(value) {
       res <- private$card_D_o * log(private$psi) + private$card_D_m * log(1 - private$psi)
       res
     }
@@ -104,7 +105,7 @@ R6Class(classname = "nodeSampling_fit",
     }
   ),
   active = list(
-    logLik = function() {
+    vExpec = function() {
       res <- private$card_N_o * log(private$psi) + private$card_N_m * log(1 - private$psi)
       res
     }
@@ -141,7 +142,7 @@ R6Class(classname = "doubleStandardSampling_fit",
     }
   ),
   active = list(
-    logLik = function(value) {
+    vExpec = function(value) {
       res <- log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
         log(1 - private$psi[2]) * private$Sm + log(1 - private$psi[1]) * private$Sm.bar
       res
@@ -169,7 +170,7 @@ R6Class(classname = "blockSampling_fit",
     }
   ),
   active = list(
-    logLik = function() {
+    vExpec = function() {
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
       res
     },
@@ -185,36 +186,38 @@ degreeSampling_fit <-
 R6Class(classname = "degreeSampling_fit",
   inherit = networkSamplingNodes_fit,
   private = list(
-    NAs      = NULL,
-    Dij      = NULL, # stat required to perform imputation
-    ksi      = NULL, # additional variational parameter for approximation in the logistic function
-    degree_o = NULL  # estimation of the degrees on the observed part of the network
+    NAs = NULL,
+    Dij = NULL, # stat required to perform imputation
+    ksi = NULL, # additional variational parameter for approximation in the logistic function
+    D   = NULL  # estimation of the degrees on the observed part of the network
   ),
   public = list(
-    initialize = function(sampledNetwork, ...) {
+    initialize = function(sampledNetwork, blockInit, connectInit) {
       super$initialize(sampledNetwork, "degree")
 
       private$NAs <- sampledNetwork$NAs
       ## will remain the same
-      private$degree_o <- rowSums(sampledNet$adjacencyMatrix, na.rm = TRUE)
+      private$D <- rowSums(sampledNetwork$adjacencyMatrix, na.rm = TRUE)
 
       ## will fluctuate along the algorithm
-      private$psi <- coefficients(glm(1*(private$N_obs) ~ private$degree_o, family = binomial(link = "logit")))
+      private$psi <- coefficients(glm(1*(private$N_obs) ~ private$D, family = binomial(link = "logit")))
 
-      imputedNet     <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), private$card_N, private$card_N)
+      imputedNet <- blockInit %*% connectInit %*% t(blockInit)
+      imputedNet[!private$NAs] <- sampledNetwork$adjacencyMatrix[!private$NAs]
       self$update_parameters(imputedNet)
     },
     update_parameters = function(imputedNet, ...) {
       nu <- imputedNet
       nu[!private$NAs] <- NA
-      D  <- rowSums(nu, na.rm = TRUE) + private$degree_o
+      D  <- rowSums(imputedNet)
+      private$D <- D
       D2 <- rowSums(nu * (1 - nu), na.rm = TRUE) + D^2
       private$ksi <- sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * D)
       C <- .5 * nrow(imputedNet) - sum(!private$N_obs)
-      s_hksi     <- sum(h(private$ksi))
-      s_hksiD    <- sum(h(private$ksi) * D)
-      s_hksiDhat <- sum(h(private$ksi) * D2)
-      b <- (2 * C * s_hksiD  - (.5 * sum(D) - sum(D[!private$N_obs])) * s_hksi) / (2 * s_hksiDhat * s_hksi - (2 * s_hksiD)^2)
+      s_hksi   <- sum(h(private$ksi))
+      s_hksiD  <- sum(h(private$ksi) * D)
+      s_hksiD2 <- sum(h(private$ksi) * D2)
+      b <- (2 * C * s_hksiD  - (.5 * sum(D) - sum(D[!private$N_obs])) * s_hksi) / (2 * s_hksiD2 * s_hksi - (2 * s_hksiD)^2)
       a <- -(b * s_hksiD + C) / s_hksi
       private$psi    <- c(a, b)
 
@@ -223,16 +226,15 @@ R6Class(classname = "degreeSampling_fit",
       private$Dij <- matrix(D, nrow(imputedNet), ncol(imputedNet)) - nu
     },
     update_imputation = function(Z, pi) {
-      C <- 2 * h(private$ksi) * (private$ksi[1] * private$ksi[2] + private$ksi[2]^2 * (1 + private$Dij))
+      C <- 2 * matrix(h(private$ksi), nrow(Z), nrow(Z)) * (private$ksi[1] * private$ksi[2] + private$ksi[2]^2 * (1 + private$Dij))
       nu <- logistic(Z %*% log(pi/(1 - pi)) %*% t(Z) - private$psi[2] + C + t(C) )
       nu
     }
   ),
   active = list(
-    logLik = function() {
+    vExpec = function() {
       prob <- logistic(private$psi[1] + private$psi[2] * private$D)
-      ## ????
-      res  <- log( prob^private$N_obs %*% (1 - prob)^(!private$N_obs) )
+      res  <-  sum(private$N_obs * log(prob)) + sum( (!private$N_obs) * log(1 - prob))
       res
     }
   )

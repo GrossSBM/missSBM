@@ -27,7 +27,6 @@ plot(out$objective, type = "l", main = "Variational bound along the VEM")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 mySBM_fit$vICL(mySBM$adjacencyMatrix)
 mySBM_fit$vBound(mySBM$adjacencyMatrix)
-mySBM_fit$vBIC(mySBM$adjacencyMatrix)
 
 ## spectral clustering
 cat("\n VEM initialized with spectral clustering")
@@ -43,13 +42,6 @@ out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
-## K-means clustering
-cat("\n VEM initialized with K-means clustering")
-mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, Q, "kmeans")
-out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
-cat("\n NID:")
-print(NID(mySBM_fit$memberships, mySBM$memberships))
-
 ## Testing model selection criterion
 cat("\n Assessing model selection - VEM on varying number of blocks.")
 vBlocks <- 1:10
@@ -61,12 +53,20 @@ models <- lapply(vBlocks, function(nBlocks) {
   myFit
 })
 
-vJs   <- sapply(models, function(model) model$vBound(mySBM$adjacencyMatrix))
-vICLs <- sapply(models, function(model) model$vICL(mySBM$adjacencyMatrix))
-vBICs <- sapply(models, function(model) model$vBIC(mySBM$adjacencyMatrix))
-par(mfrow = c(1,3))
-plot(vBlocks, -2*vJs, type = "l")
-plot(vBlocks, vBICs , type = "l")
-plot(vBlocks, vICLs , type = "l")
+vBound   <- sapply(models, function(model) model$vBound(mySBM$adjacencyMatrix))
+vExpec   <- sapply(models, function(model) model$vExpec(mySBM$adjacencyMatrix))
+vEntropy <- sapply(models, function(model) model$entropy)
+vICLs    <- sapply(models, function(model) model$vICL(mySBM$adjacencyMatrix))
+vPens    <- sapply(models, function(model) model$penalty)
+
+par(mfrow=c(1,1))
+plot (vBlocks,                vICLs, col = "red", type = "l")
+lines(vBlocks, -2*(vBound - vEntropy), col = "green")
+lines(vBlocks, -2*vBound           , col = "blue")
+legend("topright",
+  legend = c("vICLs = -2 * (vBound-vEntropy) + vPens", "-2* (vBound  - vEntropy)", "-2*vBound"), col=c("red", "green", "blue"),
+  lty = 1, bty = "n")
+abline(v = which.min(vICLs), lty="dashed")
+
 bestICL <- models[[which.min(vICLs)]]
 

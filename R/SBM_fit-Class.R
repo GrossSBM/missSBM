@@ -26,7 +26,6 @@ R6Class(classname = "SBM_fit",
       sum(private$tau %*% log(private$alpha)) +  sum( adjMatrix * log(prob) + (1 - adjMatrix) *  log(1 - prob))
     },
     vBound = function(adjMatrix) {self$vExpec(adjMatrix) + self$entropy},
-    vBIC   = function(adjMatrix) {-2 * self$vBound(adjMatrix) + self$penalty},
     vICL   = function(adjMatrix) {-2 * self$vExpec(adjMatrix) + self$penalty}
   ),
   active = list(
