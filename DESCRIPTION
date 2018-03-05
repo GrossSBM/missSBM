@@ -19,6 +19,7 @@ Collate:
     'networkSampling-Class.R'
     'networkSampling_fit-Class.R'
     'missingSBM_fit.R'
+    'net_esr1.R'
     'sampledNetwork-Class.R'
     'networkSampling_sampler-Class.R'
 RoxygenNote: 6.0.1
