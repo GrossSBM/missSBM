@@ -42,20 +42,18 @@ like the MARNode sampling plus we sample neighbours of nodes sampled at the firs
 ### A SBM model : ###
 n <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q                                                                # mixture parameter
-pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-family <- "Bernoulli"                                                              # the emmission law
-directed <- FALSE                                                                  # if the network is directed or not
-mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+alpha <- rep(1,Q)/Q                                  # mixture parameter
+pi <- diag(.45,Q) + .05                              # connectivity matrix
+directed <- FALSE                                    # if the network is directed or not
+mySBM <- simulateSBM(n, alpha, pi, directed)         # simulation of ad Bernoulli non-directed SBM
 
 ### Results : ###
-adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 
 ## Sampling of the data : ##
-samplingParameters <- .5                                                           # the sampling rate
-sampling <- "edge"                                                              # the sampling design
-sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
-
+samplingParameters <- .5                             # the sampling rate
+sampling <- "edge"                                   # the sampling design
+sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 
 }
 \references{
@@ -63,7 +61,4 @@ sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)    
 }
 \seealso{
 \code{\link{inferSBM}} and \code{\link{samplingSBM}}
-}
-\author{
-T. Tabouy
 }

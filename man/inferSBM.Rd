@@ -27,11 +27,10 @@ and a vector with ICL calculated for all Q in vBlocks
 ### A SBM model : ###
 n <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q                                                                # mixture parameter
-pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-family <- "Bernoulli"                                                              # the emmission law
-directed <- FALSE                                                                  # if the network is directed or not
-mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+alpha <- rep(1,Q)/Q                                      # mixture parameter
+pi <- diag(.45,Q) + .05                                  # connectivity matrix
+directed <- FALSE
+mySBM <- simulateSBM(n, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
 
 ### Results : ###
 adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
@@ -43,7 +42,7 @@ sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)  
 
 ## Inference :
 vBlocks <- 1:5                                                                     # number of classes
-sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family, directed)             # the inference
+sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling)
 
 }
 \references{
@@ -51,7 +50,4 @@ sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family, directed)          
 }
 \seealso{
 \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{SBM_collection}}.
-}
-\author{
-T. Tabouy
 }

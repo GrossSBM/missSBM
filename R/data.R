@@ -10,4 +10,4 @@
 #'   ...
 #' }
 #' @source \url{https://string-db.org/}
-"net_esr1"
+"net_ER"
