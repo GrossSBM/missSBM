@@ -128,7 +128,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #'
 #' @import R6
 #' @export
-inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarchical"){
+inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral"){
 
   sampledNet <- sampledNetwork$new(adjacencyMatrix)
   cat("\n")

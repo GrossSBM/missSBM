@@ -26,7 +26,7 @@ License: GPL-2 | GPL-3
 [2] Kolaczyk Erik D. (2009). Statistical Analysis of Network Data: Methods and Models. Springer.
 }
 \author{
-Timothée Tabouy
+Timothée Tabouy, Pierre Barbillon, Julien Chiquet
 
 Maintainer: \email{timothee.tabouy@gmail.com}
 }

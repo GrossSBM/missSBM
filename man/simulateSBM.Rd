@@ -4,7 +4,7 @@
 \alias{simulateSBM}
 \title{Simulation of a Stochastic Block Model}
 \usage{
-simulateSBM(n, alpha, pi, family = "Bernoulli", directed = FALSE)
+simulateSBM(n, alpha, pi, directed = FALSE)
 }
 \arguments{
 \item{n}{The number of nodes}
@@ -12,8 +12,6 @@ simulateSBM(n, alpha, pi, family = "Bernoulli", directed = FALSE)
 \item{alpha}{The mixture parameters}
 
 \item{pi}{The connectivity matrix (probabilities inter and intra clusters)}
-
-\item{family}{The emission law of the adjacency matrix : Bernoulli or Poisson}
 
 \item{directed}{Boolean variable to indicate whether the network is directed or not,
 by default "undirected" is choosen}
@@ -35,15 +33,14 @@ The emission law can be :\itemize{\item{Bernoulli:
 ### A SBM model : ###
 n <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q                                                                # mixture parameter
-pi <- diag(.45,Q) + .05                                                            # connectivity matrix
-family <- "Bernoulli"                                                              # the emmission law
-directed <- FALSE                                                                  # if the network is directed or not
-mySBM <- simulateSBM(n, alpha, pi, family, directed)                               # simulation of ad Bernoulli non-directed SBM
+alpha <- rep(1,Q)/Q                                      # mixture parameter
+pi <- diag(.45,Q) + .05                                  # connectivity matrix
+directed <- FALSE
+mySBM <- simulateSBM(n, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
 
 ### Results : ###
-clusters <-  mySBM$clusters                                                        # clusters
-adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+clusters <-  mySBM$clusters                              # clusters
+adjacencyMatrix <- mySBM$adjacencyMatrix                 # the adjacency matrix
 
 }
 \references{
@@ -51,7 +48,4 @@ adjacencyMatrix <- mySBM$adjacencyMatrix                                        
 }
 \seealso{
 \code{\link{inferSBM}} and \code{\link{samplingSBM}}
-}
-\author{
-T. Tabouy
 }

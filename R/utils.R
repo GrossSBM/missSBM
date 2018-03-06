@@ -20,23 +20,22 @@ check_boundaries <- function(x) {
   x
 }
 
+#' @export
 init_spectral <- function(X, K) {
 
   ## basic handling of missing values
-  if (anyNA(X)) X[is.na(X)] <- 0
-
   ## handling lonely souls
   cl0 <- rep(NA, ncol(X))
-  unconnected <- which(rowSums(X) == 0)
+  unconnected <- which(rowSums(X, na.rm=TRUE) == 0)
   connected <- setdiff(1:ncol(X), unconnected)
 
-  X <- X[connected,connected]
   if (K > 1) {
 
+    X <- X[connected,connected]
     ## Normalized Laplacian
-    D <- colSums(X)
-    L <- diag(rep(1,ncol(X))) -
-      diag(D^(-1/2)) %*% X %*% diag(D^(-1/2))
+    D <- colSums(X, na.rm=TRUE)
+    A <- X; A[is.na(A)] <- 0
+    L <- diag(rep(1,ncol(X))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
 
     ## Absolute eigenvalue in order
     E <- order(-abs(eigen(L)$values))
@@ -45,6 +44,7 @@ init_spectral <- function(X, K) {
     U <- eigen(L)$vectors[,E]
     U <- U[,c((ncol(U) - K + 1):ncol(U))]
     U <- U / rowSums(U^2)^(1/2)
+    U[is.na(U)] <- 0
 
     ## Applying the K-means in the eigenspace
     cl <- kmeans(U, K, nstart = 10, iter.max = 30)$cluster
@@ -57,13 +57,14 @@ init_spectral <- function(X, K) {
   as.factor(cl0)
 }
 
+#' @export
 init_hierarchical <- function(X, K) {
 
   ## basic handling of missing values
   if (anyNA(X)) X[is.na(X)] <- 0
   if (K > 1) {
     D  <- as.matrix(dist(X, method = "manhattan"))
-    D[X == 1] <- D[X == 1] - 2 ## does not make sense for Poisson models ..
+    D[X == 1] <- D[X == 1] - 2
     cl0 <- cutree(hclust(as.dist(D), method = "ward.D"), K)
   } else {
     cl0 <- rep(1,ncol(X))
@@ -71,7 +72,9 @@ init_hierarchical <- function(X, K) {
   as.factor(cl0)
 }
 
+#' @export
 init_kmeans <- function(X, K) {
+
   cl0 <- kmeans(X, K)$cl
   as.factor(cl0)
 }

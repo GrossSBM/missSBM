@@ -14,7 +14,7 @@ R6Class(classname = "missingSBM_fit",
     SBM        = NULL  # fit of the current stochastic block model (object of class 'SBM_fit')
   ),
   public = list(
-    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "hierarchical") {
+    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "spectral") {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)

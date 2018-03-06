@@ -46,7 +46,7 @@ psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
 
 vBlocks <- 1:8
-out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "node")
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "node", clusterInit = "spectral")
 models <- out$models
 vJ_SBM <- sapply(models, function(model) model$fittedSBM$vBound(model$imputedNetwork))
 vJ_sampling <- sapply(models, function(model) model$fittedSampling$logLik)
