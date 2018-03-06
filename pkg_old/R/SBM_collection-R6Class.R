@@ -65,13 +65,36 @@ SBM_collection$set("public", "smoothingBackward",
                            clone             <- self$models[[i-1]]$clone()
                            clone$blockInit   <- as.numeric(cl_fusion)
                            clone$doVEM()
-
                            if(clone$vICL < self$models[[i-1]]$vICL){
                              self$models[[i-1]] <- clone
                              cat('+')
                            }
                          }
                        }
+                     }
+                     self$vICLs <- sapply(self$models, function(x){x$vICL})
+                   }
+)
+
+SBM_collection$set("public", "smoothingForward",
+                   function() {
+                     # browser()
+                     for(i in self$vBlocks[-length(self$vBlocks)]){
+                       cl_split <- factor(apply(self$models[[i]]$blockVarParam, 1, which.max))
+                       tab <- ceiling(tabulate(cl_split)/2)
+                       levels(cl_split) <- c(levels(cl_split),as.character(i+1))
+                        for (j in 1:i) {
+                          if(length(levels(cl_split))-1 == i){
+                            cl <- cl_split; cl[which(cl==j)][1:tab[j]] <- i+1
+                            clone             <- self$models[[i+1]]$clone()
+                            clone$blockInit   <- as.numeric(cl_split)
+                            clone$doVEM()
+                            if(clone$vICL < self$models[[i+1]]$vICL){
+                              self$models[[i+1]] <- clone
+                              cat('+')
+                            }
+                          }
+                        }
                      }
                      self$vICLs <- sapply(self$models, function(x){x$vICL})
                    }

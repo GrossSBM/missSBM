@@ -1,6 +1,7 @@
 ### A SBM model : ###
+# set.seed(1666)
 n <- 300
-Q <- 3
+Q <- 5
 alpha <- rep(1,Q)/Q                                                                # mixture parameter
 pi <- diag(.45,Q) + .05                                                            # connectivity matrix
 family <- "Bernoulli"                                                              # the emmission law
@@ -16,5 +17,12 @@ sampling <- "MAREdge"                                                           
 sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 
 ## Inference :
-vBlocks <- 1:5                                                                     # number of classes
-sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling)             # the inference
+vBlocks <- 1:10                                                                    # number of classes
+# sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling, family)                       # the inference
+
+
+## Smoothing :
+collection <- SBM_collection$new(sampledAdjMatrix, vBlocks, sampling, family, directed)
+collection$smoothingBackward()
+plot(collection$vICLs, type="l")
+collection$smoothingForward()
