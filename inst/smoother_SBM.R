@@ -1,63 +1,69 @@
 rm(list=ls())
 library(missSBM)
+library(pbmcapply)
 
 ## Model :
 n <- 200
 Q <- 4
-pi <- diag(0.45,Q)+.05
+pi <- diag(0.45,Q) + .05
 alpha <- rep(1,Q)/Q
 family <- "Bernoulli"
 directed <- FALSE
 mySBM <- simulateSBM(n, alpha, pi, directed)
 adjacencyMatrix <- mySBM$adjacencyMatrix
-samplingParameters <- .5
+samplingParameters <- .3
 sampling <- "dyad"
 sampSBM <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 sampledAdjMatrix <- sampSBM$adjacencyMatrix
 vBlocks <- 1:10
 sbm <- inferSBM(sampledAdjMatrix, vBlocks, "dyad")
 
-smoothingBackward <- function(models,vBlocks,sampledAdjMatrix,sampling) {
-  for(i in rev(vBlocks[-1])){
-    comb <- combn(i, 2, simplify = FALSE)
-    for(j in 1:length(comb)){
-      cl_fusion <- factor(apply(models[[i]]$fittedSBM$blocks,1, which.max))
-      if(length(levels(cl_fusion)) == i){
-        levels(cl_fusion)[which(levels(cl_fusion) == paste(comb[[j]][1]))] <- paste(comb[[j]][2])
-        levels(cl_fusion) <- as.character(1:(i-1))
-        clone <- inferSBM(sampledAdjMatrix, i-1, sampling, cl_fusion)
-        clone$models[[1]]$doVEM()
-        if(clone$models[[1]]$vICL < models[[i-1]]$vICL){
-          models[[i-1]] <- clone$models[[1]]
-          cat('+')
-        }
-      }
+smoothingBackward <- function(models, vBlocks, sampledAdjMatrix, sampling, mc.cores = 4) {
+  sampledNet <- sampledNetwork$new(sampledAdjMatrix)
+  for (i in rev(vBlocks[-1])) {
+    cl0 <- factor(models[[i]]$fittedSBM$memberships)
+    if (nlevels(cl0) == i) {
+      candidates <- pbmclapply(combn(i, 2, simplify = FALSE), function(couple) {
+        cl_fusion <- cl0
+        levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
+        levels(cl_fusion) <- as.character(1:(i - 1))
+        model <- missingSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion)
+        model$doVEM(trace = FALSE)
+        model
+      }, mc.cores = mc.cores)
+      vICLs <- sapply(candidates, function(candidate) candidate$vICL)
+      best_one <- candidates[[which.min(vICLs)]]
+      if (best_one$vICL < models[[i - 1]]$vICL)
+        models[[i - 1]] <- best_one
     }
   }
   models
 }
 
-smoothingForward <- function(models, vBlocks, sampledAdjMatrix,sampling) {
+smoothingForward <- function(models, vBlocks, sampledAdjMatrix, sampling, mc.cores = 4) {
+  sampledNet <- sampledNetwork$new(sampledAdjMatrix)
   for(i in vBlocks[-length(vBlocks)]){
-    cl_split <- factor(apply(models[[i]]$fittedSBM$blocks,1,which.max))
+    cl_split <- factor(models[[i]]$fittedSBM$memberships)
     tab <- ceiling(tabulate(cl_split)/2)
-    levels(cl_split) <- c(levels(cl_split),as.character(i+1))
-    for (j in 1:i) {
-      if(length(levels(cl_split))-1 == i){
+    levels(cl_split) <- c(levels(cl_split), as.character(i+1))
+    if (nlevels(cl_split) - 1 == i) {
+      candidates <- pbmclapply(1:i, function(j) {
         cl <- as.numeric(cl_split); cl[which(cl==j)][1:tab[j]] <- i+1
-        clone <- inferSBM(sampledAdjMatrix, i+1, sampling, cl)
-        clone$models[[1]]$doVEM()
-        if(clone$models[[1]]$vICL < models[[i+1]]$vICL){
-          models[[i+1]] <- clone$models[[1]]
-          cat('+')
-        }
-      }
+        model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl)
+        model$doVEM(trace = FALSE)
+        model
+      }, mc.cores = mc.cores)
+      vICLs <- sapply(candidates, function(candidate) candidate$vICL)
+      best_one <- candidates[[which.min(vICLs)]]
+      if (best_one$vICL < models[[i + 1]]$vICL)
+        models[[i + 1]] <- best_one
     }
   }
   models
 }
 
 smoothingForward_2 <- function(models, vBlocks, sampledAdjMatrix,sampling) {
+  sampledNet <- sampledNetwork$new(sampledAdjMatrix)
   for(i in vBlocks[-length(vBlocks)]){
     cl_split <- factor(apply(models[[i]]$fittedSBM$blocks,1,which.max))
     levels(cl_split) <- c(levels(cl_split),as.character(i+1))
@@ -67,9 +73,9 @@ smoothingForward_2 <- function(models, vBlocks, sampledAdjMatrix,sampling) {
         cl <- as.numeric(cl_split); indices <- which(cl==j)
         cut <- as.numeric(init_spectral(sampledAdjMatrix[indices, indices],2))
         cl[which(cl==j)][which(cut==1)] <- j; cl[which(cl==j)][which(cut==2)] <- i+1
-        clone <- inferSBM(sampledAdjMatrix, i+1, sampling, cl)
-        clone$models[[1]]$doVEM()
-        if(clone$models[[1]]$vICL < models[[i+1]]$vICL){
+        clone <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl)
+        clone$doVEM(trace = FALSE)
+        if(clone$vICL < models[[i+1]]$vICL){
           models[[i+1]] <- clone$models[[1]]
           cat('+')
         }
@@ -79,7 +85,7 @@ smoothingForward_2 <- function(models, vBlocks, sampledAdjMatrix,sampling) {
   models
 }
 
-smoothingForBackWard <- function(models, vBlocks, sampledAdjMatrix,sampling, nIter=2){
+smoothingForBackWard <- function(models, vBlocks, sampledAdjMatrix, sampling, nIter = 2){
   out <- models
   for (i in 1:nIter) {
     out <- smoothingBackward(out, vBlocks, sampledAdjMatrix,sampling)
@@ -88,16 +94,15 @@ smoothingForBackWard <- function(models, vBlocks, sampledAdjMatrix,sampling, nIt
   out
 }
 
-out <- smoothingBackward(sbm$models, vBlocks, sampledAdjMatrix,sampling)
-out2 <- smoothingForward(sbm$models, vBlocks, sampledAdjMatrix,sampling)
-out3 <- smoothingForBackWard(sbm$models, vBlocks, sampledAdjMatrix,sampling)
-out4 <- smoothingForward_2(sbm$models, vBlocks, sampledAdjMatrix,sampling)
+smoothed_fwrd <- smoothingForward(sbm$models, vBlocks, sampledAdjMatrix, sampling)
+smoothed_back <- smoothingBackward(sbm$models, vBlocks, sampledAdjMatrix, sampling)
+smoothed_fb   <- smoothingForBackWard(sbm$models, vBlocks, sampledAdjMatrix, sampling)
+## out4 <- smoothingForward_2(sbm$models, vBlocks, sampledAdjMatrix,sampling)
 
-# par(mfrow=c(2,2))
-vICL <- sapply(sbm$models, function(model) model$vICL); plot(vICL)
-vICL_smoothed <- sapply(out, function(model) model$vICL); plot(vICL_smoothed)
-vICL_smoothed2 <- sapply(out2, function(model) model$vICL); plot(vICL_smoothed2)
-vICL_smoothed3 <- sapply(out3, function(model) model$vICL); plot(vICL_smoothed3)
+vICL <- sapply(sbm$models, function(model) model$vICL); plot(vICL, type = "l")
+vICL_back <- sapply(smoothed_back, function(model) model$vICL); lines(vICL_back, col="blue")
+vICL_fwrd <- sapply(smoothed_fwrd, function(model) model$vICL); lines(vICL_fwrd, col="red")
+vICL_fb   <- sapply(smoothed_fb  , function(model) model$vICL); lines(vICL_fb  , col="green")
 
 
 
