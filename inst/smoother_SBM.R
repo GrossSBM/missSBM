@@ -34,7 +34,7 @@ smoothingBackward <- function(models,vBlocks,sampledAdjMatrix,sampling) {
       }
     }
   }
-  return(models)
+  models
 }
 
 smoothingForward <- function(models, vBlocks, sampledAdjMatrix,sampling) {
@@ -54,12 +54,50 @@ smoothingForward <- function(models, vBlocks, sampledAdjMatrix,sampling) {
       }
     }
   }
-  return(models)
+  models
+}
+
+smoothingForward_2 <- function(models, vBlocks, sampledAdjMatrix,sampling) {
+  for(i in vBlocks[-length(vBlocks)]){
+    cl_split <- factor(apply(models[[i]]$fittedSBM$blocks,1,which.max))
+    levels(cl_split) <- c(levels(cl_split),as.character(i+1))
+    for (j in 1:i) {
+      if(length(levels(cl_split))-1 == i){
+        # browser()
+        cl <- as.numeric(cl_split); indices <- which(cl==j)
+        cut <- as.numeric(init_spectral(sampledAdjMatrix[indices, indices],2))
+        cl[which(cl==j)][which(cut==1)] <- j; cl[which(cl==j)][which(cut==2)] <- i+1
+        clone <- inferSBM(sampledAdjMatrix, i+1, sampling, cl)
+        clone$models[[1]]$doVEM()
+        if(clone$models[[1]]$vICL < models[[i+1]]$vICL){
+          models[[i+1]] <- clone$models[[1]]
+          cat('+')
+        }
+      }
+    }
+  }
+  models
+}
+
+smoothingForBackWard <- function(models, vBlocks, sampledAdjMatrix,sampling, nIter=2){
+  out <- models
+  for (i in 1:nIter) {
+    out <- smoothingBackward(out, vBlocks, sampledAdjMatrix,sampling)
+    out <- smoothingForward(out, vBlocks, sampledAdjMatrix,sampling)
+  }
+  out
 }
 
 out <- smoothingBackward(sbm$models, vBlocks, sampledAdjMatrix,sampling)
 out2 <- smoothingForward(sbm$models, vBlocks, sampledAdjMatrix,sampling)
+out3 <- smoothingForBackWard(sbm$models, vBlocks, sampledAdjMatrix,sampling)
+out4 <- smoothingForward_2(sbm$models, vBlocks, sampledAdjMatrix,sampling)
 
-vICL <- sapply(sbm$models, function(model) model$vICL)
-vICL_smoothed <- sapply(out, function(model) model$vICL)
-vICL_smoothed2 <- sapply(out2, function(model) model$vICL)
+par(mfrow=c(2,2))
+vICL <- sapply(sbm$models, function(model) model$vICL); plot(vICL)
+vICL_smoothed <- sapply(out, function(model) model$vICL); plot(vICL_smoothed)
+vICL_smoothed2 <- sapply(out2, function(model) model$vICL); plot(vICL_smoothed2)
+vICL_smoothed3 <- sapply(out3, function(model) model$vICL); plot(vICL_smoothed3)
+
+
+
