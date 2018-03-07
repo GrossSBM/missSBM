@@ -10,26 +10,25 @@ family <- "Bernoulli"
 directed <- FALSE
 mySBM <- simulateSBM(n, alpha, pi, directed)
 adjacencyMatrix <- mySBM$adjacencyMatrix
-samplingParameters <- .3
+samplingParameters <- .5
 sampling <- "dyad"
 sampSBM <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 sampledAdjMatrix <- sampSBM$adjacencyMatrix
 vBlocks <- 1:10
-sbm <- inferSBM(sampledAdjMatrix, vBlocks, "double_standard")
+sbm <- inferSBM(sampledAdjMatrix, vBlocks, "dyad")
 
-smoothingBackward <- function(models,vBlocks,sampledAdjMatrix) {
-  sampeldNet <- sampledNetwork$new(sampledAdjMatrix)
+smoothingBackward <- function(models,vBlocks,sampledAdjMatrix,sampling) {
   for(i in rev(vBlocks[-1])){
     comb <- combn(i, 2, simplify = FALSE)
     for(j in 1:length(comb)){
-      cl_fusion <- factor(models[[i]]$fittedSBM$blocks)
+      cl_fusion <- factor(apply(models[[i]]$fittedSBM$blocks,1, which.max))
       if(length(levels(cl_fusion)) == i){
         levels(cl_fusion)[which(levels(cl_fusion) == paste(comb[[j]][1]))] <- paste(comb[[j]][2])
         levels(cl_fusion) <- as.character(1:(i-1))
-        clone             <- missingSBM_fit$new(sampledNet, i-1, sampling, cl_fusion)
-        clone$doVEM()
-        if(clone$vICL < models[[i-1]]$vICL){
-          models[[i-1]] <- clone
+        clone <- inferSBM(sampledAdjMatrix, i-1, sampling, cl_fusion)
+        clone$models[[1]]$doVEM()
+        if(clone$models[[1]]$vICL < models[[i-1]]$vICL){
+          models[[i-1]] <- clone$models[[1]]
           cat('+')
         }
       }
@@ -38,19 +37,18 @@ smoothingBackward <- function(models,vBlocks,sampledAdjMatrix) {
   return(models)
 }
 
-smoothingForward <- function(models, vBlocks, sampledAdjMatrix) {
-  sampledNet <- sampledNetwork$new(sampledAdjMatrix)
+smoothingForward <- function(models, vBlocks, sampledAdjMatrix,sampling) {
   for(i in vBlocks[-length(vBlocks)]){
-    cl_split <- factor(models[[i]]$fittedSBM$blocks)
+    cl_split <- factor(apply(models[[i]]$fittedSBM$blocks,1,which.max))
     tab <- ceiling(tabulate(cl_split)/2)
     levels(cl_split) <- c(levels(cl_split),as.character(i+1))
     for (j in 1:i) {
       if(length(levels(cl_split))-1 == i){
-        cl    <- cl_split; cl[which(cl==j)][1:tab[j]] <- i+1
-        clone <- missingSBM_fit$new(sampledNet, i+1, sampling, cl)
-        clone$doVEM()
-        if(clone$vICL < models[[i+1]]$vICL){
-          models[[i+1]] <- clone
+        cl <- as.numeric(cl_split); cl[which(cl==j)][1:tab[j]] <- i+1
+        clone <- inferSBM(sampledAdjMatrix, i+1, sampling, cl)
+        clone$models[[1]]$doVEM()
+        if(clone$models[[1]]$vICL < models[[i+1]]$vICL){
+          models[[i+1]] <- clone$models[[1]]
           cat('+')
         }
       }
@@ -59,9 +57,9 @@ smoothingForward <- function(models, vBlocks, sampledAdjMatrix) {
   return(models)
 }
 
-out <- smoothingBackward(sbm$models, vBlocks, sampledAdjMatrix)
+out <- smoothingBackward(sbm$models, vBlocks, sampledAdjMatrix,sampling)
+out2 <- smoothingForward(sbm$models, vBlocks, sampledAdjMatrix,sampling)
 
 vICL <- sapply(sbm$models, function(model) model$vICL)
 vICL_smoothed <- sapply(out, function(model) model$vICL)
-
-## smoothingForward(sbm$models, vBlocks, sampledAdjMatrix)
+vICL_smoothed2 <- sapply(out2, function(model) model$vICL)
