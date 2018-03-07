@@ -93,7 +93,7 @@ out2 <- smoothingForward(sbm$models, vBlocks, sampledAdjMatrix,sampling)
 out3 <- smoothingForBackWard(sbm$models, vBlocks, sampledAdjMatrix,sampling)
 out4 <- smoothingForward_2(sbm$models, vBlocks, sampledAdjMatrix,sampling)
 
-par(mfrow=c(2,2))
+# par(mfrow=c(2,2))
 vICL <- sapply(sbm$models, function(model) model$vICL); plot(vICL)
 vICL_smoothed <- sapply(out, function(model) model$vICL); plot(vICL_smoothed)
 vICL_smoothed2 <- sapply(out2, function(model) model$vICL); plot(vICL_smoothed2)
