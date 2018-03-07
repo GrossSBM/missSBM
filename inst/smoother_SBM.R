@@ -10,15 +10,15 @@ family <- "Bernoulli"
 directed <- FALSE
 mySBM <- simulateSBM(n, alpha, pi, directed)
 adjacencyMatrix <- mySBM$adjacencyMatrix
-samplingParameters <- 1
+samplingParameters <- .3
 sampling <- "dyad"
 sampSBM <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 sampledAdjMatrix <- sampSBM$adjacencyMatrix
-vBlocks <- 1:6
+vBlocks <- 1:10
 sbm <- inferSBM(sampledAdjMatrix, vBlocks, "double_standard")
 
-
-smoothingBackward <- function(models,vBlocks) {
+smoothingBackward <- function(models,vBlocks,sampledAdjMatrix) {
+  sampeldNet <- sampledNetwork$new(sampledAdjMatrix)
   for(i in rev(vBlocks[-1])){
     comb <- combn(i, 2, simplify = FALSE)
     for(j in 1:length(comb)){
@@ -35,9 +35,11 @@ smoothingBackward <- function(models,vBlocks) {
       }
     }
   }
+  return(models)
 }
 
-smoothingForward <- function(models) {
+smoothingForward <- function(models, vBlocks, sampledAdjMatrix) {
+  sampledNet <- sampledNetwork$new(sampledAdjMatrix)
   for(i in vBlocks[-length(vBlocks)]){
     cl_split <- factor(models[[i]]$fittedSBM$blocks)
     tab <- ceiling(tabulate(cl_split)/2)
@@ -54,4 +56,12 @@ smoothingForward <- function(models) {
       }
     }
   }
+  return(models)
 }
+
+out <- smoothingBackward(sbm$models, vBlocks, sampledAdjMatrix)
+
+vICL <- sapply(sbm$models, function(model) model$vICL)
+vICL_smoothed <- sapply(out, function(model) model$vICL)
+
+## smoothingForward(sbm$models, vBlocks, sampledAdjMatrix)
