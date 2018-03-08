@@ -128,7 +128,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #'
 #' @import R6
 #' @export
-inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral"){
+inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral", nIterSmoothingICL = 1){
 
   sampledNet <- sampledNetwork$new(adjacencyMatrix)
   cat("\n")
@@ -141,6 +141,8 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
       missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
     }
   )
+
+  models <- smoothingForBackWard_SpCl(models, vBlocks, adjacencyMatrix, sampling, nIterSmoothingICL)
 
   cat("\n")
   res_optim <- do.call(rbind, lapply(models,
