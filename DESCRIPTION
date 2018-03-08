@@ -22,4 +22,5 @@ Collate:
     'missingSBM_fit.R'
     'sampledNetwork-Class.R'
     'networkSampling_sampler-Class.R'
+    'smoother_SBM.R'
 RoxygenNote: 6.0.1
