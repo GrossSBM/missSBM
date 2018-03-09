@@ -137,12 +137,10 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
   cat("\n")
   models <- lapply(vBlocks,
     function(nBlocks) {
-    cat(" Initialization of model with", nBlocks," blocks.", "\r")
+    cat(" Initialization of model with", nBlocks,"blocks.", "\r")
       missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
     }
   )
-
-  models <- smoothingForBackWard_SpCl(models, vBlocks, adjacencyMatrix, sampling, nIterSmoothingICL)
 
   cat("\n")
   res_optim <- do.call(rbind, lapply(models,
@@ -154,6 +152,9 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
       res
     }
   ))
+
+  cat("\n Smoothing ICL")
+  models <- smoothingForBackWard_SpCl(models, vBlocks, sampledNet, sampling, nIterSmoothingICL)
 
   return(list(models = models, monitor = res_optim))
 }

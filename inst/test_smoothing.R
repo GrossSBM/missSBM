@@ -1,10 +1,9 @@
-#### TESTS ####
-# rm(list=ls())
-# library(missSBM)
+rm(list=ls())
+library(missSBM)
 library(pbmcapply)
 
 n <- 200
-Q <- 3
+Q <- 4
 pi <- diag(0.45,Q) + .05
 alpha <- rep(1,Q)/Q
 family <- "Bernoulli"
@@ -15,11 +14,11 @@ samplingParameters <- .5
 sampling <- "dyad"
 sampSBM <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 sampledAdjMatrix <- sampSBM$adjacencyMatrix
-vBlocks <- 1:10
+vBlocks <- 1:8
 sbm <- inferSBM(sampledAdjMatrix, vBlocks, "dyad")
 
 # smoothed_fwrd_half <- smoothingForward_half(sbm$models, vBlocks, sampledAdjMatrix, sampling)
-smoothed_fwrd_SpCl <- smoothingForward_SpCl(sbm$models, vBlocks, sampledAdjMatrix, sampling)
+# smoothed_fwrd_SpCl <- smoothingForward_SpCl(sbm$models, vBlocks, sampledAdjMatrix, sampling)
 # smoothed_back      <- smoothingBackward(sbm$models, vBlocks, sampledAdjMatrix, sampling)
 # smoothed_fb_half   <- smoothingForBackWard_half(sbm$models, vBlocks, sampledAdjMatrix, sampling)
 # smoothed_fb_SpCl   <- smoothingForBackWard_SpCl(sbm$models, vBlocks, sampledAdjMatrix,sampling)
