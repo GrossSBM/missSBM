@@ -10,12 +10,12 @@ family <- "Bernoulli"
 directed <- FALSE
 mySBM <- simulateSBM(n, alpha, pi, directed)
 adjacencyMatrix <- mySBM$adjacencyMatrix
-samplingParameters <- .5
+samplingParameters <- .3
 sampling <- "dyad"
 sampSBM <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 sampledAdjMatrix <- sampSBM$adjacencyMatrix
 vBlocks <- 1:8
-sbm <- inferSBM(sampledAdjMatrix, vBlocks, "dyad")
+sbm <- inferSBM(sampledAdjMatrix, vBlocks, "dyad", nIterSmoothingICL = 1)
 
 # smoothed_fwrd_half <- smoothingForward_half(sbm$models, vBlocks, sampledAdjMatrix, sampling)
 # smoothed_fwrd_SpCl <- smoothingForward_SpCl(sbm$models, vBlocks, sampledAdjMatrix, sampling)

@@ -4,7 +4,8 @@
 \alias{inferSBM}
 \title{Inference of Stochastic Block Model from sampled data}
 \usage{
-inferSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral")
+inferSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral",
+  smoothing = c("none", "forward", "backward", "both"), mc.cores = 2)
 }
 \arguments{
 \item{vBlocks}{The vector of number of blocks considered in the collection}

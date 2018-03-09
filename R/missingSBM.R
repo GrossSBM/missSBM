@@ -126,9 +126,10 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #' vBlocks <- 1:5                                                                     # number of classes
 #' sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling)
 #'
-#' @import R6
+#' @import R6 parallel
+#' @include smoother_SBM.R
 #' @export
-inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral", nIterSmoothingICL = 1){
+inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral", smoothing = c("none", "forward", "backward", "both"), mc.cores = 2){
 
   sampledNet <- sampledNetwork$new(adjacencyMatrix)
   cat("\n")
@@ -153,8 +154,16 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
     }
   ))
 
-  cat("\n Smoothing ICL")
-  models <- smoothingForBackWard_SpCl(models, vBlocks, sampledNet, sampling, nIterSmoothingICL)
+  smoothing <- match.arg(smoothing)
+  if (smoothing != "none") {
+    cat("\n Smoothing ICL\n")
+    smoothing_fn <- switch(smoothing,
+      "forward"  = smoothingForward_SpCl  ,
+      "backward" = smoothingBackward      ,
+      "both"     = smoothForBackward_SpCl
+    )
+    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, mc.cores)
+  }
 
   return(list(models = models, monitor = res_optim))
 }

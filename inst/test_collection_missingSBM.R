@@ -21,11 +21,10 @@ psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 
 vBlocks <- 1:8
-out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad")
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad", smoothing = "forward")
 models <- out$models
 vpens <- sapply(models, function(model) model$penalty)
 ventr <- sapply(models, function(model) model$entropyImputed)
-vBICs <- sapply(models, function(model) model$vBIC)
 vICLs <- sapply(models, function(model) model$vICL)
 vJ <- sapply(out$models, function(model) model$vBound)
 par(mfrow=c(2,2))
@@ -33,7 +32,6 @@ plot(vBlocks, vICLs, type = "l")
 plot(vBlocks, vJ, type = "l")
 plot(vBlocks, ventr, type = "l")
 plot(vBlocks, vpens, type = "l")
-#plot(out$monitor$objective[out$monitor$nBlocks == Q], type = "l")
 
 best <- models[[which.min(vICLs)]]
 best$plot()
@@ -48,11 +46,8 @@ sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
 vBlocks <- 1:8
 out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "node", clusterInit = "spectral")
 models <- out$models
-vJ_SBM <- sapply(models, function(model) model$fittedSBM$vBound(model$imputedNetwork))
-vJ_sampling <- sapply(models, function(model) model$fittedSampling$logLik)
 vpens <- sapply(models, function(model) model$penalty)
 ventr <- sapply(models, function(model) model$entropyImputed)
-vBICs <- sapply(models, function(model) model$vBIC)
 vICLs <- sapply(models, function(model) model$vICL)
 vJ <- sapply(out$models, function(model) model$vBound)
 par(mfrow=c(2,2))
