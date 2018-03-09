@@ -26,31 +26,34 @@ init_spectral <- function(X, K) {
   ## basic handling of missing values
   ## handling lonely souls
   cl0 <- rep(NA, ncol(X))
-  unconnected <- which(rowSums(X, na.rm=TRUE) == 0)
+  unconnected <- which(rowSums(X, na.rm = TRUE) == 0)
   connected <- setdiff(1:ncol(X), unconnected)
 
   if (K > 1) {
+    if (length(connected) == 0) {
+      cl0 <- factor(sample(1:K, ncol(X), replace = TRUE))
+    } else {
+      X <- X[connected,connected]
+      ## Normalized Laplacian
+      D <- colSums(X, na.rm=TRUE)
+      A <- X; A[is.na(A)] <- 0
+      L <- diag(rep(1,ncol(X))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
 
-    X <- X[connected,connected]
-    ## Normalized Laplacian
-    D <- colSums(X, na.rm=TRUE)
-    A <- X; A[is.na(A)] <- 0
-    L <- diag(rep(1,ncol(X))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      ## Absolute eigenvalue in order
+      E <- order(-abs(eigen(L)$values))
 
-    ## Absolute eigenvalue in order
-    E <- order(-abs(eigen(L)$values))
+      ## Go into eigenspace
+      U <- eigen(L)$vectors[,E]
+      U <- U[,c((ncol(U) - K + 1):ncol(U))]
+      U <- U / rowSums(U^2)^(1/2)
+      U[is.na(U)] <- 0
 
-    ## Go into eigenspace
-    U <- eigen(L)$vectors[,E]
-    U <- U[,c((ncol(U) - K + 1):ncol(U))]
-    U <- U / rowSums(U^2)^(1/2)
-    U[is.na(U)] <- 0
-
-    ## Applying the K-means in the eigenspace
-    cl <- kmeans(U, K, nstart = 10, iter.max = 30)$cluster
-    ## handing lonely souls
-    cl0[connected] <- cl
-    cl0[unconnected] <- which.min(rowsum(D,cl))
+      ## Applying the K-means in the eigenspace
+      cl <- kmeans(U, K, nstart = 10, iter.max = 50, algorithm = "Lloyd")$cluster
+      ## handing lonely souls
+      cl0[connected] <- cl
+      cl0[unconnected] <- which.min(rowsum(D,cl))
+    }
   } else {
     cl0 <- rep(1,ncol(X))
   }
