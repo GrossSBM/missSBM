@@ -160,7 +160,7 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
     smoothing_fn <- switch(smoothing,
       "forward"  = smoothingForward_SpCl  ,
       "backward" = smoothingBackward      ,
-      "both"     = smoothForBackward_SpCl
+      "both"     = smoothingForBackWard_SpCl
     )
     models <- smoothing_fn(models, vBlocks, sampledNet, sampling, mc.cores)
   }
