@@ -239,14 +239,14 @@ R6Class(classname = "degreeSampling_fit",
   )
 )
 
-## TODO: handle multiple waves
-snowballSampling_fit <-
-R6Class(classname = "snowballSampling_fit",
-  inherit = networkSampling_fit,
-  active = list(
-    logLik = function(value) {
-      NA
-    }
-  )
-)
+# ## TODO: handle multiple waves
+# snowballSampling_fit <-
+# R6Class(classname = "snowballSampling_fit",
+#   inherit = networkSampling_fit,
+#   active = list(
+#     logLik = function(value) {
+#       NA
+#     }
+#   )
+# )
 
