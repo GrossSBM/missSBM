@@ -129,7 +129,8 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #' @import R6 parallel
 #' @include smoother_SBM.R
 #' @export
-inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral", smoothing = c("none", "forward", "backward", "both"), mc.cores = 2){
+inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral",
+                     smoothing = c("none", "forward", "backward", "both"), mc.cores = 2, control_VEM = list()){
 
   sampledNet <- sampledNetwork$new(adjacencyMatrix)
   cat("\n")
@@ -143,11 +144,14 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
     }
   )
 
+  ## defaut control parameter for VEM, overwritten by user specification
+  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+  control[names(control_VEM)] <- control_VEM
   cat("\n")
   res_optim <- do.call(rbind, lapply(models,
     function(model) {
       cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-      res <- model$doVEM()
+      res <- model$doVEM(control)
       res$nBlocks <- model$fittedSBM$nBlocks
       res$iteration <- 1:nrow(res)
       res

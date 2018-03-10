@@ -13,6 +13,9 @@ directed <- FALSE         # if the network is directed or not
 mySBM <- simulateSBM(n, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 
+## contorl parameter for the VEM
+control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = TRUE)
+
 ## ______________________________________________________________________
 ## DYAD SAMPLING
 
@@ -21,7 +24,8 @@ psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, Q, "dyad")
-out <- missSBM$doVEM(trace = TRUE)
+out <- missSBM$doVEM(control)
+
 
 par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
@@ -41,7 +45,7 @@ psi <- 0.2
 sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, Q, "node")
-out <- missSBM$doVEM(trace = TRUE)
+out <- missSBM$doVEM(control)
 
 par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
@@ -61,7 +65,7 @@ psi <- c(.3, .6)
 sampledNet <- samplingSBM(adjacencyMatrix, "double_standard", psi)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, Q, "double_standard")
-out <- missSBM$doVEM(fixPointIter = 3, trace = TRUE)
+out <- missSBM$doVEM(control)
 
 par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
@@ -81,7 +85,7 @@ psi <- c(.1, .3, .2, .5, .7)
 sampledNet <- samplingSBM(adjacencyMatrix, "block", psi, mySBM$memberships)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, Q, "block")
-out <- missSBM$doVEM(trace = TRUE, fixPointIter = 10, threshold = 1e-10)
+out <- missSBM$doVEM(control)
 
 par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
@@ -101,7 +105,7 @@ psi <- c(-5, .1)
 sampledNet <- samplingSBM(adjacencyMatrix, "degree", psi)
 ## Perform inference
 missSBM <- missingSBM_fit$new(sampledNet, 5, "degree")
-out <- missSBM$doVEM(trace = TRUE)
+out <- missSBM$doVEM(control)
 
 par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
@@ -113,6 +117,8 @@ NID(missSBM$fittedSBM$memberships, mySBM$memberships)
 print(abs(missSBM$fittedSampling$parameters - psi))
 print(sum((missSBM$fittedSBM$connectParam - pi)^2))
 missSBM$fittedSBM$connectParam
+
+logistic <- function(x) {1/(1 + exp(-x))}
 
 plot(logistic(psi[1] + psi[2] * rowSums(adjacencyMatrix)),
      logistic(missSBM$fittedSampling$parameters[1] + missSBM$fittedSampling$parameters[2] * rowSums(missSBM$imputedNetwork)))

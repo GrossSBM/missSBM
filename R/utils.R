@@ -35,7 +35,7 @@ init_spectral <- function(X, K) {
     } else {
       X <- X[connected,connected]
       ## Normalized Laplacian
-      D <- colSums(X, na.rm=TRUE)
+      D <- colSums(X, na.rm = TRUE)
       A <- X; A[is.na(A)] <- 0
       L <- diag(rep(1,ncol(X))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
 
@@ -148,5 +148,5 @@ gg_image_NA <- function(adjacencyMatrix, memberships) {
           axis.text = element_blank() ,
           axis.ticks = element_blank(),
           axis.line = element_blank())
-  print(p)
+  p
 }

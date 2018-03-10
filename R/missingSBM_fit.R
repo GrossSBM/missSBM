@@ -60,20 +60,20 @@ R6Class(classname = "missingSBM_fit",
 
 #' @export
 missingSBM_fit$set("public", "doVEM",
-  function(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE) {
+  function(control) {
 
     ## Initialization of quantities that monitor convergence
-    delta     <- vector("numeric", maxIter)
-    objective <- vector("numeric", maxIter)
+    delta     <- vector("numeric", control$maxIter)
+    objective <- vector("numeric", control$maxIter)
     i <- 0; cond <- FALSE
     ## Starting the Variational EM algorithm
-    if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-    if (trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM with a '" , private$SBM$emissionLaw,"' distribution.\n", sep = "")
-    if (trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
+    if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
+    if (control$trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM with a '" , private$SBM$emissionLaw,"' distribution.\n", sep = "")
+    if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
     while (!cond) {
       i <- i + 1
-      if (trace) cat(" iteration #:", i, "\r")
-# browser()
+      if (control$trace) cat(" iteration #:", i, "\r")
+
       pi_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
       ## ______________________________________________________
       ## Variational E-Step
@@ -82,7 +82,7 @@ missingSBM_fit$set("public", "doVEM",
       nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
       private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
       # update the variational parameters for block memberships (a.k.a tau)
-      private$SBM$update_blocks(private$imputedNet, fixPointIter, log_lambda = private$sampling$log_lambda)
+      private$SBM$update_blocks(private$imputedNet, control$fixPointIter, log_lambda = private$sampling$log_lambda)
 
       ## ______________________________________________________
       ## M-step
@@ -94,10 +94,10 @@ missingSBM_fit$set("public", "doVEM",
 
       ## Check convergence
       delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
-      cond     <- (i > maxIter) |  (delta[i] < threshold)
+      cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
       objective[i] <- self$vBound
     }
-    if (trace) cat("\n")
+    if (control$trace) cat("\n")
     res <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]))
     res
   }

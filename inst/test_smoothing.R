@@ -2,8 +2,8 @@ rm(list=ls())
 library(missSBM)
 library(pbmcapply)
 
-n <- 200
-Q <- 4
+n <- 400
+Q <- 5
 pi <- diag(0.45,Q) + .05
 alpha <- rep(1,Q)/Q
 family <- "Bernoulli"
@@ -29,3 +29,9 @@ vICL           <- sapply(sbm$models, function(model) model$vICL); plot(vICL, typ
 # vICL_fwrd_SpCl <- sapply(smoothed_fwrd_SpCl, function(model) model$vICL); lines(vICL_fwrd_SpCl, col="yellow")
 # vICL_fb_half   <- sapply(smoothed_fb_half, function(model) model$vICL); lines(vICL_fb_half  , col="orange")
 # vICL_fb_SpCl   <- sapply(smoothed_fb_SpCl, function(model) model$vICL); lines(vICL_fb_SpCl  , col="green")
+
+library(ggplot2)
+d_objective <- sbm$monitor
+
+ggplot(sbm$monitor[sbm$monitor$nBlocks > 5, ], aes(x = iteration, y = objective, group=nBlocks, colour = factor(nBlocks)) ) +
+  geom_line() + ggtitle("objective function (J) for SBM with double standard sampling")
