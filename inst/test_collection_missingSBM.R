@@ -21,7 +21,8 @@ psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
 
 vBlocks <- 1:8
-out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad", smoothing = "forward")
+out <- inferSBM(sampledNet$adjacencyMatrix, vBlocks, "dyad", smoothing = "forward",
+                control_VEM = list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = TRUE))
 models <- out$models
 vpens <- sapply(models, function(model) model$penalty)
 ventr <- sapply(models, function(model) model$entropyImputed)

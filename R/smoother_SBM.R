@@ -1,5 +1,5 @@
 #' @export
-smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores) {
+smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores, control) {
   cat("   Going backward ")
   for (i in rev(vBlocks[-1])) {
     cat('+')
@@ -10,7 +10,7 @@ smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores) {
         levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
         levels(cl_fusion) <- as.character(1:(i - 1))
         model <- missingSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion)
-        model$doVEM(trace = FALSE)
+        model$doVEM(control)
         model
       }, mc.cores = mc.cores)
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
@@ -27,7 +27,7 @@ smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores) {
 }
 
 #' @export
-smoothingForward_half <- function(models, vBlocks, sampledNet, sampling, mc.cores) {
+smoothingForward_half <- function(models, vBlocks, sampledNet, sampling, mc.cores, control) {
   cat("   Going forward ")
   for(i in vBlocks[-length(vBlocks)]){
     cat('+')
@@ -38,7 +38,7 @@ smoothingForward_half <- function(models, vBlocks, sampledNet, sampling, mc.core
       candidates <- mclapply(1:i, function(j) {
         cl <- as.numeric(cl_split); cl[which(cl==j)][1:tab[j]] <- i+1
         model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl)
-        model$doVEM(trace = FALSE)
+        model$doVEM(control)
         model
       }, mc.cores = mc.cores)
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
@@ -52,7 +52,7 @@ smoothingForward_half <- function(models, vBlocks, sampledNet, sampling, mc.core
 }
 
 #' @export
-smoothingForward_SpCl <- function(models, vBlocks, sampledNet, sampling, mc.cores) {
+smoothingForward_SpCl <- function(models, vBlocks, sampledNet, sampling, mc.cores, control) {
   cat("   Going forward ")
   for(i in vBlocks[-length(vBlocks)]){
     cat("+")
@@ -65,7 +65,7 @@ smoothingForward_SpCl <- function(models, vBlocks, sampledNet, sampling, mc.core
           cut <- as.numeric(init_spectral(sampledNet$adjacencyMatrix[indices, indices],2))
           cl[which(cl==j)][which(cut==1)] <- j; cl[which(cl==j)][which(cut==2)] <- i + 1
           model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl)
-          model$doVEM(trace = FALSE)
+          model$doVEM(control)
           model
         } else {
           models[[i + 1]]
@@ -85,17 +85,17 @@ smoothingForward_SpCl <- function(models, vBlocks, sampledNet, sampling, mc.core
 }
 
 #' @export
-smoothingForBackWard_half <- function(models, vBlocks, sampledNet, sampling, mc.cores){
+smoothingForBackWard_half <- function(models, vBlocks, sampledNet, sampling, mc.cores, control){
   out <- models
-  out <- smoothingBackward(out, vBlocks, sampledNet, sampling, mc.cores)
-  out <- smoothingForward_half(out, vBlocks, sampledNet, sampling, mc.cores)
+  out <- smoothingBackward(out, vBlocks, sampledNet, sampling, mc.cores, control)
+  out <- smoothingForward_half(out, vBlocks, sampledNet, sampling, mc.cores, control)
   out
 }
 
 #' @export
-smoothingForBackWard_SpCl <- function(models, vBlocks, sampledNet, sampling, mc.cores){
+smoothingForBackWard_SpCl <- function(models, vBlocks, sampledNet, sampling, mc.cores, control){
   out <- models
-  out <- smoothingBackward(out, vBlocks, sampledNet, sampling, mc.cores)
-  out <- smoothingForward_SpCl(out, vBlocks, sampledNet, sampling, mc.cores)
+  out <- smoothingBackward(out, vBlocks, sampledNet, sampling, mc.cores, control)
+  out <- smoothingForward_SpCl(out, vBlocks, sampledNet, sampling, mc.cores, control)
   out
 }
