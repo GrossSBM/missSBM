@@ -108,6 +108,7 @@ image_NA <- function(z,  zlim = c(0,1), col = c("white", "midnightblue"), na.col
 
 #' @import ggplot2 igraph viridis
 #' @importFrom dplyr inner_join mutate select arrange
+#' @export
 gg_image_NA <- function(adjacencyMatrix, memberships) {
 
 
@@ -148,5 +149,5 @@ gg_image_NA <- function(adjacencyMatrix, memberships) {
           axis.text = element_blank() ,
           axis.ticks = element_blank(),
           axis.line = element_blank())
-  p
+  invisible(p)
 }

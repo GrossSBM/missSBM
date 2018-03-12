@@ -109,7 +109,7 @@ missingSBM_fit$set("public", "plot",
   function(type = c("imputedNetwork", "connectivity")) {
     type <- match.arg(type)
     if (type == "imputedNetwork") {
-      gg_image_NA(private$imputedNet, private$SBM$memberships)
+      return(gg_image_NA(private$imputedNet, private$SBM$memberships))
     }
     if (type == "connectivity") {
       plot(

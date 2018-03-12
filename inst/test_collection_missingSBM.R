@@ -35,7 +35,8 @@ plot(vBlocks, ventr, type = "l")
 plot(vBlocks, vpens, type = "l")
 
 best <- models[[which.min(vICLs)]]
-best$plot()
+p <- best$plot()
+print(p)
 
 ## ______________________________________________________________________
 ## NODE SAMPLING
