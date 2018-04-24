@@ -39,12 +39,12 @@ adjacencyMatrix <- mySBM$adjacencyMatrix                                        
 
 ## Sampling of the data : ##
 samplingParameters <- .5                                                           # the sampling rate
-sampling <- "MAREdge"                                                              # the sampling design
+sampling <- "dyad"                                                                 # the sampling design
 sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
 
 ## Inference :
 vBlocks <- 1:5                                                                     # number of classes
-sbm <- inferSBM(sampledAdjMatrix, vBlocks, sampling)
+sbm <- inferSBM(sampledAdjMatrix$adjacencyMatrix, vBlocks, sampling)
 
 }
 \references{

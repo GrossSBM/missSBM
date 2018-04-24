@@ -115,3 +115,7 @@ plot(vBlocks, vJ, type = "l")
 best <- models[[which.min(vICLs)]]
 best$plot()
 
+## Comparison with old version
+out.old <- func_missSBM.degree(sampledNet$adjacencyMatrix, 5)
+getPsi(out.old@models[[1]])
+out$models[[5]]$fittedSampling$parameters

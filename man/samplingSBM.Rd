@@ -52,7 +52,7 @@ adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 
 ## Sampling of the data : ##
 samplingParameters <- .5                             # the sampling rate
-sampling <- "edge"                                   # the sampling design
+sampling <- "dyad"                                   # the sampling design
 sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 
 }
