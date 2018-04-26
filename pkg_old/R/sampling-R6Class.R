@@ -142,7 +142,7 @@ R6Class(classname = "sampling_starDegree",
   ),
   private = list(
     g = function(x){
-      return(-(1/(1+exp(-x)) - 0.5)/(0.5*x))
+      return(-(1/(1+exp(-x)) - 0.5)/(2*x))
     }
   )
 )
