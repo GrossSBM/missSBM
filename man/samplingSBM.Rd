@@ -23,18 +23,18 @@ samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL)
 }
 \details{
 The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings, for
-more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{edge: parameter = p
+more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{"dyad": parameter = p
 \deqn{p = P(Dyad (i,j) is sampled)}}
-\item{node: parameter = p and
+\item{"node": parameter = p and
 \deqn{p = P(Node i is sampled)}}
-\item{snowball (one step):
+\item{"snowball" (one step):
 like the MARNode sampling plus we sample neighbours of nodes sampled at the first batch}
 }
-\item Not Missing At Random (NMAR) \itemize{ \item{double_standard: parameter = (p0,p1) and
+\item Not Missing At Random (NMAR) \itemize{ \item{"double_standard": parameter = (p0,p1) and
 \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
-\item{degree: parameter = c(a,b) and
+\item{"degree": parameter = c(a,b) and
 \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
-\item{block: parameter = c(p(1),...,p(Q)) and
+\item{"block": parameter = c(p(1),...,p(Q)) and
 \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
 }}
 }

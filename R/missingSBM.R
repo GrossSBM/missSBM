@@ -48,18 +48,18 @@ simulateSBM <- function(n, alpha, pi, directed=FALSE){
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
 #' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings, for
-#' more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{edge: parameter = p
+#' more details see (\cite{1}) :\itemize{\item Missing At Random (MAR) \itemize{\item{"dyad": parameter = p
 #' \deqn{p = P(Dyad (i,j) is sampled)}}
-#' \item{node: parameter = p and
+#' \item{"node": parameter = p and
 #' \deqn{p = P(Node i is sampled)}}
-#' \item{snowball (one step):
+#' \item{"snowball" (one step):
 #' like the MARNode sampling plus we sample neighbours of nodes sampled at the first batch}
 #' }
-#' \item Not Missing At Random (NMAR) \itemize{ \item{double_standard: parameter = (p0,p1) and
+#' \item Not Missing At Random (NMAR) \itemize{ \item{"double_standard": parameter = (p0,p1) and
 #' \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
-#' \item{degree: parameter = c(a,b) and
+#' \item{"degree": parameter = c(a,b) and
 #' \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
-#' \item{block: parameter = c(p(1),...,p(Q)) and
+#' \item{"block": parameter = c(p(1),...,p(Q)) and
 #' \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
 #' }}
 #' @examples
@@ -98,7 +98,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #'
 #' @param sampledNetwork The sampled network data (a square matrix)
 #' @param vBlocks The vector of number of blocks considered in the collection
-#' @param sampling The sampling design for missing data modeling : MAREdge, doubleStandard, MARNode, snowball, starDegree, class
+#' @param sampling The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block"
 #' by default "undirected" is choosen
 #' @param plot Summary of the output of the algorithm, by default TRUE is choosen
 #' @return \code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
