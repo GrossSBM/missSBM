@@ -49,7 +49,7 @@ R6Class(classname = "networkSamplingNodes_fit",
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(NULL)},
-    update_imputation = function(Z, pi) { ## good for MCAR on node, dyads and NMAR with blocks
+    update_imputation = function(Z, pi) { ## good for MCAR on node, dyads and NMAR with blocks (dyad and node)
       nu <- logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z))
       nu
     }
@@ -131,9 +131,9 @@ R6Class(classname = "doubleStandardSampling_fit",
       imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
       self$update_parameters(imputedNet)
     },
-    update_parameters = function(ImputedNet, missingDyads) {
-      private$Sm     <- sum(    ImputedNet[private$D_miss])
-      private$Sm.bar <- sum(1 - ImputedNet[private$D_miss])
+    update_parameters = function(imputedNet, ...) {
+      private$Sm     <- sum(    imputedNet[private$D_miss])
+      private$Sm.bar <- sum(1 - imputedNet[private$D_miss])
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     update_imputation = function(Z, pi) {
@@ -149,6 +149,35 @@ R6Class(classname = "doubleStandardSampling_fit",
     }
   )
 )
+
+#' @export
+blockDyadSampling_fit <-
+  R6Class(classname = "blockDyadSampling_fit",
+          inherit = networkSamplingDyads_fit,
+          private = list(
+            prob <- NULL  ## for calculation of the log-likelihood
+          ),
+          public = list(
+            initialize = function(sampledNetwork, blockInit) {
+              super$initialize(sampledNetwork, "block_dyad")
+              imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+              self$update_parameters(NA, blockInit)
+            },
+            update_parameters = function(imputedNet, Z) {
+              private$psi  <- (t(private$S * Z) %*% (private$S * Z))/(t(Z) %*% Z)
+              private$prob <- Z %*% private$psi %*% t(Z)
+            }
+          ),
+          active = list(
+            vExpec = function(value) {
+              factor      <- ifelse(private$directed, 1, .5)
+              sampMat     <- private$R ; diag(sampMat) <- 0
+              sampMat_bar <- 1 - private$R ; diag(sampMat_bar) <- 0
+              res         <- factor * sum(sampMat * log(prob) + (1 - sampMat_bar) *  log(1 - prob))
+              res
+            }
+          )
+  )
 
 #' @export
 blockSampling_fit <-
@@ -174,7 +203,7 @@ R6Class(classname = "blockSampling_fit",
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
       res
     },
-    log_lambda = function(value) {
+    log_lambda = function(value) {   ### Quand utilise t-on cette fonction ??? ###
       res <- sapply(private$psi, function(psi) ifelse(private$N_obs, log(psi), log(1 - psi)))
       res
     }

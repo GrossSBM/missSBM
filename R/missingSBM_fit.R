@@ -36,6 +36,7 @@ R6Class(classname = "missingSBM_fit",
         "node"            = nodeSampling_fit$new(private$sampledNet),
         "block"           = blockSampling_fit$new(private$sampledNet, private$SBM$blocks),
         "double_standard" = doubleStandardSampling_fit$new(private$sampledNet),
+        "block_dyad"      = blockDyadSampling_fit$new(private$sampledNet, private$SBM$blocks),
         "degree"          = degreeSampling_fit$new(private$sampledNet, private$SBM$blocks, private$SBM$connectParam),
         "snowball"        = snowballSampling_fit$new(private$sampledNet)
       )

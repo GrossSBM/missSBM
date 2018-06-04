@@ -26,7 +26,6 @@ R6Class(classname = "SBM_sampler",
       ## TODO : only draw n*n(-1) edge for directed graph and n(n-1)/2 for undirected rather than post-symmtrizing
       X <- matrix(rbinom(private$N^2, 1, private$Z %*% private$pi %*% t(private$Z)), private$N)
       if (!private$directed) X <- X * lower.tri(X) + t(X * lower.tri(X))
-      diag(X) <- 0
       private$X <- X
     }
   ),

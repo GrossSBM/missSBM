@@ -22,6 +22,7 @@ R6Class(classname = "networkSampling_sampler",
 
       if (!switch(type,
                   "double_standard" = ifelse(length(parameters) == 2, TRUE, FALSE),
+                  "block_dyad"      = TRUE, ## handled in rSampling once the vector 'clusters' is known
                   "degree"          = ifelse(length(parameters) == 2, TRUE, FALSE),
                   "dyad"            = ifelse(length(parameters) == 1, TRUE, FALSE),
                   "block"           = TRUE, ## handled in rSampling once the vector 'clusters' is known
@@ -59,6 +60,21 @@ R6Class(classname = "networkSampling_sampler",
         D_obs_0 <- D_0[runif(length(D_0)) < self$parameters[1]]
         D_obs_1 <- D_1[runif(length(D_1)) < self$parameters[2]]
         D_obs <- union(D_obs_0, D_obs_1)
+      },
+      "block_dyad" = function(adjMatrix, clusters) {
+        N <- ncol(adjMatrix)
+        Q <- length(unique(clusters))
+        if (length(self$parameters) != length(unique(clusters)))
+          stop("Sampling parameters does not have the required size.")
+        Z <- matrix(0, N, Q); Z[cbind(1:N,clusters)] <- 1
+        D_obs <- matrix(rbinom(private$N^2, 1, Z %*% self$parameters %*% t(Z)), N)
+        if (isSymmetric(adjMatrix)){
+          D_obs <- D_obs * lower.tri(D_obs) + t(D_obs * lower.tri(D_obs))
+          D_obs <- which(D_obs == 1)
+        } else {
+          D_obs <- D_obs * lower.tri(D_obs) + t(D_obs * upper.tri(D_obs))
+          D_obs <- which(D_obs == 1)
+        }
       },
       "node" = function(adjMatrix, ...) {
         N <- ncol(adjMatrix)

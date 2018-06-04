@@ -15,16 +15,18 @@ R6Class(classname = "SBM_fit",
     init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
       NAs <- is.na(adjMatrix); adjMatrix[NAs] <- 0
       private$pi    <- check_boundaries((t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(self$nNodes)) * !NAs) %*% private$tau))
-      private$alpha <- colMeans(private$tau)
+      private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
       private$pi    <- check_boundaries((t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(self$nNodes)) %*% private$tau))
-      private$alpha <- colMeans(private$tau)
+      private$alpha <- check_boundaries(colMeans(private$tau))
     },
     vExpec = function(adjMatrix) {
-      prob <- private$tau %*% private$pi %*% t(private$tau)
+      prob   <- private$tau %*% private$pi %*% t(private$tau)
       factor <- ifelse(private$directed, 1, .5)
-      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix * log(prob) + (1 - adjMatrix) *  log(1 - prob))
+      adjMatrix_zeroDiag     <- adjMatrix ; diag(adjMatrix_zeroDiag) <- 0           ### Changement ici ###
+      adjMatrix_zeroDiag_bar <- 1 - adjMatrix ; diag(adjMatrix_zeroDiag_bar) <- 0   ### Changement ici ###
+      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + (1 - adjMatrix_zeroDiag_bar) *  log(1 - prob))
     },
     vBound = function(adjMatrix) {self$vExpec(adjMatrix) + self$entropy},
     vICL   = function(adjMatrix) {-2 * self$vExpec(adjMatrix) + self$penalty}
