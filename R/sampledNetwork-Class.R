@@ -1,7 +1,7 @@
 #' @import R6
 #' @export
 sampledNetwork <-
-R6Class(classname = "sampledNetwork",
+  R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
   private = list(
     X        = NULL, # adjacency matrix

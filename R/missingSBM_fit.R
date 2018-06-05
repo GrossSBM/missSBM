@@ -6,7 +6,7 @@
 #' @include networkSampling_fit-Class.R
 #' @export
 missingSBM_fit <-
-R6Class(classname = "missingSBM_fit",
+  R6::R6Class(classname = "missingSBM_fit",
   private = list(
     sampledNet = NULL, # network data with convenient encoding (object of class 'sampledNetwork')
     imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)

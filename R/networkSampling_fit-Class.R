@@ -2,7 +2,7 @@
 #' @include networkSampling-Class.R
 #' @import R6
 networkSamplingDyads_fit <-
-R6Class(classname = "networkSamplingDyads_fit",
+  R6::R6Class(classname = "networkSamplingDyads_fit",
   inherit = networkSampling,
   private = list(
     card_D = NULL, # number of possible dyads in the network
@@ -34,7 +34,7 @@ R6Class(classname = "networkSamplingDyads_fit",
 #' @include networkSampling-Class.R
 #' @import R6
 networkSamplingNodes_fit <-
-R6Class(classname = "networkSamplingNodes_fit",
+  R6::R6Class(classname = "networkSamplingNodes_fit",
   inherit = networkSampling,
   private = list(
     card_N = NULL, # number of nodes in the network
@@ -66,7 +66,7 @@ R6Class(classname = "networkSamplingNodes_fit",
 #' This class is use to define a fit for a networkSampling. Inherits from 'networkSampling'
 #' @export
 dyadSampling_fit <-
-R6Class(classname = "dyadSampling_fit",
+  R6::R6Class(classname = "dyadSampling_fit",
   inherit = networkSamplingDyads_fit,
   private = list(
     card_D_o = NULL, # number of observed dyads
@@ -90,7 +90,7 @@ R6Class(classname = "dyadSampling_fit",
 
 #' @export
 nodeSampling_fit <-
-R6Class(classname = "nodeSampling_fit",
+  R6::R6Class(classname = "nodeSampling_fit",
   inherit = networkSamplingNodes_fit,
   private = list(
     card_N_o = NULL, # number of observed nodes
@@ -114,7 +114,7 @@ R6Class(classname = "nodeSampling_fit",
 
 #' @export
 doubleStandardSampling_fit <-
-R6Class(classname = "doubleStandardSampling_fit",
+  R6::R6Class(classname = "doubleStandardSampling_fit",
   inherit = networkSamplingDyads_fit,
   private = list(
     So     = NULL, ## statistics only requiring the observed part of the network
@@ -152,20 +152,26 @@ R6Class(classname = "doubleStandardSampling_fit",
 
 #' @export
 blockDyadSampling_fit <-
-  R6Class(classname = "blockDyadSampling_fit",
+  R6::R6Class(classname = "blockDyadSampling_fit",
           inherit = networkSamplingDyads_fit,
           private = list(
-            prob <- NULL  ## for calculation of the log-likelihood
+            prob     = NULL,  ## for calculation of the log-likelihood
+            NAs      = NULL,  ## localisation of NAs
+            R        = NULL,  ## sampling matrix
+            directed = NULL   ##
           ),
           public = list(
             initialize = function(sampledNetwork, blockInit) {
               super$initialize(sampledNetwork, "block_dyad")
-              imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
-              self$update_parameters(NA, blockInit)
+              private$NAs      <- sampledNetwork$NAs
+              private$R        <- sampledNetwork$samplingMatrix
+              private$directed <- sampledNetwork$is_directed
+              imputedNet       <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+              self$update_parameters(imputedNet, blockInit)
             },
             update_parameters = function(imputedNet, Z) {
-              private$psi  <- (t(private$S * Z) %*% (private$S * Z))/(t(Z) %*% Z)
-              private$prob <- Z %*% private$psi %*% t(Z)
+              private$psi    <- check_boundaries((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z))
+              private$prob   <- Z %*% private$psi %*% t(Z)
             }
           ),
           active = list(
@@ -173,7 +179,7 @@ blockDyadSampling_fit <-
               factor      <- ifelse(private$directed, 1, .5)
               sampMat     <- private$R ; diag(sampMat) <- 0
               sampMat_bar <- 1 - private$R ; diag(sampMat_bar) <- 0
-              res         <- factor * sum(sampMat * log(prob) + (1 - sampMat_bar) *  log(1 - prob))
+              res         <- factor * sum(sampMat * log(private$prob) + (1 - sampMat_bar) *  log(1 - private$prob))
               res
             }
           )
@@ -181,7 +187,7 @@ blockDyadSampling_fit <-
 
 #' @export
 blockSampling_fit <-
-R6Class(classname = "blockSampling_fit",
+  R6::R6Class(classname = "blockSampling_fit",
   inherit = networkSamplingNodes_fit,
   private = list(
     So     = NULL, ## sum_(i in Nobs ) Z_iq
@@ -203,7 +209,7 @@ R6Class(classname = "blockSampling_fit",
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
       res
     },
-    log_lambda = function(value) {   ### Quand utilise t-on cette fonction ??? ###
+    log_lambda = function(value) {
       res <- sapply(private$psi, function(psi) ifelse(private$N_obs, log(psi), log(1 - psi)))
       res
     }
@@ -212,7 +218,7 @@ R6Class(classname = "blockSampling_fit",
 
 #' @export
 degreeSampling_fit <-
-R6Class(classname = "degreeSampling_fit",
+  R6::R6Class(classname = "degreeSampling_fit",
   inherit = networkSamplingNodes_fit,
   private = list(
     NAs = NULL,

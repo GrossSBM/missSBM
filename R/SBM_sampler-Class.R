@@ -5,7 +5,7 @@
 #' @include SBM-Class.R
 #' @export
 SBM_sampler <-
-R6Class(classname = "SBM_sampler",
+  R6::R6Class(classname = "SBM_sampler",
   inherit = SBM,
   ## fields for internal use (refering to mathematical notations)
   private = list(

@@ -9,7 +9,7 @@
 #' @import R6
 #' @export
 networkSampling_sampler <-
-R6Class(classname = "networkSampling_sampler",
+  R6::R6Class(classname = "networkSampling_sampler",
   inherit = networkSampling,
   private = list(
     ## a private function to generate a collection of observed dyads for different sampling process
@@ -64,10 +64,10 @@ R6Class(classname = "networkSampling_sampler",
       "block_dyad" = function(adjMatrix, clusters) {
         N <- ncol(adjMatrix)
         Q <- length(unique(clusters))
-        if (length(self$parameters) != length(unique(clusters)))
+        if (length(self$parameters) != Q*Q)
           stop("Sampling parameters does not have the required size.")
         Z <- matrix(0, N, Q); Z[cbind(1:N,clusters)] <- 1
-        D_obs <- matrix(rbinom(private$N^2, 1, Z %*% self$parameters %*% t(Z)), N)
+        D_obs <- matrix(rbinom(N^2, 1, Z %*% self$parameters %*% t(Z)), N)
         if (isSymmetric(adjMatrix)){
           D_obs <- D_obs * lower.tri(D_obs) + t(D_obs * lower.tri(D_obs))
           D_obs <- which(D_obs == 1)

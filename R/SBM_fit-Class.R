@@ -3,10 +3,11 @@
 #' This class is designed to adjust a Stochastic Block Model on a fully observed network.
 #' The doVEM method performs inference via Variational EM
 #'
+#' @import R6
 #' @include SBM-Class.R
 #' @export
 SBM_fit <-
-R6Class(classname = "SBM_fit",
+R6::R6Class(classname = "SBM_fit",
   inherit = SBM,
   private = list(
     tau  = NULL  # variational parameters for posterior probablility of class belonging

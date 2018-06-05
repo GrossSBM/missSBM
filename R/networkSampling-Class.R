@@ -7,7 +7,7 @@
 #' @import R6
 #' @export
 networkSampling <-
-R6Class(classname = "networkSampling",
+R6::R6Class(classname = "networkSampling",
   ## fields
   private = list(
     name  = NULL, # type of sampling
