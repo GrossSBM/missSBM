@@ -32,6 +32,8 @@ like the MARNode sampling plus we sample neighbours of nodes sampled at the firs
 }
 \item Not Missing At Random (NMAR) \itemize{ \item{"double_standard": parameter = (p0,p1) and
 \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
+\item{"block_dyad": parameter = c(p(1,1),...,p(Q,Q)) and
+\deqn{p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}}
 \item{"degree": parameter = c(a,b) and
 \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
 \item{"block": parameter = c(p(1),...,p(Q)) and

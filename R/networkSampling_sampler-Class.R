@@ -79,7 +79,7 @@ networkSampling_sampler <-
       "node" = function(adjMatrix, ...) {
         N <- ncol(adjMatrix)
         N_obs <- which(runif(N) < self$parameters)
-        D_obs <- as.matrix(expand.grid(N_obs, 1:N))
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
       },
       "block" = function(adjMatrix, clusters) {
         N <- nrow(adjMatrix)
@@ -89,12 +89,12 @@ networkSampling_sampler <-
         if (length(self$parameters) != length(unique(clusters)))
           stop("Sampling parameters does not have the required size.")
         N_obs <- which(runif(N) < self$parameters[clusters])
-        D_obs <- as.matrix(expand.grid(N_obs, 1:N))
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
       },
       "degree" = function(adjMatrix, ...) {
         N <- nrow(adjMatrix)
         N_obs <- which(runif(N) < logistic(self$parameters[1] + self$parameters[2]*rowSums(adjMatrix)))
-        D_obs <- as.matrix(expand.grid(N_obs, 1:N))
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
       },
       ### TODO: add a parameter for the number of waves
       "snowball" = function(adjMatrix, ...) {
@@ -104,7 +104,7 @@ networkSampling_sampler <-
         # first wave
         wave2 <- unique(unlist(adjMatrix[wave1, ] != 0, 1, function(x) which(x != 0)))
         N_obs <- union(wave1, wave2)
-        D_obs <- as.matrix(expand.grid(N_obs,1:N))
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
       })
     },
     rSampling = function(adjMatrix, ...) {

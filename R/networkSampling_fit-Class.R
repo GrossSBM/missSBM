@@ -199,6 +199,7 @@ blockSampling_fit <-
       self$update_parameters(NA, blockInit)
     },
     update_parameters = function(imputedNet, Z) {
+      # browser()
       private$So <- colSums(Z[ private$N_obs, , drop = FALSE])
       private$Sm <- colSums(Z[!private$N_obs, , drop = FALSE])
       private$psi <- private$So / (private$So + private$Sm)

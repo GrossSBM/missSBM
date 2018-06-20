@@ -20,7 +20,24 @@ sampledNetwork <-
     # number of nodes
     nNodes = function(value) {ncol(private$X)},
     # number of dyads
-    nDyads = function(value) {
+    nDyads = function(value) {#' An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions
+      #'
+      #' The SBM package provides three categories of important functions:
+      #' \code{\link{simulateSBM}}, \code{\link{samplingSBM}}, \code{\link{inferSBM}}.
+      #'
+      #' @details
+      #' Package: missSBM
+      #'
+      #' Type:    Package
+      #'
+      #' Version: 0.1.0
+      #'
+      #' Date:    2017-12-01
+      #'
+      #' License: GPL-2 | GPL-3
+      #'
+      #' @docType package
+      #' @author Timothée Tabouy, Pierre Barbillon, Julien Chiquet
       ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)
     },
     # direction

@@ -19,6 +19,7 @@ R6::R6Class(classname = "SBM_fit",
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
+      # browser()
       private$pi    <- check_boundaries((t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(self$nNodes)) %*% private$tau))
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
@@ -100,7 +101,7 @@ SBM_fit$set("public", "update_blocks",
 )
 
 SBM_fit$set("public", "doVEM",
-  function(adjMatrix, threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = FALSE) {
+  function(adjMatrix, threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE) {
 
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
@@ -120,9 +121,10 @@ SBM_fit$set("public", "doVEM",
       # M-step
       self$update_parameters(adjMatrix)
 
-      ## Assess convergence
+      # Assess convergence
       delta[i] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
       cond     <- (i > maxIter) |  (delta[i] < threshold)
+      cond     <- (i > maxIter)
       objective[i] <- self$vBound(adjMatrix)
     }
     if (trace) cat("\n")
