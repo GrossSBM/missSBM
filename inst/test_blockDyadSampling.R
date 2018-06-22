@@ -1,6 +1,8 @@
+rm(list = ls())
 library(missSBM)
+library(mclust)
 
-n <- 100
+n <- 200
 Q <- 3
 alpha <- rep(1,Q)/Q
 pi <- diag(.45,Q) + .05
@@ -17,11 +19,13 @@ sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters, c
 
 # Inference
 vBlocks <- 1:5
-sbm <- inferSBM(sampledAdjMatrix$adjacencyMatrix, vBlocks, sampling)
+infer <- inferSBM(adjacencyMatrix, vBlocks, sampling)
 
 # ICL
-ICL <- sapply(sbm$models, function(x) x$vICL)
+ICL <- sapply(infer$models, function(x) x$vICL)
 plot(ICL)
 
 # Error
-frobenius(sbm$models[[3]]$fittedSampling$parameters - samplingParameters)/frobenius(sbm$models[[3]]$fittedSampling$parameters)
+sum((infer$models[[3]]$fittedSampling$parameters - samplingParameters)^2)/sum((infer$models[[3]]$fittedSampling$parameters)^2)
+adjustedRandIndex(sbm$memberships, infer$models[[3]]$fittedSBM$memberships)
+

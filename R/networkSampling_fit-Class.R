@@ -77,7 +77,7 @@ dyadSampling_fit <-
       super$initialize(sampledNetwork, "dyad")
       private$card_D_o <- length(sampledNetwork$observedDyads)
       private$card_D_m <- length(sampledNetwork$missingDyads )
-      private$psi      <- private$card_D_o / (private$card_D_m + private$card_D_o)
+      private$psi      <- check_boundaries(private$card_D_o / (private$card_D_m + private$card_D_o))
     }
   ),
   active = list(
@@ -171,15 +171,15 @@ blockDyadSampling_fit <-
             },
             update_parameters = function(imputedNet, Z) {
               private$psi    <- check_boundaries((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z))
-              private$prob   <- Z %*% private$psi %*% t(Z)
+              private$prob   <- check_boundaries(Z %*% private$psi %*% t(Z))
             }
           ),
           active = list(
             vExpec = function(value) {
-              factor      <- ifelse(private$directed, 1, .5)
-              sampMat     <- private$R ; diag(sampMat) <- 0
-              sampMat_bar <- 1 - private$R ; diag(sampMat_bar) <- 0
-              res         <- factor * sum(sampMat * log(private$prob) + (1 - sampMat_bar) *  log(1 - private$prob))
+              factor       <- ifelse(private$directed, 1, .5)
+              sampMat      <- private$R ; diag(sampMat) <- 0
+              sampMat_bar  <- 1 - private$R ; diag(sampMat_bar) <- 0
+              res          <- factor * sum(sampMat * log(private$prob) + (1 - sampMat_bar) *  log(1 - private$prob))
               res
             }
           )

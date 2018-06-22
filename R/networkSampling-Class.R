@@ -24,6 +24,6 @@ R6::R6Class(classname = "networkSampling",
     type = function(value) {private$name},
     parameters = function(value) {private$psi},
     ## degree of freedom are just the size of the vector of missing parameters
-    df = function(value) {length(private$psi)}
+    df = function(value) {if(is.matrix(private$psi)){return(length(private$psi[lower.tri(private$psi, diag = TRUE)]))} else {length(private$psi)}}
   )
 )
