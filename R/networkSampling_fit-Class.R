@@ -24,7 +24,8 @@ networkSamplingDyads_fit <-
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
-    penalty = function(value) {log(private$card_D) * self$df},
+    penalty = function(value) {log(private$card_D) * self$df
+      print(self$df)},
 ##    entropy = function(value) {-sum(xlogx(private$nu[private$NAs]) + xlogx(1 - private$nu[private$NAs]))}
     log_lambda = function(value) {0}
   )
@@ -179,7 +180,7 @@ blockDyadSampling_fit <-
               factor       <- ifelse(private$directed, 1, .5)
               sampMat      <- private$R ; diag(sampMat) <- 0
               sampMat_bar  <- 1 - private$R ; diag(sampMat_bar) <- 0
-              res          <- factor * sum(sampMat * log(private$prob) + (1 - sampMat_bar) *  log(1 - private$prob))
+              res          <- factor * sum(sampMat * log(private$prob) + sampMat_bar *  log(1 - private$prob))
               res
             }
           )

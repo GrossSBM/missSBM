@@ -28,7 +28,7 @@ R6::R6Class(classname = "SBM_fit",
       factor <- ifelse(private$directed, 1, .5)
       adjMatrix_zeroDiag     <- adjMatrix ; diag(adjMatrix_zeroDiag) <- 0           ### Changement ici ###
       adjMatrix_zeroDiag_bar <- 1 - adjMatrix ; diag(adjMatrix_zeroDiag_bar) <- 0   ### Changement ici ###
-      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + (1 - adjMatrix_zeroDiag_bar) *  log(1 - prob))
+      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + adjMatrix_zeroDiag_bar *  log(1 - prob))
     },
     vBound = function(adjMatrix) {self$vExpec(adjMatrix) + self$entropy},
     vICL   = function(adjMatrix) {-2 * self$vExpec(adjMatrix) + self$penalty}
