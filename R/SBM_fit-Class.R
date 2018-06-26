@@ -44,11 +44,10 @@ R6::R6Class(classname = "SBM_fit",
 ## overwrite the SBM initialize function
 SBM_fit$set("public", "initialize",
   function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
-
-    try(
-      !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
-      stop("Only binary graphs are supported.")
-    )
+    # try(
+    #   !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
+    #   stop("Only binary graphs are supported.")
+    # )
 
     # Basic fields intialization and call to super constructor
     super$initialize(
@@ -67,9 +66,12 @@ SBM_fit$set("public", "initialize",
             "kmeans"       = init_kmeans(      adjacencyMatrix, self$nBlocks),
                              init_spectral(    adjacencyMatrix, self$nBlocks)
           )
+        Z <- matrix(0,self$nNodes,self$nBlocks)
+        Z[cbind(1:self$nNodes, clusterInit)] <- 1
+      } else if (is.list(clusterInit)) {
+        Z <- matrix(0,self$nNodes,self$nBlocks)
+        Z[cbind(1:self$nNodes, clusterInit[[self$nBlocks]])] <- 1
       }
-      Z <- matrix(0,self$nNodes,self$nBlocks)
-      Z[cbind(1:self$nNodes, clusterInit)] <- 1
     } else {
       Z <- matrix(1, self$nNodes, self$nBlocks)
     }

@@ -5,30 +5,50 @@ library(mclust)
 n <- 200
 Q <- 3
 alpha <- rep(1,Q)/Q
-pi <- diag(.45,Q) + .05
+pi <- diag(.5,Q) + .1
 directed <- FALSE
 
 sbm <- simulateSBM(n, alpha, pi, directed)
 adjacencyMatrix <- sbm$adjacencyMatrix
-samplingParameters <- diag(.3,Q) + .3
+samplingParameters <- diag(.35,Q) + .05
+samplingParameters[1,] = samplingParameters[,1] <-c(.1,.8,.8)
+samplingParameters[2,] = samplingParameters[,2] <-c(.1,.8,.8)
+
 sampling <- "block_dyad"
 sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters, clusters = sbm$memberships)
 R <- sampledAdjMatrix$samplingMatrix*1
+
+
+dim(R)
+dim(sbm$adjacencyMatrix)
+prop.table(table(as.vector(R),as.vector(sbm$adjacencyMatrix)),1)
 
 # Sampling rate
 (sum(sampledAdjMatrix$samplingMatrix)-n)/(n*(n-1))
 
 # Inference
 vBlocks <- 1:5
-infer <- inferSBM(sampledAdjMatrix$adjacencyMatrix, vBlocks, sampling)
+infer_nmar <- inferSBM(sampledAdjMatrix$adjacencyMatrix, vBlocks, sampling)
+infer_mar  <- inferSBM(sampledAdjMatrix$adjacencyMatrix, vBlocks, "dyad")
 
 # ICL
-ICL <- sapply(infer$models, function(x) x$vICL)
-plot(ICL)
+ICL_nmar <- sapply(infer_nmar$models, function(x) x$vICL)
+plot(ICL_nmar)
 
-# Error
-sum((infer$models[[3]]$fittedSampling$parameters - samplingParameters)^2)/sum((infer$models[[3]]$fittedSampling$parameters)^2)
-adjustedRandIndex(sbm$memberships, infer$models[[3]]$fittedSBM$memberships)
+ICL_mar <- sapply(infer_mar$models, function(x) x$vICL)
+plot(ICL_mar)
+
+
+## Error rho
+sum((infer_nmar$models[[3]]$fittedSampling$parameters - samplingParameters)^2)/sum((infer_nmar$models[[3]]$fittedSampling$parameters)^2)
+
+## Error pi
+sum((infer_nmar$models[[3]]$fittedSBM$connectParam - pi)^2)/sum((infer_nmar$models[[3]]$fittedSBM$connectParam)^2)
+sum((infer_mar$models[[3]]$fittedSBM$connectParam - pi)^2)/sum((infer_mar$models[[3]]$fittedSBM$connectParam)^2)
+
+## ARI
+adjustedRandIndex(sbm$memberships, infer_nmar$models[[3]]$fittedSBM$memberships)
+adjustedRandIndex(sbm$memberships, infer_mar$models[[3]]$fittedSBM$memberships)
 
 
 
