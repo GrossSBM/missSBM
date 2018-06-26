@@ -1,6 +1,6 @@
 zero <- .Machine$double.eps
 
-available_samplings <- c("dyad", "node", "snowball", "degree", "block", "double_standard", "block_dyad")
+available_samplings <- c("dyad", "node", "snowball", "degree", "block", "double_standard")
 
 bar <- function(X) {
   X.bar <- 1 - X ; diag(X.bar) <- 0

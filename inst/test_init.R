@@ -10,7 +10,7 @@ pi <- diag(.45,Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
-mySBM <- simulateSBM(n, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
+mySBM <- simulateSBM(n, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
 adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)

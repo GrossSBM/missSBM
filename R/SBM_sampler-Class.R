@@ -1,4 +1,4 @@
-#' R6 Class definition of an sampler for a Stochastics Bloc Model
+#' R6 Class definition of a sampler for a Stochastics Bloc Model
 #'
 #' this class is used to sample from an SBM, thus has some additional fields and methods related to the blocks and the adjancecy matrix (Z and Y)
 #'
