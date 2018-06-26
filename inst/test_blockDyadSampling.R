@@ -20,7 +20,7 @@ R <- sampledAdjMatrix$samplingMatrix*1
 
 # Inference
 vBlocks <- 1:5
-infer <- inferSBM(adjacencyMatrix, vBlocks, sampling)
+infer <- inferSBM(sampledAdjMatrix$adjacencyMatrix, vBlocks, sampling)
 
 # ICL
 ICL <- sapply(infer$models, function(x) x$vICL)

@@ -24,8 +24,7 @@ networkSamplingDyads_fit <-
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
-    penalty = function(value) {log(private$card_D) * self$df
-      print(self$df)},
+    penalty = function(value) {log(private$card_D) * self$df},
 ##    entropy = function(value) {-sum(xlogx(private$nu[private$NAs]) + xlogx(1 - private$nu[private$NAs]))}
     log_lambda = function(value) {0}
   )
