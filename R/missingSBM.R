@@ -65,7 +65,7 @@ simulateSBM <- function(n, alpha, pi, directed=FALSE){
 #' \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
 #' }}
 #' @examples
-#' ### A SBM model : ###
+#' ### SBM model : ###
 #' n <- 300
 #' Q <- 3
 #' alpha <- rep(1,Q)/Q                                  # mixture parameter
@@ -88,7 +88,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
     stop("This sampling is not available!")
 
   if (sampling == "block" & is.null(clusters))
-    stop("For class sampling you must give clusters !")
+    stop("For block sampling a clustering is required!")
 
   mySampling <- networkSampling_sampler$new(sampling, parameters)
   mySampling$rSampling(adjacencyMatrix, clusters)
