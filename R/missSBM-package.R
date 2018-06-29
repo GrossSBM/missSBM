@@ -3,17 +3,6 @@
 #' The SBM package provides three categories of important functions:
 #' \code{\link{simulateSBM}}, \code{\link{samplingSBM}}, \code{\link{inferSBM}}.
 #'
-#' @details
-#' Package: missSBM
-#'
-#' Type:    Package
-#'
-#' Version: 0.1.0
-#'
-#' Date:    2017-12-01
-#'
-#' License: GPL-2 | GPL-3
-#'
 #' @docType package
 #' @author Timothée Tabouy, Pierre Barbillon, Julien Chiquet
 #' @author Maintainer: \email{timothee.tabouy@gmail.com}

@@ -17,7 +17,7 @@ R6::R6Class(classname = "SBM",
   ),
   public = list(
     ## constructor
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL, similarity=sim_abs) {
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL, covarSimilarity=NULL) {
       private$directed <- directed
       private$N        <- nNodes
       private$Q        <- nrow(connectParam)
@@ -25,14 +25,15 @@ R6::R6Class(classname = "SBM",
       private$alpha    <- mixtureParam
       private$pi       <- connectParam
       if (!is.null(covariates)) {
+        stopifnot(nNodes == nrow(covariates))
         private$X    <- covariates
         private$beta <- covarParam
-        private$phi <- similarity
+        if (is.null(covarSimilarity)) private$phi <- sim_abs else private$phi <- covarSimilarity
         sim <- array(dim = c(nNodes, nNodes, private$M))
         ## TODO: add a basic c++ functions to perform this computation on a set of predefined similarities
         for (i in 1:nNodes)
           for (j in 1:nNodes)
-            sim[i,j,] <- similarity(covariates[i, ], covariates[j, ])
+            sim[i,j,] <- private$phi(covariates[i, ], covariates[j, ])
         private$cov <- sim
       }
     }
@@ -44,7 +45,7 @@ R6::R6Class(classname = "SBM",
     nCovariates = function(value) {private$M}, # number of covariates
     nDyads      = function(value) {ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)},
     direction   = function(value) {if (private$directed) "directed" else "undirected"}, # directed network or not
-    has_covariates = function(value) {ifelse(nCovariates > 0 , TRUE, FALSE)}, # with or without covariates
+    has_covariates = function(value) {ifelse(self$nCovariates > 0 , TRUE, FALSE)}, # with or without covariates
     ## the following fields may change if a SBM is fitted
     mixtureParam = function(value) { # vector of block parameters (a.k.a. alpha)
       if (missing(value)) return(private$alpha) else private$alpha <- value
@@ -55,13 +56,6 @@ R6::R6Class(classname = "SBM",
     covarParam = function(value) { # vector of covariates (a.k.a. beta)
       if (missing(value)) return(private$beta) else private$beta <- value
     },
-    priorProbConn = function(value) {
-      res <- self$connectParam
-      if (self$has_covariates) {
-        res <- logistic(res) ## add similarity matrix/covariates
-      }
-      res
-    },
     covariates = function(value) {private$X},
     df_mixtureParams = function(value) {self$nBlocks - 1},
     df_connectParams = function(value) {ifelse(private$directed, self$nBlocks^2, self$nBlocks*(self$nBlocks + 1)/2)},
@@ -69,3 +63,4 @@ R6::R6Class(classname = "SBM",
   )
 )
 
+## TODO: add a basic print method for SBM !!!

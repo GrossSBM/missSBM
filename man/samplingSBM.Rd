@@ -41,7 +41,7 @@ like the MARNode sampling plus we sample neighbours of nodes sampled at the firs
 }}
 }
 \examples{
-### A SBM model : ###
+### SBM model : ###
 n <- 300
 Q <- 3
 alpha <- rep(1,Q)/Q                                  # mixture parameter

@@ -4,10 +4,11 @@
 \alias{simulateSBM}
 \title{Simulation of a Stochastic Block Model}
 \usage{
-simulateSBM(n, alpha, pi, directed = FALSE)
+simulateSBM(N, alpha, pi, directed = FALSE, X = NULL, beta = NULL,
+  phi = NULL)
 }
 \arguments{
-\item{n}{The number of nodes}
+\item{N}{The number of nodes}
 
 \item{alpha}{The mixture parameters}
 
@@ -15,6 +16,12 @@ simulateSBM(n, alpha, pi, directed = FALSE)
 
 \item{directed}{Boolean variable to indicate whether the network is directed or not,
 by default "undirected" is choosen}
+
+\item{X}{An optional matrix of covariate, with size N x M}
+
+\item{beta}{An optional vector of parameters associated with the covariates, with size M}
+
+\item{phi}{A similarity function from N x N -> M. When NULL (the default), will use -abs(x - y) with x,y in R^N}
 }
 \value{
 \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
@@ -31,12 +38,12 @@ The emission law can be :\itemize{\item{Bernoulli:
 }
 \examples{
 ### A SBM model : ###
-n <- 300
+N <- 300
 Q <- 3
 alpha <- rep(1,Q)/Q                                      # mixture parameter
 pi <- diag(.45,Q) + .05                                  # connectivity matrix
 directed <- FALSE
-mySBM <- simulateSBM(n, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
+mySBM <- simulateSBM(N, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
 
 ### Results : ###
 clusters <-  mySBM$clusters                              # clusters
