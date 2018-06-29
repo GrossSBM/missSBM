@@ -1,6 +1,6 @@
 zero <- .Machine$double.eps
 
-available_samplings <- c("dyad", "node", "snowball", "degree", "block", "double_standard", "block_dyad")
+available_samplings <- c("dyad", "node", "snowball", "degree", "block", "double_standard")
 
 bar <- function(X) {
   X.bar <- 1 - X ; diag(X.bar) <- 0
@@ -19,6 +19,9 @@ check_boundaries <- function(x) {
   x[x <     zero] <-     zero
   x
 }
+
+## predefined similarity function, using absolute distance
+sim_abs <- function(x, y) {-abs(x - y)}
 
 #' @export
 init_spectral <- function(X, K) {

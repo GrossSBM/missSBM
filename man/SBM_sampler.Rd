@@ -3,12 +3,12 @@
 \docType{data}
 \name{SBM_sampler}
 \alias{SBM_sampler}
-\title{R6 Class definition of an sampler for a Stochastics Bloc Model}
+\title{R6 Class definition of a sampler for a Stochastics Bloc Model}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 SBM_sampler
 }
 \description{
-this class is used to sample from an SBM, thus has some additional fields and methods related to the blocks and the adjancecy matrix (Z and X)
+this class is used to sample from an SBM, thus has some additional fields and methods related to the blocks and the adjancecy matrix (Z and Y)
 }
 \keyword{datasets}

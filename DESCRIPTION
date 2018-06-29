@@ -9,7 +9,8 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Collate: 
+Collate:
+    'RcppExports.R'
     'SBM-Class.R'
     'SBM_fit-Class.R'
     'SBM_sampler-Class.R'
@@ -24,3 +25,5 @@ Collate:
     'sampledNetwork-Class.R'
     'networkSampling_sampler-Class.R'
 RoxygenNote: 6.0.1
+LinkingTo: Rcpp, RcppArmadillo
+Imports: Rcpp, RcppArmadillo

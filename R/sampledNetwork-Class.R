@@ -4,10 +4,10 @@ sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
   private = list(
-    X        = NULL, # adjacency matrix
+    Y        = NULL, # adjacency matrix
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
-    nas      = NULL, # all NA in X
+    nas      = NULL, # all NA in Y
     D_obs    = NULL, # array indices of missing dyads
     D_miss   = NULL, # array indices of observed dyads
     R        = NULL, # matrix of observed and non-observed edges
@@ -18,32 +18,15 @@ sampledNetwork <-
     ## percentage of observed dyads
     samplingRate = function(value) {length(private$D_obs)/self$nDyads},
     # number of nodes
-    nNodes = function(value) {ncol(private$X)},
+    nNodes = function(value) {ncol(private$Y)},
     # number of dyads
-    nDyads = function(value) {#' An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions
-      #'
-      #' The SBM package provides three categories of important functions:
-      #' \code{\link{simulateSBM}}, \code{\link{samplingSBM}}, \code{\link{inferSBM}}.
-      #'
-      #' @details
-      #' Package: missSBM
-      #'
-      #' Type:    Package
-      #'
-      #' Version: 0.1.0
-      #'
-      #' Date:    2017-12-01
-      #'
-      #' License: GPL-2 | GPL-3
-      #'
-      #' @docType package
-      #' @author Timothée Tabouy, Pierre Barbillon, Julien Chiquet
+    nDyads = function(value) {
       ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)
     },
     # direction
     is_directed = function(value) {private$directed},
     # adjacency matrix
-    adjacencyMatrix = function(value) {private$X},
+    adjacencyMatrix = function(value) {private$Y},
     # list of potential dyads in the network
     dyads           = function(value) {private$D},
     # array indices of missing dyads
@@ -64,7 +47,7 @@ sampledNetwork <-
       ## adjacency matrix
       stopifnot(is.matrix(adjacencyMatrix))
       if (isSymmetric(adjacencyMatrix)) private$directed <- FALSE else private$directed <- TRUE
-      private$X  <- adjacencyMatrix
+      private$Y  <- adjacencyMatrix
 
       ## sets of observed / unobserved dyads
       private$nas <- is.na(adjacencyMatrix)

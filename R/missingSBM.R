@@ -2,11 +2,14 @@
 #'
 #' @description \code{simulateSBM} is a function that generates a matrix (the adjacency matrix of a network) under the SBM
 #'
-#' @param n The number of nodes
+#' @param N The number of nodes
 #' @param alpha The mixture parameters
 #' @param pi The connectivity matrix (probabilities inter and intra clusters)
 #' @param directed Boolean variable to indicate whether the network is directed or not,
 #' by default "undirected" is choosen
+#' @param X An optional matrix of covariate, with size N x M
+#' @param beta An optional vector of parameters associated with the covariates, with size M
+#' @param phi A similarity function from N x N -> M. When NULL (the default), will use -abs(x - y) with x,y in R^N
 #' @return \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
@@ -17,20 +20,20 @@
 #' }
 #' @examples
 #' ### A SBM model : ###
-#' n <- 300
+#' N <- 300
 #' Q <- 3
 #' alpha <- rep(1,Q)/Q                                      # mixture parameter
 #' pi <- diag(.45,Q) + .05                                  # connectivity matrix
 #' directed <- FALSE
-#' mySBM <- simulateSBM(n, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
+#' mySBM <- simulateSBM(N, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
 #'
 #'### Results : ###
 #' clusters <-  mySBM$clusters                              # clusters
 #' adjacencyMatrix <- mySBM$adjacencyMatrix                 # the adjacency matrix
 #'
 #' @export
-simulateSBM <- function(n, alpha, pi, directed=FALSE){
-  mySBM <- SBM_sampler$new(directed, n, alpha, pi)
+simulateSBM <- function(N, alpha, pi, directed = FALSE, X = NULL, beta = NULL, phi = NULL){
+  mySBM <- SBM_sampler$new(directed, n, alpha, pi, X, beta, phi)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM
@@ -65,7 +68,7 @@ simulateSBM <- function(n, alpha, pi, directed=FALSE){
 #' \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
 #' }}
 #' @examples
-#' ### A SBM model : ###
+#' ### SBM model : ###
 #' n <- 300
 #' Q <- 3
 #' alpha <- rep(1,Q)/Q                                  # mixture parameter
@@ -88,7 +91,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
     stop("This sampling is not available!")
 
   if (sampling == "block" & is.null(clusters))
-    stop("For class sampling you must give clusters !")
+    stop("For block sampling a clustering is required!")
 
   mySampling <- networkSampling_sampler$new(sampling, parameters)
   mySampling$rSampling(adjacencyMatrix, clusters)

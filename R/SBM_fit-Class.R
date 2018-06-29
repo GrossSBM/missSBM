@@ -19,7 +19,6 @@ R6::R6Class(classname = "SBM_fit",
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
-      # browser()
       private$pi    <- check_boundaries((t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(self$nNodes)) %*% private$tau))
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
