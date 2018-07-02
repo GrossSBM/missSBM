@@ -41,6 +41,7 @@ SBM_fit_nocovariate$set("public", "update_blocks",
       tau_old <- tau
     }
     private$tau <- tau
+
   }
 )
 
