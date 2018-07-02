@@ -47,7 +47,7 @@ SBM_fit$set("public", "initialize",
     #   !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
     #   stop("Only binary graphs are supported.")
     # )
-
+browser()
     # Basic fields intialization and call to super constructor
     super$initialize(
       directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
@@ -67,9 +67,14 @@ SBM_fit$set("public", "initialize",
           )
         Z <- matrix(0,self$nNodes,self$nBlocks)
         Z[cbind(1:self$nNodes, clusterInit)] <- 1
-      } else if (is.list(clusterInit)) {
+      # } else if (is.list(clusterInit)) { ## ???
+      #   Z <- matrix(0,self$nNodes,self$nBlocks)
+      #   Z[cbind(1:self$nNodes, clusterInit[[self$nBlocks]])] <- 1
+      } else if (is.numeric(clusterInit)) {
         Z <- matrix(0,self$nNodes,self$nBlocks)
-        Z[cbind(1:self$nNodes, clusterInit[[self$nBlocks]])] <- 1
+        Z[cbind(1:self$nNodes, clusterInit)] <- 1
+      } else {
+        stop("unknown type for initial clustering")
       }
     } else {
       Z <- matrix(1, self$nNodes, self$nBlocks)
