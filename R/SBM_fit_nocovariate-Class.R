@@ -28,15 +28,17 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
 SBM_fit_nocovariate$set("public", "update_blocks",
   function(adjMatrix, fixPointIter, log_lambda = 0) {
     adjMatrix_bar <- bar(adjMatrix)
+    tau_old <- private$tau
     for (i in 1:fixPointIter) {
       ## Bernoulli undirected
-      tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log_lambda
+      tau <- adjMatrix %*% tau_old %*% t(log(private$pi)) + adjMatrix_bar %*% tau_old %*% t(log(1 - private$pi)) + log_lambda
       if (private$directed) {
         ## Bernoulli directed
-        tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
+        tau <- tau + t(adjMatrix) %*% tau_old %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% tau_old %*% t(log(1 - t(private$pi)))
       }
       tau <- exp(sweep(tau, 2, log(private$alpha),"+"))
       tau <- tau/rowSums(tau)
+      tau_old <- tau
     }
     private$tau <- tau
   }

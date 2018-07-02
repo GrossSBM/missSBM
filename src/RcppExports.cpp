@@ -6,6 +6,52 @@
 
 using namespace Rcpp;
 
+// E_step
+NumericMatrix E_step(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha);
+RcppExport SEXP _missSBM_E_step(SEXP YSEXP, SEXP covSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(E_step(Y, cov, gamma, beta, Tau, alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
+// objective_Mstep_covariates
+double objective_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau, bool directed);
+RcppExport SEXP _missSBM_objective_Mstep_covariates(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP, SEXP directedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< bool >::type directed(directedSEXP);
+    rcpp_result_gen = Rcpp::wrap(objective_Mstep_covariates(param, Y, cov, Tau, directed));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gradient_Mstep_covariates
+NumericVector gradient_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau, bool directed);
+RcppExport SEXP _missSBM_gradient_Mstep_covariates(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP, SEXP directedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< bool >::type directed(directedSEXP);
+    rcpp_result_gen = Rcpp::wrap(gradient_Mstep_covariates(param, Y, cov, Tau, directed));
+    return rcpp_result_gen;
+END_RCPP
+}
 // roundProduct
 Rcpp::NumericMatrix roundProduct(arma::cube X, arma::vec beta);
 RcppExport SEXP _missSBM_roundProduct(SEXP XSEXP, SEXP betaSEXP) {
@@ -20,6 +66,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_missSBM_E_step", (DL_FUNC) &_missSBM_E_step, 6},
+    {"_missSBM_objective_Mstep_covariates", (DL_FUNC) &_missSBM_objective_Mstep_covariates, 5},
+    {"_missSBM_gradient_Mstep_covariates", (DL_FUNC) &_missSBM_gradient_Mstep_covariates, 5},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {NULL, NULL, 0}
 };
