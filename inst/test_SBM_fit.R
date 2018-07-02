@@ -17,7 +17,7 @@ mySBM <- simulateSBM(n, alpha, pi, directed)
 ## testing the different initializations
 ## random
 cat("\n VEM randomly initialized")
-mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, Q, sample(mySBM$memberships))
+mySBM_fit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, Q, sample(mySBM$memberships))
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 
 par(mfrow = c(1,2))
@@ -30,14 +30,14 @@ mySBM_fit$vBound(mySBM$adjacencyMatrix)
 
 ## spectral clustering
 cat("\n VEM initialized with spectral clustering")
-mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, Q, "spectral")
+mySBM_fit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, Q, "spectral")
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
 ## Hierarchical clustering
 cat("\n VEM initialized with hierarchical clustering")
-mySBM_fit <- SBM_fit$new(mySBM$adjacencyMatrix, Q, "hierarchical")
+mySBM_fit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, Q, "hierarchical")
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
@@ -48,7 +48,7 @@ vBlocks <- 1:10
 cat("\n Number of blocks =")
 models <- lapply(vBlocks, function(nBlocks) {
   cat("", nBlocks)
-  myFit <- SBM_fit$new(mySBM$adjacencyMatrix, nBlocks)
+  myFit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, nBlocks)
   myFit$doVEM(mySBM$adjacencyMatrix)
   myFit
 })

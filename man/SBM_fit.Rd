@@ -10,6 +10,9 @@ SBM_fit
 }
 \description{
 This class is designed to adjust a Stochastic Block Model on a fully observed network.
-The doVEM method performs inference via Variational EM
+The doVEM method performs inference via Variational EM.
+}
+\details{
+This class is virtual: inference an be effective only for one of the two child classes (SBM_fit_nocovariate and SBM_fit_covariates)
 }
 \keyword{datasets}

@@ -13,6 +13,7 @@ Collate:
     'RcppExports.R'
     'SBM-Class.R'
     'SBM_fit-Class.R'
+    'SBM_fit_nocovariate-Class.R'
     'SBM_sampler-Class.R'
     'data.R'
     'missSBM-package.R'

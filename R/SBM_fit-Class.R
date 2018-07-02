@@ -1,10 +1,12 @@
 #' R6 Class definition of an SBM-fit
 #'
 #' This class is designed to adjust a Stochastic Block Model on a fully observed network.
-#' The doVEM method performs inference via Variational EM
+#' The doVEM method performs inference via Variational EM.
+#'
+#' This class is virtual: inference an be effective only for one of the two child classes (SBM_fit_nocovariate and SBM_fit_covariates)
 #'
 #' @import R6
-#' @include SBM-Class.R
+#' @include SBM_fit-Class.R
 #' @export
 SBM_fit <-
 R6::R6Class(classname = "SBM_fit",
@@ -13,32 +15,18 @@ R6::R6Class(classname = "SBM_fit",
     tau  = NULL  # variational parameters for posterior probablility of class belonging
   ),
   public = list(
-    init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
-      NAs <- is.na(adjMatrix); adjMatrix[NAs] <- 0
-      private$pi    <- check_boundaries((t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(self$nNodes)) * !NAs) %*% private$tau))
-      private$alpha <- check_boundaries(colMeans(private$tau))
-    },
-    update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
-      private$pi    <- check_boundaries((t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(self$nNodes)) %*% private$tau))
-      private$alpha <- check_boundaries(colMeans(private$tau))
-    },
-    vExpec = function(adjMatrix) {
-      prob   <- private$tau %*% private$pi %*% t(private$tau)
-      factor <- ifelse(private$directed, 1, .5)
-      adjMatrix_zeroDiag     <- adjMatrix ; diag(adjMatrix_zeroDiag) <- 0           ### Changement ici ###
-      adjMatrix_zeroDiag_bar <- 1 - adjMatrix ; diag(adjMatrix_zeroDiag_bar) <- 0   ### Changement ici ###
-      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + adjMatrix_zeroDiag_bar *  log(1 - prob))
-    },
     vBound = function(adjMatrix) {self$vExpec(adjMatrix) + self$entropy},
     vICL   = function(adjMatrix) {-2 * self$vExpec(adjMatrix) + self$penalty}
   ),
   active = list(
     blocks      = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
     memberships = function(value) {apply(private$tau, 1, which.max)},
-    penalty     = function(value) {self$df_connectParams * log(self$nDyads) + self$df_mixtureParams * log(self$nNodes)},
+    penalty     = function(value) {(self$df_connectParams + self$df_covarParams) * log(self$nDyads) + self$df_mixtureParams * log(self$nNodes)},
     entropy     = function(value) {-sum(xlogx(private$tau))}
   )
 )
+
+## TODO: have an initialization specific to covariates/nocovariate objects
 
 ## overwrite the SBM initialize function
 SBM_fit$set("public", "initialize",
@@ -69,9 +57,6 @@ SBM_fit$set("public", "initialize",
           )
         Z <- matrix(0,self$nNodes,self$nBlocks)
         Z[cbind(1:self$nNodes, clusterInit)] <- 1
-      # } else if (is.list(clusterInit)) { ## ???
-      #   Z <- matrix(0,self$nNodes,self$nBlocks)
-      #   Z[cbind(1:self$nNodes, clusterInit[[self$nBlocks]])] <- 1
       } else if (is.numeric(clusterInit)) {
         Z <- matrix(0,self$nNodes,self$nBlocks)
         Z[cbind(1:self$nNodes, clusterInit)] <- 1
@@ -87,24 +72,6 @@ SBM_fit$set("public", "initialize",
     self$init_parameters(adjacencyMatrix)
 
     invisible(self)
-  }
-)
-
-### !!!TODO!!! Write this in C++ and update each individual coordinate-wise
-SBM_fit$set("public", "update_blocks",
-  function(adjMatrix, fixPointIter, log_lambda = 0) {
-    adjMatrix_bar <- bar(adjMatrix)
-    for (i in 1:fixPointIter) {
-      ## Bernoulli undirected
-      tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log_lambda
-      if (private$directed) {
-        ## Bernoulli directed
-        tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
-      }
-      tau <- exp(sweep(tau, 2, log(private$alpha),"+"))
-      tau <- tau/rowSums(tau)
-    }
-    private$tau <- tau
   }
 )
 

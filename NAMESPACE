@@ -3,6 +3,7 @@
 export()
 export(SBM)
 export(SBM_fit)
+export(SBM_fit_nocovariate)
 export(SBM_sampler)
 export(blockDyadSampling_fit)
 export(blockSampling_fit)

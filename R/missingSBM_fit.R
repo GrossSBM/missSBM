@@ -27,8 +27,9 @@ missingSBM_fit <-
       ## network data without any imputation at startup
       private$imputedNet <- sampledNet$adjacencyMatrix
 
+### TEMPORARY: HANDELING nocovariate model
       ## construct and initialize the SBM fit
-      private$SBM <- SBM_fit$new(private$imputedNet, nBlocks, clusterInit)
+      private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, nBlocks, clusterInit)
 
       ## construct the network sampling fit
       private$sampling <- switch(netSampling,
