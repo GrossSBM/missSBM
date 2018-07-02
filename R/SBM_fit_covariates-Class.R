@@ -32,13 +32,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
 ## TODO: have an initialization specific to covariates
 ## overwrite the SBM initialize function
 SBM_fit_covariates$set("public", "initialize",
-  function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
-
-### QUESTION JULIEN -> TIMOTHÉE: WHY SUPPRESSING THIS ???
-    # try(
-    #   !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
-    #   stop("Only binary graphs are supported.")
-    # )
+  function(adjacencyMatrix, covariates, nBlocks, clusterInit = "spectral", covarSimilarity = sim_abs) {
 
     # Basic fields intialization and call to super constructor
     super$initialize(

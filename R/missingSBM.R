@@ -137,6 +137,11 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral",
                      smoothing = c("none", "forward", "backward", "both"), mc.cores = 2, control_VEM = list()){
 
+  try(
+    !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
+    stop("Only binary graphs are supported.")
+  )
+
   sampledNet <- sampledNetwork$new(adjacencyMatrix)
   cat("\n")
   cat("\n Adjusting Variational EM for Stochastic Block Model\n")

@@ -28,12 +28,6 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
 SBM_fit_nocovariate$set("public", "initialize",
   function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
 
-### QUESTION JULIEN -> TIMOTHÉE: WHY SUPPRESSING THIS ???
-    # try(
-    #   !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
-    #   stop("Only binary graphs are supported.")
-    # )
-
     # Basic fields intialization and call to super constructor
     super$initialize(
       directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
