@@ -57,14 +57,14 @@ R6::R6Class(classname = "SBM_fit_covariates",
         param <- c(as.vector(private$pi),private$beta)
         optim_out <- optim(param, objective_Mstep_covariates, gradient_Mstep_covariates,
           Y = adjMatrix, cov = private$cov, Tau = private$tau, directed = private$directed,
-          method = "BFGS", control = list(fnscale = -1)
+          method = "BFGS", control = list(fnscale = -1, trace = 1)
         )
         private$beta  <- optim_out$par[-(1:(Q^2))]
         private$pi    <- matrix(optim_out$par[1:(private$Q^2)], private$Q, private$Q)
         private$alpha <- check_boundaries(colMeans(private$tau))
     },
     vExpec = function(adjMatrix) {
-      J <- vBound_covariates(adjMatrix, private$pi, private$beta, private$cov, private$tau, priavte$alpha)
+      J <- vBound_covariates(adjMatrix, private$pi, private$beta, private$cov, private$tau, private$alpha)
       J
     },
     update_blocks =   function(adjMatrix, fixPointIter, log_lambda = 0) {
