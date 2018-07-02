@@ -7,7 +7,7 @@ n <- 400
 Q <- 5
 alpha <- rep(1,Q)/Q       # mixture parameter
 pi <- diag(.45,Q) + .05   # connectivity matrix
-directed <- FALSE         # if the network is directed or not
+directed <- FALSE         # if the network is directed Sor not
 
 ### Draw a SBM model
 mySBM <- simulateSBM(n, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM

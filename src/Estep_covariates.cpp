@@ -8,7 +8,7 @@ using namespace Rcpp;
 using namespace arma;
 
 // [[Rcpp::export]]
-NumericMatrix E_step(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha) {
+NumericMatrix E_step_covariates(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha) {
 
   int N = Y.ncol();
   int Q = gamma.ncol();

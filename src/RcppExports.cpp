@@ -6,9 +6,9 @@
 
 using namespace Rcpp;
 
-// E_step
-NumericMatrix E_step(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha);
-RcppExport SEXP _missSBM_E_step(SEXP YSEXP, SEXP covSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
+// E_step_covariates
+NumericMatrix E_step_covariates(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha);
+RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP covSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(E_step(Y, cov, gamma, beta, Tau, alpha));
+    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, cov, gamma, beta, Tau, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -64,12 +64,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vBound_covariates
+double vBound_covariates(IntegerMatrix Y, NumericMatrix gamma, arma::vec beta, arma::cube cov, NumericMatrix Tau, NumericVector alpha);
+RcppExport SEXP _missSBM_vBound_covariates(SEXP YSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP covSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(vBound_covariates(Y, gamma, beta, cov, Tau, alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_missSBM_E_step", (DL_FUNC) &_missSBM_E_step, 6},
+    {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 6},
     {"_missSBM_objective_Mstep_covariates", (DL_FUNC) &_missSBM_objective_Mstep_covariates, 5},
     {"_missSBM_gradient_Mstep_covariates", (DL_FUNC) &_missSBM_gradient_Mstep_covariates, 5},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
+    {"_missSBM_vBound_covariates", (DL_FUNC) &_missSBM_vBound_covariates, 6},
     {NULL, NULL, 0}
 };
 

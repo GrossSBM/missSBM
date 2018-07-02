@@ -33,7 +33,7 @@ R6::R6Class(classname = "SBM_fit",
 SBM_fit$set("public", "initialize",
   function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
 
-    ## WHY SUPPRESSING THAT ???
+### QUESTION JULIEN -> TIMOTHÉE: WHY SUPPRESSING THIS ???
     # try(
     #   !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
     #   stop("Only binary graphs are supported.")
