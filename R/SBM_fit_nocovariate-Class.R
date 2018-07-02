@@ -24,6 +24,53 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
   )
 )
 
+## overwrite the SBM initialize function
+SBM_fit_nocovariate$set("public", "initialize",
+  function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
+
+### QUESTION JULIEN -> TIMOTHÉE: WHY SUPPRESSING THIS ???
+    # try(
+    #   !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
+    #   stop("Only binary graphs are supported.")
+    # )
+
+    # Basic fields intialization and call to super constructor
+    super$initialize(
+      directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
+      nNodes       = nrow(adjacencyMatrix),
+      mixtureParam = rep(NA,nBlocks),
+      connectParam = matrix(NA,nBlocks,nBlocks)
+    )
+
+    ## Initial Clustering
+    if (self$nBlocks > 1) {
+      if (is.character(clusterInit)) {
+        clusterInit <-
+          switch(clusterInit,
+            "hierarchical" = init_hierarchical(adjacencyMatrix, self$nBlocks),
+            "kmeans"       = init_kmeans(      adjacencyMatrix, self$nBlocks),
+                             init_spectral(    adjacencyMatrix, self$nBlocks)
+          )
+        Z <- matrix(0,self$nNodes,self$nBlocks)
+        Z[cbind(1:self$nNodes, clusterInit)] <- 1
+      } else if (is.numeric(clusterInit)) {
+        Z <- matrix(0,self$nNodes,self$nBlocks)
+        Z[cbind(1:self$nNodes, clusterInit)] <- 1
+      } else {
+        stop("unknown type for initial clustering")
+      }
+    } else {
+      Z <- matrix(1, self$nNodes, self$nBlocks)
+    }
+    private$tau <- Z
+
+    ## Initialize parameters
+    self$init_parameters(adjacencyMatrix)
+
+    invisible(self)
+  }
+)
+
 ### !!!TODO!!! Write this in C++ and update each individual coordinate-wise
 SBM_fit_nocovariate$set("public", "update_blocks",
   function(adjMatrix, fixPointIter, log_lambda = 0) {
