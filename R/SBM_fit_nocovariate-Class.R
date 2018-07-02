@@ -24,7 +24,6 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
   )
 )
 
-
 ### !!!TODO!!! Write this in C++ and update each individual coordinate-wise
 SBM_fit_nocovariate$set("public", "update_blocks",
   function(adjMatrix, fixPointIter, log_lambda = 0) {
