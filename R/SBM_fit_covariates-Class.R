@@ -5,7 +5,6 @@ SBM_fit_covariates <-
 R6::R6Class(classname = "SBM_fit_covariates",
   inherit = SBM_fit,
   public = list(
-    ## TODO: have an initialization specific to covariates
     initialize = function(adjacencyMatrix, covariates, nBlocks, clusterInit = "spectral", covarSimilarity = sim_abs) {
 
       # Basic fields intialization and call to super constructor
@@ -20,6 +19,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       )
 
       ## Initial Clustering
+      ## TODO: have an initialization specific to covariates
       if (self$nBlocks > 1) {
         if (is.character(clusterInit)) {
           clusterInit <-

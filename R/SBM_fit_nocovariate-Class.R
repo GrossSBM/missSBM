@@ -58,6 +58,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + adjMatrix_zeroDiag_bar *  log(1 - prob))
     },
     update_blocks = function(adjMatrix, fixPointIter, log_lambda = 0) {
+      ## TODO: code this function in Rcpp/C++ ...
       adjMatrix_bar <- bar(adjMatrix)
       tau_old <- private$tau
       for (i in 1:fixPointIter) {

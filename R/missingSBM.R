@@ -33,7 +33,7 @@
 #'
 #' @export
 simulateSBM <- function(N, alpha, pi, directed = FALSE, X = NULL, beta = NULL, phi = NULL){
-  mySBM <- SBM_sampler$new(directed, n, alpha, pi, X, beta, phi)
+  mySBM <- SBM_sampler$new(directed, N, alpha, pi, X, beta, phi)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM
