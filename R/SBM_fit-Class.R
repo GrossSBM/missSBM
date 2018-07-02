@@ -43,11 +43,13 @@ R6::R6Class(classname = "SBM_fit",
 ## overwrite the SBM initialize function
 SBM_fit$set("public", "initialize",
   function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
+
+    ## WHY SUPPRESSING THAT ???
     # try(
     #   !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
     #   stop("Only binary graphs are supported.")
     # )
-browser()
+
     # Basic fields intialization and call to super constructor
     super$initialize(
       directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),

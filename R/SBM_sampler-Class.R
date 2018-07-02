@@ -42,3 +42,19 @@ SBM_sampler <-
     }
   )
 )
+
+## ----------------------------------------------------------------------
+## PUBLIC METHODS FOR THE USERS
+## ----------------------------------------------------------------------
+
+SBM_sampler$set("public", "show",
+function(model = "Sampler for Stochastic Block Model\n") {
+  super$show(model)
+  cat("* Sampling methods \n")
+  cat("  $rBlocks(), $rAdjmatrix()\n")
+  cat("* Additional fields \n")
+  cat("  $blocks, $memberships, $adjacencyMatrix, $connectProb\n")
+
+})
+SBM_sampler$set("public", "print", function() self$show())
+

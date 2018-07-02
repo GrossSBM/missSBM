@@ -63,4 +63,21 @@ R6::R6Class(classname = "SBM",
   )
 )
 
-## TODO: add a basic print method for SBM !!!
+## ----------------------------------------------------------------------
+## PUBLIC METHODS FOR THE USERS
+## ----------------------------------------------------------------------
+
+SBM$set("public", "show",
+function(model = "Stochastic Block Model\n") {
+  cat(model)
+  cat("==================================================================\n")
+  cat("Model", self$direction, "with",
+        self$nNodes,"nodes,",
+        self$nBlocks, "blocks and",
+        ifelse(self$has_covariates, self$nCovariates, "no"), "covariate(s).\n")
+  cat("==================================================================\n")
+  cat("* Useful fields \n")
+  cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam, $covarParam, $covariates\n")
+})
+SBM$set("public", "print", function() self$show())
+
