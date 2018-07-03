@@ -8,13 +8,13 @@ set.seed(1111)
 N <- 100
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45,Q) + .05                 # connectivity matrix
+pi <- diag(.15, Q) +.01                 # connectivity matrix
 directed <- FALSE
 
 ### Draw a undirected SBM model with covariates
-M <- 2
+covarParam  <- c(-1, 0, 1)
+M <- length(covarParam)
 covariates <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
-covarParam  <- rnorm(M,0,1)
 mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
 
 ## testing the different initializations

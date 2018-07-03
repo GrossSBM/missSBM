@@ -56,5 +56,24 @@ function(model = "Sampler for Stochastic Block Model\n") {
   cat("  $blocks, $memberships, $adjacencyMatrix, $connectProb\n")
 
 })
+
 SBM_sampler$set("public", "print", function() self$show())
 
+SBM_sampler$set("public", "plot",
+  function(type = c("network", "connectivity")) {
+    type <- match.arg(type)
+    if (type == "network") {
+      g <- gg_image_NA(self$adjacencyMatrix, self$memberships)
+      print(g)
+    }
+    if (type == "connectivity") {
+      plot(
+        graph_from_adjacency_matrix(
+          private$pi,
+          mode = ifelse(private$directed, "directed", "undirected"),
+          weighted = TRUE, diag = TRUE
+        ), main = "SBM connectivity matrix"
+      )
+    }
+  }
+)

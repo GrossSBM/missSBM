@@ -114,7 +114,6 @@ image_NA <- function(z,  zlim = c(0,1), col = c("white", "midnightblue"), na.col
 #' @export
 gg_image_NA <- function(adjacencyMatrix, memberships) {
 
-
   adjacencyMatrix[is.na(adjacencyMatrix)] <- -1
   G <- graph_from_adjacency_matrix(adjacencyMatrix, weighted = TRUE)
   V(G)$membership <- memberships
