@@ -21,13 +21,15 @@ R6::R6Class(classname = "SBM",
       private$Q        <- nrow(connectParam)
       private$M        <- ifelse(is.null(covariates), 0, length(covarParam))
       private$alpha    <- mixtureParam
-      private$pi       <- connectParam
       if (!is.null(covariates)) {
         stopifnot(dim(covariates)[1] == nNodes)
         stopifnot(dim(covariates)[2] == nNodes)
         stopifnot(dim(covariates)[3] == length(covarParam))
         private$phi  <- covariates
         private$beta <- covarParam
+        private$pi   <- logit(connectParam)
+      } else {
+        private$pi   <- connectParam
       }
     }
   ),

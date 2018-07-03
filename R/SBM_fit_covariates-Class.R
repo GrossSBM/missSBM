@@ -14,24 +14,27 @@ R6::R6Class(classname = "SBM_fit_covariates",
         covariates      = covariates,
         mixtureParam    = rep(NA,nBlocks),
         connectParam    = matrix(NA,nBlocks,nBlocks),
-        covarParam      = numeric(ncol(covariates))
+        covarParam      = numeric(dim(covariates)[3])
       )
 
       ## Initial Clustering
-      ## TODO: have an initialization specific to covariates
       if (self$nBlocks > 1) {
         if (is.character(clusterInit)) {
+          y <- as.vector(adjacencyMatrix)
+          X <- apply(covariates, 3, as.vector)
+          out_logistic <- glm(y ~ X + 0, family = "binomial")
+          adjacencyResiduals <- matrix(logistic(residuals(out_logistic)), self$nNodes, self$nNodes)
           clusterInit <-
             switch(clusterInit,
-                   "hierarchical" = init_hierarchical(adjacencyMatrix, self$nBlocks),
-                   "kmeans"       = init_kmeans(      adjacencyMatrix, self$nBlocks),
-                   init_spectral(    adjacencyMatrix, self$nBlocks)
+                   "hierarchical" = init_hierarchical(adjacencyResiduals, self$nBlocks),
+                   "kmeans"       = init_kmeans(      adjacencyResiduals, self$nBlocks),
+                                    init_spectral(    adjacencyResiduals, self$nBlocks)
             )
           Z <- matrix(0,self$nNodes,self$nBlocks)
           Z[cbind(1:self$nNodes, clusterInit)] <- 1
-        } else if (is.numeric(clusterInit)) {
+        } else if (is.numeric(clusterInit) | is.factor(clusterInit)) {
           Z <- matrix(0,self$nNodes,self$nBlocks)
-          Z[cbind(1:self$nNodes, clusterInit)] <- 1
+          Z[cbind(1:self$nNodes, as.numeric(clusterInit))] <- 1
         } else {
           stop("unknown type for initial clustering")
         }
@@ -47,8 +50,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
     },
     init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
       NAs           <- is.na(adjMatrix); adjMatrix[NAs] <- 0
-      pi_           <- check_boundaries((t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(self$nNodes)) * !NAs) %*% private$tau))
-      private$pi    <- log(pi_/(1 - pi_))
+      private$pi    <- logit(check_boundaries((t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(self$nNodes)) * !NAs) %*% private$tau)))
       private$alpha <- check_boundaries(colMeans(private$tau))
       private$beta  <- numeric(private$M)
     },
