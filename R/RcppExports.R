@@ -13,6 +13,7 @@ gradient_Mstep_covariates <- function(param, Y, cov, Tau, directed) {
     .Call('_missSBM_gradient_Mstep_covariates', PACKAGE = 'missSBM', param, Y, cov, Tau, directed)
 }
 
+#' @export
 roundProduct <- function(X, beta) {
     .Call('_missSBM_roundProduct', PACKAGE = 'missSBM', X, beta)
 }

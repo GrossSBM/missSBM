@@ -25,9 +25,9 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
             )
           Z <- matrix(0,self$nNodes,self$nBlocks)
           Z[cbind(1:self$nNodes, clusterInit)] <- 1
-        } else if (is.numeric(clusterInit)) {
+        } else if (is.numeric(clusterInit) | is.factor(clusterInit)) {
           Z <- matrix(0,self$nNodes,self$nBlocks)
-          Z[cbind(1:self$nNodes, clusterInit)] <- 1
+          Z[cbind(1:self$nNodes, as.numeric(clusterInit))] <- 1
         } else {
           stop("unknown type for initial clustering")
         }

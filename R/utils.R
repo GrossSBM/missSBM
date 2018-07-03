@@ -8,6 +8,7 @@ bar <- function(X) {
 }
 
 logistic <- function(x) {1/(1 + exp(-x))}
+logit    <- function(x) {log(x/(1 - x))}
 
 h <- function(x) {-.5 * (logistic(x) - 0.5) / x}
 

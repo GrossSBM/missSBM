@@ -5,16 +5,15 @@ library(aricode)
 set.seed(1111)
 
 ### A SBM model : ###
-N <- 100
-Q <- 5
+N <- 200
+Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.15, Q) +.01                 # connectivity matrix
+pi <- diag(.25, Q) + .01                 # connectivity matrix
 directed <- FALSE
 
-### Draw a undirected SBM model with covariates
-covarParam  <- c(-5, 0, 5)
+covarParam  <- c(-5, 5)
 M <- length(covarParam)
-X <- t(rmultinom(N, 1, c(1/3,1/3,1/3)))
+X <- t(rmultinom(N, 1, c(1/3,1/3))) + rnorm(N*2,0,0.1)
 covariates <- array(dim = c(N, N, M))
 for (i in 1:N)
   for (j in 1:N)
@@ -22,6 +21,7 @@ for (i in 1:N)
 
 mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
 plot(mySBM)
+
 
 ## testing the different initializations
 ## random

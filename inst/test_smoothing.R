@@ -15,7 +15,7 @@ sampling <- "dyad"
 sampSBM <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
 sampledAdjMatrix <- sampSBM$adjacencyMatrix
 vBlocks <- 1:8
-sbm <- inferSBM(sampledAdjMatrix, vBlocks, "dyad", smoothing = "both")
+sbm <- inferSBM(sampledAdjMatrix, vBlocks, "dyad", smoothing = "forward")
 
 # smoothed_fwrd_half <- smoothingForward_half(sbm$models, vBlocks, sampledAdjMatrix, sampling)
 # smoothed_fwrd_SpCl <- smoothingForward_SpCl(sbm$models, vBlocks, sampledAdjMatrix, sampling)

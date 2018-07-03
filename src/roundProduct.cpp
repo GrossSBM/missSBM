@@ -4,6 +4,7 @@
 
 using namespace Rcpp;
 
+//' @export
 // [[Rcpp::export]]
 Rcpp::NumericMatrix roundProduct(arma::cube X, arma::vec beta) {
 

@@ -176,8 +176,8 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
       "backward" = smoothingBackward      ,
       "both"     = smoothingForBackWard_SpCl
     )
-    control_VEM$trace <- FALSE # forcing no trace while smoothing
-    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, mc.cores, control_VEM)
+    control$trace <- FALSE # forcing no trace while smoothing
+    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, mc.cores, control)
   }
 
   return(list(models = models, monitor = res_optim))
