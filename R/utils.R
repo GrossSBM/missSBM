@@ -20,9 +20,6 @@ check_boundaries <- function(x) {
   x
 }
 
-## predefined similarity function, using absolute distance
-sim_abs <- function(x, y) {-abs(x - y)}
-
 #' @export
 init_spectral <- function(X, K) {
 

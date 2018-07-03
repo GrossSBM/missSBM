@@ -11,30 +11,23 @@ R6::R6Class(classname = "SBM",
     pi       = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
     directed = NULL, # directed or undirected network
-    X        = NULL, # the matrix of covariates (N x M)
-    phi      = NULL, # the similarity function (N x N -> M)
-    cov      = NULL  # the similarity array (N x N x M)
+    phi      = NULL  # the similarity array (N x N x M)
   ),
   public = list(
     ## constructor
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL, covarSimilarity=NULL) {
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL) {
       private$directed <- directed
       private$N        <- nNodes
       private$Q        <- nrow(connectParam)
-      private$M        <- ifelse(is.null(covariates), 0, ncol(covariates))
+      private$M        <- ifelse(is.null(covariates), 0, length(covarParam))
       private$alpha    <- mixtureParam
       private$pi       <- connectParam
       if (!is.null(covariates)) {
-        stopifnot(nNodes == nrow(covariates))
-        private$X    <- covariates
+        stopifnot(dim(covariates)[1] == nNodes)
+        stopifnot(dim(covariates)[2] == nNodes)
+        stopifnot(dim(covariates)[3] == length(covarParam))
+        private$phi  <- covariates
         private$beta <- covarParam
-        if (is.null(covarSimilarity)) private$phi <- sim_abs else private$phi <- covarSimilarity
-        sim <- array(dim = c(nNodes, nNodes, private$M))
-        ## TODO: add a basic c++ functions to perform this computation on a set of predefined similarities
-        for (i in 1:nNodes)
-          for (j in 1:nNodes)
-            sim[i,j,] <- private$phi(covariates[i, ], covariates[j, ])
-        private$cov <- sim
       }
     }
   ),
@@ -56,7 +49,7 @@ R6::R6Class(classname = "SBM",
     covarParam = function(value) { # vector of covariates (a.k.a. beta)
       if (missing(value)) return(private$beta) else private$beta <- value
     },
-    covariates = function(value) {private$X},
+    covariates = function(value) {private$phi},
     df_mixtureParams = function(value) {self$nBlocks - 1},
     df_connectParams = function(value) {ifelse(private$directed, self$nBlocks^2, self$nBlocks*(self$nBlocks + 1)/2)},
     df_covarParams = function(value) {self$nCovariates}

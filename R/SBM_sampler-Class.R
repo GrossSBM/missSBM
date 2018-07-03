@@ -13,8 +13,8 @@ SBM_sampler <-
     Y     = NULL  # the sampled adjacency matrix
   ),
   public = list(
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL, covarSimilarity=NULL) {
-      super$initialize(directed, nNodes, mixtureParam, connectParam, covariates, covarParam, covarSimilarity)
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL) {
+      super$initialize(directed, nNodes, mixtureParam, connectParam, covariates, covarParam)
     },
     ## constructor is the same as the above, so no need to specify initialize
     ## a method to generate a vector of clusters indicators
@@ -36,7 +36,7 @@ SBM_sampler <-
     connectProb = function(value) {
       PI <- private$Z %*% private$pi %*% t(private$Z)
       if (self$has_covariates) {
-        PI <- logistic(PI + roundProduct(private$cov, private$beta))
+        PI <- logistic(PI + roundProduct(private$phi, private$beta))
       }
       PI
     }

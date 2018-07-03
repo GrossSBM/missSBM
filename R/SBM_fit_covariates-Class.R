@@ -5,7 +5,7 @@ SBM_fit_covariates <-
 R6::R6Class(classname = "SBM_fit_covariates",
   inherit = SBM_fit,
   public = list(
-    initialize = function(adjacencyMatrix, covariates, nBlocks, clusterInit = "spectral", covarSimilarity = sim_abs) {
+    initialize = function(adjacencyMatrix, covariates, nBlocks, clusterInit = "spectral") {
 
       # Basic fields intialization and call to super constructor
       super$initialize(
@@ -14,8 +14,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         covariates      = covariates,
         mixtureParam    = rep(NA,nBlocks),
         connectParam    = matrix(NA,nBlocks,nBlocks),
-        covarParam      = numeric(ncol(covariates)),
-        covarSimilarity = covarSimilarity
+        covarParam      = numeric(ncol(covariates))
       )
 
       ## Initial Clustering
@@ -56,7 +55,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
         param <- c(as.vector(private$pi),private$beta)
         optim_out <- optim(param, objective_Mstep_covariates, gradient_Mstep_covariates,
-          Y = adjMatrix, cov = private$cov, Tau = private$tau, directed = private$directed,
+          Y = adjMatrix, cov = private$phi, Tau = private$tau, directed = private$directed,
           method = "BFGS", control = list(fnscale = -1)
         )
         private$beta  <- optim_out$par[-(1:(private$Q^2))]
@@ -64,14 +63,13 @@ R6::R6Class(classname = "SBM_fit_covariates",
         private$alpha <- check_boundaries(colMeans(private$tau))
     },
     vExpec = function(adjMatrix) {
-      J <- vBound_covariates(adjMatrix, private$pi, private$beta, private$cov, private$tau, private$alpha)
-      J
+      vBound_covariates(adjMatrix, private$pi, private$beta, private$phi, private$tau, private$alpha)
     },
     update_blocks =   function(adjMatrix, fixPointIter, log_lambda = 0) {
       ## TODO: check how log_lambda hsould be handle...
       ## TODO: include the loop in C++
       for (i in 1:fixPointIter) {
-        private$tau <- E_step_covariates(adjMatrix, private$cov, private$pi, private$beta, private$tau, private$alpha)
+        private$tau <- E_step_covariates(adjMatrix, private$phi, private$pi, private$beta, private$tau, private$alpha)
       }
     }
   )
