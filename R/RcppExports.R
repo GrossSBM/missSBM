@@ -18,7 +18,7 @@ roundProduct <- function(X, beta) {
     .Call('_missSBM_roundProduct', PACKAGE = 'missSBM', X, beta)
 }
 
-vBound_covariates <- function(Y, gamma, beta, cov, Tau, alpha) {
-    .Call('_missSBM_vBound_covariates', PACKAGE = 'missSBM', Y, gamma, beta, cov, Tau, alpha)
+vExpec_covariates <- function(Y, gamma, beta, cov, Tau, alpha) {
+    .Call('_missSBM_vExpec_covariates', PACKAGE = 'missSBM', Y, gamma, beta, cov, Tau, alpha)
 }
 

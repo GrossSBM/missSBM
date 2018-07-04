@@ -11,9 +11,11 @@ alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.15, Q) + .01                 # connectivity matrix
 directed <- FALSE
 
-covarParam  <- c(-5, 5)
+covarParam  <- c(0, 1)
 M <- length(covarParam)
-X <- t(rmultinom(N, 1, c(1/3,1/3))) + rnorm(N*2,0,0.1)
+X <- t(rmultinom(N, 1, c(1/2,1/2)))
+X[X == 0] <- -1
+X <- X + rnorm(N*2,0,0.1)
 covariates <- array(dim = c(N, N, M))
 for (i in 1:N)
   for (j in 1:N)
@@ -21,6 +23,8 @@ for (i in 1:N)
 
 logistic <- function(x) {1/(1 + exp(-x))}
 logit    <- function(x) {log(x/(1 - x))}
+
+hist(logistic(X %*% covarParam))
 
 ### Draw a undirected SBM model with covariates
 mySBM_covar <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
@@ -31,5 +35,5 @@ mySBM_nocov <- simulateSBM(N, alpha, pi, directed)
 plot(mySBM_covar)
 plot(mySBM_nocov)
 
-
-mySBM_covar$adjacencyMatrix[order(mySBM_covar$memberships),order(mySBM_covar$memberships)]
+image(mySBM_covar$adjacencyMatrix[order(mySBM_covar$memberships),order(mySBM_covar$memberships)])
+image(mySBM_nocov$adjacencyMatrix[order(mySBM_nocov$memberships),order(mySBM_nocov$memberships)])

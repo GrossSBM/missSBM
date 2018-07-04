@@ -8,7 +8,7 @@ using namespace Rcpp;
 using namespace arma;
 
 // [[Rcpp::export]]
-double vBound_covariates(IntegerMatrix Y, NumericMatrix gamma, arma::vec beta, arma::cube cov, NumericMatrix Tau, NumericVector alpha) {
+double vExpec_covariates(IntegerMatrix Y, NumericMatrix gamma, arma::vec beta, arma::cube cov, NumericMatrix Tau, NumericVector alpha) {
 
   int N = Y.ncol();
   int Q = Tau.ncol();

@@ -65,7 +65,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         private$alpha <- check_boundaries(colMeans(private$tau))
     },
     vExpec = function(adjMatrix) {
-      vBound_covariates(adjMatrix, private$pi, private$beta, private$phi, private$tau, private$alpha)
+      vExpec_covariates(adjMatrix, private$pi, private$beta, private$phi, private$tau, private$alpha)
     },
     update_blocks =   function(adjMatrix, fixPointIter, log_lambda = 0) {
       ## TODO: check how log_lambda hsould be handle...
