@@ -81,15 +81,12 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP _missSBM_vBound_covariates(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-
 static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 6},
     {"_missSBM_objective_Mstep_covariates", (DL_FUNC) &_missSBM_objective_Mstep_covariates, 5},
     {"_missSBM_gradient_Mstep_covariates", (DL_FUNC) &_missSBM_gradient_Mstep_covariates, 5},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {"_missSBM_vExpec_covariates", (DL_FUNC) &_missSBM_vExpec_covariates, 6},
-    {"_missSBM_vBound_covariates",          (DL_FUNC) &_missSBM_vBound_covariates,          6},
     {NULL, NULL, 0}
 };
 

@@ -75,5 +75,6 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       private$tau <- tau
     }
   )
+
 )
 

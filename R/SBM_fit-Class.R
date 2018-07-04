@@ -23,7 +23,14 @@ R6::R6Class(classname = "SBM_fit",
     blocks      = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
     memberships = function(value) {apply(private$tau, 1, which.max)},
     penalty     = function(value) {(self$df_connectParams + self$df_covarParams) * log(self$nDyads) + self$df_mixtureParams * log(self$nNodes)},
-    entropy     = function(value) {-sum(xlogx(private$tau))}
+    entropy     = function(value) {-sum(xlogx(private$tau))},
+    connectProb = function(value) {
+      PI <- private$tau %*% private$pi %*% t(private$tau)
+      if (self$has_covariates) {
+        PI <- logistic(PI + roundProduct(private$phi, private$beta))
+      }
+      PI
+    }
   )
 )
 

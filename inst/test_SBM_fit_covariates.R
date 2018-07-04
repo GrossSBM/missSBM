@@ -65,3 +65,5 @@ abline(v = which.min(vICLs), lty = "dashed")
 
 bestICL <- models[[which.min(vICLs)]]
 
+logistic(bestICL$connectParam)
+
