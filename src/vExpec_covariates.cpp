@@ -20,7 +20,7 @@ double vExpec_covariates(IntegerMatrix Y, NumericMatrix gamma, arma::vec beta, a
         for (int l=0; l < Q; l++) {
           if (j < i) {
             arma::vec param = cov.tube(i,j);
-            loglik = loglik + arma::as_scalar(Tau(i,q)*Tau(j,l)*( (Y(i,j)-1)*(gamma(q,l)+beta.t()*param) + g(arma::as_scalar(gamma(q,l)+beta.t()*param)) ));
+            loglik += as_scalar(Tau(i,q)*Tau(j,l)*( (Y(i,j)-1)*(gamma(q,l)+beta.t()*param) + g(as_scalar(gamma(q,l)+beta.t()*param)) ));
           }
         }
       }

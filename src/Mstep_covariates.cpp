@@ -86,12 +86,10 @@ NumericVector gradient_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::
       for(int l=0; l<=q; l++){
         acc = 0;
         for (int i=0; i<N; i++) {
-          for (int j=0; j<N; j++) {
-            if (j < i) {
-              arma::vec param = cov.tube(i,j);
-              double rp = arma::as_scalar(beta.t()*param);
-              acc = acc + arma::as_scalar(Tau(i,q)*Tau(j,l)*( Y(i,j) - 1 + u(rp + gamma(q,l)) ));
-            }
+          for (int j=0; j<i; j++) {
+            arma::vec param = cov.tube(i,j);
+            double rp = arma::as_scalar(beta.t()*param);
+            acc = acc + arma::as_scalar(Tau(i,q)*Tau(j,l)*( Y(i,j) - 1 + u(rp + gamma(q,l)) ));
           }
         }
         gradGamma(q,l) = acc;
