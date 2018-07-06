@@ -7,8 +7,9 @@
 using namespace Rcpp;
 using namespace arma;
 
+
 // [[Rcpp::export]]
-double objective_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau, bool directed) {
+List optimize_Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
 
   int N = Y.ncol();
   int Q = Tau.ncol();
@@ -16,127 +17,67 @@ double objective_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::cube c
   double loglik = 0;
 
   arma::mat gamma(&param[0], Q, Q, true);
-  arma::vec beta(&param[std::pow(Q,2)], M, true);
+  arma::vec beta (&param[Q*Q], M, true);
 
-  if (directed) {
-    for(int i=0; i < N; i++) {
-      for(int q=0; q < Q; q++){
-        for (int j=0; j < N; j++) {
-          for (int l=0; l < Q; l++) {
-            if (i != j) {
-              arma::vec param = cov.tube(i,j);
-              double rp = arma::as_scalar(beta.t()*param);
-              loglik += + arma::as_scalar(Tau(i,q)*Tau(j,l)*( (Y(i,j)-1)*(gamma(q,l) + rp) +
-                g(arma::as_scalar(gamma(q,l) + rp)) ));
-            }
+  arma::mat gr_gamma = zeros<mat>(Q,Q) ;
+  arma::vec gr_beta = zeros<vec>(M);
+
+  for(int q=0; q < Q; q++) {
+      for (int l=0; l < Q; l++) {
+          for(int i=0; i < N; i++) {
+              for (int j=0; j < i; j++) {
+                  arma::vec phi   = cov.tube(i,j);
+                  double gamma_phi_beta = gamma(q,l) + as_scalar(beta.t() * phi);
+                  loglik  += Tau(i,q)*Tau(j,l)*( (Y(i,j) - 1) * gamma_phi_beta +  g(gamma_phi_beta) );
+                  gr_beta += Tau(i,q)*Tau(j,l)*( (Y(i,j) - 1  + g_prime(gamma_phi_beta) ) * phi );
+                  if (l <= q) {
+                      gr_gamma(q,l) += Tau(i,q)*Tau(j,l)*(  Y(i,j) - 1  + g_prime(gamma_phi_beta) ) ;
+                  }
+              }
           }
-        }
+          gr_gamma(l,q) = gr_gamma(q,l) ;
       }
-    }
-  } else {
-    for(int i=0; i < N; i++) {
-      for(int q=0; q < Q; q++){
-        for (int j=0; j < N; j++) {
-          for (int l=0; l < Q; l++) {
-            if (j < i) {
-              arma::vec param = cov.tube(i,j);
-              double rp = arma::as_scalar(beta.t()*param);
-              loglik += arma::as_scalar(Tau(i,q)*Tau(j,l)*( (Y(i,j)-1)*(gamma(q,l) + rp) +
-                g(arma::as_scalar(gamma(q,l) + rp)) ));
-            }
-          }
-        }
-      }
-    }
   }
-  return loglik;
+
+  arma::vec gr_gamma_v = vectorise(gr_gamma);
+  arma::vec grad = join_cols(gr_gamma_v, gr_beta);
+
+  return List::create(Named("objective") = - loglik, Named("gradient")  = - grad);
 }
 
 // [[Rcpp::export]]
-NumericVector gradient_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau, bool directed) {
+List optimize_Mstep_covariates_directed(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
 
   int N = Y.ncol();
   int Q = Tau.ncol();
   int M = cov.n_slices;
-  arma::mat gradGamma(Q,Q);
-  arma::vec gradBeta(M);
-  double acc;
+  double loglik = 0;
 
   arma::mat gamma(&param[0], Q, Q, true);
-  arma::vec beta(&param[std::pow(Q,2)], M, true);
+  arma::vec beta (&param[Q*Q], M, true);
 
-  if(directed) {
-    for(int q=0; q<Q; q++) {
-      for(int l=0; l<Q; l++){
-        acc = 0;
-        for (int i=0; i<N; i++) {
-          for (int j=0; j<N; j++) {
-            if (j!=i) {
-              arma::vec param = cov.tube(i,j);
-              double rp = arma::as_scalar(beta.t()*param);
-              acc = acc + arma::as_scalar(Tau(i,q)*Tau(j,l)*( Y(i,j) - 1 + u(rp + gamma(q,l)) ));
-            }
+  arma::mat gr_gamma = zeros<mat>(Q,Q) ;
+  arma::vec gr_beta = zeros<vec>(M);
+
+  for(int q=0; q < Q; q++) {
+      for (int l=0; l < Q; l++) {
+          for(int i=0; i < N; i++) {
+              for (int j=0; j < N; j++) {
+                 if (i != j) {
+                    arma::vec phi   = cov.tube(i,j);
+                    double gamma_phi_beta = gamma(q,l) + as_scalar(beta.t() * phi);
+                    loglik        += Tau(i,q)*Tau(j,l)*( (Y(i,j) - 1) * gamma_phi_beta +  g(gamma_phi_beta) );
+                    gr_gamma(q,l) += Tau(i,q)*Tau(j,l)*(  Y(i,j) - 1  + g_prime(gamma_phi_beta) ) ;
+                    gr_beta       += Tau(i,q)*Tau(j,l)*( (Y(i,j) - 1  + g_prime(gamma_phi_beta) ) * phi );
+                 }
+              }
           }
-        }
-        gradGamma(q,l) = acc;
+          gr_gamma(l,q) = gr_gamma(q,l) ;
       }
-    }
-  } else {
-    for(int q=0; q<Q; q++) {
-      for(int l=0; l<=q; l++){
-        acc = 0;
-        for (int i=0; i<N; i++) {
-          for (int j=0; j<i; j++) {
-            arma::vec param = cov.tube(i,j);
-            double rp = arma::as_scalar(beta.t()*param);
-            acc = acc + arma::as_scalar(Tau(i,q)*Tau(j,l)*( Y(i,j) - 1 + u(rp + gamma(q,l)) ));
-          }
-        }
-        gradGamma(q,l) = acc;
-        gradGamma(l,q) = acc;
-      }
-    }
   }
 
-  if(directed) {
-    for(int k=0; k<M; k++){
-      acc = 0;
-      for(int q=0; q<Q; q++) {
-        for(int l=0; l<Q; l++){
-          for (int i=0; i<N; i++) {
-            for (int j=0; j<N; j++) {
-              if (j != i) {
-                arma::vec param = cov.tube(i,j);
-                double rp = arma::as_scalar(beta.t()*param);
-                acc = acc + arma::as_scalar(Tau(i,q)*Tau(j,l)*( (Y(i,j) - 1 + u(rp + gamma(q,l)))*param[k] ));
-              }
-            }
-          }
-        }
-      }
-      gradBeta[k] = acc;
-    }
-  } else {
-    for(int k=0; k<M; k++){
-      acc = 0;
-      for(int q=0; q<Q; q++) {
-        for(int l=0; l<Q; l++){
-          for (int i=0; i<N; i++) {
-            for (int j=0; j<N; j++) {
-              if (j < i) {
-                arma::vec param = cov.tube(i,j);
-                double rp = arma::as_scalar(beta.t()*param);
-                acc = acc + arma::as_scalar(Tau(i,q)*Tau(j,l)*( (Y(i,j) - 1 + u(rp + gamma(q,l)))*param[k] ));
-              }
-            }
-          }
-        }
-      }
-      gradBeta[k] = acc;
-    }
-  }
+  arma::vec gr_gamma_v = vectorise(gr_gamma);
+  arma::vec grad = join_cols(gr_gamma_v, gr_beta);
 
-  arma::vec gradGammaVec = vectorise(gradGamma);
-  arma::vec out = join_cols(gradGammaVec, gradBeta);
-  return wrap(out);
+  return List::create(Named("objective") = - loglik, Named("gradient")  = - grad);
 }

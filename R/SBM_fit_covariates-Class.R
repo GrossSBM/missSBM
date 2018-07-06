@@ -56,13 +56,24 @@ R6::R6Class(classname = "SBM_fit_covariates",
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
         param <- c(as.vector(private$pi),private$beta)
-        optim_out <- optim(param, objective_Mstep_covariates, gradient_Mstep_covariates,
-          Y = adjMatrix, cov = private$phi, Tau = private$tau, directed = private$directed,
-          method = "BFGS", control = list(fnscale = -1)
-        )
-        private$beta  <- optim_out$par[-(1:(private$Q^2))]
-        private$pi    <- matrix(optim_out$par[1:(private$Q^2)], private$Q, private$Q)
+
+        # optim_out <- optim(param, objective_Mstep_covariates, gradient_Mstep_covariates,
+        #   Y = adjMatrix, cov = private$phi, Tau = private$tau, directed = private$directed,
+        #   method = "BFGS", control = list(trace = 1)
+        # )
+        # private$beta  <- optim_out$par[-(1:(private$Q^2))]
+        # private$pi    <- matrix(optim_out$par[1:(private$Q^2)], private$Q, private$Q)
+        # private$alpha <- check_boundaries(colMeans(private$tau))
+
+        optim_func <- ifelse(private$directed, optimize_Mstep_covariates_directed, optimize_Mstep_covariates_undirected)
+        optim_opts <- list("algorithm" = "NLOPT_LD_LBFGS", "xtol_rel" = 1.0e-4)
+
+        optim_out  <- nloptr::nloptr(param, optim_func, opts = optim_opts,
+                       Y = adjMatrix, cov = private$phi, Tau = private$tau)
+        private$beta  <- optim_out$solution[-(1:(private$Q^2))]
+        private$pi    <- matrix(optim_out$solution[1:(private$Q^2)], private$Q, private$Q)
         private$alpha <- check_boundaries(colMeans(private$tau))
+
     },
     vExpec = function(adjMatrix) {
       vExpec_covariates(adjMatrix, private$pi, private$beta, private$phi, private$tau, private$alpha)

@@ -5,12 +5,12 @@ E_step_covariates <- function(Y, cov, gamma, beta, Tau, alpha) {
     .Call('_missSBM_E_step_covariates', PACKAGE = 'missSBM', Y, cov, gamma, beta, Tau, alpha)
 }
 
-objective_Mstep_covariates <- function(param, Y, cov, Tau, directed) {
-    .Call('_missSBM_objective_Mstep_covariates', PACKAGE = 'missSBM', param, Y, cov, Tau, directed)
+optimize_Mstep_covariates_undirected <- function(param, Y, cov, Tau) {
+    .Call('_missSBM_optimize_Mstep_covariates_undirected', PACKAGE = 'missSBM', param, Y, cov, Tau)
 }
 
-gradient_Mstep_covariates <- function(param, Y, cov, Tau, directed) {
-    .Call('_missSBM_gradient_Mstep_covariates', PACKAGE = 'missSBM', param, Y, cov, Tau, directed)
+optimize_Mstep_covariates_directed <- function(param, Y, cov, Tau) {
+    .Call('_missSBM_optimize_Mstep_covariates_directed', PACKAGE = 'missSBM', param, Y, cov, Tau)
 }
 
 #' @export

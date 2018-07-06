@@ -14,15 +14,23 @@ NumericMatrix E_step_covariates(IntegerMatrix Y, arma::cube cov, NumericMatrix g
   int Q = gamma.ncol();
   double acc;
 
+  // Round product
+  arma::mat rp(N,N);
+  for(int i=0; i<N; i++) {
+      for (int j=0; j<N; j++) {
+        arma::vec param = cov.tube(i,j);
+        rp(i,j) = as_scalar(beta.t()*param);
+      }
+  }
+
   for(int i=0; i < N; i++) {
     for(int q=0; q < Q; q++){
+
       acc = 0;
       for (int j=0; j < N; j++) {
         for (int l=0; l < Q; l++) {
           if (j != i) {
-            arma::vec param = cov.tube(i,j);
-            double rp = arma::as_scalar(beta.t()*param);
-            acc = acc + arma::as_scalar(Tau(j,l)*((Y(i,j)-1)*(gamma(q,l)+rp) + g(arma::as_scalar(gamma(q,l)+rp))));
+            acc = acc + Tau(j,l) * ( (Y(i,j) - 1) * ( gamma(q,l) + rp(i,j) ) + g( gamma(q,l) + rp(i,j) ) );
           }
         }
       }

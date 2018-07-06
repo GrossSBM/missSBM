@@ -22,9 +22,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// objective_Mstep_covariates
-double objective_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau, bool directed);
-RcppExport SEXP _missSBM_objective_Mstep_covariates(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP, SEXP directedSEXP) {
+// optimize_Mstep_covariates_undirected
+List optimize_Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau);
+RcppExport SEXP _missSBM_optimize_Mstep_covariates_undirected(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,14 +32,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< bool >::type directed(directedSEXP);
-    rcpp_result_gen = Rcpp::wrap(objective_Mstep_covariates(param, Y, cov, Tau, directed));
+    rcpp_result_gen = Rcpp::wrap(optimize_Mstep_covariates_undirected(param, Y, cov, Tau));
     return rcpp_result_gen;
 END_RCPP
 }
-// gradient_Mstep_covariates
-NumericVector gradient_Mstep_covariates(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau, bool directed);
-RcppExport SEXP _missSBM_gradient_Mstep_covariates(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP, SEXP directedSEXP) {
+// optimize_Mstep_covariates_directed
+List optimize_Mstep_covariates_directed(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau);
+RcppExport SEXP _missSBM_optimize_Mstep_covariates_directed(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -47,8 +46,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< bool >::type directed(directedSEXP);
-    rcpp_result_gen = Rcpp::wrap(gradient_Mstep_covariates(param, Y, cov, Tau, directed));
+    rcpp_result_gen = Rcpp::wrap(optimize_Mstep_covariates_directed(param, Y, cov, Tau));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -83,8 +81,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 6},
-    {"_missSBM_objective_Mstep_covariates", (DL_FUNC) &_missSBM_objective_Mstep_covariates, 5},
-    {"_missSBM_gradient_Mstep_covariates", (DL_FUNC) &_missSBM_gradient_Mstep_covariates, 5},
+    {"_missSBM_optimize_Mstep_covariates_undirected", (DL_FUNC) &_missSBM_optimize_Mstep_covariates_undirected, 4},
+    {"_missSBM_optimize_Mstep_covariates_directed", (DL_FUNC) &_missSBM_optimize_Mstep_covariates_directed, 4},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {"_missSBM_vExpec_covariates", (DL_FUNC) &_missSBM_vExpec_covariates, 6},
     {NULL, NULL, 0}
