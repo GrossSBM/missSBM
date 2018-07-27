@@ -1,5 +1,5 @@
 #' @export
-smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores, control) {
+smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores, iter_both, control) {
   cat("   Going backward ")
   for (i in rev(vBlocks[-1])) {
     cat('+')
@@ -27,7 +27,7 @@ smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores, c
 }
 
 #' @export
-smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, control) {
+smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control) {
   cat("   Going forward ")
   for(i in vBlocks[-length(vBlocks)]){
     cat("+")
@@ -60,9 +60,11 @@ smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc
 }
 
 #' @export
-smoothingForBackWard <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, control){
+smoothingForBackWard <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control){
   out <- models
-  out <- smoothingBackward(out, vBlocks, sampledNet, sampling, mc.cores, control)
-  out <- smoothingForward(out, vBlocks, sampledNet, sampling, split_fn, mc.cores, control)
+  for (i in 1: iter_both) {
+    out <- smoothingBackward(out, vBlocks, sampledNet, sampling, mc.cores, iter_both, control)
+    out <- smoothingForward(out, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
+  }
   out
 }

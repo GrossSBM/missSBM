@@ -69,7 +69,10 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
           tau <- tau + t(adjMatrix) %*% tau_old %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% tau_old %*% t(log(1 - t(private$pi)))
         }
         tau <- exp(sweep(tau, 2, log(private$alpha),"+"))
-        tau <- tau/rowSums(tau)
+### poor hack when value are too smal to be compared properly
+        norm <- rowSums(tau)
+        tau <- tau/norm
+        tau[which(norm == 0), ] <- tau_old[which(norm == 0), ]
         tau_old <- tau
       }
       private$tau <- tau

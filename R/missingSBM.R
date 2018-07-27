@@ -134,7 +134,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
 #' @include smoother_SBM.R
 #' @export
 inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral",
-                     smoothing = c("none", "forward", "backward", "both"), mc.cores = 2, control_VEM = list()){
+                     smoothing = c("none", "forward", "backward", "both"), mc.cores = 2, iter_both = 1,  control_VEM = list()){
 
 
   try(
@@ -185,7 +185,7 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
                        "hierarchical" = init_hierarchical,
                        init_hierarchical)
     control$trace <- FALSE # forcing no trace while smoothing
-    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, control)
+    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
   }
 
   return(list(models = models, monitor = res_optim))
