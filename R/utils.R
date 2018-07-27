@@ -38,8 +38,8 @@ init_spectral <- function(X, K) {
       ## Normalized Laplacian
       D <- colSums(X, na.rm = TRUE)
       A <- X; A[is.na(A)] <- 0
+      A <- A + (1/4)*mean(rowSums(A))/nrow(A)*matrix(1, nrow(A), nrow(A))
       L <- diag(rep(1,ncol(X))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
-      # browser()
       ## Absolute eigenvalue in order
       E <- order(-abs(eigen(L)$values))
 

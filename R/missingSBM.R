@@ -150,7 +150,11 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral
   models <- lapply(vBlocks,
     function(nBlocks) {
     cat(" Initialization of model with", nBlocks,"blocks.", "\r")
-      missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
+      if(is.list(clusterInit)) {
+        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit[[nBlocks]])
+      } else {
+        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
+      }
     }
   )
 

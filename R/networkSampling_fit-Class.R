@@ -18,7 +18,7 @@ networkSamplingDyads_fit <-
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(NULL)},
     update_imputation = function(Z, pi) { ## good for MCAR on node, dyads and NMAR with blocks
-      nu <- logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z))
+      nu <- check_boundaries(logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z)))
       nu
     }
   ),
@@ -50,7 +50,7 @@ networkSamplingNodes_fit <-
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(NULL)},
     update_imputation = function(Z, pi) { ## good for MCAR on node, dyads and NMAR with blocks (dyad and node)
-      nu <- logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z))
+      nu <- check_boundaries(logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z)))
       nu
     }
   ),
@@ -199,10 +199,9 @@ blockSampling_fit <-
       self$update_parameters(NA, blockInit)
     },
     update_parameters = function(imputedNet, Z) {
-      # browser()
       private$So <- colSums(Z[ private$N_obs, , drop = FALSE])
       private$Sm <- colSums(Z[!private$N_obs, , drop = FALSE])
-      private$psi <- private$So / (private$So + private$Sm)
+      private$psi <- check_boundaries(private$So / (private$So + private$Sm))
     }
   ),
   active = list(
@@ -247,7 +246,7 @@ degreeSampling_fit <-
       nu <- imputedNet
       nu[!private$NAs] <- NA
       D2 <- rowSums(nu * (1 - nu), na.rm = TRUE) + private$D^2
-      private$ksi <- sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * private$D)
+      private$ksi <- check_boundaries(sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * private$D))
       C <- .5 * nrow(imputedNet) - sum(!private$N_obs)
       s_hksi   <- sum(h(private$ksi))
       s_hksiD  <- sum(h(private$ksi) * private$D)
@@ -268,7 +267,7 @@ degreeSampling_fit <-
   ),
   active = list(
     vExpec = function() {
-      prob <- logistic(private$psi[1] + private$psi[2] * private$D)
+      prob <-  check_boundaries(logistic(private$psi[1] + private$psi[2] * private$D))
       res  <-  sum(private$N_obs * log(prob)) + sum( (!private$N_obs) * log(1 - prob))
       res
     }
