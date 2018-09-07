@@ -1,4 +1,5 @@
 #' @import R6
+#' @import nloptr
 #' @include SBM_fit-Class.R
 #' @export
 SBM_fit_covariates <-
@@ -11,9 +12,9 @@ R6::R6Class(classname = "SBM_fit_covariates",
       super$initialize(
         directed        = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
         nNodes          = nrow(adjacencyMatrix),
-        covariates      = covariates,
         mixtureParam    = rep(NA,nBlocks),
         connectParam    = matrix(NA,nBlocks,nBlocks),
+        covariates      = covariates,
         covarParam      = numeric(dim(covariates)[3])
       )
 
@@ -22,7 +23,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         if (is.character(clusterInit)) {
           y <- as.vector(adjacencyMatrix)
           X <- apply(covariates, 3, as.vector)
-          out_logistic <- glm(y ~ X + 0, family = "binomial")
+          out_logistic <- glm.fit(X, y, family = binomial())
           adjacencyResiduals <- matrix(logistic(residuals(out_logistic)), self$nNodes, self$nNodes)
           clusterInit <-
             switch(clusterInit,
@@ -79,7 +80,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       vExpec_covariates(adjMatrix, private$pi, private$beta, private$phi, private$tau, private$alpha)
     },
     update_blocks =   function(adjMatrix, fixPointIter, log_lambda = 0) {
-      ## TODO: check how log_lambda hsould be handle...
+      ## TODO: check how log_lambda should be handle...
       ## TODO: include the loop in C++
       for (i in 1:fixPointIter) {
         private$tau <- E_step_covariates(adjMatrix, private$phi, private$pi, private$beta, private$tau, private$alpha)
