@@ -7,9 +7,83 @@
 using namespace Rcpp;
 using namespace arma;
 
+//' @export
+// [[Rcpp::export]]
+Rcpp::NumericMatrix roundProduct(arma::cube X, arma::vec beta) {
+
+  int N = X.n_rows;
+  arma::mat M = arma::zeros<arma::mat>(N,N);
+
+  for (int k = 0; k < beta.size(); k++) {
+    M += X.slice(k) * beta[k];
+  }
+
+  return Rcpp::wrap(M);
+}
 
 // [[Rcpp::export]]
-List optimize_Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
+double vExpec_covariates(
+    Rcpp::IntegerMatrix Y,
+    Rcpp::NumericMatrix roundProd,
+    Rcpp::NumericMatrix gamma,
+    Rcpp::NumericMatrix Tau,
+    Rcpp::NumericVector alpha
+  ) {
+
+  int N = Y.ncol();
+  int Q = Tau.ncol();
+  double loglik = 0;
+
+  for(int i=0; i < N; i++) {
+    for(int q=0; q < Q; q++){
+      for (int j=0; j < N; j++) {
+        for (int l=0; l < Q; l++) {
+          if (j < i) {
+            loglik += as_scalar(Tau(i,q)*Tau(j,l)*( (Y(i,j)-1)*(gamma(q,l) + roundProd(i,j)) + g(gamma(q,l) + roundProd(i,j)) ) );
+          }
+        }
+      }
+      loglik = loglik + Tau(i,q) * std::log(alpha[q]);
+    }
+  }
+  return loglik ;
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix E_step_covariates(
+    Rcpp::IntegerMatrix Y,
+    Rcpp::NumericMatrix roundProd,
+    Rcpp::NumericMatrix gamma,
+    Rcpp::NumericMatrix Tau,
+    Rcpp::NumericVector alpha,
+    int fixPointIter) {
+
+  int N = Y.ncol();
+  int Q = gamma.ncol();
+  double acc;
+
+  for (int iter=0; iter < fixPointIter; iter++) {
+    for(int i=0; i < N; i++) {
+      for(int q=0; q < Q; q++){
+
+        acc = 0;
+        for (int j=0; j < N; j++) {
+          for (int l=0; l < Q; l++) {
+            if (j != i) {
+              acc = acc + Tau(j,l) * ( (Y(i,j) - 1) * ( gamma(q,l) + roundProd(i,j) ) + g( gamma(q,l) + roundProd(i,j) ) );
+            }
+          }
+        }
+        Tau(i,q) = alpha[q] * std::exp(acc);
+      }
+      Tau(i,_) = Tau(i,_)/sum(Tau(i,_));
+    }
+  }
+  return Rcpp::wrap(Tau);
+}
+
+// [[Rcpp::export]]
+List Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
 
   int N = Y.ncol();
   int Q = Tau.ncol();
@@ -20,7 +94,7 @@ List optimize_Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma
   arma::vec beta (&param[Q*Q], M, true);
 
   arma::mat gr_gamma = zeros<mat>(Q,Q) ;
-  arma::vec gr_beta = zeros<vec>(M);
+  arma::vec gr_beta  = zeros<vec>(M);
 
   for(int q=0; q < Q; q++) {
       for (int l=0; l < Q; l++) {
@@ -46,7 +120,7 @@ List optimize_Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma
 }
 
 // [[Rcpp::export]]
-List optimize_Mstep_covariates_directed(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
+List Mstep_covariates_directed(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
 
   int N = Y.ncol();
   int Q = Tau.ncol();

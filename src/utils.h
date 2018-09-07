@@ -1,8 +1,6 @@
 #ifndef _utils_optim_H
 #define _utils_optim_H
 
-// #include <cmath>
-
 inline double logistic(double x) {
   return (1/(1+std::exp(-x)));
 }

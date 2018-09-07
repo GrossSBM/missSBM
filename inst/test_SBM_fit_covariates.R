@@ -1,3 +1,5 @@
+set.seed(78910)
+
 ### A SBM model : ###
 N <- 200
 Q <- 3

@@ -56,34 +56,42 @@ R6::R6Class(classname = "SBM_fit_covariates",
       private$beta  <- numeric(private$M)
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
-        param <- c(as.vector(private$pi),private$beta)
 
-        # optim_out <- optim(param, objective_Mstep_covariates, gradient_Mstep_covariates,
-        #   Y = adjMatrix, cov = private$phi, Tau = private$tau, directed = private$directed,
-        #   method = "BFGS", control = list(trace = 1)
-        # )
-        # private$beta  <- optim_out$par[-(1:(private$Q^2))]
-        # private$pi    <- matrix(optim_out$par[1:(private$Q^2)], private$Q, private$Q)
-        # private$alpha <- check_boundaries(colMeans(private$tau))
-
-        optim_func <- ifelse(private$directed, optimize_Mstep_covariates_directed, optimize_Mstep_covariates_undirected)
-        optim_opts <- list("algorithm" = "NLOPT_LD_LBFGS", "xtol_rel" = 1.0e-4)
-
-        optim_out  <- nloptr::nloptr(param, optim_func, opts = optim_opts,
-                       Y = adjMatrix, cov = private$phi, Tau = private$tau)
-        private$beta  <- optim_out$solution[-(1:(private$Q^2))]
-        private$pi    <- matrix(optim_out$solution[1:(private$Q^2)], private$Q, private$Q)
-        private$alpha <- check_boundaries(colMeans(private$tau))
+      optim_out  <-
+        nloptr::nloptr(
+          # starting parameters
+          c(as.vector(private$pi),private$beta),
+          # objective function + gradient
+          ifelse(private$directed, Mstep_covariates_directed, Mstep_covariates_undirected),
+          # optimizer parameters
+          opts = list("algorithm" = "NLOPT_LD_LBFGS", "xtol_rel" = 1.0e-4),
+          # additional argument for objective/gradient function
+          Y = adjMatrix, cov = private$phi, Tau = private$tau
+        )
+      private$beta  <- optim_out$solution[-(1:(private$Q^2))]
+      private$pi    <- matrix(optim_out$solution[1:(private$Q^2)], private$Q, private$Q)
+      private$alpha <- check_boundaries(colMeans(private$tau))
 
     },
     vExpec = function(adjMatrix) {
-      vExpec_covariates(adjMatrix, private$pi, private$beta, private$phi, private$tau, private$alpha)
+      vExpec_covariates(
+        adjMatrix,
+        roundProduct(private$phi, private$beta),
+        private$pi,
+        private$tau,
+        private$alpha
+      )
     },
-    update_blocks =   function(adjMatrix, fixPointIter, log_lambda = 0) {
-      ## TODO: check how log_lambda should be handle...
-      ## TDODO: does it makke sense for MAR settings? can't remember...
-      roundProd <- roundProduct(private$phi, private$beta)
-      private$tau <- E_step_covariates(adjMatrix, roundProd, private$pi, private$tau, private$alpha, fixPointIter)
+    update_blocks =   function(adjMatrix, fixPointIter, log_lambda = NULL) {
+      private$tau <-
+        E_step_covariates(
+          adjMatrix,
+          roundProduct(private$phi, private$beta),
+          private$pi,
+          private$tau,
+          private$alpha,
+          fixPointIter
+        )
     }
   )
 )
