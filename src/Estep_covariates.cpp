@@ -4,64 +4,38 @@
 
 #include "utils.h"
 
-using namespace Rcpp;
-using namespace arma;
+using namespace Rcpp ;
 
 // [[Rcpp::export]]
-NumericMatrix E_step_covariates(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha) {
+Rcpp::NumericMatrix E_step_covariates(
+    Rcpp::IntegerMatrix Y,
+    Rcpp::NumericMatrix roundProd,
+    Rcpp::NumericMatrix gamma,
+    Rcpp::NumericMatrix Tau,
+    Rcpp::NumericVector alpha,
+    int fixPointIter) {
 
   int N = Y.ncol();
   int Q = gamma.ncol();
   double acc;
 
-  // Round product
-  arma::mat rp(N,N);
-  for(int i=0; i<N; i++) {
-      for (int j=0; j<N; j++) {
-        arma::vec param = cov.tube(i,j);
-        rp(i,j) = as_scalar(beta.t()*param);
-      }
-  }
+  for (int iter=0; iter < fixPointIter; iter++) {
+    for(int i=0; i < N; i++) {
+      for(int q=0; q < Q; q++){
 
-  for(int i=0; i < N; i++) {
-    for(int q=0; q < Q; q++){
-
-      acc = 0;
-      for (int j=0; j < N; j++) {
-        for (int l=0; l < Q; l++) {
-          if (j != i) {
-            acc = acc + Tau(j,l) * ( (Y(i,j) - 1) * ( gamma(q,l) + rp(i,j) ) + g( gamma(q,l) + rp(i,j) ) );
+        acc = 0;
+        for (int j=0; j < N; j++) {
+          for (int l=0; l < Q; l++) {
+            if (j != i) {
+              acc = acc + Tau(j,l) * ( (Y(i,j) - 1) * ( gamma(q,l) + roundProd(i,j) ) + g( gamma(q,l) + roundProd(i,j) ) );
+            }
           }
         }
+        Tau(i,q) = alpha[q] * std::exp(acc);
       }
-      Tau(i,q) = alpha[q]*std::exp(acc);
+      Tau(i,_) = Tau(i,_)/sum(Tau(i,_));
     }
-    Tau(i,_) = Tau(i,_)/sum(Tau(i,_));
   }
-  return wrap(Tau);
+  return Rcpp::wrap(Tau);
 }
 
-NumericMatrix E_step_covariates2(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha) {
-
-  int N = Y.ncol();
-  int Q = gamma.ncol();
-  double acc;
-
-  for(int i=0; i < N; i++) {
-    for(int q=0; q < Q; q++){
-      acc = 0;
-      for (int j=0; j < N; j++) {
-        for (int l=0; l < Q; l++) {
-          if (j != i) {
-            arma::vec param = cov.tube(i,j);
-            double rp = arma::as_scalar(beta.t()*param);
-            acc = acc + arma::as_scalar(Tau(j,l)*((Y(i,j)-1)*(gamma(q,l)+rp) + g(arma::as_scalar(gamma(q,l)+rp))));
-          }
-        }
-      }
-      Tau(i,q) = alpha[q]*std::exp(acc);
-    }
-    Tau(i,_) = Tau(i,_)/sum(Tau(i,_));
-  }
-  return wrap(Tau);
-}

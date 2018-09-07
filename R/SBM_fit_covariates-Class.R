@@ -81,10 +81,9 @@ R6::R6Class(classname = "SBM_fit_covariates",
     },
     update_blocks =   function(adjMatrix, fixPointIter, log_lambda = 0) {
       ## TODO: check how log_lambda should be handle...
-      ## TODO: include the loop in C++
-      for (i in 1:fixPointIter) {
-        private$tau <- E_step_covariates(adjMatrix, private$phi, private$pi, private$beta, private$tau, private$alpha)
-      }
+      ## TDODO: does it makke sense for MAR settings? can't remember...
+      roundProd <- roundProduct(private$phi, private$beta)
+      private$tau <- E_step_covariates(adjMatrix, roundProd, private$pi, private$tau, private$alpha, fixPointIter)
     }
   )
 )

@@ -7,18 +7,18 @@
 using namespace Rcpp;
 
 // E_step_covariates
-NumericMatrix E_step_covariates(IntegerMatrix Y, arma::cube cov, NumericMatrix gamma, arma::vec beta, NumericMatrix Tau, NumericVector alpha);
-RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP covSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
+Rcpp::NumericMatrix E_step_covariates(Rcpp::IntegerMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha, int fixPointIter);
+RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP alphaSEXP, SEXP fixPointIterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, cov, gamma, beta, Tau, alpha));
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type roundProd(roundProdSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type fixPointIter(fixPointIterSEXP);
+    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, roundProd, gamma, Tau, alpha, fixPointIter));
     return rcpp_result_gen;
 END_RCPP
 }
