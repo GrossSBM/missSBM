@@ -26,6 +26,6 @@ Collate:
     'missingSBM_fit.R'
     'sampledNetwork-Class.R'
     'networkSampling_sampler-Class.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 LinkingTo: Rcpp, RcppArmadillo
 Imports: Rcpp, RcppArmadillo

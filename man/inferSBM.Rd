@@ -6,7 +6,7 @@
 \usage{
 inferSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral",
   smoothing = c("none", "forward", "backward", "both"), mc.cores = 2,
-  control_VEM = list())
+  iter_both = 1, control_VEM = list())
 }
 \arguments{
 \item{vBlocks}{The vector of number of blocks considered in the collection}
