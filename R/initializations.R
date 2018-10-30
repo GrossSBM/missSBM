@@ -180,31 +180,31 @@ SparseSpectralClustering_NAisMean <- function (A,Q) {
 }
 
 
-library(missSBM)
-library(aricode)
-N <- 300
-Q <- 3
-alpha <- rep(1,Q)/Q
-pi <- diag(.25,Q) + .05
-directed <- FALSE
-mySBM <- simulateSBM(N, alpha, pi, directed)
-
-adjacencyMatrix <- mySBM$adjacencyMatrix
-
-samplingParameters <- .15
-sampling <- "dyad"
-sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
-
-
-A <- sampledNetwork$adjacencyMatrix
-
-SpCl_NAiZero <- SpectralClustering_NAisZero(A,Q)
-SpCl_NAiMean <- SpectralClustering_NAisMean(A,Q)
-SparseSpCl_NAiZero <- SparseSpectralClustering_NAisZero(A,Q)
-SparseSpCl_NAiMean <- SparseSpectralClustering_NAisMean(A,Q)
-
-ARI(SpCl_NAiZero, mySBM$memberships)
-ARI(SpCl_NAiMean, mySBM$memberships)
-ARI(SparseSpCl_NAiZero, mySBM$memberships)
-ARI(SparseSpCl_NAiMean, mySBM$memberships)
+# library(missSBM)
+# library(aricode)
+# N <- 300
+# Q <- 3
+# alpha <- rep(1,Q)/Q
+# pi <- diag(.25,Q) + .05
+# directed <- FALSE
+# mySBM <- simulateSBM(N, alpha, pi, directed)
+#
+# adjacencyMatrix <- mySBM$adjacencyMatrix
+#
+# samplingParameters <- .15
+# sampling <- "dyad"
+# sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
+#
+#
+# A <- sampledNetwork$adjacencyMatrix
+#
+# SpCl_NAiZero <- SpectralClustering_NAisZero(A,Q)
+# SpCl_NAiMean <- SpectralClustering_NAisMean(A,Q)
+# SparseSpCl_NAiZero <- SparseSpectralClustering_NAisZero(A,Q)
+# SparseSpCl_NAiMean <- SparseSpectralClustering_NAisMean(A,Q)
+#
+# ARI(SpCl_NAiZero, mySBM$memberships)
+# ARI(SpCl_NAiMean, mySBM$memberships)
+# ARI(SparseSpCl_NAiZero, mySBM$memberships)
+# ARI(SparseSpCl_NAiMean, mySBM$memberships)
 

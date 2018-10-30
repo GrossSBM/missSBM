@@ -17,6 +17,7 @@ Collate:
     'SBM_fit_nocovariate-Class.R'
     'SBM_sampler-Class.R'
     'data.R'
+    'initializations.R'
     'missSBM-package.R'
     'smoother_SBM.R'
     'missingSBM.R'
