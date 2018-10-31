@@ -75,8 +75,8 @@ missingSBM_fit$set("public", "doVEM",
     while (!cond) {
       i <- i + 1
       if (control$trace) cat(" iteration #:", i, "\r")
-
       pi_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
+
       ## ______________________________________________________
       ## Variational E-Step
       #
@@ -85,6 +85,7 @@ missingSBM_fit$set("public", "doVEM",
       private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
       # update the variational parameters for block memberships (a.k.a tau)
       private$SBM$update_blocks(private$imputedNet, control$fixPointIter, log_lambda = private$sampling$log_lambda)
+      ## private$SBM$update_blocks(private$imputedNet, control$fixPointIter, log_lambda = 0)
 
       ## ______________________________________________________
       ## M-step
@@ -93,6 +94,8 @@ missingSBM_fit$set("public", "doVEM",
       private$SBM$update_parameters(private$imputedNet)
       # update the parameters of network sampling process (a.k.a psi)
       private$sampling$update_parameters(private$imputedNet, private$SBM$blocks)
+
+      print(private$sampling$parameters)
 
       ## Check convergence
       delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))

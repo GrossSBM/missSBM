@@ -63,14 +63,16 @@ init_spectral <- function(X, K) {
   as.factor(cl0)
 }
 
+#' @importFrom ape additive
 #' @export
 init_hierarchical <- function(X, K) {
 
   ## basic handling of missing values
-  if (anyNA(X)) X[is.na(X)] <- 0
+  # if (anyNA(X)) X[is.na(X)] <- 0
   if (K > 1) {
     D  <- as.matrix(dist(X, method = "manhattan"))
-    D[X == 1] <- D[X == 1] - 2
+    D[which(X == 1)] <- D[which(X == 1)] - 2
+    D <- as.dist(ape::additive(D))
     cl0 <- cutree(hclust(as.dist(D), method = "ward.D"), K)
   } else {
     cl0 <- rep(1,ncol(X))
