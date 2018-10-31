@@ -35,7 +35,7 @@ R6::R6Class(classname = "SBM_fit",
 )
 
 SBM_fit$set("public", "doVEM",
-  function(adjMatrix, threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE) {
+  function(adjMatrix, threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE, sampling = ) {
 
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
