@@ -64,9 +64,9 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       for (i in 1:fixPointIter) {
         ## Bernoulli undirected
 
-        Tau <- exp(log(matrix(alpha,nrow=n,ncol=Q,byrow=T)) + X2 %*% Tau %*% t(log(pi))
-                   + X3 %*% Tau %*% t(log(1-pi)))
-
+        # Tau <- exp(log(matrix(alpha,nrow=n,ncol=Q,byrow=T)) + X2 %*% Tau %*% t(log(pi))
+        #            + X3 %*% Tau %*% t(log(1-pi)))
+        #
 
         tau <- adjMatrix %*% tau_old %*% t(log(private$pi)) + adjMatrix_bar %*% tau_old %*% t(log(1 - private$pi)) + log_lambda
         if (private$directed) {
