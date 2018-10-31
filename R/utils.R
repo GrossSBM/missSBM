@@ -7,6 +7,8 @@ bar <- function(X) {
   X.bar
 }
 
+quad_form <- function(A,x) {t(x) %*% A %*% x}
+
 logistic <- function(x) {1/(1 + exp(-x))}
 logit    <- function(x) {log(x/(1 - x))}
 

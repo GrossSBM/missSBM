@@ -1,3 +1,6 @@
+rm(list=ls())
+library(missSBM)
+library(aricode)
 set.seed(78910)
 
 ### A SBM model : ###

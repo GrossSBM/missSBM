@@ -30,8 +30,8 @@ vICL           <- sapply(sbm$models, function(model) model$vICL); plot(vICL, typ
 # vICL_fb_half   <- sapply(smoothed_fb_half, function(model) model$vICL); lines(vICL_fb_half  , col="orange")
 # vICL_fb_SpCl   <- sapply(smoothed_fb_SpCl, function(model) model$vICL); lines(vICL_fb_SpCl  , col="green")
 
-library(ggplot2)
-d_objective <- sbm$monitor
-
-ggplot(sbm$monitor[sbm$monitor$nBlocks > 5, ], aes(x = iteration, y = objective, group=nBlocks, colour = factor(nBlocks)) ) +
-  geom_line() + ggtitle("objective function (J) for SBM with double standard sampling")
+# library(ggplot2)
+# d_objective <- sbm$monitor
+#
+# ggplot(sbm$monitor[sbm$monitor$nBlocks > 5, ], aes(x = iteration, y = objective, group=nBlocks, colour = factor(nBlocks)) ) +
+#   geom_line() + ggtitle("objective function (J) for SBM with double standard sampling")

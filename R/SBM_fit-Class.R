@@ -40,13 +40,13 @@ SBM_fit$set("public", "doVEM",
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
     objective <- vector("numeric", maxIter)
-    i <- 0; cond <- FALSE
+    iterate <- 0; stop <- FALSE
 
-    ## Starting the Variational EM algorithm
+    ## Starting the variational EM algorithm
     if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-    while (!cond) {
-      i <- i + 1
-      if (trace) cat(" iteration #:", i, "\r")
+    while (!stop) {
+      iterate <- iterate + 1
+      if (trace) cat(" iteration #:", iterate, "\r")
 
       pi_old <- private$pi # save old value of parameters to assess convergence
 
@@ -56,13 +56,12 @@ SBM_fit$set("public", "doVEM",
       self$update_parameters(adjMatrix)
 
       # Assess convergence
-      delta[i] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
-      cond     <- (i > maxIter) |  (delta[i] < threshold)
-      cond     <- (i > maxIter)
-      objective[i] <- self$vBound(adjMatrix)
+      delta[iterate] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
+      stop <- (iterate > maxIter) |  (delta[iterate] < threshold)
+      objective[iterate] <- self$vBound(adjMatrix)
     }
     if (trace) cat("\n")
-    res <- data.frame(delta = delta[1:i], objective = objective[1:i])
+    res <- data.frame(delta = delta[1:iterate], objective = objective[1:iterate])
     res
   }
 )

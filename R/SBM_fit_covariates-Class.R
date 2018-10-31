@@ -51,7 +51,12 @@ R6::R6Class(classname = "SBM_fit_covariates",
     },
     init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
       NAs           <- is.na(adjMatrix); adjMatrix[NAs] <- 0
-      private$pi    <- logit(check_boundaries((t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(self$nNodes)) * !NAs) %*% private$tau)))
+      private$pi    <-
+        logit(
+          check_boundaries(
+            quad_form(adjMatrix * !NAs, private$tau) / quad_form((1 - diag(self$nNodes)) * !NAs, private$tau)
+          )
+        )
       private$alpha <- check_boundaries(colMeans(private$tau))
       private$beta  <- numeric(private$M)
     },

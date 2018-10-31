@@ -77,6 +77,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// E_step_nocovariate
+Rcpp::NumericMatrix E_step_nocovariate(const arma::mat& Y, const arma::mat& Y_bar, const arma::mat& pi, const arma::mat& Tau, const arma::vec& alpha, const double& log_lambda, int fixPointIter);
+RcppExport SEXP _missSBM_E_step_nocovariate(SEXP YSEXP, SEXP Y_barSEXP, SEXP piSEXP, SEXP TauSEXP, SEXP alphaSEXP, SEXP log_lambdaSEXP, SEXP fixPointIterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Y_bar(Y_barSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Tau(TauSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type log_lambda(log_lambdaSEXP);
+    Rcpp::traits::input_parameter< int >::type fixPointIter(fixPointIterSEXP);
+    rcpp_result_gen = Rcpp::wrap(E_step_nocovariate(Y, Y_bar, pi, Tau, alpha, log_lambda, fixPointIter));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
@@ -84,6 +101,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 6},
     {"_missSBM_Mstep_covariates_undirected", (DL_FUNC) &_missSBM_Mstep_covariates_undirected, 4},
     {"_missSBM_Mstep_covariates_directed", (DL_FUNC) &_missSBM_Mstep_covariates_directed, 4},
+    {"_missSBM_E_step_nocovariate", (DL_FUNC) &_missSBM_E_step_nocovariate, 7},
     {NULL, NULL, 0}
 };
 

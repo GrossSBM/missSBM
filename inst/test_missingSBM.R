@@ -31,7 +31,7 @@ par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
 plot(out$objective, type = "l", main = "Variational bound along the VEM")
 
-missSBM$plot("imputedNetwork")
+print(missSBM$plot("imputedNetwork"))
 
 NID(missSBM$fittedSBM$memberships, mySBM$memberships)
 print(abs(missSBM$fittedSampling$parameters - psi))
@@ -71,7 +71,7 @@ par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
 plot(out$objective, type = "l", main = "Variational bound along the VEM")
 
-missSBM$plot("imputedNetwork")
+print(missSBM$plot("imputedNetwork"))
 
 NID(missSBM$fittedSBM$memberships, mySBM$memberships)
 print(abs(missSBM$fittedSampling$parameters - psi))
@@ -91,7 +91,7 @@ par(mfrow = c(1,2))
 plot(out$delta    , type = "l", main = "Variations of SBM parameters along the VEM")
 plot(out$objective, type = "l", main = "Variational bound along the VEM")
 
-missSBM$plot("imputedNetwork")
+print(missSBM$plot("imputedNetwork"))
 
 NID(missSBM$fittedSBM$memberships, mySBM$memberships)
 print(abs(sort(missSBM$fittedSampling$parameters) - sort(psi)))
