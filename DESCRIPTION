@@ -29,4 +29,4 @@ Collate:
     'networkSampling_sampler-Class.R'
 RoxygenNote: 6.1.0
 LinkingTo: Rcpp, RcppArmadillo
-Imports: Rcpp, RcppArmadillo
+Imports: Rcpp, RcppArmadillo, ape, dplyr, ggplot2, igraph, nloptr, R6, viridis
