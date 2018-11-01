@@ -43,10 +43,6 @@ directed <- FALSE
 ## Simulation of an Bernoulli non-directed SBM
 mySBM <- simulateSBM(N, alpha, pi, directed)
 
-### Results : ###
-mySBM$clusters         # clusters
-mySBM$adjacencyMatrix  # the adjacency matrix
-
 }
 \references{
 [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.

@@ -27,10 +27,6 @@
 #' ## Simulation of an Bernoulli non-directed SBM
 #' mySBM <- simulateSBM(N, alpha, pi, directed)
 #'
-#'### Results : ###
-#' mySBM$clusters         # clusters
-#' mySBM$adjacencyMatrix  # the adjacency matrix
-#'
 #' @export
 simulateSBM <- function(N, alpha, pi, directed = FALSE, phi = NULL, beta = NULL){
   mySBM <- SBM_sampler$new(directed, N, alpha, pi, phi, beta)
