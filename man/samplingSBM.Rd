@@ -41,22 +41,24 @@ like the MARNode sampling plus we sample neighbours of nodes sampled at the firs
 }}
 }
 \examples{
-### SBM model : ###
-n <- 300
+### A SBM model : ###
+N <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q                                  # mixture parameter
-pi <- diag(.45,Q) + .05                              # connectivity matrix
-directed <- FALSE                                    # if the network is directed or not
-mySBM <- simulateSBM(n, alpha, pi, directed)         # simulation of ad Bernoulli non-directed SBM
-
-### Results : ###
-adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
+alpha <- rep(1,Q)/Q     # mixture parameter
+pi <- diag(.45,Q) + .05 # connectivity matrix
+directed <- FALSE
+## Simulation of an Bernoulli non-directed SBM
+mySBM <- simulateSBM(N, alpha, pi, directed)
 
 ## Sampling of the data : ##
-samplingParameters <- .5                             # the sampling rate
-sampling <- "dyad"                                   # the sampling design
-sampledNetwork <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)
-
+samplingParameters <- .5 # the sampling rate
+sampling <- "dyad"       # the sampling design
+sampledNetwork <-
+   samplingSBM(
+     mySBM$adjacencyMatrix,
+     sampling,
+     samplingParameters
+   )
 }
 \references{
 [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
