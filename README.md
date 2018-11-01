@@ -1,28 +1,6 @@
+# missSBM
 
-# missSBM: Handling missing data in Stochastic Block Models
+An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions
 
-[![Travis build
-status](https://travis-ci.org/jchiquet/missSBM.svg?branch=master)](https://travis-ci.org/jchiquet/missSBM)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/jchiquet/missSBM?branch=master&svg=true)](https://ci.appveyor.com/project/jchiquet/missSBM)
-
-> When a network is partially observed (here, missing dyads, that is,
-> entries with NA in the adjacency matrix rather than 1 or 0), it is
-> possible to account for the underlying process that generates those
-> NAs. *missSBM* is an R package for adjusting the popular Stochastic
-> Block Models from network data sampled under various missing data
-> conditions.
-
-## Installation
-
-``` r
-devtools::install_github("jchiquet/missSBM")
-```
-
-## References
-
-Please cite our work using the following references:
-
-  - T. Tabouy, P. Barbillon, J. Chiquet. *Variational Inference for
-    Stochastic Block Models from Sampled Data*, 2018
-    [link](https://arxiv.org/abs/1707.04141)
+[![Travis build status](https://travis-ci.org/jchiquet/missSBM.svg?branch=master)](https://travis-ci.org/jchiquet/missSBM)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/jchiquet/missSBM?branch=master&svg=true)](https://ci.appveyor.com/project/jchiquet/missSBM)

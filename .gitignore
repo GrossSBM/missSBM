@@ -37,3 +37,4 @@ vignettes/*.pdf
 src/*.o
 src/*.so
 src/*.dll
+src/Makevars
