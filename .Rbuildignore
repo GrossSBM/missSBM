@@ -4,3 +4,4 @@
 ^src/Makevars$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README.Rmd
