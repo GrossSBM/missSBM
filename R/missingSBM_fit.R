@@ -95,8 +95,6 @@ missingSBM_fit$set("public", "doVEM",
       # update the parameters of network sampling process (a.k.a psi)
       private$sampling$update_parameters(private$imputedNet, private$SBM$blocks)
 
-      print(private$sampling$parameters)
-
       ## Check convergence
       delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
       cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)

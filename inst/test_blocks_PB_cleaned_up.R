@@ -1,5 +1,5 @@
 rm(list=ls())
-setwd("~/work/students/timothee/svn_oldies/Code/code_these/functions/")
+setwd("~/GitLab/svn_oldies/Code/code_these/functions/")
 
 set.seed(12345)
 
@@ -27,7 +27,7 @@ diri = FALSE
 
 # sampling parameters
 a=1/2
-rho = .8
+rho = .7
 samp = "block"
 parameters = c(rho*a,rho)
 
@@ -38,6 +38,7 @@ alpha*N
 ## simuler un nouveau reseau
 Net = simulateSBM(N,alpha,pi,diri)
 Netsamp <- samplingSBM(Net$adjacencyMatrix,samp,parameters,clusters = Net$blocks%*%1:2)
+print(Netsamp$samplingRate)
 sampledNet <- Netsamp$adjacencyMatrix
 samplingVector <- rep(0,N); samplingVector[!is.na(rowSums(sampledNet))] <- 1
 cl_star <- as.vector(Net$blocks%*%1:2) ## true classifaction

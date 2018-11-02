@@ -13,11 +13,11 @@ smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores, i
         model$doVEM(control)
         model
       }, mc.cores = mc.cores)
-      vBounds <- sapply(candidates, function(candidate) candidate$vBound)
-      best_one <- candidates[[which.min(vBounds)]]
-      if(is.na(models[[i - 1]]$vBound)){
+      vICLs <- sapply(candidates, function(candidate) candidate$vICL)
+      best_one <- candidates[[which.min(vICLs)]]
+      if(is.na(models[[i - 1]]$vICL)){
         models[[i - 1]] <- best_one
-      } else if(best_one$vBound < models[[i - 1]]$vBound) {
+      } else if(best_one$vICL < models[[i - 1]]$vICL) {
         models[[i - 1]] <- best_one
       }
     }
@@ -46,11 +46,11 @@ smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc
           models[[i + 1]]
         }
       }, mc.cores = mc.cores)
-      vBounds <- sapply(candidates, function(candidate) candidate$vBound)
-      best_one <- candidates[[which.min(vBounds)]]
-      if(is.na(models[[i + 1]]$vBound)){
+      vICLs <- sapply(candidates, function(candidate) candidate$vICL)
+      best_one <- candidates[[which.min(vICLs)]]
+      if(is.na(models[[i + 1]]$vICL)){
         models[[i + 1]] <- best_one
-      } else if(best_one$vBound < models[[i + 1]]$vBound) {
+      } else if(best_one$vICL < models[[i + 1]]$vICL) {
         models[[i + 1]] <- best_one
       }
     }
