@@ -2,6 +2,7 @@ rm(list=ls())
 setwd("~/GitLab/svn_oldies/Code/code_these/functions/")
 
 library(parallel)
+library(pbmcapply)
 library(devtools)
 library(missSBM)
 library(igraph)
@@ -10,6 +11,7 @@ library(ape)
 
 source("func_missSBM.class.R")
 source("func_missSBM.R")
+source("~/Git/missSBM/inst/initializations.R")
 
 ## ----------------------------------------------
 ## SIMULATION
@@ -40,14 +42,18 @@ simulations <- function(i){
   sampledNet     <- Netsamp$adjacencyMatrix
   samplingVector <- rep(0,N); samplingVector[!is.na(rowSums(sampledNet))] <- 1
 
+  # Initialisation spectral clustering pour réseau sparse -------------------
+  Init_SpClSparse <- SparseSpectralClustering_NAisMean(sampledNet,2)
+
   # ancien code -------------------------------------------------------------
   outPut_class_old <- func_missSBM.class(sampledNet, seq.Q = 2, cl.init = "CAH")
+  outPut_class_old_SpClSparse <- func_missSBM.class(sampledNet, seq.Q = 2, CL.init = Init_SpClSparse)
 
   # package -----------------------------------------------------------------
   outPut_mar <-
     inferSBM(
       adjacencyMatrix = sampledNet,
-      vBlocks = 1:4,
+      vBlocks = 2,
       sampling = "node",
       clusterInit = "hierarchical",
       smoothing = "none")
@@ -55,16 +61,16 @@ simulations <- function(i){
   outPut_mar_smoothed <-
     inferSBM(
       adjacencyMatrix = sampledNet,
-      vBlocks = 1:4,
+      vBlocks = 2,
       sampling = "node",
-      clusterInit = "hierarchical",
-      smoothing = "both",
+      clusterInit = Init_SpClSparse,
+      smoothing = "none",
       iter_both = 2)
 
   outPut_block <-
     inferSBM(
       adjacencyMatrix = sampledNet,
-      vBlocks = 1:4,
+      vBlocks = 2,
       sampling = "block",
       clusterInit = "hierarchical",
       smoothing = "none")
@@ -72,10 +78,10 @@ simulations <- function(i){
   outPut_block_smoothed <-
     inferSBM(
       adjacencyMatrix = sampledNet,
-      vBlocks = 1:4,
+      vBlocks = 2,
       sampling = "block",
-      clusterInit = "hierarchical",
-      smoothing = "both",
+      clusterInit = Init_SpClSparse,
+      smoothing = "none",
       iter_both = 2)
 
   ICL_mar                     <- sapply(outPut_mar$models  , function(model) model$vICL)
@@ -88,33 +94,35 @@ simulations <- function(i){
   block_missSBM           <- outPut_block$models[[which.min(ICL_block_missSBM)]]
   block_missSBM_smoothed  <- outPut_block_smoothed$models[[which.min(ICL_block_missSBM_smoothed)]]
   block_old               <- getBestModel(outPut_class_old)
-
+  block_old_SpClSparse    <- getBestModel(outPut_class_old_SpClSparse)
 
   return(data.frame(simu  = i,
                     algo  = c("MAR",
-                             "MAR_smoothed",
+                             "MAR_SpClSparse",
                              "block_new",
-                             "block_new_smoothed",
-                             "block_old"),
+                             "block_new_SpClSparse",
+                             "block_old",
+                             "block_old_SpClSparse"),
                     ICL   = c(ICL_mar[which.min(ICL_mar)],
                              ICL_mar_smoothed[which.min(ICL_mar_smoothed)],
                              ICL_block_missSBM[which.min(ICL_block_missSBM)],
                              ICL_block_missSBM_smoothed[which.min(ICL_block_missSBM_smoothed)],
-                             getBestModel(outPut_class_old)@ICL),
-                    Q_est = c(which.min(ICL_mar), which.min(ICL_mar_smoothed), which.min(ICL_block_missSBM), which.min(ICL_block_missSBM_smoothed), length(getAlpha(getBestModel(outPut_class_old)))),
+                             getBestModel(outPut_class_old)@ICL,
+                             getBestModel(outPut_class_old_SpClSparse)@ICL),
+                    Q_est = c(which.min(ICL_mar), which.min(ICL_mar_smoothed), which.min(ICL_block_missSBM), which.min(ICL_block_missSBM_smoothed), length(getAlpha(getBestModel(outPut_class_old))),length(getAlpha(getBestModel(outPut_class_old_SpClSparse)))),
                     ARI   = c(aricode::ARI(cl_star, mar_missSBM$fittedSBM$memberships),
                              aricode::ARI(cl_star, mar_missSBM_smoothed$fittedSBM$memberships),
                              aricode::ARI(cl_star, block_missSBM$fittedSBM$memberships),
                              aricode::ARI(cl_star, block_missSBM_smoothed$fittedSBM$memberships),
-                             aricode::ARI(cl_star, getClusters(block_old))),
+                             aricode::ARI(cl_star, getClusters(block_old)),
+                             aricode::ARI(cl_star, getClusters(block_old_SpClSparse))),
                     sampRate = Netsamp$samplingRate))
 
 }
 
-results <- do.call(rbind, mclapply(1:1, simulations, mc.cores = 1))
-# results$interval <- cut(as.numeric(results$sampRate), seq(min(as.numeric(results$sampRate))-0.001,max(as.numeric(results$sampRate)), len=2))
-#
-#
-# library(ggplot2)
-# ggplot(results, aes(x=interval, y=ARI, color=algo)) + geom_boxplot()
+results <- do.call(rbind, pbmclapply(1:50, simulations, mc.cores = 1))
+results$interval <- cut(as.numeric(results$sampRate), seq(min(as.numeric(results$sampRate))-0.001,max(as.numeric(results$sampRate)), len=2))
 
+library(ggplot2)
+ggplot(results, aes(x=interval, y=ARI, color=algo)) + geom_boxplot()
+save(results, file = "~/Git/missSBM/inst/Rdata_simu3.RData")
