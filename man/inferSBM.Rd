@@ -4,19 +4,28 @@
 \alias{inferSBM}
 \title{Inference of Stochastic Block Model from sampled data}
 \usage{
-inferSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "spectral",
-  smoothing = c("none", "forward", "backward", "both"), mc.cores = 2,
-  iter_both = 1, control_VEM = list())
+inferSBM(adjacencyMatrix, vBlocks, sampling,
+  clusterInit = "hierarchical", smoothing = c("none", "forward",
+  "backward", "both"), mc.cores = 2, iter_both = 1,
+  control_VEM = list())
 }
 \arguments{
+\item{adjacencyMatrix}{The adjacency matrix of the network}
+
 \item{vBlocks}{The vector of number of blocks considered in the collection}
 
 \item{sampling}{The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block"
 by default "undirected" is choosen}
 
-\item{sampledNetwork}{The sampled network data (a square matrix)}
+\item{clusterInit}{character in "hierarchical" or "spectral" for initialization}
 
-\item{plot}{Summary of the output of the algorithm, by default TRUE is choosen}
+\item{smoothing}{character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"}
+
+\item{mc.cores}{integer, the number of cores to use when multiply model are fitted}
+
+\item{iter_both}{integer for the number of iteration in case of foward-backward (aka both) smoothing}
+
+\item{control_VEM}{a list controlling the variational EM algorithm. See details.}
 }
 \value{
 \code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
@@ -27,29 +36,36 @@ and a vector with ICL calculated for all Q in vBlocks
 }
 \examples{
 ### A SBM model : ###
-n <- 300
+N <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q                                      # mixture parameter
-pi <- diag(.45,Q) + .05                                  # connectivity matrix
+alpha <- rep(1,Q)/Q     # mixture parameter
+pi <- diag(.45,Q) + .05 # connectivity matrix
 directed <- FALSE
-mySBM <- simulateSBM(n, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
-
-### Results : ###
-adjacencyMatrix <- mySBM$adjacencyMatrix                                           # the adjacency matrix
+## Simulation of an Bernoulli non-directed SBM
+mySBM <- simulateSBM(N, alpha, pi, directed)
 
 ## Sampling of the data : ##
-samplingParameters <- .5                                                           # the sampling rate
-sampling <- "dyad"                                                                 # the sampling design
-sampledAdjMatrix <- samplingSBM(adjacencyMatrix, sampling, samplingParameters)     # the sampled adjacency matrix
+samplingParameters <- .5 # the sampling rate
+sampling <- "dyad"       # the sampling design
+sampledNetwork <-
+   samplingSBM(
+     mySBM$adjacencyMatrix,
+     sampling,
+     samplingParameters
+   )
 
 ## Inference :
-vBlocks <- 1:5                                                                     # number of classes
-sbm <- inferSBM(sampledAdjMatrix$adjacencyMatrix, vBlocks, sampling)
-
+vBlocks <- 1:5 # number of classes
+sbm <-
+   inferSBM(
+      sampledNetwork$adjacencyMatrix,
+      vBlocks,
+      sampling
+   )
 }
 \references{
 [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 }
 \seealso{
-\code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{SBM_collection}}.
+\code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{missingSBM_fit}}.
 }

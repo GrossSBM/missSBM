@@ -14,7 +14,7 @@ Rcpp::NumericMatrix roundProduct(arma::cube X, arma::vec beta) {
   int N = X.n_rows;
   arma::mat M = arma::zeros<arma::mat>(N,N);
 
-  for (int k = 0; k < beta.size(); k++) {
+  for (unsigned int k = 0; k < beta.size(); k++) {
     M += X.slice(k) * beta[k];
   }
 

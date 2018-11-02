@@ -64,11 +64,10 @@ init_spectral <- function(X, K) {
 }
 
 #' @importFrom ape additive
+#' @importFrom stats as.dist cutree dist hclust
 #' @export
 init_hierarchical <- function(X, K) {
 
-  ## basic handling of missing values
-  # if (anyNA(X)) X[is.na(X)] <- 0
   if (K > 1) {
     D  <- as.matrix(dist(X, method = "manhattan"))
     D[which(X == 1)] <- D[which(X == 1)] - 2
@@ -80,6 +79,7 @@ init_hierarchical <- function(X, K) {
   as.factor(cl0)
 }
 
+#' @importFrom stats kmeans
 #' @export
 init_kmeans <- function(X, K) {
 
@@ -87,6 +87,8 @@ init_kmeans <- function(X, K) {
   as.factor(cl0)
 }
 
+#' @importFrom graphics box image par
+#' @importFrom rlang .data
 #' @export
 image_NA <- function(z,  zlim = c(0,1), col = c("white", "midnightblue"), na.color = 'gray', outside.below.color = 'black', outside.above.color = 'white', ...)
 {
@@ -153,5 +155,5 @@ gg_image_NA <- function(adjacencyMatrix, memberships) {
           axis.text = element_blank() ,
           axis.ticks = element_blank(),
           axis.line = element_blank())
-  invisible(p)
+  p
 }

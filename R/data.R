@@ -1,13 +1,7 @@
 #' ESR ego centred network
 #'
-#' A dataset containing the weigthed PPI network centred around ESR1 and extracted from string data base
-#' diamonds.
+#' A dataset containing the weigthed PPI network centred around ESR1
 #'
-#' @format A sparse symmetric matrix with 741 rows and 741 columns:
-#' \describe{
-#'   \item{price}{price, in US dollars}
-#'   \item{carat}{weight of the diamond, in carats}
-#'   ...
-#' }
+#' @format A sparse symmetric matrix with 741 rows and 741 columns \code{net_ER}
 #' @source \url{https://string-db.org/}
 "net_ER"

@@ -1,14 +1,38 @@
 Package: missSBM
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Handling missing data in Stochastic Block Models
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: c(
+  person("Pierre", "Barbillon", role = c("aut"), email = "pierre.barbillon@agroparistech.fr"),
+  person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inra.fr",
+      comment = c(ORCID = "0000-0002-3629-3429")),
+  person("Timothée", "Tabouy", role = c("aut"), email = "timothee.tabouy@agroparistech.fr")
+  )
+Maintainer: Julien Chiquet <julien.chiquet@inra.fr>
+Description: When a network is partially observed (here, missing dyads, that is, entries with 
+    NA in the adjacency matrix rather than 1 or 0), it is possible to account for the underlying process that generates
+    those NAs. missSBM is an R package for adjusting the popular Stochastic Block Models from network data 
+    sampled under various missing data conditions.
+URL: https://github.com/jchiquet/missSBM (dev version)
+BugReports: https://github.com/jchiqut/missSBM/issues
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.0
+Depends: R (>= 3.4.0)
+Imports: 
+    Rcpp,
+    RcppArmadillo,
+    methods,
+    ape,
+    rlang,
+    dplyr,
+    ggplot2,
+    igraph,
+    nloptr,
+    R6,
+    viridis
+LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'
     'SBM-Class.R'
@@ -17,7 +41,6 @@ Collate:
     'SBM_fit_nocovariate-Class.R'
     'SBM_sampler-Class.R'
     'data.R'
-    'initializations.R'
     'missSBM-package.R'
     'smoother_SBM.R'
     'missingSBM.R'
@@ -27,6 +50,3 @@ Collate:
     'missingSBM_fit.R'
     'sampledNetwork-Class.R'
     'networkSampling_sampler-Class.R'
-RoxygenNote: 6.1.0
-LinkingTo: Rcpp, RcppArmadillo
-Imports: Rcpp, RcppArmadillo, ape, dplyr, ggplot2, igraph, nloptr, R6, viridis

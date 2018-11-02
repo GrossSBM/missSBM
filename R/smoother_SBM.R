@@ -1,3 +1,5 @@
+#' @importFrom utils combn
+#' @importFrom parallel mclapply
 #' @export
 smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores, iter_both, control) {
   cat("   Going backward ")

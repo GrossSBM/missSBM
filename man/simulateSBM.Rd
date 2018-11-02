@@ -37,14 +37,11 @@ The emission law can be :\itemize{\item{Bernoulli:
 ### A SBM model : ###
 N <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q                                      # mixture parameter
-pi <- diag(.45,Q) + .05                                  # connectivity matrix
+alpha <- rep(1,Q)/Q     # mixture parameter
+pi <- diag(.45,Q) + .05 # connectivity matrix
 directed <- FALSE
-mySBM <- simulateSBM(N, alpha, pi, directed)             # simulation of ad Bernoulli non-directed SBM
-
-### Results : ###
-clusters <-  mySBM$clusters                              # clusters
-adjacencyMatrix <- mySBM$adjacencyMatrix                 # the adjacency matrix
+## Simulation of an Bernoulli non-directed SBM
+mySBM <- simulateSBM(N, alpha, pi, directed)
 
 }
 \references{
