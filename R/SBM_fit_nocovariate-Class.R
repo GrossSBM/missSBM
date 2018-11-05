@@ -53,8 +53,8 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
     vExpec = function(adjMatrix) {
       prob   <- private$tau %*% private$pi %*% t(private$tau)
       factor <- ifelse(private$directed, 1, .5)
-      adjMatrix_zeroDiag     <- adjMatrix ; diag(adjMatrix_zeroDiag) <- 0           ### Changement ici ###
-      adjMatrix_zeroDiag_bar <- 1 - adjMatrix ; diag(adjMatrix_zeroDiag_bar) <- 0   ### Changement ici ###
+      adjMatrix_zeroDiag     <- adjMatrix ; diag(adjMatrix_zeroDiag) <- 0
+      adjMatrix_zeroDiag_bar <- 1 - adjMatrix ; diag(adjMatrix_zeroDiag_bar) <- 0
       sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + adjMatrix_zeroDiag_bar *  log(1 - prob))
     },
     update_blocks = function(adjMatrix, fixPointIter, log_lambda = 0) {
@@ -63,19 +63,12 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       tau_old <- private$tau
       for (i in 1:fixPointIter) {
         ## Bernoulli undirected
-#        Tau <- exp(log(matrix(alpha,nrow=n,ncol=Q,byrow=T)) + X2 %*% Tau %*% t(log(pi))
-#                   + X3 %*% Tau %*% t(log(1-pi)) + log_lambda)
-
         tau <- adjMatrix %*% tau_old %*% t(log(private$pi)) + adjMatrix_bar %*% tau_old %*% t(log(1 - private$pi)) + log_lambda
         if (private$directed) {
           ## Bernoulli directed
           tau <- tau + t(adjMatrix) %*% tau_old %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% tau_old %*% t(log(1 - t(private$pi)))
         }
-        tau <- exp(sweep(tau, 2, log(private$alpha),"+"))
-### poor hack when value are too small to be compared properly
-        norm <- rowSums(tau)
-        tau <- tau/norm
-        tau[which(norm == 0), ] <- tau_old[which(norm == 0), ]
+        tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
         tau_old <- tau
       }
       private$tau <- tau
