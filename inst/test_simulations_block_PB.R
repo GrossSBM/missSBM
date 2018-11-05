@@ -1,5 +1,4 @@
 rm(list=ls())
-setwd("~/GitLab/svn_oldies/Code/code_these/functions/")
 
 library(parallel)
 library(pbmcapply)
@@ -8,10 +7,11 @@ library(missSBM)
 library(igraph)
 library(Matrix)
 library(ape)
+source("inst/initializations.R")
 
+setwd("../svn_oldies/Code/code_these/functions/")
 source("func_missSBM.class.R")
 source("func_missSBM.R")
-source("~/Git/missSBM/inst/initializations.R")
 
 ## ----------------------------------------------
 ## SIMULATION
@@ -46,11 +46,11 @@ simulations <- function(i){
   Init_SpClSparse <- SparseSpectralClustering_NAisMean(sampledNet,2)
 
   # ancien code -------------------------------------------------------------
-  outPut_class_old <- func_missSBM.class(sampledNet, seq.Q = 2, cl.init = "CAH")
-  outPut_class_old_SpClSparse <- func_missSBM.class(sampledNet, seq.Q = 2, CL.init = Init_SpClSparse)
+  outPut_class_old_hierarchical <- func_missSBM.class(sampledNet, seq.Q = 2, cl.init = "CAH")
+  outPut_class_old_spectral     <- func_missSBM.class(sampledNet, seq.Q = 2, CL.init = Init_SpClSparse)
 
   # package -----------------------------------------------------------------
-  outPut_mar <-
+  outPut_mar_hierachical <-
     inferSBM(
       adjacencyMatrix = sampledNet,
       vBlocks = 2,
@@ -58,16 +58,15 @@ simulations <- function(i){
       clusterInit = "hierarchical",
       smoothing = "none")
 
-  outPut_mar_smoothed <-
+  outPut_mar_spectral <-
     inferSBM(
       adjacencyMatrix = sampledNet,
       vBlocks = 2,
       sampling = "node",
       clusterInit = Init_SpClSparse,
-      smoothing = "none",
-      iter_both = 2)
+      smoothing = "none")
 
-  outPut_block <-
+  outPut_block_hierarchical <-
     inferSBM(
       adjacencyMatrix = sampledNet,
       vBlocks = 2,
@@ -75,54 +74,51 @@ simulations <- function(i){
       clusterInit = "hierarchical",
       smoothing = "none")
 
-  outPut_block_smoothed <-
+  outPut_block_spectral <-
     inferSBM(
       adjacencyMatrix = sampledNet,
       vBlocks = 2,
       sampling = "block",
       clusterInit = Init_SpClSparse,
-      smoothing = "none",
-      iter_both = 2)
+      smoothing = "none")
 
-  ICL_mar                     <- sapply(outPut_mar$models  , function(model) model$vICL)
-  ICL_mar_smoothed            <- sapply(outPut_mar_smoothed$models  , function(model) model$vICL)
-  ICL_block_missSBM           <- sapply(outPut_block$models, function(model) model$vICL)
-  ICL_block_missSBM_smoothed  <- sapply(outPut_block_smoothed$models, function(model) model$vICL)
+  mar_missSBM_hierarchical   <- outPut_mar_hierachical$models[[1]]
+  mar_missSBM_spectral       <- outPut_mar_spectral$models[[1]]
+  block_missSBM_hierarchical <- outPut_block_hierarchical$models[[1]]
+  block_missSBM_spectral     <- outPut_block_spectral$models[[1]]
 
-  mar_missSBM             <- outPut_mar$models[[which.min(ICL_mar)]]
-  mar_missSBM_smoothed    <- outPut_mar_smoothed$models[[which.min(ICL_mar_smoothed)]]
-  block_missSBM           <- outPut_block$models[[which.min(ICL_block_missSBM)]]
-  block_missSBM_smoothed  <- outPut_block_smoothed$models[[which.min(ICL_block_missSBM_smoothed)]]
-  block_old               <- getBestModel(outPut_class_old)
-  block_old_SpClSparse    <- getBestModel(outPut_class_old_SpClSparse)
+  ICL_mar_hierarchical   <- outPut_mar_hierachical$models[[1]]$vICL
+  ICL_mar_spectral       <- outPut_mar_spectral$models[[1]]$vICL
+  ICL_block_hierarchical <- outPut_block_hierarchical$models[[1]]$vICL
+  ICL_block_spectral     <- outPut_block_spectral$models[[1]]$vICL
+
+  block_old_hierarchical <- getBestModel(outPut_class_old_hierarchical)
+  block_old_spectral     <- getBestModel(outPut_class_old_spectral)
 
   return(data.frame(simu  = i,
-                    algo  = c("MAR",
-                             "MAR_SpClSparse",
-                             "block_new",
-                             "block_new_SpClSparse",
-                             "block_old",
-                             "block_old_SpClSparse"),
-                    ICL   = c(ICL_mar[which.min(ICL_mar)],
-                             ICL_mar_smoothed[which.min(ICL_mar_smoothed)],
-                             ICL_block_missSBM[which.min(ICL_block_missSBM)],
-                             ICL_block_missSBM_smoothed[which.min(ICL_block_missSBM_smoothed)],
-                             getBestModel(outPut_class_old)@ICL,
-                             getBestModel(outPut_class_old_SpClSparse)@ICL),
-                    Q_est = c(which.min(ICL_mar), which.min(ICL_mar_smoothed), which.min(ICL_block_missSBM), which.min(ICL_block_missSBM_smoothed), length(getAlpha(getBestModel(outPut_class_old))),length(getAlpha(getBestModel(outPut_class_old_SpClSparse)))),
-                    ARI   = c(aricode::ARI(cl_star, mar_missSBM$fittedSBM$memberships),
-                             aricode::ARI(cl_star, mar_missSBM_smoothed$fittedSBM$memberships),
-                             aricode::ARI(cl_star, block_missSBM$fittedSBM$memberships),
-                             aricode::ARI(cl_star, block_missSBM_smoothed$fittedSBM$memberships),
-                             aricode::ARI(cl_star, getClusters(block_old)),
-                             aricode::ARI(cl_star, getClusters(block_old_SpClSparse))),
+                    algo  = c("MAR_hierarchical",
+                             "MAR_spectral",
+                             "block_new_hierarchical",
+                             "block_new_spectral",
+                             "block_old_hierarchical",
+                             "block_old_spectral"),
+                    ICL   = c(ICL_mar_hierarchical,
+                             ICL_mar_spectral,
+                             ICL_block_hierarchical,
+                             ICL_block_spectral,
+                             getBestModel(outPut_class_old_hierarchical)@ICL,
+                             getBestModel(outPut_class_old_spectral)@ICL),
+                    ARI   = c(aricode::ARI(cl_star, mar_missSBM_hierarchical$fittedSBM$memberships),
+                             aricode::ARI(cl_star, mar_missSBM_spectral$fittedSBM$memberships),
+                             aricode::ARI(cl_star, block_missSBM_hierarchical$fittedSBM$memberships),
+                             aricode::ARI(cl_star, block_missSBM_spectral$fittedSBM$memberships),
+                             aricode::ARI(cl_star, getClusters(block_old_hierarchical)),
+                             aricode::ARI(cl_star, getClusters(block_old_spectral))),
                     sampRate = Netsamp$samplingRate))
 
 }
 
-results <- do.call(rbind, pbmclapply(1:50, simulations, mc.cores = 1))
-results$interval <- cut(as.numeric(results$sampRate), seq(min(as.numeric(results$sampRate))-0.001,max(as.numeric(results$sampRate)), len=2))
+results <- do.call(rbind, pbmclapply(1:50, simulations, mc.cores = 10))
 
 library(ggplot2)
-ggplot(results, aes(x=interval, y=ARI, color=algo)) + geom_boxplot()
-save(results, file = "~/Git/missSBM/inst/Rdata_simu3.RData")
+ggplot(results, aes(x=algo, y=ARI, color=algo)) + geom_boxplot()
