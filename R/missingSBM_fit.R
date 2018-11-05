@@ -80,11 +80,13 @@ missingSBM_fit$set("public", "doVEM",
       ## ______________________________________________________
       ## Variational E-Step
       #
-      # update the variational parameters for missing entries (a.k.a nu)
-      nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
-      private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
-      # update the variational parameters for block memberships (a.k.a tau)
-      private$SBM$update_blocks(private$imputedNet, control$fixPointIter, log_lambda = private$sampling$log_lambda)
+      for (k in 1:control$fixPointIter) {
+        # update the variational parameters for missing entries (a.k.a nu)
+        nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
+        private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
+        # update the variational parameters for block memberships (a.k.a tau)
+        private$SBM$update_blocks(private$imputedNet, 1, log_lambda = private$sampling$log_lambda)
+      }
 
       ## ______________________________________________________
       ## M-step
@@ -98,6 +100,9 @@ missingSBM_fit$set("public", "doVEM",
       delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
       cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
       objective[i] <- self$vBound
+
+      # print(table(apply(private$SBM$blocks, 1,  which.max)))
+
     }
     if (control$trace) cat("\n")
     res <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]))
