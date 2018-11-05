@@ -9,9 +9,11 @@ library(Matrix)
 library(ape)
 source("inst/initializations.R")
 
+old_rep <- getwd()
 setwd("../svn_oldies/Code/code_these/functions/")
 source("func_missSBM.class.R")
 source("func_missSBM.R")
+setwd(old_rep)
 
 ## ----------------------------------------------
 ## SIMULATION
@@ -31,6 +33,8 @@ parameters <- c(rho*a,rho)
 
 alpha1 <- .15
 alpha  <- c(alpha1,alpha1*(3*a*rho-2*a^2*rho^2-rho+a*rho^2)/(-a*rho+a*rho^2+rho-rho^2))
+
+control <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 10, trace = FALSE)
 
 # fonctions à reproduire
 simulations <- function(i){
@@ -72,7 +76,7 @@ simulations <- function(i){
       vBlocks = 2,
       sampling = "block",
       clusterInit = "hierarchical",
-      smoothing = "none")
+      smoothing = "none", control_VEM = control)
 
   outPut_block_spectral <-
     inferSBM(
@@ -80,7 +84,7 @@ simulations <- function(i){
       vBlocks = 2,
       sampling = "block",
       clusterInit = Init_SpClSparse,
-      smoothing = "none")
+      smoothing = "none", control_VEM = control)
 
   mar_missSBM_hierarchical   <- outPut_mar_hierachical$models[[1]]
   mar_missSBM_spectral       <- outPut_mar_spectral$models[[1]]
@@ -102,6 +106,24 @@ simulations <- function(i){
                              "block_new_spectral",
                              "block_old_hierarchical",
                              "block_old_spectral"),
+                    version  = c("new",
+                             "new",
+                             "new",
+                             "new",
+                             "old",
+                             "old"),
+                    sampling  = c("MAR",
+                             "MAR",
+                             "block",
+                             "block",
+                             "block",
+                             "block"),
+                    init  = c("hierarchical",
+                             "spectral",
+                             "hierarchical",
+                             "spectral",
+                             "hierarchical",
+                             "spectral"),
                     ICL   = c(ICL_mar_hierarchical,
                              ICL_mar_spectral,
                              ICL_block_hierarchical,
@@ -118,7 +140,9 @@ simulations <- function(i){
 
 }
 
-results <- do.call(rbind, pbmclapply(1:50, simulations, mc.cores = 10))
+n_sim <- 18
+results <- do.call(rbind, pbmclapply(1:n_sim, simulations, mc.cores = 3))
 
 library(ggplot2)
-ggplot(results, aes(x=algo, y=ARI, color=algo)) + geom_boxplot()
+p <- ggplot(results, aes(x = sampling, y = ARI, color = init, fill = version)) + geom_boxplot()
+print(p)
