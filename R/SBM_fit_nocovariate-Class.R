@@ -57,25 +57,18 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       adjMatrix_zeroDiag_bar <- 1 - adjMatrix ; diag(adjMatrix_zeroDiag_bar) <- 0
       sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + adjMatrix_zeroDiag_bar *  log(1 - prob))
     },
-    update_blocks = function(adjMatrix, fixPointIter, log_lambda = 0) {
-      ## TODO: code this function in Rcpp/C++ ...
+    update_blocks = function(adjMatrix, log_lambda = 0) {
       if (private$Q > 1) {
         adjMatrix_bar <- bar(adjMatrix)
-        tau_old <- private$tau
-        for (i in 1:fixPointIter) {
-          ## Bernoulli undirected
-          tau <- adjMatrix %*% tau_old %*% t(log(private$pi)) + adjMatrix_bar %*% tau_old %*% t(log(1 - private$pi)) + log_lambda
-          if (private$directed) {
-            ## Bernoulli directed
-            tau <- tau + t(adjMatrix) %*% tau_old %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% tau_old %*% t(log(1 - t(private$pi)))
-          }
-          tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
-          tau_old <- tau
+        ## Bernoulli undirected
+        tau <- adjMatrix %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log_lambda
+        if (private$directed) {
+          ## Bernoulli directed
+          tau <- tau + t(adjMatrix) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
         }
-        private$tau <- tau
+        private$tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
       }
     }
   )
-
 )
 

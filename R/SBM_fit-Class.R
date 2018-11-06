@@ -51,7 +51,7 @@ SBM_fit$set("public", "doVEM",
       pi_old <- private$pi # save old value of parameters to assess convergence
 
       # Variational E-Step
-      self$update_blocks(adjMatrix, fixPointIter)
+      for (i in seq.int(fixPointIter)) self$update_blocks(adjMatrix)
       # M-step
       self$update_parameters(adjMatrix)
 
