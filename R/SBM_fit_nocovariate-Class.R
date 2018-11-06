@@ -59,19 +59,21 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
     },
     update_blocks = function(adjMatrix, fixPointIter, log_lambda = 0) {
       ## TODO: code this function in Rcpp/C++ ...
-      adjMatrix_bar <- bar(adjMatrix)
-      tau_old <- private$tau
-      for (i in 1:fixPointIter) {
-        ## Bernoulli undirected
-        tau <- adjMatrix %*% tau_old %*% t(log(private$pi)) + adjMatrix_bar %*% tau_old %*% t(log(1 - private$pi)) + log_lambda
-        if (private$directed) {
-          ## Bernoulli directed
-          tau <- tau + t(adjMatrix) %*% tau_old %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% tau_old %*% t(log(1 - t(private$pi)))
+      if (private$Q > 1) {
+        adjMatrix_bar <- bar(adjMatrix)
+        tau_old <- private$tau
+        for (i in 1:fixPointIter) {
+          ## Bernoulli undirected
+          tau <- adjMatrix %*% tau_old %*% t(log(private$pi)) + adjMatrix_bar %*% tau_old %*% t(log(1 - private$pi)) + log_lambda
+          if (private$directed) {
+            ## Bernoulli directed
+            tau <- tau + t(adjMatrix) %*% tau_old %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% tau_old %*% t(log(1 - t(private$pi)))
+          }
+          tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
+          tau_old <- tau
         }
-        tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
-        tau_old <- tau
+        private$tau <- tau
       }
-      private$tau <- tau
     }
   )
 
