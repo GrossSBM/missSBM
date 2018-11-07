@@ -16,48 +16,45 @@ setwd(old_rep)
 # SBM parameters
 N  <- 300
 pr <- .2
-pi <- matrix(pr,2,2)
-pi[1,1] <- 3*pr
+pi <- matrix(pr,2,2); pi[1,1] <- 3*pr
 diri <- FALSE
 
 # sampling parameters
-a    <- 1/2
-rho  <- .7
-samp <- "block"
+a    <- 1/2; rho  <- .7
 parameters <- c(rho*a,rho)
 
 alpha1 <- .15
 alpha  <- c(alpha1,alpha1*(3*a*rho-2*a^2*rho^2-rho+a*rho^2)/(-a*rho+a*rho^2+rho-rho^2))
 
 
-## simuler un nouveau réseau
-Net            <- simulateSBM(N,alpha,pi,diri)
-cl_star        <- as.vector(Net$blocks%*%1:2)
-Netsamp        <- samplingSBM(Net$adjacencyMatrix,samp,parameters,clusters = cl_star)
-sampledNet     <- Netsamp$adjacencyMatrix
-samplingVector <- rep(0,N); samplingVector[!is.na(rowSums(sampledNet))] <- 1
+## SBML parameters
+Net        <- simulateSBM(N, alpha , pi, diri)
+cl_star    <- as.vector(Net$blocks %*% 1:2)
+Netsamp    <- samplingSBM(Net$adjacencyMatrix, "block", parameters, clusters = cl_star)
+sampledNet <- Netsamp$adjacencyMatrix
 
 # ancien code -------------------------------------------------------------
-block_old <- func_missSBM.class(sampledNet, seq.Q = 2,  cl.init = "CAH")@models[[1]]
+old <- func_missSBM.class(sampledNet, seq.Q = 2,  cl.init = "CAH")@models[[1]]
 
 # package -----------------------------------------------------------------
-control <- list(threshold = 1e-6, maxIter = 200, fixPointIter = 5, trace = TRUE)
-
+control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 5, trace = TRUE)
 new <- missingSBM_fit$new(Netsamp, 2, "block", clusterInit = "hierarchical")
 optim_new <- new$doVEM(control)
 
-res <- data.frame(version  = c("new", "old"),
-          sampling  = c("block", "block"),
-          ARI       = c(ARI(cl_star, new$fittedSBM$memberships),
-                        ARI(cl_star, getClusters(block_old))))
-print(res)
 
 plot(-optim_new$objective, type = "l", log = "y")
-plot(-block_old@crit, type = "l", log = "y")
+plot(-old@crit, type = "l", log = "y")
 
 psi_new <- new$fittedSampling$parameters
-psi_old <- block_old@psi
+psi_old <- old@psi[[1]]
 
 pi_new <- new$fittedSBM$connectParam
-pi_old <- block_old@theta[[1]]$pi
+pi_old <- old@theta[[1]]$pi
 
+res <- data.frame(
+  version  = c("new", "old"), sampling  = c("block", "block"),
+  ARI = c(ARI(cl_star, new$fittedSBM$memberships), ARI(cl_star, getClusters(old))),
+  err_pi  = c(frobenius(pi_new - matrix(rev(pi), 2, 2)), frobenius(pi_old - matrix(rev(pi), 2, 2))),
+  err_psi = c(frobenius(rev(psi_new) - parameters), frobenius(rev(psi_old) - parameters))
+)
+print(res)

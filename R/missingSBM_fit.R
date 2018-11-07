@@ -14,22 +14,29 @@ missingSBM_fit <-
     SBM        = NULL  # fit of the current stochastic block model (object of class 'SBM_fit')
   ),
   public = list(
-    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "spectral") {
+    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "hierarchical") {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(sampledNet, "sampledNetwork"))
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
+      ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
+      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, clusterInit)
+
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
 
-      ## network data without any imputation at startup
+      ## network data with basic imputation at startup
       private$imputedNet <- sampledNet$adjacencyMatrix
+      Z <- clustering_indicator(clusterInit)
+      adjancency0 <- sampledNet$adjacencyMatrix; adjancency0[sampledNet$NAs] <- 0
+      pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
+      private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
 ### TEMPORARY: HANDELING nocovariate model only
       ## construct and initialize the SBM fit
-      private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, nBlocks, clusterInit)
+      private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
 
       ## construct the network sampling fit
       private$sampling <- switch(netSampling,

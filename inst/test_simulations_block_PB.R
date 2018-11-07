@@ -140,8 +140,8 @@ simulations <- function(i){
 
 }
 
-n_sim <- 18
-results <- do.call(rbind, pbmclapply(1:n_sim, simulations, mc.cores = 3))
+n_sim <- 50
+results <- do.call(rbind, pbmclapply(1:n_sim, simulations, mc.cores = 10))
 
 library(ggplot2)
 p <- ggplot(results, aes(x = sampling, y = ARI, color = init, fill = version)) + geom_boxplot()
