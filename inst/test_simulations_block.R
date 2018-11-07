@@ -29,7 +29,6 @@ parameters <- c(rho*a,rho)
 alpha1 <- .15
 alpha  <- c(alpha1,alpha1*(3*a*rho-2*a^2*rho^2-rho+a*rho^2)/(-a*rho+a*rho^2+rho-rho^2))
 
-control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 10, trace = TRUE)
 
 ## simuler un nouveau réseau
 Net            <- simulateSBM(N,alpha,pi,diri)
@@ -39,38 +38,26 @@ sampledNet     <- Netsamp$adjacencyMatrix
 samplingVector <- rep(0,N); samplingVector[!is.na(rowSums(sampledNet))] <- 1
 
 # ancien code -------------------------------------------------------------
-block_old <- func_missSBM.class(sampledNet, seq.Q = 2, cl.init = "CAH")@models[[1]]
+block_old <- func_missSBM.class(sampledNet, seq.Q = 2,  cl.init = "CAH")@models[[1]]
 
 # package -----------------------------------------------------------------
-mar <-
-  inferSBM(
-    adjacencyMatrix = sampledNet,
-    vBlocks = 2,
-    sampling = "node",
-    clusterInit = "hierarchical")$models[[1]]
+control <- list(threshold = 1e-6, maxIter = 200, fixPointIter = 5, trace = TRUE)
 
-new <-
-    inferSBM(
-      adjacencyMatrix = sampledNet,
-      vBlocks = 2,
-      sampling = "block",
-      clusterInit = "hierarchical", control_VEM = control)
+new <- missingSBM_fit$new(Netsamp, 2, "block", clusterInit = "hierarchical")
+optim_new <- new$doVEM(control)
 
-block_new <- new$models[[1]]
-
-res <- data.frame(version  = c("new","new", "old"),
-          sampling  = c("MAR", "block", "block"),
-          ARI       = c(ARI(cl_star, mar$fittedSBM$memberships),
-                        ARI(cl_star, block_new$fittedSBM$memberships),
+res <- data.frame(version  = c("new", "old"),
+          sampling  = c("block", "block"),
+          ARI       = c(ARI(cl_star, new$fittedSBM$memberships),
                         ARI(cl_star, getClusters(block_old))))
 print(res)
 
-plot(-new$monitor$objective, type = "l", log = "y")
+plot(-optim_new$objective, type = "l", log = "y")
 plot(-block_old@crit, type = "l", log = "y")
 
-psi_new <- block_new$fittedSampling$parameters
+psi_new <- new$fittedSampling$parameters
 psi_old <- block_old@psi
 
-pi_new <- block_new$fittedSBM$connectParam
+pi_new <- new$fittedSBM$connectParam
 pi_old <- block_old@theta[[1]]$pi
 
