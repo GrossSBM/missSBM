@@ -10,8 +10,8 @@ vExpec_covariates <- function(Y, roundProd, gamma, Tau, alpha) {
     .Call('_missSBM_vExpec_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, alpha)
 }
 
-E_step_covariates <- function(Y, roundProd, gamma, Tau, alpha, fixPointIter) {
-    .Call('_missSBM_E_step_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, alpha, fixPointIter)
+E_step_covariates <- function(Y, roundProd, gamma, Tau, alpha) {
+    .Call('_missSBM_E_step_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, alpha)
 }
 
 Mstep_covariates_undirected <- function(param, Y, cov, Tau) {

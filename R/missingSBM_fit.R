@@ -22,7 +22,7 @@ missingSBM_fit <-
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, clusterInit)
+      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, NULL, clusterInit)
 
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet

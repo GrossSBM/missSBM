@@ -34,8 +34,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // E_step_covariates
-Rcpp::NumericMatrix E_step_covariates(Rcpp::IntegerMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha, int fixPointIter);
-RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP alphaSEXP, SEXP fixPointIterSEXP) {
+Rcpp::NumericMatrix E_step_covariates(Rcpp::IntegerMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha);
+RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,8 +44,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< int >::type fixPointIter(fixPointIterSEXP);
-    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, roundProd, gamma, Tau, alpha, fixPointIter));
+    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, roundProd, gamma, Tau, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -98,7 +97,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {"_missSBM_vExpec_covariates", (DL_FUNC) &_missSBM_vExpec_covariates, 5},
-    {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 6},
+    {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 5},
     {"_missSBM_Mstep_covariates_undirected", (DL_FUNC) &_missSBM_Mstep_covariates_undirected, 4},
     {"_missSBM_Mstep_covariates_directed", (DL_FUNC) &_missSBM_Mstep_covariates_directed, 4},
     {"_missSBM_E_step_nocovariate", (DL_FUNC) &_missSBM_E_step_nocovariate, 7},

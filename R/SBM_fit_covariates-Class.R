@@ -6,9 +6,10 @@ SBM_fit_covariates <-
 R6::R6Class(classname = "SBM_fit_covariates",
   inherit = SBM_fit,
   public = list(
-    initialize = function(adjacencyMatrix, covariates, nBlocks, clusterInit = "spectral") {
+    initialize = function(adjacencyMatrix, covariates, clusterInit) {
 
       # Basic fields intialization and call to super constructor
+      nBlocks <- length(unique(clusterInit))
       super$initialize(
         directed        = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
         nNodes          = nrow(adjacencyMatrix),
@@ -19,30 +20,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       )
 
       ## Initial Clustering
-      if (self$nBlocks > 1) {
-        if (is.character(clusterInit)) {
-          y <- as.vector(adjacencyMatrix)
-          X <- apply(covariates, 3, as.vector)
-          out_logistic <- glm.fit(X, y, family = binomial())
-          adjacencyResiduals <- matrix(logistic(residuals(out_logistic)), self$nNodes, self$nNodes)
-          clusterInit <-
-            switch(clusterInit,
-                   "hierarchical" = init_hierarchical(adjacencyResiduals, self$nBlocks),
-                   "kmeans"       = init_kmeans(      adjacencyResiduals, self$nBlocks),
-                                    init_spectral(    adjacencyResiduals, self$nBlocks)
-            )
-          Z <- matrix(0,self$nNodes,self$nBlocks)
-          Z[cbind(1:self$nNodes, clusterInit)] <- 1
-        } else if (is.numeric(clusterInit) | is.factor(clusterInit)) {
-          Z <- matrix(0,self$nNodes,self$nBlocks)
-          Z[cbind(1:self$nNodes, as.numeric(clusterInit))] <- 1
-        } else {
-          stop("unknown type for initial clustering")
-        }
-      } else {
-        Z <- matrix(1, self$nNodes, self$nBlocks)
-      }
-      private$tau <- Z
+      private$tau <- clustering_indicator(clusterInit)
 
       ## Initialize parameters
       self$init_parameters(adjacencyMatrix)
@@ -87,15 +65,14 @@ R6::R6Class(classname = "SBM_fit_covariates",
         private$alpha
       )
     },
-    update_blocks =   function(adjMatrix, fixPointIter, log_lambda = NULL) {
+    update_blocks =   function(adjMatrix, log_lambda = NULL) {
       private$tau <-
         E_step_covariates(
           adjMatrix,
           roundProduct(private$phi, private$beta),
           private$pi,
           private$tau,
-          private$alpha,
-          fixPointIter
+          private$alpha
         )
     }
   )
