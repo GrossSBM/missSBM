@@ -17,6 +17,14 @@ logit    <- function(x) {log(x/(1 - x))}
   exp(x - b) / sum(exp(x - b))
 }
 
+clustering_indicator <- function(clustering) {
+  nBlocks <- length(unique(clustering))
+  nNodes  <- length(clustering)
+  Z <- matrix(0,nNodes, nBlocks)
+  Z[cbind(seq.int(nNodes), clustering)] <- 1
+  Z
+}
+
 h <- function(x) {-.5 * (logistic(x) - 0.5) / x}
 
 xlogx <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
@@ -29,6 +37,26 @@ check_boundaries <- function(x) {
 }
 
 #' @export
+init_clustering <- function(adjacencyMatrix, nBlocks, clusterInit = "hierarchical") {
+  if (nBlocks > 1) {
+    if (is.character(clusterInit)) {
+      clusterInit <-
+        switch(clusterInit,
+               "spectral" = init_spectral(    adjacencyMatrix, nBlocks),
+               "kmeans"   = init_kmeans(      adjacencyMatrix, nBlocks),
+                            init_hierarchical(adjacencyMatrix, nBlocks)
+        )
+    } else if (is.numeric(clusterInit) | is.factor(clusterInit)) {
+      clusterInit <- as.numeric(clusterInit)
+    } else {
+      stop("unknown type for initial clustering")
+    }
+  } else {
+    clusterInit <- rep(1, nrow(adjacencyMatrix))
+  }
+  clusterInit
+}
+
 init_spectral <- function(X, K) {
 
   ## basic handling of missing values
@@ -70,7 +98,6 @@ init_spectral <- function(X, K) {
 
 #' @importFrom ape additive
 #' @importFrom stats as.dist cutree dist hclust
-#' @export
 init_hierarchical <- function(X, K) {
 
   if (K > 1) {
@@ -85,9 +112,8 @@ init_hierarchical <- function(X, K) {
 }
 
 #' @importFrom stats kmeans
-#' @export
 init_kmeans <- function(X, K) {
-
+### TODO: basic handling of NA values
   cl0 <- kmeans(X, K)$cl
   as.factor(cl0)
 }

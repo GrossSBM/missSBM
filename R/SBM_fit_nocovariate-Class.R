@@ -5,8 +5,10 @@ SBM_fit_nocovariate <-
 R6::R6Class(classname = "SBM_fit_nocovariate",
   inherit = SBM_fit,
   public = list(
-    initialize =   function(adjacencyMatrix, nBlocks, clusterInit = "spectral") {
+    initialize =   function(adjacencyMatrix, clusterInit) {
 
+      stopifnot(all.equal(nrow(adjacencyMatrix), length(clusterInit)))
+      nBlocks <- length(unique(clusterInit))
       super$initialize( # call to super constructor
         directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
         nNodes       = nrow(adjacencyMatrix),
@@ -15,36 +17,12 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       )
 
       ## Initial Clustering
-      if (self$nBlocks > 1) {
-        if (is.character(clusterInit)) {
-          clusterInit <-
-            switch(clusterInit,
-                   "hierarchical" = init_hierarchical(adjacencyMatrix, self$nBlocks),
-                   "kmeans"       = init_kmeans(      adjacencyMatrix, self$nBlocks),
-                   init_spectral(    adjacencyMatrix, self$nBlocks)
-            )
-          Z <- matrix(0,self$nNodes,self$nBlocks)
-          Z[cbind(1:self$nNodes, clusterInit)] <- 1
-        } else if (is.numeric(clusterInit) | is.factor(clusterInit)) {
-          Z <- matrix(0,self$nNodes,self$nBlocks)
-          Z[cbind(1:self$nNodes, as.numeric(clusterInit))] <- 1
-        } else {
-          stop("unknown type for initial clustering")
-        }
-      } else {
-        Z <- matrix(1, self$nNodes, self$nBlocks)
-      }
-      private$tau <- Z
+      private$tau <- clustering_indicator(clusterInit)
 
       ## Initialize estimation of the model parameters
-      self$init_parameters(adjacencyMatrix)
+      self$update_parameters(adjacencyMatrix)
 
       invisible(self)
-    },
-    init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
-      NAs <- is.na(adjMatrix); adjMatrix[NAs] <- 0
-      private$pi    <- check_boundaries((t(private$tau) %*% (adjMatrix * !NAs) %*% private$tau) / (t(private$tau) %*% ((1 - diag(self$nNodes)) * !NAs) %*% private$tau))
-      private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
       private$pi    <- check_boundaries((t(private$tau) %*% adjMatrix %*% private$tau) / (t(private$tau) %*% (1 - diag(self$nNodes)) %*% private$tau))
