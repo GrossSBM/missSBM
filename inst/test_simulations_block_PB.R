@@ -10,7 +10,7 @@ library(ape)
 source("inst/initializations.R")
 
 old_rep <- getwd()
-setwd("../svn_oldies/Code/code_these/functions/")
+setwd("~/GitLab/svn_oldies/Code/code_these/functions/")
 source("func_missSBM.class.R")
 source("func_missSBM.R")
 setwd(old_rep)
@@ -47,7 +47,7 @@ simulations <- function(i){
   samplingVector <- rep(0,N); samplingVector[!is.na(rowSums(sampledNet))] <- 1
 
   # Initialisation spectral clustering pour réseau sparse -------------------
-  Init_SpClSparse <- SparseSpectralClustering_NAisMean(sampledNet,2)
+  Init_SpClSparse <- SpectralClustering_NAisMean(sampledNet,2)
 
   # ancien code -------------------------------------------------------------
   outPut_class_old_hierarchical <- func_missSBM.class(sampledNet, seq.Q = 2, cl.init = "CAH")
