@@ -45,7 +45,9 @@ init_clustering <- function(adjacencyMatrix, nBlocks, covariates = NULL, cluster
     if (!is.null(covariates)) {
       y <- as.vector(adjacencyMatrix)
       X <- apply(covariates, 3, as.vector)
-      adjacencyMatrix <- matrix(logistic(residuals(glm.fit(X, y, family = binomial()))), N, N)
+      adjacencyMatrix <- matrix(NA, N, N)
+      NAs <- is.na(y)
+      adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
     }
 
     if (is.character(clusterInit)) {

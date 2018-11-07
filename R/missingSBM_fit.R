@@ -22,7 +22,7 @@ missingSBM_fit <-
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, NULL, clusterInit)
+      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, sampledNet$covariatesArray, clusterInit)
 
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
@@ -34,9 +34,11 @@ missingSBM_fit <-
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
       private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
-### TEMPORARY: HANDELING nocovariate model only
       ## construct and initialize the SBM fit
-      private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
+      if (is.null(sampledNet$covariatesArray))
+        private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
+      else
+        private$SBM <- SBM_fit_covariates$new(private$imputedNet, sampledNet$covariatesArray, clusterInit)
 
       ## construct the network sampling fit
       private$sampling <- switch(netSampling,

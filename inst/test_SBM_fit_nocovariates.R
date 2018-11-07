@@ -30,7 +30,7 @@ mySBM_fit$vBound(mySBM$adjacencyMatrix)
 
 ## spectral clustering
 cat("\n VEM initialized with spectral clustering")
-cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, "spectral")
+cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, NULL, "spectral")
 mySBM_fit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
@@ -38,7 +38,7 @@ print(NID(mySBM_fit$memberships, mySBM$memberships))
 
 ## kmeans clustering
 cat("\n VEM initialized with kmeans clustering")
-cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, "kmeans")
+cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, NULL, "kmeans")
 mySBM_fit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
@@ -46,7 +46,7 @@ print(NID(mySBM_fit$memberships, mySBM$memberships))
 
 ## Hierarchical clustering
 cat("\n VEM initialized with hierarchical clustering")
-cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, "hierarchical")
+cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, NULL, "hierarchical")
 mySBM_fit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
@@ -58,7 +58,7 @@ vBlocks <- 1:10
 cat("\n Number of blocks =")
 models <- lapply(vBlocks, function(nBlocks) {
   cat("", nBlocks)
-  cl0 <- init_clustering(mySBM$adjacencyMatrix, nBlocks, "hierarchical")
+  cl0 <- init_clustering(mySBM$adjacencyMatrix, nBlocks, NULL, "hierarchical")
   myFit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
   myFit$doVEM(mySBM$adjacencyMatrix)
   myFit

@@ -5,6 +5,7 @@ sampledNetwork <-
   ## FIELDS : encode network with missing edges
   private = list(
     Y        = NULL, # adjacency matrix
+    X        = NULL, # covariates array
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
     nas      = NULL, # all NA in Y
@@ -27,6 +28,8 @@ sampledNetwork <-
     is_directed = function(value) {private$directed},
     # adjacency matrix
     adjacencyMatrix = function(value) {private$Y},
+    # adjacency matrix
+    covariatesArray = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
     # list of potential dyads in the network
     dyads           = function(value) {private$D},
     # array indices of missing dyads
@@ -42,12 +45,15 @@ sampledNetwork <-
   ),
   ## Constructor
   public = list(
-    initialize = function(adjacencyMatrix) {
+    initialize = function(adjacencyMatrix, covariatesArray = NULL) {
 
       ## adjacency matrix
       stopifnot(is.matrix(adjacencyMatrix))
       if (isSymmetric(adjacencyMatrix)) private$directed <- FALSE else private$directed <- TRUE
       private$Y  <- adjacencyMatrix
+
+      ## array of covariates
+      if (!is.null(covariatesArray)) private$X <- covariatesArray
 
       ## sets of observed / unobserved dyads
       private$nas <- is.na(adjacencyMatrix)

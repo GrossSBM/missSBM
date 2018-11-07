@@ -14,29 +14,21 @@ R6::R6Class(classname = "SBM_fit_covariates",
         directed        = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
         nNodes          = nrow(adjacencyMatrix),
         mixtureParam    = rep(NA,nBlocks),
-        connectParam    = matrix(NA,nBlocks,nBlocks),
+        connectParam    = matrix(NA,nBlocks, nBlocks),
         covariates      = covariates,
         covarParam      = numeric(dim(covariates)[3])
       )
 
       ## Initial Clustering
-      private$tau <- clustering_indicator(clusterInit)
+      Z <- clustering_indicator(clusterInit)
 
       ## Initialize parameters
-      self$init_parameters(adjacencyMatrix)
+      private$pi    <- logit(check_boundaries(quad_form(adjacencyMatrix, Z) / quad_form(1 - diag(self$nNodes), Z)))
+      private$alpha <- check_boundaries(colMeans(Z))
+      private$beta  <- numeric(private$M)
+      private$tau   <- Z
 
       invisible(self)
-    },
-    init_parameters = function(adjMatrix) { ## NA allowed in adjMatrix
-      NAs           <- is.na(adjMatrix); adjMatrix[NAs] <- 0
-      private$pi    <-
-        logit(
-          check_boundaries(
-            quad_form(adjMatrix * !NAs, private$tau) / quad_form((1 - diag(self$nNodes)) * !NAs, private$tau)
-          )
-        )
-      private$alpha <- check_boundaries(colMeans(private$tau))
-      private$beta  <- numeric(private$M)
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
 
