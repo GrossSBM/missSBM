@@ -37,8 +37,17 @@ check_boundaries <- function(x) {
 }
 
 #' @export
-init_clustering <- function(adjacencyMatrix, nBlocks, clusterInit = "hierarchical") {
+init_clustering <- function(adjacencyMatrix, nBlocks, covariates = NULL, clusterInit = "hierarchical") {
+
+  N <- nrow(adjacencyMatrix)
+
   if (nBlocks > 1) {
+    if (!is.null(covariates)) {
+      y <- as.vector(adjacencyMatrix)
+      X <- apply(covariates, 3, as.vector)
+      adjacencyMatrix <- matrix(logistic(residuals(glm.fit(X, y, family = binomial()))), N, N)
+    }
+
     if (is.character(clusterInit)) {
       clusterInit <-
         switch(clusterInit,
@@ -52,7 +61,7 @@ init_clustering <- function(adjacencyMatrix, nBlocks, clusterInit = "hierarchica
       stop("unknown type for initial clustering")
     }
   } else {
-    clusterInit <- rep(1, nrow(adjacencyMatrix))
+    clusterInit <- rep(1, N)
   }
   clusterInit
 }

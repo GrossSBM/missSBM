@@ -30,8 +30,9 @@ plot(mySBM)
 
 ## testing the different initializations
 ## spectral clustering
-cat("\n VEM initialized with spectral clustering")
-mySBM_fit <- SBM_fit_covariates$new(mySBM$adjacencyMatrix, mySBM$covariates, Q, "spectral")
+cat("\n VEM initialized with hierarchical clustering on residuals")
+clusterInit <- init_clustering(mySBM$adjacencyMatrix, Q, covariates, "spectral")
+mySBM_fit <- SBM_fit_covariates$new(mySBM$adjacencyMatrix, mySBM$covariates, clusterInit)
 out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 
 par(mfrow = c(1,2))
@@ -48,7 +49,8 @@ vBlocks <- 1:5
 cat("\n Number of blocks =")
 models <- lapply(vBlocks, function(nBlocks) {
   cat("", nBlocks)
-  myFit <- SBM_fit_covariates$new(mySBM$adjacencyMatrix, mySBM$covariates, nBlocks)
+  clusterInit <- init_clustering(mySBM$adjacencyMatrix, nBlocks, covariates, "spectral")
+  myFit <- SBM_fit_covariates$new(mySBM$adjacencyMatrix, mySBM$covariates, clusterInit)
   myFit$doVEM(mySBM$adjacencyMatrix)
   myFit
 })

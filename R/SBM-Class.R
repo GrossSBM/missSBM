@@ -54,7 +54,7 @@ R6::R6Class(classname = "SBM",
     covariates = function(value) {private$phi},
     df_mixtureParams = function(value) {self$nBlocks - 1},
     df_connectParams = function(value) {ifelse(private$directed, self$nBlocks^2, self$nBlocks*(self$nBlocks + 1)/2)},
-    df_covarParams = function(value) {self$nCovariates}
+    df_covarParams   = function(value) {self$nCovariates}
   )
 )
 

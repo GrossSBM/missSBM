@@ -37,8 +37,8 @@ sampledNet <- Netsamp$adjacencyMatrix
 old <- func_missSBM.class(sampledNet, seq.Q = 2,  cl.init = "CAH")@models[[1]]
 
 # package -----------------------------------------------------------------
-control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 5, trace = TRUE)
-new <- missingSBM_fit$new(Netsamp, 2, "block", clusterInit = "kmeans")
+control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 3, trace = TRUE)
+new <- missingSBM_fit$new(Netsamp, 2, "block", clusterInit = "hierarchical")
 optim_new <- new$doVEM(control)
 
 plot(-optim_new$objective, type = "l", log = "y")
