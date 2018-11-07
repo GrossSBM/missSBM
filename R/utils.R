@@ -113,8 +113,13 @@ init_hierarchical <- function(X, K) {
 
 #' @importFrom stats kmeans
 init_kmeans <- function(X, K) {
-### TODO: basic handling of NA values
-  cl0 <- kmeans(X, K)$cl
+  if (K > 1) {
+    D  <- as.matrix(dist(X, method = "euclidean"))
+    # D[which(X == 1)] <- D[which(X == 1)] - 2
+    cl0 <- kmeans(ape::additive(D), K, nstart = 10)$cl
+  } else {
+    cl0 <- rep(1, ncol(X))
+  }
   as.factor(cl0)
 }
 

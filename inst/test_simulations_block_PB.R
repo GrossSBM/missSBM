@@ -140,7 +140,7 @@ simulations <- function(i){
 
 }
 
-n_sim <- 50
+n_sim <- 100
 results <- do.call(rbind, pbmclapply(1:n_sim, simulations, mc.cores = 10))
 
 library(ggplot2)

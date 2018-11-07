@@ -36,6 +36,14 @@ out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
 cat("\n NID:")
 print(NID(mySBM_fit$memberships, mySBM$memberships))
 
+## kmeans clustering
+cat("\n VEM initialized with kmeans clustering")
+cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, "kmeans")
+mySBM_fit <- SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
+out <- mySBM_fit$doVEM(mySBM$adjacencyMatrix, trace = TRUE)
+cat("\n NID:")
+print(NID(mySBM_fit$memberships, mySBM$memberships))
+
 ## Hierarchical clustering
 cat("\n VEM initialized with hierarchical clustering")
 cl0 <- init_clustering(mySBM$adjacencyMatrix, Q, "hierarchical")
