@@ -8,7 +8,6 @@
 #'
 #' @import R6
 #' @include SBM_fit-Class.R
-#' @export
 SBM_fit <-
 R6::R6Class(classname = "SBM_fit",
   inherit = SBM,

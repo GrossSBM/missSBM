@@ -35,7 +35,6 @@ plot(vBlocks, ventr, type = "l")
 plot(vBlocks, vpens, type = "l")
 
 best <- models[[which.min(vICLs)]]
-best$plot()
 
 ## ______________________________________________________________________
 ## NODE SAMPLING
@@ -56,8 +55,6 @@ plot(vBlocks, vICLs, type = "l")
 plot(vBlocks, vJ, type = "l")
 plot(vBlocks, ventr, type = "l")
 plot(vBlocks, vpens, type = "l")
-best <- models[[which.min(vICLs)]]
-best$plot()
 
 ## ______________________________________________________________________
 ## DOUBLE-STANDARD SAMPLING
@@ -75,8 +72,6 @@ vJ <- sapply(out$models, function(model) model$vBound)
 par(mfrow=c(1,2))
 plot(vBlocks, vICLs, type = "l")
 plot(vBlocks, vJ, type = "l")
-best <- models[[which.min(vICLs)]]
-best$plot()
 
 ## ______________________________________________________________________
 ## BLOCK SAMPLING
@@ -93,8 +88,6 @@ vJ <- sapply(out$models, function(model) model$vBound)
 par(mfrow=c(1,2))
 plot(vBlocks, vICLs, type = "l")
 plot(vBlocks, vJ, type = "l")
-best <- models[[which.min(vICLs)]]
-best$plot()
 
 ## ______________________________________________________________________
 ## DEGREE SAMPLING
@@ -111,6 +104,4 @@ vJ <- sapply(out$models, function(model) model$vBound)
 par(mfrow=c(1,2))
 plot(vBlocks, vICLs, type = "l")
 plot(vBlocks, vJ, type = "l")
-best <- models[[which.min(vICLs)]]
-best$plot()
 

@@ -25,13 +25,8 @@ Imports:
     RcppArmadillo,
     methods,
     ape,
-    rlang,
-    dplyr,
-    ggplot2,
-    igraph,
     nloptr,
-    R6,
-    viridis
+    R6
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'

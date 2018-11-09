@@ -61,10 +61,6 @@ networkSamplingNodes_fit <-
   )
 )
 
-#' Definition of R6 Class 'networkSampling_fit'
-#'
-#' This class is use to define a fit for a networkSampling. Inherits from 'networkSampling'
-#' @export
 dyadSampling_fit <-
   R6::R6Class(classname = "dyadSampling_fit",
   inherit = networkSamplingDyads_fit,
@@ -88,7 +84,6 @@ dyadSampling_fit <-
   )
 )
 
-#' @export
 nodeSampling_fit <-
   R6::R6Class(classname = "nodeSampling_fit",
   inherit = networkSamplingNodes_fit,
@@ -112,7 +107,6 @@ nodeSampling_fit <-
   )
 )
 
-#' @export
 doubleStandardSampling_fit <-
   R6::R6Class(classname = "doubleStandardSampling_fit",
   inherit = networkSamplingDyads_fit,
@@ -150,7 +144,6 @@ doubleStandardSampling_fit <-
   )
 )
 
-#' @export
 blockDyadSampling_fit <-
   R6::R6Class(classname = "blockDyadSampling_fit",
           inherit = networkSamplingDyads_fit,
@@ -185,7 +178,6 @@ blockDyadSampling_fit <-
           )
   )
 
-#' @export
 blockSampling_fit <-
   R6::R6Class(classname = "blockSampling_fit",
   inherit = networkSamplingNodes_fit,
@@ -216,7 +208,6 @@ blockSampling_fit <-
   )
 )
 
-#' @export
 degreeSampling_fit <-
   R6::R6Class(classname = "degreeSampling_fit",
   inherit = networkSamplingNodes_fit,
@@ -273,15 +264,3 @@ degreeSampling_fit <-
     }
   )
 )
-
-# ## TODO: handle multiple waves
-# snowballSampling_fit <-
-# R6Class(classname = "snowballSampling_fit",
-#   inherit = networkSampling_fit,
-#   active = list(
-#     logLik = function(value) {
-#       NA
-#     }
-#   )
-# )
-

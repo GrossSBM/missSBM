@@ -7,7 +7,6 @@
 using namespace Rcpp;
 using namespace arma;
 
-//' @export
 // [[Rcpp::export]]
 Rcpp::NumericMatrix roundProduct(arma::cube X, arma::vec beta) {
 

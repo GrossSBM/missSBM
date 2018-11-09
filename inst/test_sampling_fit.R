@@ -15,7 +15,7 @@ adjacencyMatrix <- mySBM$adjacencyMatrix
 
 ## Draw
 sampledNet_dyad <- samplingSBM(adjacencyMatrix, "dyad", 0.1)
-fittedSampling_dyad <- dyadSampling_fit$new(sampledNet_dyad)
+fittedSampling_dyad <- missSBM:::dyadSampling_fit$new(sampledNet_dyad)
 fittedSampling_dyad$vExpec
 fittedSampling_dyad$parameters
 fittedSampling_dyad$df

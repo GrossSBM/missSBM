@@ -22,9 +22,11 @@ psi <- 0.3
 sampledNet <- samplingSBM(adjacencyMatrix, "node", psi)
 A_node <- sampledNet$adjacencyMatrix
 
-NID(init_spectral(A_dyad, Q), mySBM$memberships)
-NID(init_hierarchical(A_dyad, Q), mySBM$memberships)
+NID(init_clustering(A_dyad, Q, NULL, "spectral"    ), mySBM$memberships)
+NID(init_clustering(A_dyad, Q, NULL, "kmeans"      ), mySBM$memberships)
+NID(init_clustering(A_dyad, Q, NULL, "hierarchical"), mySBM$memberships)
 
-NID(init_spectral(A_node, Q), mySBM$memberships)
-NID(init_hierarchical(A_node, Q), mySBM$memberships)
+NID(init_clustering(A_node, Q, NULL, "spectral"    ), mySBM$memberships)
+NID(init_clustering(A_node, Q, NULL, "kmeans"      ), mySBM$memberships)
+NID(init_clustering(A_node, Q, NULL, "hierarchical"), mySBM$memberships)
 

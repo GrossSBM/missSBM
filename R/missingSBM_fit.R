@@ -69,7 +69,6 @@ missingSBM_fit <-
   )
 )
 
-#' @export
 missingSBM_fit$set("public", "doVEM",
   function(control) {
 
@@ -79,7 +78,7 @@ missingSBM_fit$set("public", "doVEM",
     i <- 0; cond <- FALSE
     ## Starting the Variational EM algorithm
     if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-    if (control$trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM with a '" , private$SBM$emissionLaw,"' distribution.\n", sep = "")
+    if (control$trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM.\n", sep = "")
     if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
     while (!cond) {
       i <- i + 1
@@ -110,8 +109,6 @@ missingSBM_fit$set("public", "doVEM",
       cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
       objective[i] <- self$vBound
 
-      # print(table(apply(private$SBM$blocks, 1,  which.max)))
-
     }
     if (control$trace) cat("\n")
     res <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]))
@@ -119,22 +116,7 @@ missingSBM_fit$set("public", "doVEM",
   }
 )
 
-#' @import igraph
-#' @export
-missingSBM_fit$set("public", "plot",
-  function(type = c("imputedNetwork", "connectivity")) {
-    type <- match.arg(type)
-    if (type == "imputedNetwork") {
-      return(gg_image_NA(private$imputedNet, private$SBM$memberships))
-    }
-    if (type == "connectivity") {
-      plot(
-        graph_from_adjacency_matrix(
-          private$SBM$connectParam,
-          mode = ifelse(private$sampledNet$is_directed, "directed", "undirected"),
-          weighted = TRUE, diag = TRUE
-        ), main = "SBM connectivity matrix"
-      )
-    }
-  }
-)
+#' #' @export
+#' missingSBM_fit$set("public", "show",
+#' function(model = "\n") {
+#' })

@@ -160,7 +160,7 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarch
   models <- lapply(vBlocks,
     function(nBlocks) {
     cat(" Initialization of model with", nBlocks,"blocks.", "\r")
-      if(is.list(clusterInit)) {
+      if (is.list(clusterInit)) {
         missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit[[nBlocks]])
       } else {
         missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
@@ -190,10 +190,11 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarch
       "backward" = smoothingBackward,
       "both"     = smoothingForBackWard
     )
-    split_fn <- switch(clusterInit,
-                       "spectral" = init_spectral,
-                       "hierarchical" = init_hierarchical,
-                       init_hierarchical)
+    split_fn <- switch(
+      clusterInit,
+      "spectral" = init_spectral,
+      "hierarchical" = init_hierarchical,
+      init_hierarchical)
     control$trace <- FALSE # forcing no trace while smoothing
     models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
   }

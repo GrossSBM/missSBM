@@ -5,7 +5,6 @@
 #' @include utils.R
 #'
 #' @import R6
-#' @export
 networkSampling <-
 R6::R6Class(classname = "networkSampling",
   ## fields
