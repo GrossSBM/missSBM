@@ -1,7 +1,7 @@
 #' @importFrom utils combn
 #' @importFrom parallel mclapply
 #' @export
-smoothingBackward <- function(models, vBlocks, sampledNet, sampling, mc.cores, iter_both, control) {
+smoothingBackward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control) {
   cat("   Going backward ")
   for (i in rev(vBlocks[-1])) {
     cat('+')
@@ -65,7 +65,7 @@ smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc
 smoothingForBackWard <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control){
   out <- models
   for (i in 1: iter_both) {
-    out <- smoothingBackward(out, vBlocks, sampledNet, sampling, mc.cores, iter_both, control)
+    out <- smoothingBackward(out, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
     out <- smoothingForward(out, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
   }
   out

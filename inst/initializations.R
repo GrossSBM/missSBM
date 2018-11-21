@@ -14,7 +14,6 @@ graphCAH_new <- function(X, Q) {
   return(cutree(hclust(as.dist(D), method="ward.D"), Q))
 }
 
-
 SpectralClustering_NAisZero <- function (A,Q) {
   if(Q > 1){
     ## basic handling of missing values
