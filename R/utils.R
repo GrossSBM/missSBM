@@ -1,4 +1,4 @@
-zero <- .Machine$double.eps
+zero <- 0.001 #.Machine$double.eps
 
 available_samplings <- c("dyad", "node", "snowball", "degree", "block", "double_standard")
 
