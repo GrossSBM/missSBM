@@ -186,19 +186,22 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarch
   if (smoothing != "none") {
     cat("\n Smoothing ICL\n")
     smoothing_fn <- switch(smoothing,
-      "forward"  = smoothingForward ,
-      "backward" = smoothingBackward,
-      "both"     = smoothingForBackWard
+                           "forward"  = smoothingForward ,
+                           "backward" = smoothingBackward,
+                           "both"     = smoothingForBackWard
     )
-    split_fn <- switch(
-      clusterInit,
-      "spectral" = init_spectral,
-      "hierarchical" = init_hierarchical,
-      init_hierarchical)
+    if(!is.character(clusterInit)) {
+      split_fn <- init_hierarchical
+    } else {
+      split_fn <- switch(clusterInit,
+                         "spectral" = init_spectral,
+                         "hierarchical" = init_hierarchical,
+                         init_hierarchical)
+    }
     control$trace <- FALSE # forcing no trace while smoothing
     models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
-  }
 
+  }
   return(list(models = models, monitor = res_optim))
 }
 

@@ -73,20 +73,22 @@ init_spectral <- function(X, K) {
 
   ## basic handling of missing values
   ## handling lonely souls
-  cl0 <- rep(NA, ncol(X))
+  n <- ncol(X)
+  cl0 <- rep(NA, n)
   unconnected <- which(rowSums(X, na.rm = TRUE) == 0)
-  connected <- setdiff(1:ncol(X), unconnected)
+  connected <- setdiff(1:n, unconnected)
 
   if (K > 1) {
     if (length(connected) == 0) {
-      cl0 <- factor(sample(1:K, ncol(X), replace = TRUE))
+      cl0 <- factor(sample(1:K, n, replace = TRUE))
     } else {
       X <- X[connected,connected]
       ## Normalized Laplacian
-      D <- colSums(X, na.rm = TRUE)
-      A <- X; A[is.na(A)] <- 0
-      A <- A + (1/4)*mean(rowSums(A))/nrow(A)*matrix(1, nrow(A), nrow(A))
-      L <- diag(rep(1,ncol(X))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      t <- sapply(1:length(connected), function(i) mean(1*(!is.na(X[i,]))))
+      D <- colSums(X, na.rm = TRUE)/t
+      A <- X; A[is.na(A)] <- mean(A, na.rm = TRUE)
+      # A <- A + (1/4)*mean(rowSums(A))/nrow(A)*matrix(1, nrow(A), nrow(A))
+      L <- diag(rep(1,n)) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
       ## Absolute eigenvalue in order
       E <- order(-abs(eigen(L)$values))
 
@@ -103,7 +105,49 @@ init_spectral <- function(X, K) {
       cl0[unconnected] <- which.min(rowsum(D,cl))
     }
   } else {
-    cl0 <- rep(1,ncol(X))
+    cl0 <- rep(1,n)
+  }
+  as.factor(cl0)
+}
+
+init_spectral2 <- function(X, K) {
+
+  ## basic handling of missing values
+  ## handling lonely souls
+  n <- ncol(X)
+  cl0 <- rep(NA, n)
+  unconnected <- which(rowSums(X, na.rm = TRUE) == 0)
+  connected <- setdiff(1:n, unconnected)
+
+  if (K > 1) {
+    if (length(connected) == 0) {
+      cl0 <- factor(sample(1:K, n, replace = TRUE))
+    } else {
+      X <- X[connected,connected]
+      ## Normalized Laplacian
+      t <- sapply(1:n, function(i) mean(1*(!is.na(X[i,]))))
+      D <- rowSums(X, na.rm = TRUE)/t
+      A <- X; A[is.na(A)] <- mean(A, na.rm = TRUE)
+      # A <- A + (1/4)*mean(rowSums(A))/nrow(A)*matrix(1, nrow(A), nrow(A))
+      L <- diag(rep(1,n)) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      ## Absolute eigenvalue in order
+      E <- order(-abs(eigen(L)$values))
+
+      ## Go into eigenspace
+      U <- eigen(L)$vectors[,E]
+      U <- U[,c((ncol(U) - K + 1):ncol(U))]
+      U <- U / rowSums(U^2)^(1/2)
+      U[is.na(U)] <- 0
+
+      ## Applying the K-means in the eigenspace
+      cl <- kmeans(U, K, nstart = 10, iter.max = 50, algorithm = "Lloyd")$cluster
+      ## handing lonely souls
+      # cl0[connected] <- cl
+      # cl0[unconnected] <- which.min(rowsum(D,cl))
+      cl0 <- cl
+    }
+  } else {
+    cl0 <- rep(1,n)
   }
   as.factor(cl0)
 }

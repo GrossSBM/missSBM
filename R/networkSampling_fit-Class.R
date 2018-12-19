@@ -131,7 +131,7 @@ doubleStandardSampling_fit <-
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     update_imputation = function(Z, pi) {
-      nu <- logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + Z %*% log(pi/(1 - pi)) %*% t(Z))
+      nu <- check_boundaries(logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + Z %*% log(pi/(1 - pi)) %*% t(Z)))
       nu
     }
   ),
@@ -252,7 +252,7 @@ degreeSampling_fit <-
     },
     update_imputation = function(Z, pi) {
       C <- 2 * h(private$ksi) * (private$psi[1] * private$psi[2] + private$psi[2]^2 * (1 + private$Dij))
-      nu <- logistic(Z %*% log(pi/(1 - pi)) %*% t(Z) - private$psi[2] + C + t(C) )
+      nu <- check_boundaries((Z %*% log(pi/(1 - pi)) %*% t(Z) - private$psi[2] + C + t(C) ))
       nu
     }
   ),
