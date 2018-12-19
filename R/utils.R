@@ -88,7 +88,7 @@ init_spectral <- function(X, K) {
       D <- colSums(X, na.rm = TRUE)/t
       A <- X; A[is.na(A)] <- mean(A, na.rm = TRUE)
       # A <- A + (1/4)*mean(rowSums(A))/nrow(A)*matrix(1, nrow(A), nrow(A))
-      L <- diag(rep(1,n)) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      L <- diag(rep(1,length(t))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
       ## Absolute eigenvalue in order
       E <- order(-abs(eigen(L)$values))
 
