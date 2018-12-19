@@ -43,8 +43,8 @@ smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc
           # sampledNetBis <- sampledNet$adjacencyMatrix
           # sampledNetBis[is.na(sampledNetBis)] <- mean(sampledNetBis[!is.na(sampledNetBis)])
 
-          # cut <- as.numeric(split_fn(sampledNetBis[indices, indices],2))
-          cut <- c(rep(1, length = floor(length(indices)/2)), rep(2, length = ceiling(length(indices)/2)))
+          cut <- as.numeric(split_fn(sampledNetBis[indices, indices],2))
+          # cut <- c(rep(1, length = floor(length(indices)/2)), rep(2, length = ceiling(length(indices)/2)))
           cl[which(cl==j)][which(cut==1)] <- j; cl[which(cl==j)][which(cut==2)] <- i + 1
           model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl)
           model$doVEM(control)
