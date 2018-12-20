@@ -4,6 +4,8 @@
 rm(list=ls())
 if(Sys.info()["user"] == "tabouy") {
   setwd("~/GitLab/svn_oldies/Code/code_these/functions/")
+} else if (Sys.info()["user"] == "tim") {
+  setwd("~/Documents/svn_oldies/Code/code_these/functions/")
 }
 source("func_missSBM.R")
 source("func_missSBM.twoStd.R")
@@ -150,7 +152,7 @@ sbm_degree <- func_missSBM.degree(sampledNetwork$adjacencyMatrix, Q)
 # ### ======================
 #
 # ## Sampling of the data : ##
-# samplingParameters <- c(0.1,-5) # à changer
+# samplingParameters <- c(0.1,-5) # ?? changer
 # sampling <- "covariates"
 # sampledNetwork <-
 #   samplingSBM(
