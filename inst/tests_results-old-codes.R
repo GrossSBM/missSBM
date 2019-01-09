@@ -16,7 +16,7 @@ source("func_sampling.R")
 ## A SBM model : ##
 N <- 100
 Q <- 3
-alpha <- rep(1,Q)/Q     # mixture parameter
+alpha <- c(0.25,0.5,0.25) # rep(1,Q)/Q     # mixture parameter
 pi <- diag(.45,Q) + .05 # connectivity matrix
 directed <- FALSE
 vBlocks <- 1:5 # number of classes
@@ -102,11 +102,8 @@ aricode::ARI(getClusters(getBestModel(sbm_twoStd)), mySBM$memberships)
 ### NMAR block :
 ### ==================
 
-pi <- diag(.6,Q) + .2 # connectivity matrix
-mySBM <- simulateSBM(N, alpha, pi, directed)
-
 ## Sampling of the data : ##
-samplingParameters <- runif(3)
+samplingParameters <- c(0.75,0.5,0.1)
 sampling <- "block"
 sampledNetwork <-
   samplingSBM(
@@ -115,27 +112,23 @@ sampledNetwork <-
     samplingParameters,
     mySBM$memberships
   )
-sampAdjMat <- rmissing(X = mySBM$adjacencyMatrix, psi = psi, cl = mySBM$memberships, type = "class")
-
 ## Inference : ##
-sbm_block <- func_missSBM.class(mySBM$adjacencyMatrix, Q, cl.init = "spectral")
+sbm_block <- func_missSBM.class(sampledNetwork$adjacencyMatrix, Q, cl.init = "spectral")
+
+## Taux d'échantillonnage : ##
+cat("\n proportion of observed edges: ",sum(!is.na(sampledNetwork$adjacencyMatrix))/length(sampledNetwork$adjacencyMatrix))
 
 ## Estimated parameters : ##
 alpha_block <- getAlpha(getBestModel(sbm_block))
 pi_block    <- getPi(getBestModel(sbm_block))
 cl_block    <- getClusters(getBestModel(sbm_block))
 
-aricode::ARI(getClusters(getBestModel(sbm_block)), mySBM$memberships)
-
 ### ==================
 ### NMAR degree :
 ### ==================
 
-pi <- diag(.45,Q) + .05 # connectivity matrix
-mySBM <- simulateSBM(N, alpha, pi, directed)
-
 ## Sampling of the data : ##
-samplingParameters <- c(0.09,-3.6)
+samplingParameters <- c(-3.6,0.1)
 sampling <- "degree"
 sampledNetwork <-
   samplingSBM(
@@ -144,13 +137,44 @@ sampledNetwork <-
     samplingParameters
   )
 
+## Taux d'échantillonnage : ##
+cat("\n proportion of observed edges: ",sum(!is.na(sampledNetwork$adjacencyMatrix))/length(sampledNetwork$adjacencyMatrix))
+
+
 ## Inference : ##
 sbm_degree <- func_missSBM.degree(sampledNetwork$adjacencyMatrix, Q)
 
-# ### ======================
-# ### MCAR|X covariables :
-# ### ======================
+## Estimated parameters : ##
+alpha_degree <- getAlpha(getBestModel(sbm_degree))
+pi_degree    <- getPi(getBestModel(sbm_degree))
+cl_degree    <- getClusters(getBestModel(sbm_degree))
+
+aricode::ARI(getClusters(getBestModel(sbm_degree)), mySBM$memberships)
+
+### ======================
+### MCAR|X covariables :
+### ======================
+
+mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
+
+## Sampling of the data : ##
+samplingParameters <- c(0.1,-5)
+sampling <- "covariates"
+sampledNetwork <-
+  samplingSBM(
+    mySBM$adjacencyMatrix,
+    sampling,
+    samplingParameters
+  )
+
+## Inference : ##
+sbm_covariable <- func_missSBM.degree(sampledNetwork$adjacencyMatrix, Q)
+
+# # =====
 #
+# sbm_node <- missSBM(sampledNetwork$adjacencyMatrix,  seq.Q = Q, missingness = "mar.node", cl.init = "spectral")
+#
+<<<<<<< HEAD
 # ## Sampling of the data : ##
 # samplingParameters <- c(0.1,-5) # ?? changer
 # sampling <- "covariates"
@@ -160,6 +184,14 @@ sbm_degree <- func_missSBM.degree(sampledNetwork$adjacencyMatrix, Q)
 #     sampling,
 #     samplingParameters
 #   )
+=======
+# ## Estimated parameters : ##
+# alpha_node <- getAlpha(getBestModel(sbm_node))
+# pi_node    <- getPi(getBestModel(sbm_node))
+# cl_node    <- getClusters(getBestModel(sbm_node))
+>>>>>>> b66ddbbeb5285672f310969e47de089140b8c535
 #
-# ## Inference : ##
-# sbm_covariable <- func_missSBM.degree(sampledNetwork$adjacencyMatrix, Q)
+# aricode::ARI(getClusters(getBestModel(sbm_node)), mySBM$memberships)
+# distPI(pi, getPi(getModel(sbm_node, Q)))
+# aricode::ARI(getClusters(getBestModel(sbm_block)), mySBM$memberships)
+# distPI(pi, getPi(getModel(sbm_block, Q)))
