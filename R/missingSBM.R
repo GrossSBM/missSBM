@@ -83,15 +83,16 @@ simulateSBM <- function(N, alpha, pi, directed = FALSE, phi = NULL, beta = NULL)
 #'      samplingParameters
 #'    )
 #' @export
-samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL){
-
-  if (!(sampling %in% available_samplings))
-    stop("This sampling is not available!")
-
+samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL, clusters = NULL){
   if (sampling == "block" & is.null(clusters))
     stop("For block sampling a clustering is required!")
 
-  mySampling <- networkSampling_sampler$new(sampling, parameters)
+  if (is.null(covariates)) {
+    mySampling <- networkSampling_sampler$new(sampling, parameters)
+  } else {
+    stopifnot(length(parameters) == ncol(covariates))
+    mySampling <- networkSamplingCovariates_sampler$new(sampling, parameters, covariates)
+  }
   mySampling$rSampling(adjacencyMatrix, clusters)
 }
 

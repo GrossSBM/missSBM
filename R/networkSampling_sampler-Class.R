@@ -79,7 +79,7 @@ networkSampling_sampler <-
       "node" = function(adjMatrix, ...) {
         N <- ncol(adjMatrix)
         N_obs <- which(runif(N) < self$parameters)
-        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))
       },
       "block" = function(adjMatrix, clusters) {
         N <- nrow(adjMatrix)
@@ -89,12 +89,12 @@ networkSampling_sampler <-
         if (length(self$parameters) != length(unique(clusters)))
           stop("Sampling parameters does not have the required size.")
         N_obs <- which(runif(N) < self$parameters[clusters])
-        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))
       },
       "degree" = function(adjMatrix, ...) {
         N <- nrow(adjMatrix)
         N_obs <- which(runif(N) < logistic(self$parameters[1] + self$parameters[2]*rowSums(adjMatrix)))
-        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))
       },
       ### TODO: add a parameter for the number of waves
       "snowball" = function(adjMatrix, ...) {
@@ -104,7 +104,67 @@ networkSampling_sampler <-
         # first wave
         wave2 <- unique(unlist(adjMatrix[wave1, ] != 0, 1, function(x) which(x != 0)))
         N_obs <- union(wave1, wave2)
-        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))           ### Changement ici !!! ###
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))
+      })
+    },
+    rSampling = function(adjMatrix, ...) {
+      D_obs <- private$rObservedDyads(adjMatrix, ...)
+      R <- matrix(0,ncol(adjMatrix), ncol(adjMatrix))
+      R[D_obs] <- 1; diag(R) <- 1
+      if (isSymmetric(adjMatrix))  R <- t(R) | R
+      adjMatrix[R == 0] <- NA
+      sampledNetwork$new(adjMatrix)
+    }
+  )
+)
+
+#' Definition of R6 Class 'networkSamplingCovariates_sampler'
+#'
+#' This class is use to define a sampling model for a network in the presence of covariates.
+#' Inherits from 'networkSamplingCovariates' it has a rSampling method which takes an adjacency
+#' matrix as an input and send back an object with class sampledNetwork.
+#'
+#' @include networkSampling-Class.R
+#' @include sampledNetwork-Class.R
+#' @include utils.R
+#' @import R6
+#' @export
+networkSamplingCovariates_sampler <-
+  R6::R6Class(classname = "networkSampling_sampler",
+  inherit = networkSamplingCovariates,
+  private = list(
+    ## a private function to generate a collection of observed dyads for different sampling process
+    rObservedDyads = NULL
+  ),
+  public = list(
+    ## methods
+    initialize = function(type = NA, parameters = NA, covariates = NA) {
+      super$initialize(type = type, covariates = covariates)
+
+      if (!switch(type,
+                  "dyad"            = ifelse(length(parameters) == ncol(covariates), TRUE, FALSE),
+                  "node"            = ifelse(length(parameters) == ncol(covariates), TRUE, FALSE))) {
+        stop("Sampling parameters does not have the required size.")
+      }
+
+      private$psi  <- parameters
+
+      ## a private function to generate a collection of observed dyads for different sampling process
+      private$rObservedDyads <- switch(type,
+      "dyad" = function(adjMatrix, ...) {
+        if (isSymmetric(adjMatrix)) {
+          D <- which(lower.tri(adjMatrix))
+        } else {
+          D <- which(lower.tri(adjMatrix) | upper.tri(adjMatrix))
+        }
+        sampling_prob <- logistic(roundProduct(private$phi, self$parameters))
+        D_obs <- D[rbinom(length(D), 1, prob = sampling_prob[D]) == 1]
+      },
+      "node" = function(adjMatrix, ...) {
+        N <- ncol(adjMatrix)
+        sampling_prob <- logistic(private$X %*% self$parameters)
+        N_obs <- which(runif(N) < sampling_prob)
+        D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))
       })
     },
     rSampling = function(adjMatrix, ...) {

@@ -5,7 +5,8 @@ sampledNetwork <-
   ## FIELDS : encode network with missing edges
   private = list(
     Y        = NULL, # adjacency matrix
-    X        = NULL, # covariates array
+    X        = NULL, # M x N covariates matrix
+    phi      = NULL, # N x N x M covariates array
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
     nas      = NULL, # all NA in Y
@@ -28,8 +29,9 @@ sampledNetwork <-
     is_directed = function(value) {private$directed},
     # adjacency matrix
     adjacencyMatrix = function(value) {private$Y},
-    # adjacency matrix
-    covariatesArray = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
+    # covariates matrix
+    covariatesMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
+    covariatesArray  = function(value) {private$phi},
     # list of potential dyads in the network
     dyads           = function(value) {private$D},
     # array indices of missing dyads
@@ -45,7 +47,7 @@ sampledNetwork <-
   ),
   ## Constructor
   public = list(
-    initialize = function(adjacencyMatrix, covariatesArray = NULL) {
+    initialize = function(adjacencyMatrix, covariatesMatrix = NULL) {
 
       ## adjacency matrix
       stopifnot(is.matrix(adjacencyMatrix))
@@ -53,7 +55,16 @@ sampledNetwork <-
       private$Y  <- adjacencyMatrix
 
       ## array of covariates
-      if (!is.null(covariatesArray)) private$X <- covariatesArray
+      if (!is.null(covariatesMatrix)) {
+        private$X <- covariatesMatrix
+        N <- ncol(covariatesMatrix)
+        M <- ncol(covariatesMatrix)
+        covariates <- array(dim = c(N, N, M))
+        for (i in 1:N)
+          for (j in 1:N)
+            covariates[i,j,] <- -abs(covariatesMatrix[i, ] - covariatesMatrix[j, ])
+        private$phi <- covariates
+      }
 
       ## sets of observed / unobserved dyads
       private$nas <- is.na(adjacencyMatrix)
