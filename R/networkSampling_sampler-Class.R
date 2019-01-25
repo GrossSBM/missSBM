@@ -130,7 +130,7 @@ networkSampling_sampler <-
 #' @import R6
 #' @export
 networkSamplingCovariates_sampler <-
-  R6::R6Class(classname = "networkSampling_sampler",
+  R6::R6Class(classname = "networkSamplingCovariates_sampler",
   inherit = networkSamplingCovariates,
   private = list(
     ## a private function to generate a collection of observed dyads for different sampling process
@@ -173,7 +173,7 @@ networkSamplingCovariates_sampler <-
       R[D_obs] <- 1; diag(R) <- 1
       if (isSymmetric(adjMatrix))  R <- t(R) | R
       adjMatrix[R == 0] <- NA
-      sampledNetwork$new(adjMatrix)
+      sampledNetwork$new(adjMatrix, private$X)
     }
   )
 )

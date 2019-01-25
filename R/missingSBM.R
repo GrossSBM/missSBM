@@ -144,9 +144,15 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
 #' @import R6 parallel
 #' @include smoother_SBM.R
 #' @export
-inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarchical",
-                     smoothing = c("none", "forward", "backward", "both"), mc.cores = 2, iter_both = 1,  control_VEM = list()){
-
+inferSBM <- function(
+  adjacencyMatrix,
+  vBlocks,
+  sampling,
+  clusterInit = "hierarchical",
+  smoothing = c("none", "forward", "backward", "both"),
+  mc.cores = 2,
+  iter_both = 1,
+  control_VEM = list()) {
 
   try(
     !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
@@ -203,6 +209,7 @@ inferSBM <- function(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarch
     models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
 
   }
-  return(list(models = models, monitor = res_optim))
+
+  list(models = models, monitor = res_optim)
 }
 

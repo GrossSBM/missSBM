@@ -2,6 +2,9 @@ rm(list=ls())
 library(missSBM)
 library(aricode)
 
+logistic <- function(x) {1/(1 + exp(-x))}
+logit    <- function(x) {log(x/(1 - x))}
+
 ### A SBM model with covariates ###
 N <- 200
 Q <- 3
@@ -9,35 +12,33 @@ alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.15, Q) + .01                 # connectivity matrix
 directed <- FALSE
 
-covarParam  <- c(0, 1)
-M <- length(covarParam)
-X <- t(rmultinom(N, 1, c(1/2,1/2)))
-X[X == 0] <- -1
-X <- X + rnorm(N*2,0,0.1)
-covariates <- array(dim = c(N, N, M))
-for (i in 1:N)
-  for (j in 1:N)
-    covariates[i,j,] <- -abs(X[i, ] - X[j, ])
-logistic <- function(x) {1/(1 + exp(-x))}
-logit    <- function(x) {log(x/(1 - x))}
+beta  <- c(0, 1)
+M <- length(beta)
+covariates <- t(rmultinom(N, 1, c(1/2,1/2)))
+covariates[covariates == 0] <- -1
+covariates <- covariates + rnorm(N*2,0,0.1)
 
-mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
+### Draw a undirected SBM model with covariates
+mySBM <- simulateSBM(N, alpha, pi, directed, covariates, beta)
+
 adjacencyMatrix <- mySBM$adjacencyMatrix             # the adjacency matrix
-
-## control parameter for the VEM
-control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 3, trace = TRUE)
 
 ## ______________________________________________________________________
 ## DYAD SAMPLING
 
 ## Draw random missing entries: MAR case (dyads)
-psi <- 0.3
+psi <- runif(ncol(covariates), -5, 5)
 sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi, covariates)
 
 cl0 <- init_clustering(sampledNet$adjacencyMatrix, Q, sampledNet$covariatesArray, "spectral")
 NID(cl0,  mySBM$memberships)
 
 ## Perform inference
+
+## control parameter for the VEM
+control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 3, trace = TRUE)
+
+
 missSBM <- missingSBM_fit$new(sampledNet, Q, "dyad", clusterInit = "spectral")
 out_nocov <- missSBM$doVEM(control)
 
