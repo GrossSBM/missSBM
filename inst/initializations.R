@@ -1,19 +1,10 @@
-graphCAH_old <- function(X, Q) {
+graphCAH <- function(X, Q) {
   D  <- as.matrix(dist(X, method="manhattan"))
   D[which(X == 1)] <- D[which(X == 1)] - 2
   is (anyNA(D))
   D <- as.dist(additive(D))
   return(cutree(hclust(as.dist(D), method="ward.D"), Q))
 }
-
-graphCAH_new <- function(X, Q) {
-  D  <- as.matrix(dist(X, method="manhattan"))
-  D[which(X == 1)] <- D[which(X == 1)] - 2
-  is (anyNA(D))
-  D <- as.dist(additive(D))
-  return(cutree(hclust(as.dist(D), method="ward.D"), Q))
-}
-
 
 SpectralClustering_NAisZero <- function (A,Q) {
   if(Q > 1){
