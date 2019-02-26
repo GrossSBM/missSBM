@@ -37,7 +37,6 @@ test_that("Init clustering with covariate is consistent", {
       relevance <- .6
       expect_is(cl, "integer")
       expect_equal(length(cl), N)
-      print(ARI(cl, mySBM$memberships))
       expect_gt(ARI(cl, mySBM$memberships), relevance)
     }
   }
