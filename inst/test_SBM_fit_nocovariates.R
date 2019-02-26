@@ -3,7 +3,6 @@ library(missSBM)
 library(aricode)
 
 set.seed(1111)
-
 ### A SBM model : ###
 n <- 400
 Q <- 5
