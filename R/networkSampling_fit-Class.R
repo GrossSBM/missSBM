@@ -146,37 +146,37 @@ doubleStandardSampling_fit <-
 
 blockDyadSampling_fit <-
   R6::R6Class(classname = "blockDyadSampling_fit",
-          inherit = networkSamplingDyads_fit,
-          private = list(
-            prob     = NULL,  ## for calculation of the log-likelihood
-            NAs      = NULL,  ## localisation of NAs
-            R        = NULL,  ## sampling matrix
-            directed = NULL   ##
-          ),
-          public = list(
-            initialize = function(sampledNetwork, blockInit) {
-              super$initialize(sampledNetwork, "block_dyad")
-              private$NAs      <- sampledNetwork$NAs
-              private$R        <- sampledNetwork$samplingMatrix
-              private$directed <- sampledNetwork$is_directed
-              imputedNet       <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
-              self$update_parameters(imputedNet, blockInit)
-            },
-            update_parameters = function(imputedNet, Z) {
-              private$psi    <- check_boundaries((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z))
-              private$prob   <- check_boundaries(Z %*% private$psi %*% t(Z))
-            }
-          ),
-          active = list(
-            vExpec = function(value) {
-              factor       <- ifelse(private$directed, 1, .5)
-              sampMat      <- private$R ; diag(sampMat) <- 0
-              sampMat_bar  <- 1 - private$R ; diag(sampMat_bar) <- 0
-              res          <- factor * sum(sampMat * log(private$prob) + sampMat_bar *  log(1 - private$prob))
-              res
-            }
-          )
+  inherit  = networkSamplingDyads_fit,
+  private  = list(
+    prob     = NULL,  ## for calculation of the log-likelihood
+    NAs      = NULL,  ## localisation of NAs
+    R        = NULL,  ## sampling matrix
+    directed = NULL   ##
+  ),
+  public = list(
+    initialize = function(sampledNetwork, blockInit) {
+      super$initialize(sampledNetwork, "block_dyad")
+      private$NAs      <- sampledNetwork$NAs
+      private$R        <- sampledNetwork$samplingMatrix
+      private$directed <- sampledNetwork$is_directed
+      imputedNet       <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+      self$update_parameters(imputedNet, blockInit)
+    },
+    update_parameters = function(imputedNet, Z) {
+      private$psi    <- check_boundaries((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z))
+      private$prob   <- check_boundaries(Z %*% private$psi %*% t(Z))
+    }
+  ),
+  active = list(
+    vExpec = function(value) {
+      factor       <- ifelse(private$directed, 1, .5)
+      sampMat      <- private$R ; diag(sampMat) <- 0
+      sampMat_bar  <- 1 - private$R ; diag(sampMat_bar) <- 0
+      res          <- factor * sum(sampMat * log(private$prob) + sampMat_bar *  log(1 - private$prob))
+      res
+    }
   )
+)
 
 blockSampling_fit <-
   R6::R6Class(classname = "blockSampling_fit",

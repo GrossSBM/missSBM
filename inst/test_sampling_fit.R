@@ -31,7 +31,7 @@ fittedSampling_node$penalty
 -2 * fittedSampling_node$logLik + fittedSampling_node$penalty
 
 sampledNet_double_standard <- samplingSBM(adjacencyMatrix, "double_standard", c(0.1, 0.5))
-fittedSampling_double_standard <- doubleStandardSampling_fit$new(sampledNet_double_standard)
+fittedSampling_double_standard <- missSBM:::doubleStandardSampling_fit$new(sampledNet_double_standard)
 fittedSampling_double_standard$vExpec
 fittedSampling_double_standard$parameters
 fittedSampling_double_standard$df
