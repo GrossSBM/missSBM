@@ -6,3 +6,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README.Rmd
+^inst/tries
+^inst/tests_against_timCode
