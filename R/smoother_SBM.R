@@ -1,6 +1,5 @@
 #' @importFrom utils combn
 #' @importFrom parallel mclapply
-#' @export
 smoothingBackward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control) {
   cat("   Going backward ")
   for (i in rev(vBlocks[-1])) {
@@ -28,7 +27,6 @@ smoothingBackward <- function(models, vBlocks, sampledNet, sampling, split_fn, m
   models
 }
 
-#' @export
 smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control) {
   cat("   Going forward ")
   for(i in vBlocks[-length(vBlocks)]){
@@ -39,11 +37,9 @@ smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc
       candidates <- mclapply(1:i, function(j) {
         cl <- as.numeric(cl_split); indices <- which(cl == j)
         if(length(cl[indices]) > 10){
-
           # sampledNetBis <- sampledNet$adjacencyMatrix
           # sampledNetBis[is.na(sampledNetBis)] <- mean(sampledNetBis[!is.na(sampledNetBis)])
-
-          cut <- as.numeric(split_fn(sampledNetBis[indices, indices],2))
+          cut <- as.numeric(split_fn(sampledNet$adjacencyMatrix[indices, indices],2))
           # cut <- c(rep(1, length = floor(length(indices)/2)), rep(2, length = ceiling(length(indices)/2)))
           cl[which(cl==j)][which(cut==1)] <- j; cl[which(cl==j)][which(cut==2)] <- i + 1
           model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl)
@@ -66,7 +62,6 @@ smoothingForward <- function(models, vBlocks, sampledNet, sampling, split_fn, mc
   models
 }
 
-#' @export
 smoothingForBackWard <- function(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control){
   out <- models
   for (i in 1: iter_both) {
