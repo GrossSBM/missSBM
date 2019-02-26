@@ -4,12 +4,28 @@ language: R
 sudo: false
 cache: packages
 warnings_are_errors: false
+latex: false
+r_check_args: --as-cran
 
 matrix:
   include:
     - os: linux
       r: release
+      r_packages:
+        - covr
+      after_success:
+        - Rscript -e 'covr::codecov(quiet=FALSE)'
+      env: NB='w/ covr' ## Just a label      
     - os: linux
       r: devel
     - os: osx
       r: release
+
+before_install:
+  - Rscript -e 'c(physical = parallel::detectCores(logical = FALSE), logical = parallel::detectCores())'
+  - export _R_CHECK_TIMINGS_=0  ## Report on timing for all tests
+  
+notifications:
+  email:
+    on_success: change
+    on_failure: change
