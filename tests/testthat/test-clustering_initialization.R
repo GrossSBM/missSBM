@@ -1,8 +1,6 @@
 context("test-clustering_initialization")
 
 library(aricode)
-library(missSBM)
-library(testthat)
 
 ### A SBM model used for all tests
 set.seed(178303)
@@ -77,7 +75,7 @@ test_that("Kmeans clustering is consistent", {
   }
 })
 
-test_that("Hierarchical clustering is consistent (without missing values)", {
+test_that("Hierarchical clustering is consistent", {
 
   for (A in list(A_full, A_dyad, A_node)) {
     ## internal function
@@ -98,6 +96,29 @@ test_that("Hierarchical clustering is consistent (without missing values)", {
 
     ## must be equivalent (up to label switching)
     expect_equal(ARI(cl_hierarchical, cl_hierarchical_internal), 1.0)
+  }
+})
+
+
+test_that("Clustering initializations are relevant", {
+
+  for (A in list(A_full, A_dyad, A_node)) {
+
+    for (method in c("spectral", "kmeans", "hierarchical")) {
+
+      ## top level function
+      cl <-
+        missSBM:::init_clustering(
+          adjacencyMatrix = A,
+          nBlocks = Q,
+          covariates = NULL,
+          clusterInit = method
+        )
+
+      relevance <- .6
+      expect_gt(ARI(cl, mySBM$memberships), relevance)
+
+    }
   }
 })
 
