@@ -47,7 +47,7 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
   out_spec <- mySBM_fit_spec$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
   out_kmns <- mySBM_fit_kmns$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
 
-  BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_max = Q, plotting = "")
+  BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_max = Q, plotting = "", ncores = 1)
   BM$estimate()
   pi_BM <- BM$model_parameters[[Q]]$pi
 
@@ -76,7 +76,7 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
 
 test_that("Consistency of VEM of a SBM_fit with the number of block given", {
 
-  BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 8, explore_max = 8, plotting = "")
+  BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 8, explore_max = 8, plotting = "", ncores = 1)
   BM$estimate()
 
   vBlocks <- 1:8
