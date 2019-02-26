@@ -48,4 +48,5 @@ Collate:
     'networkSampling_sampler-Class.R'
 Suggests: 
     aricode,
-    testthat
+    testthat,
+    covr

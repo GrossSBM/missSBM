@@ -5,6 +5,8 @@ missSBM: Handling missing data in Stochastic Block Models
 status](https://travis-ci.org/jchiquet/missSBM.svg?branch=master)](https://travis-ci.org/jchiquet/missSBM)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/jchiquet/missSBM?branch=master&svg=true)](https://ci.appveyor.com/project/jchiquet/missSBM)
+[![Coverage
+status](https://codecov.io/gh/jchiquet/missSBM/branch/master/graph/badge.svg)](https://codecov.io/github/jchiquet/missSBM?branch=master)
 
 > When a network is partially observed (here, missing dyads, that is,
 > entries with NA in the adjacency matrix rather than 1 or 0), it is

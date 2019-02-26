@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [![Travis build status](https://travis-ci.org/jchiquet/missSBM.svg?branch=master)](https://travis-ci.org/jchiquet/missSBM)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/jchiquet/missSBM?branch=master&svg=true)](https://ci.appveyor.com/project/jchiquet/missSBM)
+[![Coverage status](https://codecov.io/gh/jchiquet/missSBM/branch/master/graph/badge.svg)](https://codecov.io/github/jchiquet/missSBM?branch=master)
 
 > When a network is partially observed (here, missing dyads, that is, entries with NA in the adjacency matrix rather than 1 or 0), it is possible to account for the underlying process that generates those NAs. *missSBM* is an R package for adjusting the popular Stochastic Block Models from network data  sampled under various missing data conditions.
 
