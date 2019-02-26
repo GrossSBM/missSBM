@@ -3,7 +3,7 @@ context("test-sbm-fit-without-covariate")
 library(aricode)
 library(blockmodels)
 
-set.seed(1111)
+set.seed(178303)
 ### A SBM model : ###
 N <- 400
 Q <- 5
