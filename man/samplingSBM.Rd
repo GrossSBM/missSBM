@@ -4,7 +4,8 @@
 \alias{samplingSBM}
 \title{Sampling of a network}
 \usage{
-samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL)
+samplingSBM(adjacencyMatrix, sampling, parameters, covariates = NULL,
+  clusters = NULL)
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
