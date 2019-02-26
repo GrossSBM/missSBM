@@ -1,7 +1,7 @@
 Package: missSBM
 Type: Package
 Title: Handling missing data in Stochastic Block Models
-Version: 0.1.0
+Version: 0.1.0-9000
 Authors@R: c(
   person("Pierre", "Barbillon", role = c("aut"), email = "pierre.barbillon@agroparistech.fr"),
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inra.fr",
