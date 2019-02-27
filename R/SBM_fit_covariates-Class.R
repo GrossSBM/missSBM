@@ -15,7 +15,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         mixtureParam    = rep(NA,nBlocks),
         connectParam    = matrix(NA,nBlocks, nBlocks),
         covariates      = covariates,
-        covarParam      = numeric(dim(covariates)[3])
+        covarParam      = numeric(dim(covariates)[2])
       )
 
       ## Initial Clustering

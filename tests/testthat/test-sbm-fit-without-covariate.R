@@ -34,7 +34,7 @@ test_that("Creation of a SBM_fit_nocovariate", {
 
 })
 
-test_that("Consistency of VEM of a SBM_fit with the number of block given", {
+test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block is given", {
 
   tol <- 1e-3
 
@@ -74,7 +74,7 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
 })
 
 
-test_that("Consistency of VEM of a SBM_fit with the number of block given", {
+test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nBlocks", {
 
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 8, explore_max = 8, plotting = "", ncores = 1)
   BM$estimate()
