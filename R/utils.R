@@ -31,7 +31,6 @@ check_boundaries <- function(x) {
 }
 
 #' @importFrom graphics box image par
-#' @export
 image_NA <- function(z,  zlim = c(0,1), col = c("white", "midnightblue"), na.color = 'gray', outside.below.color = 'black', outside.above.color = 'white', ...)
 {
   zstep <- (zlim[2] - zlim[1]) / length(col); # step in the color palette
@@ -54,48 +53,3 @@ image_NA <- function(z,  zlim = c(0,1), col = c("white", "midnightblue"), na.col
   # par(mar=c(5.1,4.1,4.1,2.1))
 }
 
-
-#' #' @import ggplot2 igraph viridis
-#' #' @importFrom dplyr inner_join mutate select arrange
-#' #' @export
-#' gg_image_NA <- function(adjacencyMatrix, memberships) {
-#'
-#'   adjacencyMatrix[is.na(adjacencyMatrix)] <- -1
-#'   G <- graph_from_adjacency_matrix(adjacencyMatrix, weighted = TRUE)
-#'   V(G)$membership <- memberships
-#'   V(G)$name <- 1:ncol(adjacencyMatrix)
-#'   E(G)$miss <- E(G)$weight == -1
-#'   node_list <- get.data.frame(G, what = "vertices")
-#'
-#'   edge_list <- get.data.frame(G, what = "edges") %>%
-#'     inner_join(node_list %>% select(name, membership), by = c("from" = "name")) %>%
-#'     inner_join(node_list %>% select(name, membership), by = c("to" = "name")) %>%
-#'     mutate(membership = ifelse(membership.x == membership.y, membership.x, "dyad") %>% factor()) %>%
-#'     mutate(missing = ifelse(miss, "missing", "observed") %>% factor()) %>% select(-weight, -miss) %>%
-#'     mutate(membership_missingness = paste(membership,missing, sep = "-"))
-#'
-#'   all_nodes <- sort(node_list$name)
-#'
-#'   plot_data <- edge_list %>% mutate(
-#'     to = factor(to, levels = all_nodes),
-#'     from = factor(from, levels = all_nodes))
-#'   name_order <- (node_list %>% arrange(membership))$name
-#'
-#'   plot_data <- edge_list %>% mutate(
-#'     to = factor(to, levels = name_order),
-#'     from = factor(from, levels = name_order))
-#'
-#'   if (sum(plot_data$missing == "missing") == 0) {
-#'     p <- ggplot(plot_data, aes(x = from, y = to, fill = membership))
-#'   } else {
-#'     p <- ggplot(plot_data, aes(x = from, y = to, fill = membership_missingness))
-#'   }
-#'   p <- p + geom_raster() + theme_classic() +
-#'     scale_fill_viridis(discrete = TRUE, option = "magma") +
-#'     theme(aspect.ratio = 1,
-#'           axis.title = element_blank(),
-#'           axis.text = element_blank() ,
-#'           axis.ticks = element_blank(),
-#'           axis.line = element_blank())
-#'   p
-#' }
