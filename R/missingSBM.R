@@ -7,8 +7,8 @@
 #' @param pi The connectivity matrix (probabilities inter and intra clusters)
 #' @param directed Boolean variable to indicate whether the network is directed or not,
 #' by default "undirected" is choosen
-#' @param beta An optional vector of parameters associated with the covariates, with size M
-#' @param phi An optional array of covariates with dimension N x N x M (M covariates per edges).
+#' @param covarParam An optional vector of parameters associated with the covariates, with size M
+#' @param covariates An optional matrix of covariates with dimension N x M (M covariates per node).
 #' @return \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
@@ -28,8 +28,8 @@
 #' mySBM <- simulateSBM(N, alpha, pi, directed)
 #'
 #' @export
-simulateSBM <- function(N, alpha, pi, directed = FALSE, phi = NULL, beta = NULL){
-  mySBM <- SBM_sampler$new(directed, N, alpha, pi, phi, beta)
+simulateSBM <- function(N, alpha, pi, directed = FALSE, covariates = NULL, covarParam = NULL){
+  mySBM <- SBM_sampler$new(directed, N, alpha, pi, covariates, covarParam)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM

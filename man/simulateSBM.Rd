@@ -4,7 +4,8 @@
 \alias{simulateSBM}
 \title{Simulation of a Stochastic Block Model}
 \usage{
-simulateSBM(N, alpha, pi, directed = FALSE, phi = NULL, beta = NULL)
+simulateSBM(N, alpha, pi, directed = FALSE, covariates = NULL,
+  covarParam = NULL)
 }
 \arguments{
 \item{N}{The number of nodes}
@@ -16,9 +17,9 @@ simulateSBM(N, alpha, pi, directed = FALSE, phi = NULL, beta = NULL)
 \item{directed}{Boolean variable to indicate whether the network is directed or not,
 by default "undirected" is choosen}
 
-\item{phi}{An optional array of covariates with dimension N x N x M (M covariates per edges).}
+\item{covariates}{An optional matrix of covariates with dimension N x M (M covariates per node).}
 
-\item{beta}{An optional vector of parameters associated with the covariates, with size M}
+\item{covarParam}{An optional vector of parameters associated with the covariates, with size M}
 }
 \value{
 \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
