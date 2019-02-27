@@ -19,12 +19,12 @@ cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
 cl_hier <- missSBM:::init_clustering(A, Q, NULL,"hierarchical")
 cl_kmns <- missSBM:::init_clustering(A, Q, NULL,"kmeans")
 
-test_that("Creation of a SBM_fit", {
+test_that("Creation of a SBM_fit_nocovariate", {
 
-  mySBM_fit <- SBM_fit_nocovariate$new(A, cl_rand)
+  mySBM_fit <- missSBM:::SBM_fit_nocovariate$new(A, cl_rand)
   expect_is(mySBM_fit, c("SBM_fit_nocovariate", "SBM_fit", "SBM", "R6"))
   expect_equal(mySBM_fit$memberships, cl_rand)
-  expect_equal(mySBM_fit$df_connectParams, Q *(Q + 1)/2)
+  expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
   expect_equal(mySBM_fit$df_covarParams, 0)
   expect_equal(mySBM_fit$df_mixtureParams, Q - 1)
   expect_equal(mySBM_fit$blocks, missSBM:::clustering_indicator(cl_rand))
@@ -39,9 +39,9 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
   tol <- 1e-3
 
   ## testing all initialization
-  mySBM_fit_hier <- SBM_fit_nocovariate$new(A, cl_hier)
-  mySBM_fit_spec <- SBM_fit_nocovariate$new(A, cl_spec)
-  mySBM_fit_kmns <- SBM_fit_nocovariate$new(A, cl_kmns)
+  mySBM_fit_hier <- missSBM:::SBM_fit_nocovariate$new(A, cl_hier)
+  mySBM_fit_spec <- missSBM:::SBM_fit_nocovariate$new(A, cl_spec)
+  mySBM_fit_kmns <- missSBM:::SBM_fit_nocovariate$new(A, cl_kmns)
 
   out_hier <- mySBM_fit_hier$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
   out_spec <- mySBM_fit_spec$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
