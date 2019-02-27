@@ -57,7 +57,7 @@ sampledNetwork <-
       ## array of covariates
       if (!is.null(covariatesMatrix)) {
         private$X <- covariatesMatrix
-        N <- ncol(covariatesMatrix)
+        N <- nrow(covariatesMatrix)
         M <- ncol(covariatesMatrix)
         covariates <- array(dim = c(N, N, M))
         for (i in 1:N)

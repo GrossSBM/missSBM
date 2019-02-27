@@ -7,7 +7,7 @@ networkSamplingDyads_fit <-
   private = list(
     card_D = NULL, # number of possible dyads in the network
     D_miss = NULL  # where are the missing dyads
-),
+  ),
   public = list(
     initialize = function(sampledNetwork, name) {
       private$name    <- name
@@ -84,6 +84,28 @@ dyadSampling_fit <-
   )
 )
 
+dyadSampling_fit_covariates <-
+  R6::R6Class(classname = "dyadSampling_fit_covariates",
+  inherit = networkSamplingDyads_fit,
+  private = list(
+  ),
+  public = list(
+    initialize = function(sampledNetwork, ...) {
+      super$initialize(sampledNetwork, "dyad")
+      X <- apply(sampledNetwork$covariatesArray, 3, as.vector)
+      y <- 1*as.vector(!sampledNetwork$NAs)
+      private$psi <- coefficients(glm.fit(X, y, family = binomial()))
+    }
+  ),
+  active = list(
+    vExpec = function(value) {
+      ## FIXME
+      res <- 0
+      res
+    }
+  )
+)
+
 nodeSampling_fit <-
   R6::R6Class(classname = "nodeSampling_fit",
   inherit = networkSamplingNodes_fit,
@@ -102,6 +124,26 @@ nodeSampling_fit <-
   active = list(
     vExpec = function() {
       res <- private$card_N_o * log(private$psi) + private$card_N_m * log(1 - private$psi)
+      res
+    }
+  )
+)
+
+nodeSampling_fit_covariates <-
+  R6::R6Class(classname = "nodeSampling_fit_covariates",
+  inherit = networkSamplingNodes_fit,
+  public = list(
+    initialize = function(sampledNetwork, ...) {
+      super$initialize(sampledNetwork, "node")
+      y <- 1 * (sampledNetwork$observedNodes)
+      X <- sampledNetwork$covariatesMatrix
+      private$psi <- coefficients(glm.fit(X, y , family = binomial()))
+    }
+  ),
+  active = list(
+    vExpec = function() {
+      ## FIXME
+      res <- 0
       res
     }
   )
