@@ -42,6 +42,7 @@ simulateSBM <- function(N, alpha, pi, directed = FALSE, covariates = NULL, covar
 #' @param adjacencyMatrix The adjacency matrix of the network
 #' @param sampling The sampling design used to sample the adjacency matrix
 #' @param parameters The sampling parameters adapted to each sampling
+#' @param covariates An optional matrix of covariates with dimension N x M (M covariates per node).
 #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL
 #' @return \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.

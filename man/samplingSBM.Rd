@@ -14,6 +14,8 @@ samplingSBM(adjacencyMatrix, sampling, parameters, covariates = NULL,
 
 \item{parameters}{The sampling parameters adapted to each sampling}
 
+\item{covariates}{An optional matrix of covariates with dimension N x M (M covariates per node).}
+
 \item{clusters}{Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL}
 }
 \value{
