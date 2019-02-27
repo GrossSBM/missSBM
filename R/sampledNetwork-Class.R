@@ -1,5 +1,4 @@
 #' @import R6
-#' @export
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
