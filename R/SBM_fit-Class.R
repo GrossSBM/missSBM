@@ -7,7 +7,6 @@
 #' classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'
 #'
 #' @import R6
-#' @include SBM_fit-Class.R
 SBM_fit <-
 R6::R6Class(classname = "SBM_fit",
   inherit = SBM,
