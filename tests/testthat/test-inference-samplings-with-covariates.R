@@ -20,22 +20,24 @@ test_that("Parameter estimation in dyad-centered sampling", {
   sampledNet <- samplingSBM(A, "dyad", covarParam, covariates)
   fittedSampling <- missSBM:::dyadSampling_fit_covariates$new(sampledNet, covariates)
   expect_is(fittedSampling, "dyadSampling_fit_covariates")
+  expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
   tolerance <- 1e-2
   expect_lt(sum((fittedSampling$parameters - covarParam)^2), tolerance)
   expect_equal(fittedSampling$df, length(covarParam))
   expect_equal(fittedSampling$penalty, log(N * (N - 1)/2) * length(covarParam))
-  ## FIXME: expect_lt(fittedSampling$vExpec, 0)
+  expect_lt(fittedSampling$vExpec, 0)
 })
 
 test_that("Parameter estimation in node-centered sampling", {
   sampledNet <- samplingSBM(A, "node", covarParam, covariates)
   fittedSampling <- missSBM:::nodeSampling_fit_covariates$new(sampledNet, covariates)
   expect_is(fittedSampling, "nodeSampling_fit_covariates")
+  expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
   tolerance <- 1e-1
   expect_lt(sum((fittedSampling$parameters - covarParam)^2)/length(covarParam), tolerance)
   expect_equal(fittedSampling$df, length(covarParam))
   expect_equal(fittedSampling$penalty, log(N) * length(covarParam))
-  # FIXME: expect_lt(fittedSampling$vExpec, 0)
+  expect_lt(fittedSampling$vExpec, 0)
 })

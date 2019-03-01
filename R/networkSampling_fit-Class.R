@@ -88,19 +88,24 @@ dyadSampling_fit_covariates <-
   R6::R6Class(classname = "dyadSampling_fit_covariates",
   inherit = networkSamplingDyads_fit,
   private = list(
+    D_obs = NULL, # observed dyads
+    rho   = NULL # matrix of predicted probabilities of observation
   ),
   public = list(
     initialize = function(sampledNetwork, ...) {
       super$initialize(sampledNetwork, "dyad")
       X <- apply(sampledNetwork$covariatesArray, 3, as.vector)
       y <- 1*as.vector(!sampledNetwork$NAs)
-      private$psi <- coefficients(glm.fit(X, y, family = binomial()))
+      glm_out     <- glm.fit(X, y, family = binomial())
+      private$psi <- coefficients(glm_out)
+      private$rho <- fitted(glm_out)
+      private$D_obs <- sampledNetwork$D_obs
     }
   ),
   active = list(
+    prob_obs = function(value) {private$rho},
     vExpec = function(value) {
-      ## FIXME
-      res <- 0
+      res <- sum(log(1 - private$rho[private$D_miss])) + sum(log(private$rho[private$D_obs]))
       res
     }
   )
@@ -132,18 +137,23 @@ nodeSampling_fit <-
 nodeSampling_fit_covariates <-
   R6::R6Class(classname = "nodeSampling_fit_covariates",
   inherit = networkSamplingNodes_fit,
+  private = list(
+    rho = NULL # vector of predicted probabilities of observation
+  ),
   public = list(
     initialize = function(sampledNetwork, ...) {
       super$initialize(sampledNetwork, "node")
       y <- 1 * (sampledNetwork$observedNodes)
       X <- sampledNetwork$covariatesMatrix
-      private$psi <- coefficients(glm.fit(X, y , family = binomial()))
+      glm_out     <- glm.fit(X, y, family = binomial())
+      private$psi <- coefficients(glm_out)
+      private$rho <- fitted(glm_out)
     }
   ),
   active = list(
+    prob_obs = function(value) {private$rho},
     vExpec = function() {
-      ## FIXME
-      res <- 0
+      res <- sum(log(private$rho[private$N_obs])) + sum(log(1-private$rho[!private$N_obs]))
       res
     }
   )
