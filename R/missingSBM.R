@@ -110,7 +110,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
 #' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
-#' @return \code{inferSBM} returns a list with all models estimated for all Q in vBlocks
+#' @return \code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns three methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, and a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL.
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{missingSBM_fit}}.
 #' @examples
@@ -150,7 +150,7 @@ inferSBM <- function(
   sampling,
   clusterInit = "hierarchical",
   smoothing = c("none", "forward", "backward", "both"),
-  mc.cores = 2,
+  mc.cores = 1,
   iter_both = 1,
   control_VEM = list()) {
 
@@ -165,7 +165,7 @@ inferSBM <- function(
   cat("\n Adjusting Variational EM for Stochastic Block Model\n")
   cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
   cat("\n")
-  models <- lapply(vBlocks,
+  models <- mclapply(vBlocks,
     function(nBlocks) {
     cat(" Initialization of model with", nBlocks,"blocks.", "\r")
       if (is.list(clusterInit)) {
@@ -173,18 +173,18 @@ inferSBM <- function(
       } else {
         missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
       }
-    }
+    }, mc.cores = mc.cores
   )
 
   ## defaut control parameter for VEM, overwritten by user specification
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
   cat("\n")
-  lapply(models,
+  mclapply(models,
     function(model) {
       cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
       model$doVEM(control)
-    }
+    }, mc.cores = mc.cores
   )
 
   smoothing <- match.arg(smoothing)
@@ -207,6 +207,35 @@ inferSBM <- function(
     models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
 
   }
-  models
+
+  structure(setNames(models, vBlocks), class = "missSBMcollection")
+}
+
+#' @rdname inferSBM
+#' @export
+is.missSBMcollection <- function(Robject) {
+  inherits(Robject, "missSBMcollection")
+}
+
+#' @rdname inferSBM
+#' @export
+ICL <- function(Robject) { UseMethod("ICL", Robject) }
+
+#' @rdname inferSBM
+#' @export
+ICL.missSBMcollection <- function(Robject) {
+  stopifnot(is.missSBMcollection(Robject))
+  setNames(sapply(Robject, function(model) model$vICL), names(Robject))
+}
+
+#' @rdname inferSBM
+#' @export
+getBestModel <- function(Robject) {UseMethod("getBestModel", Robject)}
+
+#' @rdname inferSBM
+#' @export
+getBestModel.missSBMcollection <- function(Robject) {
+  stopifnot(is.missSBMcollection(Robject))
+  Robject[[which.min(ICL(Robject))]]
 }
 

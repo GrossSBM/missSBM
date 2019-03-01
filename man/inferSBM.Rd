@@ -2,12 +2,27 @@
 % Please edit documentation in R/missingSBM.R
 \name{inferSBM}
 \alias{inferSBM}
+\alias{is.missSBMcollection}
+\alias{ICL}
+\alias{ICL.missSBMcollection}
+\alias{getBestModel}
+\alias{getBestModel.missSBMcollection}
 \title{Inference of Stochastic Block Model from sampled data}
 \usage{
 inferSBM(adjacencyMatrix, vBlocks, sampling,
   clusterInit = "hierarchical", smoothing = c("none", "forward",
-  "backward", "both"), mc.cores = 2, iter_both = 1,
+  "backward", "both"), mc.cores = 1, iter_both = 1,
   control_VEM = list())
+
+is.missSBMcollection(Robject)
+
+ICL(Robject)
+
+\method{ICL}{missSBMcollection}(Robject)
+
+getBestModel(Robject)
+
+\method{getBestModel}{missSBMcollection}(Robject)
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
@@ -28,7 +43,7 @@ by default "undirected" is choosen}
 \item{control_VEM}{a list controlling the variational EM algorithm. See details.}
 }
 \value{
-\code{inferSBM} returns a list with all models estimated for all Q in vBlocks
+\code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns three methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, and a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL.
 }
 \description{
 \code{inferSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix
