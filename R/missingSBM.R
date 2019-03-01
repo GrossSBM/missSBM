@@ -110,6 +110,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
 #' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
+#' @param Robject an object with class \code{missSBMcollection}
 #' @return \code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{missingSBM_fit}}.
@@ -222,6 +223,7 @@ is.missSBMcollection <- function(Robject) {
 ICL <- function(Robject) { UseMethod("ICL", Robject) }
 
 #' @rdname inferSBM
+#' @importFrom stats setNames
 #' @export
 ICL.missSBMcollection <- function(Robject) {
   stopifnot(is.missSBMcollection(Robject))
@@ -237,14 +239,13 @@ optimizationStatus <- function(Robject) { UseMethod("optimizationStatus", Robjec
 optimizationStatus.missSBMcollection <- function(Robject) {
   stopifnot(is.missSBMcollection(Robject))
   Reduce("rbind",
-    lapply(collection,
+    lapply(Robject,
       function(model) {
         res <- model$monitoring
         res$nBlock <- model$fittedSBM$nBlocks
         res
     })
   )
-
 }
 
 #' @rdname inferSBM

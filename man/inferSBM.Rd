@@ -47,6 +47,8 @@ by default "undirected" is choosen}
 \item{iter_both}{integer for the number of iteration in case of foward-backward (aka both) smoothing}
 
 \item{control_VEM}{a list controlling the variational EM algorithm. See details.}
+
+\item{Robject}{an object with class \code{missSBMcollection}}
 }
 \value{
 \code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
