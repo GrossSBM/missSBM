@@ -120,6 +120,16 @@ missingSBM_fit$set("public", "doVEM",
 
 #' @export
 missingSBM_fit$set("public", "show",
-function(model = "\n") {
-
+function() {
+  cat("missSBM-fit\n")
+  cat("==================================================================\n")
+  cat("Structure for storing a SBM fitted under missing data condition   \n")
+  cat("==================================================================\n")
+  cat("* Useful fields (most are special obejct themselves)              \n")
+  cat("  $fittedSBM (the adjusted stochastoc bloc model)                 \n")
+  cat("  $fittedSampling (the estimated sampling process)                \n")
+  cat("  $sampledNetwork (the sampled network data)                      \n")
+  cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
+  cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
 })
+missingSBM_fit$set("public", "print", function() self$show())
