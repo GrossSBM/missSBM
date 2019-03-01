@@ -28,8 +28,7 @@ by default "undirected" is choosen}
 \item{control_VEM}{a list controlling the variational EM algorithm. See details.}
 }
 \value{
-\code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
-and a vector with ICL calculated for all Q in vBlocks
+\code{inferSBM} returns a list with all models estimated for all Q in vBlocks
 }
 \description{
 \code{inferSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix

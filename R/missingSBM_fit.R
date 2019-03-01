@@ -118,7 +118,8 @@ missingSBM_fit$set("public", "doVEM",
   }
 )
 
-#' #' @export
-#' missingSBM_fit$set("public", "show",
-#' function(model = "\n") {
-#' })
+#' @export
+missingSBM_fit$set("public", "show",
+function(model = "\n") {
+
+})

@@ -32,6 +32,7 @@ test_that("miss SBM with dyad sampling works", {
   expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
   expect_is(missSBM$fittedSampling, "dyadSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
+  expect_equal(out, missSBM$monitoring)
 
   ## Consistency
   tol <- 1e-2
