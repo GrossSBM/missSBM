@@ -5,6 +5,8 @@
 \alias{is.missSBMcollection}
 \alias{ICL}
 \alias{ICL.missSBMcollection}
+\alias{optimizationStatus}
+\alias{optimizationStatus.missSBMcollection}
 \alias{getBestModel}
 \alias{getBestModel.missSBMcollection}
 \title{Inference of Stochastic Block Model from sampled data}
@@ -19,6 +21,10 @@ is.missSBMcollection(Robject)
 ICL(Robject)
 
 \method{ICL}{missSBMcollection}(Robject)
+
+optimizationStatus(Robject)
+
+\method{optimizationStatus}{missSBMcollection}(Robject)
 
 getBestModel(Robject)
 
@@ -43,7 +49,7 @@ by default "undirected" is choosen}
 \item{control_VEM}{a list controlling the variational EM algorithm. See details.}
 }
 \value{
-\code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns three methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, and a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL.
+\code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
 }
 \description{
 \code{inferSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix

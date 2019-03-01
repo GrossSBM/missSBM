@@ -51,7 +51,7 @@ test_that("inferSBM with a collection of models", {
   ## Perform inference with the top level function
   collection <- inferSBM(
     adjacencyMatrix = sampledNet$adjacencyMatrix,
-    vBlocks         = 1:8,
+    vBlocks         = 1:7,
     sampling        = "dyad",
     smoothing       = "none",
     control_VEM     = control
@@ -61,8 +61,8 @@ test_that("inferSBM with a collection of models", {
   expect_equal(getBestModel(collection)$fittedSBM$nBlocks, Q)
   expect_true(which.min(ICL(collection)) == Q)
 
+  expect_true(is.data.frame(optimizationStatus(collection)))
 })
-
 
 # test_that("infer SBM with node sampling works", {
 #

@@ -110,7 +110,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
 #' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
-#' @return \code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns three methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, and a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL.
+#' @return \code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{missingSBM_fit}}.
 #' @examples
@@ -226,6 +226,25 @@ ICL <- function(Robject) { UseMethod("ICL", Robject) }
 ICL.missSBMcollection <- function(Robject) {
   stopifnot(is.missSBMcollection(Robject))
   setNames(sapply(Robject, function(model) model$vICL), names(Robject))
+}
+
+#' @rdname inferSBM
+#' @export
+optimizationStatus <- function(Robject) { UseMethod("optimizationStatus", Robject) }
+
+#' @rdname inferSBM
+#' @export
+optimizationStatus.missSBMcollection <- function(Robject) {
+  stopifnot(is.missSBMcollection(Robject))
+  Reduce("rbind",
+    lapply(collection,
+      function(model) {
+        res <- model$monitoring
+        res$nBlock <- model$fittedSBM$nBlocks
+        res
+    })
+  )
+
 }
 
 #' @rdname inferSBM
