@@ -3,7 +3,6 @@
 #' this class is used to sample from an SBM, thus has some additional fields and methods related to the blocks and the adjacency matrix (Z and Y)
 #'
 #' @include SBM-Class.R
-#' @export
 SBM_sampler <-
   R6::R6Class(classname = "SBM_sampler",
   inherit = SBM,
