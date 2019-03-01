@@ -17,7 +17,16 @@ R6::R6Class(classname = "networkSampling",
     initialize = function(type = NA) {
       stopifnot(type %in% available_samplings)
       private$name <- type
-    }
+    },
+    show = function(model = paste0(private$name, "-model for network sampling\n")) {
+      cat(model)
+      cat("==================================================================\n")
+      cat("Structure for handling network sampling in missSBM.\n")
+      cat("==================================================================\n")
+      cat("* Useful fields \n")
+      cat("  $type, $parameters, $df\n")
+    },
+    print = function() {self$show()}
   ),
   active = list(
     type = function(value) {private$name},

@@ -14,6 +14,10 @@ networkSamplingDyads_fit <-
       private$D_miss  <- sampledNetwork$missingDyads
       private$card_D  <- sampledNetwork$nDyads
     },
+    show = function() {
+      super$show()
+      cat("  $penalty, $vExpec\n")
+    },
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(NULL)},
@@ -45,6 +49,10 @@ networkSamplingNodes_fit <-
       private$name   <- name
       private$N_obs  <- sampledNetwork$observedNodes
       private$card_N <- sampledNetwork$nNodes
+    },
+    show = function() {
+      super$show()
+      cat("  $penalty, $vExpec\n")
     },
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
