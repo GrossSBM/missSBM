@@ -22,12 +22,12 @@ test_that("SBM sampler without covariates", {
   expect_false(mySBM$has_covariates)
   expect_equal(mySBM$direction, "undirected")
 
-  missSBM:::mySBM$rBlocks()
+  mySBM$rBlocks()
   expect_equal(length(mySBM$memberships), N)
   expect_equal(dim(mySBM$blocks), c(N, Q))
   expect_equal(length(unique(mySBM$memberships)), Q)
 
-  missSBM:::mySBM$rAdjMatrix()
+  mySBM$rAdjMatrix()
   expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
   expect_true(isSymmetric(mySBM$adjacencyMatrix))
 })
@@ -58,12 +58,12 @@ test_that("SBM sampler with covariates", {
   expect_equal(dim(mySBM$covariates), c(N, N, M))
   expect_equal(mySBM$direction, "undirected")
 
-  missSBM:::mySBM$rBlocks()
+  mySBM$rBlocks()
   expect_equal(length(mySBM$memberships), N)
   expect_equal(dim(mySBM$blocks), c(N, Q))
   expect_equal(length(unique(mySBM$memberships)), Q)
 
-  missSBM:::mySBM$rAdjMatrix()
+  mySBM$rAdjMatrix()
   expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
   expect_true(isSymmetric(mySBM$adjacencyMatrix))
 
