@@ -1,35 +1,44 @@
-# context("test-test-top-level-function-infersbm")
-#
-# library(aricode)
-#
-# set.seed(1890718)
-# ### A SBM model : ###
-# N <- 400
-# Q <- 5
-# alpha <- rep(1,Q)/Q       # mixture parameter
-# pi <- diag(.45,Q) + .05   # connectivity matrix
-# directed <- FALSE         # if the network is directed or not
-#
-# ### Draw a SBM model
-# mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
-# A <- mySBM$adjacencyMatrix             # the adjacency matrix
-#
-# test_that("infer SBM with dyad sampling works", {
-#
-#   psi <- 0.3
-#   sampledNet <- samplingSBM(adjacencyMatrix, "dyad", psi)
-#
-#   vBlocks <- 1:8
-#   out <- inferSBM(
-#     adjacencyMatrix = A,
-#     vBlocks         = 1:8,
-#     sampling        = "dyad",
-#     smoothing       = "forward",
-#     control_VEM     = list(threshold = 1e-3, maxIter = 200, fixPointIter = 3)
-#   )
-#
-# })
-#
+context("test-test-top-level-function-infersbm")
+
+library(aricode)
+
+set.seed(1890718)
+### A SBM model : ###
+N <- 400
+Q <- 5
+alpha <- rep(1,Q)/Q       # mixture parameter
+pi <- diag(.45,Q) + .05   # connectivity matrix
+directed <- FALSE         # if the network is directed or not
+
+### Draw a SBM model
+mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
+A <- mySBM$adjacencyMatrix             # the adjacency matrix
+
+test_that("inferSBM and class missSBM-fit are coherent", {
+
+  psi <- 0.3
+  sampledNet <- samplingSBM(A, "dyad", psi)
+
+  ## control parameter for the VEM
+  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+
+  ## Perform inference with internal classes
+  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad")
+  out_missSBM <- missSBM$doVEM(control)
+
+  ## Perform inference with the top level function
+  collection <- inferSBM(
+    adjacencyMatrix = sampledNet$adjacencyMatrix,
+    vBlocks         = Q,
+    sampling        = "dyad",
+    smoothing       = "none",
+    control_VEM     = control
+  )
+
+  expect_equivalent(collection[[1]], missSBM)
+
+})
+
 # test_that("infer SBM with node sampling works", {
 #
 # })
