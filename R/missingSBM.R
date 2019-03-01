@@ -110,8 +110,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
 #' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
-#' @return \code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
-#' and a vector with ICL calculated for all Q in vBlocks
+#' @return \code{inferSBM} returns a list with all models estimated for all Q in vBlocks
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{missingSBM_fit}}.
 #' @examples
@@ -155,6 +154,7 @@ inferSBM <- function(
   iter_both = 1,
   control_VEM = list()) {
 
+  ## some sanity checks
   try(
     !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
     stop("Only binary graphs are supported.")
@@ -180,15 +180,12 @@ inferSBM <- function(
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
   cat("\n")
-  res_optim <- do.call(rbind, lapply(models,
+  lapply(models,
     function(model) {
       cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-      res <- model$doVEM(control)
-      res$nBlocks <- model$fittedSBM$nBlocks
-      res$iteration <- 1:nrow(res)
-      res
+      model$doVEM(control)
     }
-  ))
+  )
 
   smoothing <- match.arg(smoothing)
   if (smoothing != "none") {
@@ -198,7 +195,7 @@ inferSBM <- function(
                            "backward" = smoothingBackward,
                            "both"     = smoothingForBackWard
     )
-    if(!is.character(clusterInit)) {
+    if (!is.character(clusterInit)) {
       split_fn <- init_hierarchical
     } else {
       split_fn <- switch(clusterInit,
@@ -210,7 +207,6 @@ inferSBM <- function(
     models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
 
   }
-
-  list(models = models, monitor = res_optim)
+  models
 }
 

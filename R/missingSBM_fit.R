@@ -11,7 +11,8 @@ missingSBM_fit <-
     sampledNet = NULL, # network data with convenient encoding (object of class 'sampledNetwork')
     imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
-    SBM        = NULL  # fit of the current stochastic block model (object of class 'SBM_fit')
+    SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
+    optStatus  = NULL  # status of the optimization process
   ),
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "hierarchical") {
@@ -57,6 +58,7 @@ missingSBM_fit <-
     fittedSampling = function(value) {private$sampling}  ,
     sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet},
+    monitoring     = function(value) {private$optStatus},
     entropyImputed = function(value) {
       nu <- private$imputedNet[private$sampledNet$missingDyads]
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
@@ -111,8 +113,8 @@ missingSBM_fit$set("public", "doVEM",
 
     }
     if (control$trace) cat("\n")
-    res <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]))
-    res
+    private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
+    invisible(private$optStatus)
   }
 )
 
