@@ -22,7 +22,7 @@ R6::R6Class(classname = "SBM",
       private$alpha    <- mixtureParam
       if (!is.null(covariates)) {
         stopifnot(dim(covariates)[1] == nNodes)
-        stopifnot(dim(covariates)[2] == length(covarParam))
+        # stopifnot(dim(covariates)[2] == length(covarParam))
         phi <- array(dim = c(N, N, M))
         for (i in 1:N)
           for (j in 1:N)

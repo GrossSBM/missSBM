@@ -90,7 +90,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
   if (is.null(covariates)) {
     mySampling <- networkSampling_sampler$new(sampling, parameters)
   } else {
-    stopifnot(length(parameters) == ncol(covariates))
+    # stopifnot(length(parameters) == ncol(covariates))
     mySampling <- networkSamplingCovariates_sampler$new(sampling, parameters, covariates)
   }
   mySampling$rSampling(adjacencyMatrix, clusters)
