@@ -111,7 +111,7 @@ test_that("miss SBM with double-standard sampling works", {
 test_that("miss SBM with block sampling works", {
 
   psi <- c(.1, .3, .2, .5, .7)
-  sampledNet <- samplingSBM(A, "block", psi, NULL, mySBM$memberships)
+  sampledNet <- samplingSBM(A, "block", psi, mySBM$memberships)
   ## Perform inference
   missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "block")
   out <- missSBM$doVEM(control)
