@@ -1,12 +1,12 @@
 #' @importFrom stats binomial glm.fit residuals
-init_clustering <- function(adjacencyMatrix, nBlocks, covariates = NULL, clusterInit = "hierarchical") {
+init_clustering <- function(adjacencyMatrix, nBlocks, covarArray = NULL, clusterInit = "hierarchical") {
 
   N <- nrow(adjacencyMatrix)
 
   if (nBlocks > 1) {
-    if (!is.null(covariates)) {
+    if (!is.null(covarArray)) {
       y <- as.vector(adjacencyMatrix)
-      X <- apply(covariates, 3, as.vector)
+      X <- apply(covarArray, 3, as.vector)
       adjacencyMatrix <- matrix(NA, N, N)
       NAs <- is.na(y)
       adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
