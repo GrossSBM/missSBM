@@ -12,7 +12,7 @@ directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
 mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
-A <- mySBM$adjacencyMatrix             # the adjacency matrix
+A <- mySBM$adjMatrix             # the adjacency matrix
 
 ## control parameter for the VEM
 control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)

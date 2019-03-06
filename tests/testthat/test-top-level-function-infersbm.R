@@ -12,7 +12,7 @@ directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
 mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
-A <- mySBM$adjacencyMatrix             # the adjacency matrix
+A <- mySBM$adjMatrix             # the adjacency matrix
 
 test_that("inferSBM and class missSBM-fit are coherent", {
 
@@ -28,7 +28,7 @@ test_that("inferSBM and class missSBM-fit are coherent", {
 
   ## Perform inference with the top level function
   collection <- inferSBM(
-    adjacencyMatrix = sampledNet$adjacencyMatrix,
+    adjacencyMatrix = sampledNet$adjMatrix,
     vBlocks         = Q,
     sampling        = "dyad",
     smoothing       = "none",
@@ -50,7 +50,7 @@ test_that("inferSBM with a collection of models", {
 
   ## Perform inference with the top level function
   collection <- inferSBM(
-    adjacencyMatrix = sampledNet$adjacencyMatrix,
+    adjacencyMatrix = sampledNet$adjMatrix,
     vBlocks         = 1:7,
     sampling        = "dyad",
     smoothing       = "none",

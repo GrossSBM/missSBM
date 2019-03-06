@@ -13,7 +13,7 @@ directed <- FALSE
 
 ### Draw a undirected SBM model
 mySBM <- simulateSBM(N, alpha, pi, directed)
-A <- mySBM$adjacencyMatrix
+A <- mySBM$adjMatrix
 cl_rand <- sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
 cl_hier <- missSBM:::init_clustering(A, Q, NULL,"hierarchical")
@@ -81,13 +81,13 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for
 
   vBlocks <- 1:8
   models <- lapply(vBlocks, function(nBlocks) {
-    cl0 <- missSBM:::init_clustering(mySBM$adjacencyMatrix, nBlocks, NULL, "hierarchical")
-    myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
-    myFit$doVEM(mySBM$adjacencyMatrix)
+    cl0 <- missSBM:::init_clustering(mySBM$adjMatrix, nBlocks, NULL, "hierarchical")
+    myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjMatrix, cl0)
+    myFit$doVEM(mySBM$adjMatrix)
     myFit
   })
 
-  vICLs  <- sapply(models, function(model) model$vICL(mySBM$adjacencyMatrix))
+  vICLs  <- sapply(models, function(model) model$vICL(mySBM$adjMatrix))
   bestICL <- models[[which.min(vICLs)]]
 
   expect_equal(which.min(vICLs), which.max(BM$ICL))

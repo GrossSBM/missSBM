@@ -13,15 +13,15 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
-covariates <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M,0,1)
 
-mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
-A_full <- mySBM$adjacencyMatrix
+mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
+A_full <- mySBM$adjMatrix
 
 psi <- runif(ncol(covariates), -5, 5)
-A_dyad <- samplingSBM(A_full, "dyad", psi, covariates)$adjacencyMatrix
-A_node <- samplingSBM(A_full, "node", psi, covariates)$adjacencyMatrix
+A_dyad <- samplingSBM(A_full, "dyad", psi, covariates)$adjMatrix
+A_node <- samplingSBM(A_full, "node", psi, covariates)$adjMatrix
 
 test_that("Init clustering with covariate is consistent", {
 
@@ -31,7 +31,7 @@ test_that("Init clustering with covariate is consistent", {
       missSBM:::init_clustering(
         adjacencyMatrix = A,
         nBlocks = Q,
-        covariates = mySBM$covariates,
+        covariates = mySBM$covarArray,
         clusterInit = method
       )
       relevance <- .6

@@ -16,7 +16,7 @@ M <- 4
 covariates <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M,0,1)
 mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
-A <- mySBM$adjacencyMatrix
+A <- mySBM$adjMatrix
 
 ## Formatting covariates for blockmodels
 covariates_BM <- lapply(seq(dim(mySBM$covariates)[3]), function(x) mySBM$covariates[ , , x])
@@ -81,13 +81,13 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
 #
 #   vBlocks <- 1:5
 #   models <- lapply(vBlocks, function(nBlocks) {
-#     cl0 <- missSBM:::init_clustering(mySBM$adjacencyMatrix, nBlocks, mySBM$co, "hierarchical")
-#     myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
-#     myFit$doVEM(mySBM$adjacencyMatrix)
+#     cl0 <- missSBM:::init_clustering(mySBM$adjMatrix, nBlocks, mySBM$co, "hierarchical")
+#     myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjMatrix, cl0)
+#     myFit$doVEM(mySBM$adjMatrix)
 #     myFit
 #   })
 #
-#   vICLs  <- sapply(models, function(model) model$vICL(mySBM$adjacencyMatrix))
+#   vICLs  <- sapply(models, function(model) model$vICL(mySBM$adjMatrix))
 #   bestICL <- models[[which.min(vICLs)]]
 #
 #   expect_equal(which.min(vICLs), which.max(BM$ICL))

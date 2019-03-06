@@ -12,7 +12,7 @@ test_that("SBM sampler without covariates", {
   directed <- FALSE
 
   mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, pi)
-  expect_null(mySBM$adjacencyMatrix)
+  expect_null(mySBM$adjMatrix)
   expect_null(mySBM$blocks)
   expect_error(mySBM$memberships)
   expect_equal(mySBM$connectParam, pi)

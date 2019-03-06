@@ -10,7 +10,7 @@ directed <- FALSE                         # if the network is directed or not
 
 ### Draw a SBM undirected model
 mySBM <- simulateSBM(N, alpha, pi, directed)
-A <- mySBM$adjacencyMatrix
+A <- mySBM$adjMatrix
 
 test_that("Parameter estimation in dyad-centered sampling", {
   psi <- 0.1

@@ -14,7 +14,7 @@ covariates <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M,0,1)
 
 mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
-A <- mySBM$adjacencyMatrix
+A <- mySBM$adjMatrix
 
 test_that("Parameter estimation in dyad-centered sampling", {
   sampledNet <- samplingSBM(A, "dyad", covarParam, covariates)

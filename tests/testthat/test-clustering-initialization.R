@@ -12,16 +12,16 @@ directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
 mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
-A_full <- mySBM$adjacencyMatrix             # the adjacency matrix
+A_full <- mySBM$adjMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)
 psi <- 0.3
 sampledNet <- samplingSBM(A_full, "dyad", psi)
-A_dyad <- sampledNet$adjacencyMatrix
+A_dyad <- sampledNet$adjMatrix
 
 psi <- 0.3
 sampledNet <- samplingSBM(A_full, "node", psi)
-A_node <- sampledNet$adjacencyMatrix
+A_node <- sampledNet$adjMatrix
 
 test_that("Spectral clustering is consistent", {
 
