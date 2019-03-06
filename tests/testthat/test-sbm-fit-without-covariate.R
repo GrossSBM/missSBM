@@ -16,8 +16,8 @@ mySBM <- simulateSBM(N, alpha, pi, directed)
 A <- mySBM$adjMatrix
 cl_rand <- sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
-cl_hier <- missSBM:::init_clustering(A, Q, NULL,"hierarchical")
-cl_kmns <- missSBM:::init_clustering(A, Q, NULL,"kmeans")
+cl_hier <- missSBM:::init_clustering(A, Q, NULL, "hierarchical")
+cl_kmns <- missSBM:::init_clustering(A, Q, NULL, "kmeans")
 
 test_that("Creation of a SBM_fit_nocovariate", {
 
