@@ -1,5 +1,4 @@
 #' @import R6
-#' @export
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
@@ -57,7 +56,7 @@ sampledNetwork <-
       ## array of covariates
       if (!is.null(covariatesMatrix)) {
         private$X <- covariatesMatrix
-        N <- ncol(covariatesMatrix)
+        N <- nrow(covariatesMatrix)
         M <- ncol(covariatesMatrix)
         covariates <- array(dim = c(N, N, M))
         for (i in 1:N)
@@ -87,12 +86,30 @@ sampledNetwork <-
       R[private$D_obs] <- 1
       if (!private$directed)  R <- t(R) | R
       private$R <- R
-    },
-    plot = function(title = "Network sampling") {
-      par(mfrow = c(1,2))
-      image_NA(self$samplingMatrix , main = "sampling matrix")
-      image_NA(self$adjacencyMatrix, main = "adjacency matrix")
-      title(main = paste("\n",title,"with sampling rate:", signif(self$samplingRate,3)), outer = TRUE)
     }
   )
 )
+
+#' @export
+sampledNetwork$set("public", "plot",
+function(title = "Network sampling") {
+  par(mfrow = c(1,2))
+  image_NA(self$samplingMatrix , main = "sampling matrix")
+  image_NA(self$adjacencyMatrix, main = "adjacency matrix")
+  title(main = paste("\n",title,"with sampling rate:", signif(self$samplingRate,3)), outer = TRUE)
+  par(mfrow=c(1,1))
+})
+
+#' @export
+sampledNetwork$set("public", "show",
+function(model = "Sampled Network\n") {
+  cat(model)
+  cat("==================================================================\n")
+  cat("Structure for storing a sampled network in missSBM.\n")
+  cat("==================================================================\n")
+  cat("* Useful fields \n")
+  cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covariatesMatrix, $covariatesArray\n",
+      "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
+  cat("* Useful method: plot() \n")
+})
+sampledNetwork$set("public", "print", function() self$show())

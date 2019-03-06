@@ -7,8 +7,8 @@
 #' @param pi The connectivity matrix (probabilities inter and intra clusters)
 #' @param directed Boolean variable to indicate whether the network is directed or not,
 #' by default "undirected" is choosen
-#' @param beta An optional vector of parameters associated with the covariates, with size M
-#' @param phi An optional array of covariates with dimension N x N x M (M covariates per edges).
+#' @param covarParam An optional vector of parameters associated with the covariates, with size M
+#' @param covariates An optional matrix of covariates with dimension N x M (M covariates per node).
 #' @return \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}
@@ -28,8 +28,8 @@
 #' mySBM <- simulateSBM(N, alpha, pi, directed)
 #'
 #' @export
-simulateSBM <- function(N, alpha, pi, directed = FALSE, phi = NULL, beta = NULL){
-  mySBM <- SBM_sampler$new(directed, N, alpha, pi, phi, beta)
+simulateSBM <- function(N, alpha, pi, directed = FALSE, covariates = NULL, covarParam = NULL){
+  mySBM <- SBM_sampler$new(directed, N, alpha, pi, covariates, covarParam)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM
@@ -42,6 +42,7 @@ simulateSBM <- function(N, alpha, pi, directed = FALSE, phi = NULL, beta = NULL)
 #' @param adjacencyMatrix The adjacency matrix of the network
 #' @param sampling The sampling design used to sample the adjacency matrix
 #' @param parameters The sampling parameters adapted to each sampling
+#' @param covariates An optional matrix of covariates with dimension N x M (M covariates per node).
 #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL
 #' @return \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
@@ -109,8 +110,8 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
 #' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
-#' @return \code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
-#' and a vector with ICL calculated for all Q in vBlocks
+#' @param Robject an object with class \code{missSBMcollection}
+#' @return \code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{samplingSBM}} and \code{\link{simulateSBM}} and \code{\link{missingSBM_fit}}.
 #' @examples
@@ -150,10 +151,11 @@ inferSBM <- function(
   sampling,
   clusterInit = "hierarchical",
   smoothing = c("none", "forward", "backward", "both"),
-  mc.cores = 2,
+  mc.cores = 1,
   iter_both = 1,
   control_VEM = list()) {
 
+  ## some sanity checks
   try(
     !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
     stop("Only binary graphs are supported.")
@@ -164,7 +166,7 @@ inferSBM <- function(
   cat("\n Adjusting Variational EM for Stochastic Block Model\n")
   cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
   cat("\n")
-  models <- lapply(vBlocks,
+  models <- mclapply(vBlocks,
     function(nBlocks) {
     cat(" Initialization of model with", nBlocks,"blocks.", "\r")
       if (is.list(clusterInit)) {
@@ -172,22 +174,19 @@ inferSBM <- function(
       } else {
         missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
       }
-    }
+    }, mc.cores = mc.cores
   )
 
   ## defaut control parameter for VEM, overwritten by user specification
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
   cat("\n")
-  res_optim <- do.call(rbind, lapply(models,
+  mclapply(models,
     function(model) {
       cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-      res <- model$doVEM(control)
-      res$nBlocks <- model$fittedSBM$nBlocks
-      res$iteration <- 1:nrow(res)
-      res
-    }
-  ))
+      model$doVEM(control)
+    }, mc.cores = mc.cores
+  )
 
   smoothing <- match.arg(smoothing)
   if (smoothing != "none") {
@@ -197,7 +196,7 @@ inferSBM <- function(
                            "backward" = smoothingBackward,
                            "both"     = smoothingForBackWard
     )
-    if(!is.character(clusterInit)) {
+    if (!is.character(clusterInit)) {
       split_fn <- init_hierarchical
     } else {
       split_fn <- switch(clusterInit,
@@ -210,6 +209,53 @@ inferSBM <- function(
 
   }
 
-  list(models = models, monitor = res_optim)
+  structure(setNames(models, vBlocks), class = "missSBMcollection")
+}
+
+#' @rdname inferSBM
+#' @export
+is.missSBMcollection <- function(Robject) {
+  inherits(Robject, "missSBMcollection")
+}
+
+#' @rdname inferSBM
+#' @export
+ICL <- function(Robject) { UseMethod("ICL", Robject) }
+
+#' @rdname inferSBM
+#' @importFrom stats setNames
+#' @export
+ICL.missSBMcollection <- function(Robject) {
+  stopifnot(is.missSBMcollection(Robject))
+  setNames(sapply(Robject, function(model) model$vICL), names(Robject))
+}
+
+#' @rdname inferSBM
+#' @export
+optimizationStatus <- function(Robject) { UseMethod("optimizationStatus", Robject) }
+
+#' @rdname inferSBM
+#' @export
+optimizationStatus.missSBMcollection <- function(Robject) {
+  stopifnot(is.missSBMcollection(Robject))
+  Reduce("rbind",
+    lapply(Robject,
+      function(model) {
+        res <- model$monitoring
+        res$nBlock <- model$fittedSBM$nBlocks
+        res
+    })
+  )
+}
+
+#' @rdname inferSBM
+#' @export
+getBestModel <- function(Robject) {UseMethod("getBestModel", Robject)}
+
+#' @rdname inferSBM
+#' @export
+getBestModel.missSBMcollection <- function(Robject) {
+  stopifnot(is.missSBMcollection(Robject))
+  Robject[[which.min(ICL(Robject))]]
 }
 

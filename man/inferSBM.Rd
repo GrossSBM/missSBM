@@ -2,12 +2,33 @@
 % Please edit documentation in R/missingSBM.R
 \name{inferSBM}
 \alias{inferSBM}
+\alias{is.missSBMcollection}
+\alias{ICL}
+\alias{ICL.missSBMcollection}
+\alias{optimizationStatus}
+\alias{optimizationStatus.missSBMcollection}
+\alias{getBestModel}
+\alias{getBestModel.missSBMcollection}
 \title{Inference of Stochastic Block Model from sampled data}
 \usage{
 inferSBM(adjacencyMatrix, vBlocks, sampling,
   clusterInit = "hierarchical", smoothing = c("none", "forward",
-  "backward", "both"), mc.cores = 2, iter_both = 1,
+  "backward", "both"), mc.cores = 1, iter_both = 1,
   control_VEM = list())
+
+is.missSBMcollection(Robject)
+
+ICL(Robject)
+
+\method{ICL}{missSBMcollection}(Robject)
+
+optimizationStatus(Robject)
+
+\method{optimizationStatus}{missSBMcollection}(Robject)
+
+getBestModel(Robject)
+
+\method{getBestModel}{missSBMcollection}(Robject)
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
@@ -26,10 +47,11 @@ by default "undirected" is choosen}
 \item{iter_both}{integer for the number of iteration in case of foward-backward (aka both) smoothing}
 
 \item{control_VEM}{a list controlling the variational EM algorithm. See details.}
+
+\item{Robject}{an object with class \code{missSBMcollection}}
 }
 \value{
-\code{inferSBM} returns a list with the best model choosen following the ICL criterion, a list with all models estimated for all Q in vBlocks
-and a vector with ICL calculated for all Q in vBlocks
+\code{inferSBM} returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
 }
 \description{
 \code{inferSBM} is a function that makes variationnal inference of Stochastic Block Model from sampled adjacency matrix

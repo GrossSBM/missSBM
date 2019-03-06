@@ -1,6 +1,5 @@
 #' @import R6
 #' @include SBM_fit-Class.R
-#' @export
 SBM_fit_nocovariate <-
 R6::R6Class(classname = "SBM_fit_nocovariate",
   inherit = SBM_fit,

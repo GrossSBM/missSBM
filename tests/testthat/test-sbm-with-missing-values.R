@@ -14,7 +14,7 @@ directed <- FALSE         # if the network is directed or not
 mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$adjacencyMatrix             # the adjacency matrix
 
-## contorl parameter for the VEM
+## control parameter for the VEM
 control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
 test_that("miss SBM with dyad sampling works", {
@@ -32,6 +32,7 @@ test_that("miss SBM with dyad sampling works", {
   expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
   expect_is(missSBM$fittedSampling, "dyadSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
+  expect_equal(out, missSBM$monitoring)
 
   ## Consistency
   tol <- 1e-2
