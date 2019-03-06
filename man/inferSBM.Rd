@@ -12,8 +12,8 @@
 \title{Inference of Stochastic Block Model from sampled data}
 \usage{
 inferSBM(adjacencyMatrix, vBlocks, sampling,
-  clusterInit = "hierarchical", smoothing = c("none", "forward",
-  "backward", "both"), mc.cores = 1, iter_both = 1,
+  clusterInit = "hierarchical", trace = TRUE, smoothing = c("none",
+  "forward", "backward", "both"), mc.cores = 1, iter_both = 1,
   control_VEM = list())
 
 is.missSBMcollection(Robject)
@@ -39,6 +39,8 @@ getBestModel(Robject)
 by default "undirected" is choosen}
 
 \item{clusterInit}{character in "hierarchical" or "spectral" for initialization}
+
+\item{trace}{logical, control the verbosity. Default to \code{TRUE}.}
 
 \item{smoothing}{character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"}
 

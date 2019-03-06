@@ -106,6 +106,7 @@ samplingSBM <- function(adjacencyMatrix, sampling, parameters, covariates = NULL
 #' @param sampling The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block"
 #' by default "undirected" is choosen
 #' @param clusterInit character in "hierarchical" or "spectral" for initialization
+#' @param trace logical, control the verbosity. Default to \code{TRUE}.
 #' @param mc.cores integer, the number of cores to use when multiply model are fitted
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
 #' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
@@ -150,6 +151,7 @@ inferSBM <- function(
   vBlocks,
   sampling,
   clusterInit = "hierarchical",
+  trace     = TRUE,
   smoothing = c("none", "forward", "backward", "both"),
   mc.cores = 1,
   iter_both = 1,
@@ -162,13 +164,13 @@ inferSBM <- function(
   )
 
   sampledNet <- sampledNetwork$new(adjacencyMatrix)
-  cat("\n")
-  cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-  cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
-  cat("\n")
+  if (trace) cat("\n")
+  if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
+  if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
+  if (trace) cat("\n")
   models <- mclapply(vBlocks,
     function(nBlocks) {
-    cat(" Initialization of model with", nBlocks,"blocks.", "\r")
+    if (trace) cat(" Initialization of model with", nBlocks,"blocks.", "\r")
       if (is.list(clusterInit)) {
         missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit[[nBlocks]])
       } else {
@@ -183,14 +185,14 @@ inferSBM <- function(
   cat("\n")
   mclapply(models,
     function(model) {
-      cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
+      if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
       model$doVEM(control)
     }, mc.cores = mc.cores
   )
 
   smoothing <- match.arg(smoothing)
   if (smoothing != "none") {
-    cat("\n Smoothing ICL\n")
+    if (trace) cat("\n Smoothing ICL\n")
     smoothing_fn <- switch(smoothing,
                            "forward"  = smoothingForward ,
                            "backward" = smoothingBackward,
