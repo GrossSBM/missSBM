@@ -12,8 +12,8 @@ SBM_sampler <-
     Y     = NULL  # the sampled adjacency matrix
   ),
   public = list(
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL) {
-      super$initialize(directed, nNodes, mixtureParam, connectParam, covariates, covarParam)
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarMatrix=NULL, covarParam=NULL, covarSimilarity=l1_similarity) {
+      super$initialize(directed, nNodes, mixtureParam, connectParam, covarMatrix, covarParam, covarSimilarity)
     },
     ## constructor is the same as the above, so no need to specify initialize
     ## a method to generate a vector of clusters indicators
@@ -31,10 +31,10 @@ SBM_sampler <-
   active = list(
     blocks = function(value) {private$Z},
     memberships = function(value) {apply(private$Z, 1, which.max)},
-    adjacencyMatrix = function(value) {private$Y},
+    adjMatrix   = function(value) {private$Y},
     connectProb = function(value) {
       PI <- private$Z %*% private$pi %*% t(private$Z)
-      if (self$has_covariates) {
+      if (self$hasCovariates) {
         PI <- logistic(PI + roundProduct(private$phi, private$beta))
       }
       PI
@@ -52,8 +52,9 @@ function(model = "Sampler for Stochastic Block Model\n") {
   cat("* Sampling methods \n")
   cat("  $rBlocks(), $rAdjmatrix()\n")
   cat("* Additional fields \n")
-  cat("  $blocks, $memberships, $adjacencyMatrix, $connectProb\n")
-
+  cat("  $blocks, $memberships, $adjMatrix, $connectProb\n")
+  cat("* S3 methods \n")
+  cat("  $plot\n")
 })
 
 SBM_sampler$set("public", "print", function() self$show())
@@ -62,8 +63,7 @@ SBM_sampler$set("public", "plot",
   function(type = c("network", "connectivity")) {
     type <- match.arg(type)
     if (type == "network") {
-      g <- gg_image_NA(self$adjacencyMatrix, self$memberships)
-      print(g)
+      image_NA(self$adjMatrix[order(self$memberships), order(self$memberships)])
     }
     if (type == "connectivity") {
       plot(

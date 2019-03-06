@@ -1,9 +1,9 @@
 context("test-sbm-sampler")
 
-set.seed(178303)
 
 test_that("SBM sampler without covariates", {
 
+  set.seed(178303)
   ### A SBM model : ###
   N <- 400
   Q <- 5
@@ -18,8 +18,10 @@ test_that("SBM sampler without covariates", {
   expect_equal(mySBM$connectParam, pi)
   expect_equal(mySBM$mixtureParam, alpha)
   expect_null(mySBM$covarParam)
-  expect_null(mySBM$covariates)
-  expect_false(mySBM$has_covariates)
+  expect_null(mySBM$covarMatrix)
+  expect_null(mySBM$covarArray)
+  expect_null(mySBM$covarSimilarity)
+  expect_false(mySBM$hasCovariates)
   expect_equal(mySBM$direction, "undirected")
 
   mySBM$rBlocks()
@@ -28,8 +30,8 @@ test_that("SBM sampler without covariates", {
   expect_equal(length(unique(mySBM$memberships)), Q)
 
   mySBM$rAdjMatrix()
-  expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
-  expect_true(isSymmetric(mySBM$adjacencyMatrix))
+  expect_equal(dim(mySBM$adjMatrix), c(N, N))
+  expect_true(isSymmetric(mySBM$adjMatrix))
 })
 
 test_that("SBM sampler with covariates", {
@@ -48,14 +50,16 @@ test_that("SBM sampler with covariates", {
   covarParam  <- rnorm(M,0,1)
 
   mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, pi, covariates, covarParam)
-  expect_null(mySBM$adjacencyMatrix)
+  expect_null(mySBM$adjMatrix)
   expect_null(mySBM$blocks)
   expect_error(mySBM$memberships)
   expect_equal(mySBM$connectParam, pi)
   expect_equal(mySBM$mixtureParam, alpha)
-  expect_true(mySBM$has_covariates)
+  expect_true(mySBM$hasCovariates)
   expect_equal(mySBM$covarParam, covarParam)
-  expect_equal(dim(mySBM$covariates), c(N, N, M))
+  expect_equal(dim(mySBM$covarMatrix), c(N, M))
+  expect_equal(dim(mySBM$covarArray) , c(N, N, M))
+  expect_equal(class(mySBM$covarSimilarity) , "function")
   expect_equal(mySBM$direction, "undirected")
 
   mySBM$rBlocks()
@@ -64,7 +68,7 @@ test_that("SBM sampler with covariates", {
   expect_equal(length(unique(mySBM$memberships)), Q)
 
   mySBM$rAdjMatrix()
-  expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
-  expect_true(isSymmetric(mySBM$adjacencyMatrix))
+  expect_equal(dim(mySBM$adjMatrix), c(N, N))
+  expect_true(isSymmetric(mySBM$adjMatrix))
 
 })

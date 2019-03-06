@@ -4,6 +4,8 @@ available_samplings <- c("dyad", "node", "snowball", "degree", "block", "double_
 
 available_samplings_covariates <- c("dyad", "node")
 
+l1_similarity <- function(x, y) {-abs(x - y)}
+
 bar <- function(X) {
   X.bar <- 1 - X ; diag(X.bar) <- 0
   X.bar

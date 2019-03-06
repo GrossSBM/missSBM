@@ -5,6 +5,7 @@ sampledNetwork <-
   private = list(
     Y        = NULL, # adjacency matrix
     X        = NULL, # M x N covariates matrix
+    s        = NULL, # the similarity function (N x N -> M)
     phi      = NULL, # N x N x M covariates array
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network

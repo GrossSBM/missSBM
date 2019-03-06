@@ -10,24 +10,29 @@ R6::R6Class(classname = "SBM",
     pi       = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
     directed = NULL, # directed or undirected network
+### FIXME: if possible, everything which is related to data (such as covariates) should be in sampledNetwork, not SBM
+    X        = NULL, # M x N covariates matrix
+    s        = NULL, # the similarity function (N x N -> M)
     phi      = NULL  # the similarity array (N x N x M)
   ),
   public = list(
     ## constructor
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covariates=NULL, covarParam=NULL) {
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarMatrix=NULL, covarParam=NULL, covarSimilarity=l1_similarity) {
       private$directed <- directed
       private$N        <- nNodes
       private$Q        <- nrow(connectParam)
-      private$M        <- ifelse(is.null(covariates), 0, length(covarParam))
+      private$M        <- ifelse(is.null(covarMatrix), 0, length(covarParam))
       private$alpha    <- mixtureParam
-      if (!is.null(covariates)) {
-        stopifnot(dim(covariates)[1] == nNodes)
-        stopifnot(dim(covariates)[2] == length(covarParam))
+      if (!is.null(covarMatrix)) {
+        stopifnot(dim(covarMatrix)[1] == private$N)
+        stopifnot(dim(covarMatrix)[2] == private$M)
         phi <- array(dim = c(private$N, private$N, private$M))
         for (i in 1:private$N)
           for (j in 1:private$N)
-            phi[i,j,] <- -abs(covariates[i, ] - covariates[j, ])
-        private$phi <- phi
+            phi[i,j,] <- covarSimilarity(covarMatrix[i, ], covarMatrix[j, ])
+        private$phi  <- phi
+        private$X    <- covarMatrix
+        private$s    <- covarSimilarity
         private$beta <- covarParam
         private$pi   <- logit(connectParam)
       } else {
@@ -37,19 +42,19 @@ R6::R6Class(classname = "SBM",
   ),
   active = list(
     ## active binding to access fields outside the class
-    nNodes      = function(value) {private$N}, # number of nodes
-    nBlocks     = function(value) {private$Q}, # number of blocks
-    nCovariates = function(value) {private$M}, # number of covariates
-    nDyads      = function(value) {ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)},
-    direction   = function(value) {if (private$directed) "directed" else "undirected"}, # directed network or not
-    has_covariates = function(value) {ifelse(self$nCovariates > 0 , TRUE, FALSE)}, # with or without covariates
+    nNodes        = function(value) {private$N}, # number of nodes
+    nBlocks       = function(value) {private$Q}, # number of blocks
+    nCovariates   = function(value) {private$M}, # number of covariates
+    nDyads        = function(value) {ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)},
+    direction     = function(value) {if (private$directed) "directed" else "undirected"}, # directed network or not
+    hasCovariates = function(value) {ifelse(self$nCovariates > 0 , TRUE, FALSE)}, # with or without covariates
     ## the following fields may change if a SBM is fitted
     mixtureParam = function(value) { # vector of block parameters (a.k.a. alpha)
       if (missing(value)) return(private$alpha) else private$alpha <- value
     },
     connectParam = function(value) { # matrix of connectivity (a.k.a. pi)
       if (missing(value)) {
-        if (self$has_covariates)
+        if (self$hasCovariates)
           return(logistic(private$pi))
         else
           return(private$pi)
@@ -57,10 +62,10 @@ R6::R6Class(classname = "SBM",
         private$pi <- value
       }
     },
-    covarParam = function(value) { # vector of covariates (a.k.a. beta)
-      if (missing(value)) return(private$beta) else private$beta <- value
-    },
-    covariates = function(value) {private$phi},
+    covarParam       = function(value) {if (missing(value)) return(private$beta) else private$beta <- value},
+    covarArray       = function(value) {private$phi},
+    covarMatrix      = function(value) {private$X},
+    covarSimilarity  = function(value) {private$s},
     df_mixtureParams = function(value) {self$nBlocks - 1},
     df_connectParams = function(value) {ifelse(private$directed, self$nBlocks^2, self$nBlocks*(self$nBlocks + 1)/2)},
     df_covarParams   = function(value) {self$nCovariates}
@@ -78,10 +83,10 @@ function(model = "Stochastic Block Model\n") {
   cat("Model", self$direction, "with",
         self$nNodes,"nodes,",
         self$nBlocks, "blocks and",
-        ifelse(self$has_covariates, self$nCovariates, "no"), "covariate(s).\n")
+        ifelse(self$hasCovariates, self$nCovariates, "no"), "covariate(s).\n")
   cat("==================================================================\n")
   cat("* Useful fields \n")
-  cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam, $covarParam, $covariates\n")
+  cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam\n", "$covarParam, $covarMatrix, $covarArray; $covarSimilarity\n")
 })
 SBM$set("public", "print", function() self$show())
 
