@@ -11,6 +11,18 @@ bar <- function(X) {
   X.bar
 }
 
+getCovarArray <- function(X, s) {
+  if (is.null(X))
+    return(NULL)
+  N <- ncol(X)
+  M <- ncol(X)
+  phi <- array(dim = c(N, N, M))
+  for (i in 1:N)
+    for (j in 1:N)
+      phi[i,j,] <- s(X[i, ], X[j, ])
+  phi
+}
+
 quad_form <- function(A,x) {t(x) %*% A %*% x}
 
 logistic <- function(x) {1/(1 + exp(-x))}

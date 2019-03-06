@@ -13,27 +13,27 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 4
-covariates <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M,0,1)
-mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
+mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam, missSBM:::l1_similarity)
 A <- mySBM$adjMatrix
 
 ## Formatting covariates for blockmodels
-covariates_BM <- lapply(seq(dim(mySBM$covariates)[3]), function(x) mySBM$covariates[ , , x])
+covariates_BM <- lapply(seq(dim(mySBM$covarArray)[3]), function(x) mySBM$covarArray[ , , x])
 
 ### Draw a undirected SBM model
 cl_rand <- sample(mySBM$memberships)
-cl_spec <- missSBM:::init_clustering(A, Q, mySBM$covariates, "spectral")
-cl_hier <- missSBM:::init_clustering(A, Q, mySBM$covariates, "hierarchical")
-cl_kmns <- missSBM:::init_clustering(A, Q, mySBM$covariates, "kmeans")
+cl_spec <- missSBM:::init_clustering(A, Q, mySBM$covarArray, "spectral")
+cl_hier <- missSBM:::init_clustering(A, Q, mySBM$covarArray, "hierarchical")
+cl_kmns <- missSBM:::init_clustering(A, Q, mySBM$covarArray, "kmeans")
 
 test_that("Creation of a SBM_fit_covariates", {
 
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(A, covariates, cl_rand)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(A, cl_rand, covarMatrix, missSBM:::l1_similarity)
   expect_is(mySBM_fit, "SBM_fit_covariates")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
-  expect_true(mySBM_fit$has_covariates)
+  expect_true(mySBM_fit$hasCovariates)
   expect_equal(mySBM_fit$df_covarParams, M)
   expect_equal(mySBM_fit$df_mixtureParams, Q - 1)
   expect_equal(mySBM_fit$blocks, missSBM:::clustering_indicator(cl_rand))
@@ -48,9 +48,9 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
   tol <- 1e-2
 
   ## testing all initialization
-  mySBM_fit_hier <- missSBM:::SBM_fit_covariates$new(A, covariates, cl_hier)
-  mySBM_fit_spec <- missSBM:::SBM_fit_covariates$new(A, covariates, cl_spec)
-  mySBM_fit_kmns <- missSBM:::SBM_fit_covariates$new(A, covariates, cl_kmns)
+  mySBM_fit_hier <- missSBM:::SBM_fit_covariates$new(A, cl_hier, covarMatrix, missSBM:::l1_similarity)
+  mySBM_fit_spec <- missSBM:::SBM_fit_covariates$new(A, cl_spec, covarMatrix, missSBM:::l1_similarity)
+  mySBM_fit_kmns <- missSBM:::SBM_fit_covariates$new(A, cl_kmns, covarMatrix, missSBM:::l1_similarity)
 
   out_hier <- mySBM_fit_hier$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
   out_spec <- mySBM_fit_spec$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)

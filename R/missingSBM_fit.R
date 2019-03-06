@@ -15,18 +15,18 @@ missingSBM_fit <-
     optStatus  = NULL  # status of the optimization process
   ),
   public = list(
-    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "hierarchical") {
+    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "hierarchical", covarMatrix = NULL, covarSimilarity = l1_similarity) {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(sampledNet, "sampledNetwork"))
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
-      ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, sampledNet$covariatesArray, clusterInit)
-
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
+
+      ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
+      clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, getCovarArray(covarMatrix, covarSimilarity), clusterInit)
 
       ## network data with basic imputation at startup
       private$imputedNet <- sampledNet$adjMatrix
@@ -36,10 +36,10 @@ missingSBM_fit <-
       private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
       ## construct and initialize the SBM fit
-      if (is.null(sampledNet$covariatesArray))
+      if (is.null(covarMatrix))
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
       else
-        private$SBM <- SBM_fit_covariates$new(private$imputedNet, sampledNet$covariatesArray, clusterInit)
+        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarMatrix, covarSimilarity)
 
       ## construct the network sampling fit
       private$sampling <- switch(netSampling,
