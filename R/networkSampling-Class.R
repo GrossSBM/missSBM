@@ -36,30 +36,3 @@ R6::R6Class(classname = "networkSampling",
   )
 )
 
-#' @include utils.R
-#'
-#' @import R6
-networkSamplingCovariates <-
-R6::R6Class(classname = "networkSamplingCovariates",
-  inherit = networkSampling,
-  ## fields
-  private = list(
-    X   = NULL,
-    phi = NULL # array of covariates
-  ),
-  public = list(
-    ## methods
-    initialize = function(type = NA, covariates = NA) {
-      stopifnot(type %in% available_samplings_covariates)
-      private$X <- covariates
-      N <- nrow(covariates)
-      M <- ncol(covariates)
-      phi <- array(dim = c(N, N, M))
-      for (i in 1:N)
-        for (j in 1:N)
-          phi[i,j,] <- -abs(covariates[i, ] - covariates[j, ])
-      private$phi <- phi
-      private$name <- type
-    }
-  )
-)

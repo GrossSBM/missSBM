@@ -19,21 +19,22 @@ A <- mySBM$adjMatrix
 test_that("Consistency of dyad-centered network sampling in the presence of covariates", {
 
   psi <- runif(ncol(covariates), -5, 5)
-  dyad <- samplingSBM(A, "dyad", psi, covariates)
+  sampling_prob_dyad <- missSBM:::logistic(missSBM:::roundProduct(mySBM$covarArray, psi))
+
+  dyad <- samplingSBM(A, "dyad", sampling_prob_dyad)
+
   expect_is(dyad, "sampledNetwork", "R6")
   expect_equal(dim(dyad$adjMatrix), dim(A))
-  ## expect error if psi and covariates do not have confortable sizes
-  expect_error(samplingSBM(A, "dyad", 0.1, covariates))
 
 })
 
 test_that("Consistency of node-centered network sampling", {
 
   psi <- runif(ncol(covariates), -5, 5)
-  node <- samplingSBM(A, "node", psi, covariates)
+  sampling_prob_node <- missSBM:::logistic(mySBM$covarMatrix %*% psi)
+
+  node <- samplingSBM(A, "node", sampling_prob_node)
   expect_is(node, "sampledNetwork", "R6")
   expect_equal(dim(node$adjMatrix), dim(A))
-  ## expect error if psi and covariates do not have confortable sizes
-  expect_error(samplingSBM(A, "node", 0.1, covariates))
 
 })

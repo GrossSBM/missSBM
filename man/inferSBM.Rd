@@ -73,7 +73,7 @@ samplingParameters <- .5 # the sampling rate
 sampling <- "dyad"       # the sampling design
 sampledNetwork <-
    samplingSBM(
-     mySBM$adjacencyMatrix,
+     mySBM$adjMatrix,
      sampling,
      samplingParameters
    )
@@ -82,7 +82,7 @@ sampledNetwork <-
 vBlocks <- 1:5 # number of classes
 sbm <-
    inferSBM(
-      sampledNetwork$adjacencyMatrix,
+      sampledNetwork$adjMatrix,
       vBlocks,
       sampling
    )

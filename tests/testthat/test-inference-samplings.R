@@ -55,7 +55,7 @@ test_that("Parameter estimation in double-standard sampling", {
 
 test_that("Parameter estimation in block sampling", {
   psi <- c(.1, .2, .3, .5, .7)
-  sampledNet <- samplingSBM(A, "block", psi, NULL, mySBM$memberships)
+  sampledNet <- samplingSBM(A, "block", psi, mySBM$memberships)
   Z0 <- missSBM:::clustering_indicator(mySBM$memberships)
   fittedSampling <- missSBM:::blockSampling_fit$new(sampledNet, Z0)
   expect_is(fittedSampling, c("blockSampling_fit", "networkSamplingNodes_fit", "networkSampling", "R6"))

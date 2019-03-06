@@ -19,9 +19,13 @@ covarParam  <- rnorm(M,0,1)
 mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
 A_full <- mySBM$adjMatrix
 
-psi <- runif(ncol(covariates), -5, 5)
-A_dyad <- samplingSBM(A_full, "dyad", psi, covariates)$adjMatrix
-A_node <- samplingSBM(A_full, "node", psi, covariates)$adjMatrix
+psi <- runif(M, -5, 5)
+
+sampling_prob_dyad <- missSBM:::logistic(missSBM:::roundProduct(mySBM$covarArray, psi))
+sampling_prob_node <- missSBM:::logistic(mySBM$covarMatrix %*% psi)
+
+A_dyad <- samplingSBM(A_full, "dyad", sampling_prob_dyad)$adjMatrix
+A_node <- samplingSBM(A_full, "node", sampling_prob_node)$adjMatrix
 
 test_that("Init clustering with covariate is consistent", {
 
@@ -31,7 +35,7 @@ test_that("Init clustering with covariate is consistent", {
       missSBM:::init_clustering(
         adjacencyMatrix = A,
         nBlocks = Q,
-        covariates = mySBM$covarArray,
+        covarArray = mySBM$covarArray,
         clusterInit = method
       )
       relevance <- .6

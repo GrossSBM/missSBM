@@ -4,8 +4,7 @@
 \alias{samplingSBM}
 \title{Sampling of a network}
 \usage{
-samplingSBM(adjacencyMatrix, sampling, parameters, covariates = NULL,
-  clusters = NULL)
+samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL)
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
@@ -13,8 +12,6 @@ samplingSBM(adjacencyMatrix, sampling, parameters, covariates = NULL,
 \item{sampling}{The sampling design used to sample the adjacency matrix}
 
 \item{parameters}{The sampling parameters adapted to each sampling}
-
-\item{covariates}{An optional matrix of covariates with dimension N x M (M covariates per node).}
 
 \item{clusters}{Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL}
 }
@@ -58,7 +55,7 @@ samplingParameters <- .5 # the sampling rate
 sampling <- "dyad"       # the sampling design
 sampledNetwork <-
    samplingSBM(
-     mySBM$adjacencyMatrix,
+     mySBM$adjMatrix,
      sampling,
      samplingParameters
    )

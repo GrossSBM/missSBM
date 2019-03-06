@@ -23,15 +23,15 @@ missingSBM_fit <-
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, sampledNet$covariatesArray, clusterInit)
+      clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, sampledNet$covariatesArray, clusterInit)
 
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
 
       ## network data with basic imputation at startup
-      private$imputedNet <- sampledNet$adjacencyMatrix
+      private$imputedNet <- sampledNet$adjMatrix
       Z <- clustering_indicator(clusterInit)
-      adjancency0 <- sampledNet$adjacencyMatrix; adjancency0[sampledNet$NAs] <- 0
+      adjancency0 <- sampledNet$adjMatrix; adjancency0[sampledNet$NAs] <- 0
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
       private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
