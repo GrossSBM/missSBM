@@ -5,7 +5,7 @@ SBM_fit_covariates <-
 R6::R6Class(classname = "SBM_fit_covariates",
   inherit = SBM_fit,
   public = list(
-    initialize = function(adjacencyMatrix, clusterInit, covarMatrix, covarSimilarity) {
+    initialize = function(adjacencyMatrix, clusterInit, covarArray) {
 
       # Basic fields intialization and call to super constructor
       nBlocks <- length(unique(clusterInit))
@@ -14,9 +14,8 @@ R6::R6Class(classname = "SBM_fit_covariates",
         nNodes          = nrow(adjacencyMatrix),
         mixtureParam    = rep(NA,nBlocks),
         connectParam    = matrix(NA,nBlocks, nBlocks),
-        covarMatrix     = covarMatrix,
         covarParam      = numeric(dim(covarMatrix)[2]),
-        covarSimilarity = covarSimilarity
+        covarArray      = covarArray
       )
 
       ## Initial Clustering

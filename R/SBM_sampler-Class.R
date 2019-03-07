@@ -12,8 +12,8 @@ SBM_sampler <-
     Y     = NULL  # the sampled adjacency matrix
   ),
   public = list(
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarMatrix=NULL, covarParam=NULL, covarSimilarity=l1_similarity) {
-      super$initialize(directed, nNodes, mixtureParam, connectParam, covarMatrix, covarParam, covarSimilarity)
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
+      super$initialize(directed, nNodes, mixtureParam, connectParam, covarParam, covarArray)
     },
     ## constructor is the same as the above, so no need to specify initialize
     ## a method to generate a vector of clusters indicators

@@ -27,7 +27,8 @@ missingSBM_fit <-
       private$sampledNet <- sampledNet
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, getCovarArray(covarMatrix, covarSimilarity), clusterInit)
+      covarArray  <- getCovarArray(covarMatrix, covarSimilarity)
+      clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, covarArray, clusterInit)
 
       ## network data with basic imputation at startup
       private$imputedNet <- sampledNet$adjMatrix
@@ -50,10 +51,10 @@ missingSBM_fit <-
         )
       } else {
         ## construct and initialize the SBM fit
-        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarMatrix, covarSimilarity)
+        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarArray)
         ## construct the network sampling fits
         private$sampling <- switch(netSampling,
-          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, private$SBM$covarArray),
+          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, covarArray),
           "node"            = nodeSampling_fit_covariates$new(private$sampledNet, covarMatrix)
         )
       }

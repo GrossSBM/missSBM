@@ -14,16 +14,17 @@ R6::R6Class(classname = "SBM",
   ),
   public = list(
     ## constructor
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarMatrix=NULL, covarParam=NULL, covarSimilarity=l1_similarity) {
+    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
       private$directed <- directed
       private$N        <- nNodes
       private$Q        <- nrow(connectParam)
-      private$M        <- ifelse(is.null(covarMatrix), 0, length(covarParam))
+      private$M        <- ifelse(is.null(covarArray), 0, length(covarParam))
       private$alpha    <- mixtureParam
-      if (!is.null(covarMatrix)) {
-        stopifnot(dim(covarMatrix)[1] == private$N)
-        stopifnot(dim(covarMatrix)[2] == private$M)
-        private$phi  <- getCovarArray(covarMatrix, covarSimilarity)
+      if (!is.null(covarArray)) {
+        stopifnot(dim(covarArray)[1] == private$N)
+        stopifnot(dim(covarArray)[2] == private$N)
+        stopifnot(dim(covarArray)[3] == private$M)
+        private$phi  <- covarArray
         private$beta <- covarParam
         private$pi   <- logit(connectParam)
       } else {

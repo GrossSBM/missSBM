@@ -29,7 +29,7 @@ cl_kmns <- missSBM:::init_clustering(A, Q, mySBM$covarArray, "kmeans")
 
 test_that("Creation of a SBM_fit_covariates", {
 
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(A, cl_rand, covarMatrix, missSBM:::l1_similarity)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(A, cl_rand, mySBM$covarArray)
   expect_is(mySBM_fit, "SBM_fit_covariates")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
@@ -48,9 +48,9 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
   tol <- 1e-2
 
   ## testing all initialization
-  mySBM_fit_hier <- missSBM:::SBM_fit_covariates$new(A, cl_hier, covarMatrix, missSBM:::l1_similarity)
-  mySBM_fit_spec <- missSBM:::SBM_fit_covariates$new(A, cl_spec, covarMatrix, missSBM:::l1_similarity)
-  mySBM_fit_kmns <- missSBM:::SBM_fit_covariates$new(A, cl_kmns, covarMatrix, missSBM:::l1_similarity)
+  mySBM_fit_hier <- missSBM:::SBM_fit_covariates$new(A, cl_hier, mySBM$covarArray)
+  mySBM_fit_spec <- missSBM:::SBM_fit_covariates$new(A, cl_spec, mySBM$covarArray)
+  mySBM_fit_kmns <- missSBM:::SBM_fit_covariates$new(A, cl_kmns, mySBM$covarArray)
 
   out_hier <- mySBM_fit_hier$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
   out_spec <- mySBM_fit_spec$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)

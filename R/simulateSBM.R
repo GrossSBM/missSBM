@@ -23,7 +23,7 @@
 #'
 #' @export
 simulateSBM <- function(N, alpha, pi, directed = FALSE, covarMatrix = NULL, covarParam = NULL, covarSimilarity=l1_similarity){
-  mySBM <- SBM_sampler$new(directed, N, alpha, pi, covarMatrix, covarParam, covarSimilarity)
+  mySBM <- SBM_sampler$new(directed, N, alpha, pi, covarParam, getCovarArray(covarMatrix, covarSimilarity))
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM
