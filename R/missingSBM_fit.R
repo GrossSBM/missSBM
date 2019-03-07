@@ -15,7 +15,8 @@ missingSBM_fit <-
     optStatus  = NULL  # status of the optimization process
   ),
   public = list(
-    initialize = function(sampledNet, nBlocks, netSampling, clusterInit = "hierarchical", covarMatrix = NULL, covarSimilarity = l1_similarity) {
+    initialize = function(sampledNet, nBlocks, netSampling,
+      clusterInit = "hierarchical", covarMatrix = NULL, covarSimilarity = l1_similarity) {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)
@@ -35,21 +36,27 @@ missingSBM_fit <-
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
       private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
-      ## construct and initialize the SBM fit
-      if (is.null(covarMatrix))
+      if (is.null(covarMatrix)) {
+        ## construct and initialize the SBM fit
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
-      else
+        ## construct the network sampling fits
+        private$sampling <- switch(netSampling,
+          "dyad"            = dyadSampling_fit$new(private$sampledNet),
+          "node"            = nodeSampling_fit$new(private$sampledNet),
+          "block-node"      = blockSampling_fit$new(private$sampledNet, private$SBM$blocks),
+          "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
+          "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, private$SBM$blocks),
+          "degree"          = degreeSampling_fit$new(private$sampledNet, private$SBM$blocks, private$SBM$connectParam)
+        )
+      } else {
+        ## construct and initialize the SBM fit
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarMatrix, covarSimilarity)
-
-      ## construct the network sampling fit
-      private$sampling <- switch(netSampling,
-        "dyad"            = dyadSampling_fit$new(private$sampledNet),
-        "node"            = nodeSampling_fit$new(private$sampledNet),
-        "block-node"      = blockSampling_fit$new(private$sampledNet, private$SBM$blocks),
-        "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
-        "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, private$SBM$blocks),
-        "degree"          = degreeSampling_fit$new(private$sampledNet, private$SBM$blocks, private$SBM$connectParam)
-      )
+        ## construct the network sampling fits
+        private$sampling <- switch(netSampling,
+          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, private$SBM$covarArray),
+          "node"            = nodeSampling_fit_covariates$new(private$sampledNet, private$SBM$covarMatrix)
+        )
+      }
     }
   ),
   active = list(

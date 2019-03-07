@@ -10,7 +10,6 @@ R6::R6Class(classname = "SBM",
     pi       = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
     directed = NULL, # directed or undirected network
-### FIXME: if possible, everything which is related to data (such as covariates) should be in sampledNetwork, not SBM
     X        = NULL, # M x N covariates matrix
     s        = NULL, # the similarity function (N x N -> M)
     phi      = NULL  # the similarity array (N x N x M)
@@ -26,11 +25,7 @@ R6::R6Class(classname = "SBM",
       if (!is.null(covarMatrix)) {
         stopifnot(dim(covarMatrix)[1] == private$N)
         stopifnot(dim(covarMatrix)[2] == private$M)
-        phi <- array(dim = c(private$N, private$N, private$M))
-        for (i in 1:private$N)
-          for (j in 1:private$N)
-            phi[i,j,] <- covarSimilarity(covarMatrix[i, ], covarMatrix[j, ])
-        private$phi  <- phi
+        private$phi  <- getCovarArray(covarMatrix, covarSimilarity)
         private$X    <- covarMatrix
         private$s    <- covarSimilarity
         private$beta <- covarParam
