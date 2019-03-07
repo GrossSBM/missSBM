@@ -40,7 +40,7 @@
 #' vBlocks <- 1:5 # number of classes
 #' sbm <-
 #'    missSBM(
-#'       sampledNet$adjMatrix,
+#'       sampledNet$adjacencyMatrix,
 #'       vBlocks,
 #'       sampling
 #'    )

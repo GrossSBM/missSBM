@@ -17,7 +17,7 @@ A <- mySBM$adjMatrix             # the adjacency matrix
 test_that("missSBM and class missSBM-fit are coherent", {
 
   psi <- 0.3
-  sampledNet <- samplingNetwork(A, "dyad", psi)
+  sampledNet <- sampleNetwork(A, "dyad", psi)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
@@ -43,7 +43,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
 test_that("missSBM with a collection of models", {
 
   psi <- 0.75
-  sampledNet <- samplingNetwork(A, "dyad", psi)
+  sampledNet <- sampleNetwork(A, "dyad", psi)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
