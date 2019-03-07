@@ -5,8 +5,6 @@ sampledNetwork <-
   private = list(
     Y        = NULL, # adjacency matrix
     X        = NULL, # M x N covariates matrix
-    # s        = NULL, # the similarity function (N x N -> M)
-    # phi      = NULL, # N x N x M covariates array
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
     nas      = NULL, # all NA in Y
@@ -57,13 +55,6 @@ sampledNetwork <-
       ## array of covariates
       if (!is.null(covarMatrix)) {
         private$X <- covarMatrix
-        # N <- nrow(covariatesMatrix)
-        # M <- ncol(covariatesMatrix)
-        # covariates <- array(dim = c(N, N, M))
-        # for (i in 1:N)
-        #   for (j in 1:N)
-        #     covariates[i,j,] <- -abs(covariatesMatrix[i, ] - covariatesMatrix[j, ])
-        # private$phi <- covariates
       }
 
       ## sets of observed / unobserved dyads
