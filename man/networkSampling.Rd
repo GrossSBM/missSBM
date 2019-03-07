@@ -10,5 +10,7 @@ networkSampling
 }
 \description{
 this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
+It is used to define a sampling model for a network.
+It has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
 }
 \keyword{datasets}

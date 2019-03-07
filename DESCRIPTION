@@ -44,8 +44,8 @@ Collate:
     'networkSampling-Class.R'
     'networkSampling_fit-Class.R'
     'missingSBM_fit.R'
+    'networkSampler-Class.R'
     'sampledNetwork-Class.R'
-    'networkSampling_sampler-Class.R'
 Suggests: 
     aricode,
     blockmodels,

@@ -1,6 +1,6 @@
 zero <- .Machine$double.eps
 
-available_samplings <- c("dyad", "node", "snowball", "degree", "block", "double_standard")
+available_samplings <- c("dyad", "node", "block-node", "block-dyad", "double-standard", "degree")
 
 available_samplings_covariates <- c("dyad", "node")
 
