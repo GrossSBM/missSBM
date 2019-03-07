@@ -8,8 +8,8 @@ R6::R6Class(classname = "SBM",
     M        = NULL, # number of covariates
     alpha    = NULL, # vector of block parameters
     pi       = NULL, # matrix of connectivity
-    beta     = NULL, # vector of covariates parameters
     directed = NULL, # directed or undirected network
+    beta     = NULL, # vector of covariates parameters
     phi      = NULL  # the similarity array (N x N x M)
   ),
   public = list(
@@ -75,7 +75,7 @@ function(model = "Stochastic Block Model\n") {
         ifelse(self$hasCovariates, self$nCovariates, "no"), "covariate(s).\n")
   cat("==================================================================\n")
   cat("* Useful fields \n")
-  cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam\n", "$covarParam, $covarMatrix, $covarArray; $covarSimilarity\n")
+  cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam\n", "$covarParam, $covarArray \n")
 })
 SBM$set("public", "print", function() self$show())
 
