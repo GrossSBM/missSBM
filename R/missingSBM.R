@@ -84,10 +84,27 @@ simulateSBM <- function(N, alpha, pi, directed = FALSE, covariates = NULL, covar
 #'      samplingParameters
 #'    )
 #' @export
-samplingSBM <- function(adjacencyMatrix, sampling, parameters,  clusters = NULL){
-  if (sampling == "block" & is.null(clusters)) stop("For block sampling a clustering is required!")
-  mySampling <- networkSampling_sampler$new(sampling, parameters)
-  mySampling$rSampling(adjacencyMatrix, clusters)
+samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covarMatrix = NULL, covarSimilarity = l1_similarity){
+
+  N <- ncol(adjacencyMatrix)
+  directed <- !isSymmetric(adjacencyMatrix)
+  ## instantiate the sampler
+  mySampler <-
+    switch(sampling,
+      "dyad"            = simpleDyadSampler$new(parameters, N, directed, getCovarArray(covarMatrix, covarSimilarity)),
+      "node"            = simpleNodeSampler$new(parameters, N, directed, covarMatrix),
+      "double-standard" = doubleStandardSampler$new(parameters, adjacencyMatrix, directed),
+      "block-dyad"      = blockDyadSampler$new(parameters, N, directed, clusters),
+      "block-node"      = blockNodeSampler$new(parameters, N, directed, clusters),
+      "degree"          = degreeSampler$new(parameters, rowSums(adjacencyMatrix), directed),
+  )
+  ## draw a sampling matrix R
+  mySampler$rSamplingMatrix()
+
+  ## turn this matrix to a sampled Network object
+  adjacencyMatrix[mySampler$samplingMatrix == 0] <- NA
+  sampledNet <- sampledNetwork$new(adjacencyMatrix)
+  sampledNet
 }
 
 #' @title Inference of Stochastic Block Model from sampled data

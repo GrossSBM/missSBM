@@ -7,6 +7,7 @@ Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45, Q) + .05                 # connectivity matrix
 directed <- FALSE
+
 ### Draw a SBM model (Bernoulli, undirected)
 mySBM <- simulateSBM(N, alpha, pi, directed)
 A <- mySBM$adjMatrix

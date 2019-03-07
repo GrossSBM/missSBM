@@ -10,10 +10,16 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
 mySBM <- simulateSBM(N, alpha, pi, directed)
-
 A <- mySBM$adjMatrix
 
-test_that("Consistency of dyad-centered network sampling", {
+### Draw a SBM model (Bernoulli, undirected) with covariates
+M <- 10
+covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+covarParam  <- rnorm(M,0,1)
+mySBM_cov <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
+A_cov <- mySBM_cov$adjMatrix
+
+test_that("Consistency of dyad-centered sampling", {
 
   ## testing the formatting of the output
   dyad  <- samplingSBM(A, "dyad", .1)
@@ -28,6 +34,12 @@ test_that("Consistency of dyad-centered network sampling", {
     dyad <- samplingSBM(A, "dyad", psi)
     expect_lt(abs(dyad$samplingRate - psi), psi/10)
   }
+
+  ## with covariates
+  psi <- runif(M, -5, 5)
+  dyad <- samplingSBM(A_cov, "dyad", psi, covarMatrix = covarMatrix)
+  expect_is(dyad, "sampledNetwork", "R6")
+  expect_equal(dim(dyad$adjMatrix), dim(A_cov))
 
 })
 
@@ -45,28 +57,47 @@ test_that("Consistency of node-centered network sampling", {
     expect_lt(abs(node$samplingRate - psi * (2 - psi)), .1)
   }
 
+  ## with covariates
+  psi <- runif(M, -5, 5)
+  node <- samplingSBM(A, "node", psi, covarMatrix = covarMatrix)
+  expect_is(node, "sampledNetwork", "R6")
+  expect_equal(dim(node$adjMatrix), dim(A))
+
 })
 
-test_that("Consistency of block network sampling", {
+test_that("Consistency of block-node network sampling", {
 
-  block <- samplingSBM(A, "block", c(.1, .2, .7), clusters = mySBM$memberships)
+  block <- samplingSBM(A, "block-node", c(.1, .2, .7), clusters = mySBM$memberships)
   expect_is(block, "sampledNetwork", "R6")
   expect_equal(dim(block$adjMatrix), dim(A))
   ## error if psi is not of size Q
-  expect_error(samplingSBM(A, "block", c(.1, .2), clusters = mySBM$memberships))
+  expect_error(samplingSBM(A, "block-node", c(.1, .2), clusters = mySBM$memberships))
   ## error if no clustering is given
-  expect_error(samplingSBM(A, "block", c(.1, .2, .7)))
+  expect_error(samplingSBM(A, "block-node", c(.1, .2, .7)))
 
+})
+
+test_that("Consistency of block-node network sampling", {
+
+  block <- samplingSBM(A, "block-dyad", mySBM$connectParam, clusters = mySBM$memberships)
+  expect_is(block, "sampledNetwork", "R6")
+  expect_equal(dim(block$adjMatrix), dim(A))
+  ## error if psi is not of size Q x Q
+  expect_error(samplingSBM(A, "block-dyad", c(.1, .2, .7), clusters = mySBM$memberships))
+  ## error if psi is not probabilities
+  expect_error(samplingSBM(A, "block-dyad", -mySBM$connectParam, clusters = mySBM$memberships))
+  ## error if no clustering is given
+  expect_error(samplingSBM(A, "block-dyad", mySBM$connectParam))
 })
 
 test_that("Consistency of double-standard sampling", {
 
-  double_standard <- samplingSBM(A,"double_standard", c(0.1, 0.5))
+  double_standard <- samplingSBM(A,"double-standard", c(0.1, 0.5))
   expect_is(double_standard, "sampledNetwork", "R6")
   expect_equal(dim(double_standard$adjMatrix), dim(A))
-  expect_error(samplingSBM(A, "double_standard", c(-0.1, 0.5)))
-  expect_error(samplingSBM(A, "double_standard", c(0.1, -0.5)))
-  expect_error(samplingSBM(A, "double_standard", c(-0.1, -0.5)))
+  expect_error(samplingSBM(A, "double-standard", c(-0.1, 0.5)))
+  expect_error(samplingSBM(A, "double-standard", c(0.1, -0.5)))
+  expect_error(samplingSBM(A, "double-standard", c(-0.1, -0.5)))
 })
 
 

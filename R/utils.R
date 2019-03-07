@@ -14,7 +14,7 @@ bar <- function(X) {
 getCovarArray <- function(X, s) {
   if (is.null(X))
     return(NULL)
-  N <- ncol(X)
+  N <- nrow(X)
   M <- ncol(X)
   phi <- array(dim = c(N, N, M))
   for (i in 1:N)

@@ -84,7 +84,6 @@ R6::R6Class(classname = "nodeSampler",
 ## - DYAD (MAR)
 ## - DOUBLE-STANDARD (NMAR)
 ## - BLOCK-DYAD (NMAR)
-
 simpleDyadSampler <-
 R6::R6Class(classname = "simpleDyadSampler",
   inherit = dyadSampler,
@@ -192,7 +191,7 @@ degreeSampler <-
 R6::R6Class(classname = "degreeSampler",
   inherit = nodeSampler,
   public = list(
-    initialize = function(parameters = NA, degrees = NA, directed = FALSE, clusters = NA) {
+    initialize = function(parameters = NA, degrees = NA, directed = FALSE) {
       stopifnot(length(parameters) == 2)
       super$initialize("degree", parameters, length(degrees), directed)
       private$rho <- logistic(parameters[1] + self$parameters[2]*degrees)
