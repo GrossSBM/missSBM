@@ -44,10 +44,10 @@ test_that("SBM sampler with covariates", {
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
   M <- 4
-  covariates <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+  covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
   covarParam  <- rnorm(M,0,1)
-
-  mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, pi, covariates, covarParam)
+  covarArray <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+  mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, pi, covarParam, covarArray)
   expect_null(mySBM$adjMatrix)
   expect_null(mySBM$blocks)
   expect_error(mySBM$memberships)
