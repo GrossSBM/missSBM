@@ -30,6 +30,7 @@ Imports:
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'
+    'S3-methods_missSBMcollection.R'
     'SBM-Class.R'
     'SBM_fit-Class.R'
     'SBM_fit_covariates-Class.R'
@@ -39,13 +40,15 @@ Collate:
     'initialization.R'
     'missSBM-package.R'
     'smoother_SBM.R'
-    'missingSBM.R'
+    'missSBM.R'
     'utils.R'
     'networkSampling-Class.R'
     'networkSampling_fit-Class.R'
     'missingSBM_fit.R'
     'networkSampler-Class.R'
+    'sampleNetwork.R'
     'sampledNetwork-Class.R'
+    'simulateSBM.R'
 Suggests: 
     aricode,
     blockmodels,

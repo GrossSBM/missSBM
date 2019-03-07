@@ -16,11 +16,11 @@ A_full <- mySBM$adjMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)
 psi <- 0.3
-sampledNet <- samplingSBM(A_full, "dyad", psi)
+sampledNet <- sampleNetwork(A_full, "dyad", psi)
 A_dyad <- sampledNet$adjMatrix
 
 psi <- 0.3
-sampledNet <- samplingSBM(A_full, "node", psi)
+sampledNet <- sampleNetwork(A_full, "node", psi)
 A_node <- sampledNet$adjMatrix
 
 test_that("Spectral clustering is consistent", {

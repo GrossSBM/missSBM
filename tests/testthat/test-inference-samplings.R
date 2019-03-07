@@ -14,7 +14,7 @@ A <- mySBM$adjMatrix
 
 test_that("Parameter estimation in dyad-centered sampling", {
   psi <- 0.1
-  sampledNet <- samplingSBM(A, "dyad", psi)
+  sampledNet <- samplingNetwork(A, "dyad", psi)
   fittedSampling <- missSBM:::dyadSampling_fit$new(sampledNet)
   expect_is(fittedSampling, c("dyadSampling_fit", "networkSamplingDyads_fit", "networkSampling", "R6"))
 
@@ -28,7 +28,7 @@ test_that("Parameter estimation in dyad-centered sampling", {
 
 test_that("Parameter estimation in node-centered sampling", {
   psi <- 0.1
-  sampledNet <- samplingSBM(A, "node", psi)
+  sampledNet <- samplingNetwork(A, "node", psi)
   fittedSampling <- missSBM:::nodeSampling_fit$new(sampledNet)
   expect_is(fittedSampling, c("nodeSampling_fit", "networkSamplingNodes_fit", "networkSampling", "R6"))
 
@@ -42,7 +42,7 @@ test_that("Parameter estimation in node-centered sampling", {
 
 test_that("Parameter estimation in double-standard sampling", {
   psi <- c(0.3, 0.6)
-  sampledNet <- samplingSBM(A, "double-standard", psi)
+  sampledNet <- samplingNetwork(A, "double-standard", psi)
   fittedSampling <- missSBM:::doubleStandardSampling_fit$new(sampledNet)
   expect_is(fittedSampling, c("doubleStandardSampling_fit", "networkSamplingDyads_fit", "networkSampling", "R6"))
 
@@ -55,7 +55,7 @@ test_that("Parameter estimation in double-standard sampling", {
 
 test_that("Parameter estimation in block sampling", {
   psi <- c(.1, .2, .3, .5, .7)
-  sampledNet <- samplingSBM(A, "block-node", psi, mySBM$memberships)
+  sampledNet <- samplingNetwork(A, "block-node", psi, mySBM$memberships)
   Z0 <- missSBM:::clustering_indicator(mySBM$memberships)
   fittedSampling <- missSBM:::blockSampling_fit$new(sampledNet, Z0)
   expect_is(fittedSampling, c("blockSampling_fit", "networkSamplingNodes_fit", "networkSampling", "R6"))
@@ -69,7 +69,7 @@ test_that("Parameter estimation in block sampling", {
 
 test_that("Parameter estimation in degree sampling", {
   psi <- c(-.5,0.01)
-  sampledNet <- samplingSBM(A,"degree", psi)
+  sampledNet <- samplingNetwork(A,"degree", psi)
   Z0 <- missSBM:::clustering_indicator(mySBM$memberships)
   expect_warning(fittedSampling <- missSBM:::degreeSampling_fit$new(sampledNet, Z0, mySBM$connectParam))
 

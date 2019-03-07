@@ -18,7 +18,7 @@ A <- mySBM$adjMatrix
 
 test_that("Parameter estimation in dyad-centered sampling", {
 
-  sampledNet <- samplingSBM(A, "dyad", covarParam, covarMatrix = covarMatrix)
+  sampledNet <- sampleNetwork(A, "dyad", covarParam, covarMatrix = covarMatrix)
 
   fittedSampling <- missSBM:::dyadSampling_fit_covariates$new(sampledNet, mySBM$covarArray)
   expect_is(fittedSampling, "dyadSampling_fit_covariates")
@@ -33,7 +33,7 @@ test_that("Parameter estimation in dyad-centered sampling", {
 
 test_that("Parameter estimation in node-centered sampling", {
 
-  sampledNet <- samplingSBM(A, "node", covarParam, covarMatrix = covarMatrix)
+  sampledNet <- sampleNetwork(A, "node", covarParam, covarMatrix = covarMatrix)
 
   fittedSampling <- missSBM:::nodeSampling_fit_covariates$new(sampledNet, mySBM$covarMatrix)
   expect_is(fittedSampling, "nodeSampling_fit_covariates")

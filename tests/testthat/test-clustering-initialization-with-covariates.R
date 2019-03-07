@@ -21,8 +21,8 @@ A_full <- mySBM$adjMatrix
 
 psi <- runif(M, -5, 5)
 
-A_dyad <- samplingSBM(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
-A_node <- samplingSBM(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
+A_dyad <- sampleNetwork(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
+A_node <- sampleNetwork(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
 
 test_that("Init clustering with covariate is consistent", {
 

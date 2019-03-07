@@ -1,4 +1,4 @@
-context("test-test-top-level-function-infersbm")
+context("test-test-top-level-function-misssbm")
 
 library(aricode)
 
@@ -14,10 +14,10 @@ directed <- FALSE         # if the network is directed or not
 mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$adjMatrix             # the adjacency matrix
 
-test_that("inferSBM and class missSBM-fit are coherent", {
+test_that("missSBM and class missSBM-fit are coherent", {
 
   psi <- 0.3
-  sampledNet <- samplingSBM(A, "dyad", psi)
+  sampledNet <- samplingNetwork(A, "dyad", psi)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
@@ -27,7 +27,7 @@ test_that("inferSBM and class missSBM-fit are coherent", {
   out_missSBM <- missSBM$doVEM(control)
 
   ## Perform inference with the top level function
-  collection <- inferSBM(
+  collection <- missSBM(
     adjacencyMatrix = sampledNet$adjMatrix,
     vBlocks         = Q,
     sampling        = "dyad",
@@ -40,16 +40,16 @@ test_that("inferSBM and class missSBM-fit are coherent", {
 
 })
 
-test_that("inferSBM with a collection of models", {
+test_that("missSBM with a collection of models", {
 
   psi <- 0.75
-  sampledNet <- samplingSBM(A, "dyad", psi)
+  sampledNet <- samplingNetwork(A, "dyad", psi)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
   ## Perform inference with the top level function
-  collection <- inferSBM(
+  collection <- missSBM(
     adjacencyMatrix = sampledNet$adjMatrix,
     vBlocks         = 1:7,
     sampling        = "dyad",
