@@ -14,7 +14,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         nNodes          = nrow(adjacencyMatrix),
         mixtureParam    = rep(NA,nBlocks),
         connectParam    = matrix(NA,nBlocks, nBlocks),
-        covarParam      = numeric(dim(covarMatrix)[2]),
+        covarParam      = numeric(dim(covarArray)[3]),
         covarArray      = covarArray
       )
 
