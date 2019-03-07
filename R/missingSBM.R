@@ -29,8 +29,8 @@
 #' mySBM <- simulateSBM(N, alpha, pi, directed)
 #'
 #' @export
-simulateSBM <- function(N, alpha, pi, directed = FALSE, covariates = NULL, covarParam = NULL, covarSimilarity=l1_similarity){
-  mySBM <- SBM_sampler$new(directed, N, alpha, pi, covariates, covarParam, covarSimilarity)
+simulateSBM <- function(N, alpha, pi, directed = FALSE, covarMatrix = NULL, covarParam = NULL, covarSimilarity=l1_similarity){
+  mySBM <- SBM_sampler$new(directed, N, alpha, pi, covarMatrix, covarParam, covarSimilarity)
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM
@@ -43,7 +43,8 @@ simulateSBM <- function(N, alpha, pi, directed = FALSE, covariates = NULL, covar
 #' @param adjacencyMatrix The adjacency matrix of the network
 #' @param sampling The sampling design used to sample the adjacency matrix
 #' @param parameters The sampling parameters adapted to each sampling
-#' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL
+#' @param covarMatrix An optional matrix of covariates with dimension N x M (M covariates per node).
+#' @param covarSimilarity An optional R x R -> R function  to compute similarity between node covariates. Default is #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL
 #' @return \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
 #' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
 #' @seealso \code{\link{inferSBM}} and \code{\link{samplingSBM}}

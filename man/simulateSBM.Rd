@@ -4,7 +4,7 @@
 \alias{simulateSBM}
 \title{Simulation of a Stochastic Block Model}
 \usage{
-simulateSBM(N, alpha, pi, directed = FALSE, covariates = NULL,
+simulateSBM(N, alpha, pi, directed = FALSE, covarMatrix = NULL,
   covarParam = NULL, covarSimilarity = l1_similarity)
 }
 \arguments{
@@ -17,11 +17,11 @@ simulateSBM(N, alpha, pi, directed = FALSE, covariates = NULL,
 \item{directed}{Boolean variable to indicate whether the network is directed or not,
 by default "undirected" is choosen}
 
+\item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
+
 \item{covarParam}{An optional vector of parameters associated with the covariates, with size M}
 
 \item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
-
-\item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
 }
 \value{
 \code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)

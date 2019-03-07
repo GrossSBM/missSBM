@@ -4,7 +4,8 @@
 \alias{samplingSBM}
 \title{Sampling of a network}
 \usage{
-samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL)
+samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL,
+  covarMatrix = NULL, covarSimilarity = l1_similarity)
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
@@ -13,7 +14,9 @@ samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL)
 
 \item{parameters}{The sampling parameters adapted to each sampling}
 
-\item{clusters}{Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL}
+\item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
+
+\item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL}
 }
 \value{
 \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)

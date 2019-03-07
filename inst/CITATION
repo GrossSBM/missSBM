@@ -1,0 +1,12 @@
+citHeader("To cite missSBM in publications, please use:")
+
+citEntry(entry = "article",
+  key = "missSBM",
+  author = c("Timothée Tabouy", "Pierre Barbillon", "Julien Chiquet"),
+  title = "Variational Inference for Stochastic Block Models from Sampled Data",
+  journal = "Journal of the American Statistical Association",
+  year = "2019",
+  volume = "0", pages = "1--20",
+  url = "https://doi.org/10.1080/01621459.2018.1562934",
+  textVersion = "T. Tabouy, P. Barbillon and J. Chiquet: Variational Inference for Stochastic Block Models from Sampled Data, JASA, 2019"
+)
