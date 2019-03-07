@@ -19,10 +19,12 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
 
     refAlgo <- referenceResults[[sampling]]
 
+    sampling <- ifelse(sampling == "twoStd", "double-standard", sampling)
+    sampling <- ifelse(sampling == "block", "block-node", sampling)
     missSBM_out <- missSBM::inferSBM(
       adjacencyMatrix = refAlgo$Y,
       vBlocks = truth$Q,
-      sampling = ifelse(sampling == "twoStd", "double_standard", sampling),
+      sampling = sampling,
       trace = FALSE
     )
     newAlgo <- missSBM_out[[1]]

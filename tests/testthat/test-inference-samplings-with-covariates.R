@@ -10,16 +10,15 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
-covariates <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M,0,1)
 
-mySBM <- simulateSBM(N, alpha, pi, directed, covariates, covarParam)
+mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
 A <- mySBM$adjMatrix
 
 test_that("Parameter estimation in dyad-centered sampling", {
 
-  sampling_prob <- missSBM:::logistic(missSBM:::roundProduct(mySBM$covarArray, covarParam))
-  sampledNet <- samplingSBM(A, "dyad", sampling_prob)
+  sampledNet <- samplingSBM(A, "dyad", covarParam, covarMatrix = covarMatrix)
 
   fittedSampling <- missSBM:::dyadSampling_fit_covariates$new(sampledNet, mySBM$covarArray)
   expect_is(fittedSampling, "dyadSampling_fit_covariates")
@@ -34,8 +33,7 @@ test_that("Parameter estimation in dyad-centered sampling", {
 
 test_that("Parameter estimation in node-centered sampling", {
 
-  sampling_prob <- missSBM:::logistic(mySBM$covarMatrix %*% covarParam)
-  sampledNet <- samplingSBM(A, "node", sampling_prob)
+  sampledNet <- samplingSBM(A, "node", covarParam, covarMatrix = covarMatrix)
 
   fittedSampling <- missSBM:::nodeSampling_fit_covariates$new(sampledNet, mySBM$covarMatrix)
   expect_is(fittedSampling, "nodeSampling_fit_covariates")

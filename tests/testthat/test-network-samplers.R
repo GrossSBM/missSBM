@@ -104,7 +104,7 @@ test_that("Consistency of block-node sampling", {
 test_that("Consistency of degree network sampling", {
 
   psi <- c(.01, .01)
-  mySampler <- missSBM:::degreeSampler$new(psi, rowSums(A), directed,)
+  mySampler <- missSBM:::degreeSampler$new(psi, rowSums(A), directed)
   expect_is(mySampler, "degreeSampler")
   expect_equal(mySampler$type, "degree")
   expect_equal(mySampler$df, 2)

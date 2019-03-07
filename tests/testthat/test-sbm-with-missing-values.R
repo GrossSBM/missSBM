@@ -82,10 +82,10 @@ test_that("miss SBM with node sampling works", {
 test_that("miss SBM with double-standard sampling works", {
 
   psi <- c(.3, .6)
-  sampledNet <- samplingSBM(A, "double_standard", psi)
+  sampledNet <- samplingSBM(A, "double-standard", psi)
 
   ## Perform inference
-  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "double_standard")
+  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "double-standard")
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -111,9 +111,9 @@ test_that("miss SBM with double-standard sampling works", {
 test_that("miss SBM with block sampling works", {
 
   psi <- c(.1, .3, .2, .5, .7)
-  sampledNet <- samplingSBM(A, "block", psi, mySBM$memberships)
+  sampledNet <- samplingSBM(A, "block-node", psi, mySBM$memberships)
   ## Perform inference
-  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "block")
+  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "block-node")
   out <- missSBM$doVEM(control)
 
   ## Sanity check

@@ -86,8 +86,12 @@ simulateSBM <- function(N, alpha, pi, directed = FALSE, covariates = NULL, covar
 #' @export
 samplingSBM <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covarMatrix = NULL, covarSimilarity = l1_similarity){
 
+  stopifnot(sampling %in% available_samplings)
+  if (!is.null(covarMatrix)) stopifnot(sampling %in% available_samplings_covariates)
+
   N <- ncol(adjacencyMatrix)
   directed <- !isSymmetric(adjacencyMatrix)
+
   ## instantiate the sampler
   mySampler <-
     switch(sampling,

@@ -21,11 +21,8 @@ A_full <- mySBM$adjMatrix
 
 psi <- runif(M, -5, 5)
 
-sampling_prob_dyad <- missSBM:::logistic(missSBM:::roundProduct(mySBM$covarArray, psi))
-sampling_prob_node <- missSBM:::logistic(mySBM$covarMatrix %*% psi)
-
-A_dyad <- samplingSBM(A_full, "dyad", sampling_prob_dyad)$adjMatrix
-A_node <- samplingSBM(A_full, "node", sampling_prob_node)$adjMatrix
+A_dyad <- samplingSBM(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
+A_node <- samplingSBM(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
 
 test_that("Init clustering with covariate is consistent", {
 
