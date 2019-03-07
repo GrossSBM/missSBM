@@ -10,8 +10,6 @@ R6::R6Class(classname = "SBM",
     pi       = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
     directed = NULL, # directed or undirected network
-    X        = NULL, # M x N covariates matrix
-    s        = NULL, # the similarity function (N x N -> M)
     phi      = NULL  # the similarity array (N x N x M)
   ),
   public = list(
@@ -26,8 +24,6 @@ R6::R6Class(classname = "SBM",
         stopifnot(dim(covarMatrix)[1] == private$N)
         stopifnot(dim(covarMatrix)[2] == private$M)
         private$phi  <- getCovarArray(covarMatrix, covarSimilarity)
-        private$X    <- covarMatrix
-        private$s    <- covarSimilarity
         private$beta <- covarParam
         private$pi   <- logit(connectParam)
       } else {
@@ -59,8 +55,6 @@ R6::R6Class(classname = "SBM",
     },
     covarParam       = function(value) {if (missing(value)) return(private$beta) else private$beta <- value},
     covarArray       = function(value) {private$phi},
-    covarMatrix      = function(value) {private$X},
-    covarSimilarity  = function(value) {private$s},
     df_mixtureParams = function(value) {self$nBlocks - 1},
     df_connectParams = function(value) {ifelse(private$directed, self$nBlocks^2, self$nBlocks*(self$nBlocks + 1)/2)},
     df_covarParams   = function(value) {self$nCovariates}

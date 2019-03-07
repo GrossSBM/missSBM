@@ -18,9 +18,7 @@ test_that("SBM sampler without covariates", {
   expect_equal(mySBM$connectParam, pi)
   expect_equal(mySBM$mixtureParam, alpha)
   expect_null(mySBM$covarParam)
-  expect_null(mySBM$covarMatrix)
   expect_null(mySBM$covarArray)
-  expect_null(mySBM$covarSimilarity)
   expect_false(mySBM$hasCovariates)
   expect_equal(mySBM$direction, "undirected")
 
@@ -57,9 +55,7 @@ test_that("SBM sampler with covariates", {
   expect_equal(mySBM$mixtureParam, alpha)
   expect_true(mySBM$hasCovariates)
   expect_equal(mySBM$covarParam, covarParam)
-  expect_equal(dim(mySBM$covarMatrix), c(N, M))
   expect_equal(dim(mySBM$covarArray) , c(N, N, M))
-  expect_equal(class(mySBM$covarSimilarity) , "function")
   expect_equal(mySBM$direction, "undirected")
 
   mySBM$rBlocks()

@@ -54,7 +54,7 @@ missingSBM_fit <-
         ## construct the network sampling fits
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, private$SBM$covarArray),
-          "node"            = nodeSampling_fit_covariates$new(private$sampledNet, private$SBM$covarMatrix)
+          "node"            = nodeSampling_fit_covariates$new(private$sampledNet, covarMatrix)
         )
       }
     }

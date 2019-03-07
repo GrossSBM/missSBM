@@ -65,7 +65,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
 
   sampledNet <- sampleNetwork(A_cov, "node", covarParam, covarMatrix = covarMatrix)
 
-  fittedSampling <- missSBM:::nodeSampling_fit_covariates$new(sampledNet, mySBM_cov$covarMatrix)
+  fittedSampling <- missSBM:::nodeSampling_fit_covariates$new(sampledNet, covarMatrix)
   expect_is(fittedSampling, "nodeSampling_fit_covariates")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
