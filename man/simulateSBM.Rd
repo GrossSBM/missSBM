@@ -24,17 +24,10 @@ by default "undirected" is choosen}
 \item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
 }
 \value{
-\code{simulateSBM} returns a vector with clusters of nodes and a matrix (the adjacency matrix of the network)
+a object with class \code{SBM-Class}
 }
 \description{
-\code{simulateSBM} is a function that generates a matrix (the adjacency matrix of a network) under the SBM
-}
-\details{
-The emission law can be :\itemize{\item{Bernoulli:
-\deqn{P(Y[i,j] = 1 | Zi = q, Zj = l) = p(Zi,Zj)}}
-\item{Poisson:
-\deqn{P(Y[i,j] = k | Zi = q, Zj = l) = (\lambda(Z_i,Z_j)^k/(k!)) * exp(-\lambda(Z_i,Z_j))}}
-}
+Generates realizations (blocks and adjancency) of a Stochastic Block model
 }
 \examples{
 ### A SBM model : ###
@@ -46,10 +39,4 @@ directed <- FALSE
 ## Simulation of an Bernoulli non-directed SBM
 mySBM <- simulateSBM(N, alpha, pi, directed)
 
-}
-\references{
-[1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
-}
-\seealso{
-\code{\link{inferSBM}} and \code{\link{samplingSBM}}
 }

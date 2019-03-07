@@ -14,15 +14,17 @@ samplingSBM(adjacencyMatrix, sampling, parameters, clusters = NULL,
 
 \item{parameters}{The sampling parameters adapted to each sampling}
 
+\item{clusters}{Clusters membership vector of the nodes, only necessary for class sampling, by default equal to}
+
 \item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
 
-\item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to NULL}
+\item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is}
 }
 \value{
 \code{samplingSBM} returns a matrix (the sampled adjacency matrix of the network given in parameter)
 }
 \description{
-\code{samplingSBM} is a function that sample a matrix (the adjacency matrix of a network) under the SBM
+Samples a matrix (the adjacency matrix of a network) under the SBM
 }
 \details{
 The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings, for
@@ -62,10 +64,4 @@ sampledNetwork <-
      sampling,
      samplingParameters
    )
-}
-\references{
-[1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
-}
-\seealso{
-\code{\link{inferSBM}} and \code{\link{samplingSBM}}
 }
