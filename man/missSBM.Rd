@@ -87,7 +87,7 @@ sampledNet <-
 vBlocks <- 1:5 # number of classes
 sbm <-
    missSBM(
-      sampledNet$adjacencyMatrix,
+      sampledNet$adjMatrix,
       vBlocks,
       sampling
    )
