@@ -116,7 +116,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
 
   expect_equal(which.min(vICLs), which.max(BM$ICL))
 
-  tol_ref   <- 1e-3
+  tol_ref   <- 1e-2
   tol_truth <- 1e-2
   expect_lt(sum(((-.5 * vICLs - BM$ICL)/BM$ICL)^2), tol_ref)
 
