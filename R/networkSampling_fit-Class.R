@@ -99,9 +99,9 @@ dyadSampling_fit_covariates <-
       super$initialize(sampledNetwork, "dyad")
       X <- apply(covarArray, 3, as.vector)
       y <- 1 * as.vector(!sampledNetwork$NAs)
-      glm_out     <- glm.fit(X, y, family = binomial())
-      private$psi <- coefficients(glm_out)
-      private$rho <- roundProduct(covarArray, private$psi)
+      glm_out       <- glm.fit(X, y, family = binomial())
+      private$psi   <- coefficients(glm_out)
+      private$rho   <- fitted(glm_out)
       private$D_obs <- sampledNetwork$D_obs
     }
   ),
@@ -148,7 +148,7 @@ nodeSampling_fit_covariates <-
       super$initialize(sampledNetwork, "node")
       y <- 1 * (sampledNetwork$observedNodes)
       glm_out     <- glm.fit(covarMatrix, y, family = binomial())
-      private$psi <- covarMatrix %*% coefficients(glm_out)
+      private$psi <- coefficients(glm_out)
       private$rho <- fitted(glm_out)
     }
   ),
