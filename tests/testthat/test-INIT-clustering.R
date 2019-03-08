@@ -1,7 +1,6 @@
 context("test clustering function used in initialization")
 
 library(aricode)
-
 ### A SBM model used for all tests
 set.seed(178303)
 N <- 400
@@ -11,8 +10,9 @@ pi <- diag(.45,Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
-mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
-A_full <- mySBM$adjMatrix             # the adjacency matrix
+sbm <- simulateSBM(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
+
+A_full <- sbm$adjMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)
 psi <- 0.3
@@ -112,38 +112,37 @@ test_that("Clustering initializations are relevant", {
         )
 
       relevance <- .6
-      expect_gt(ARI(cl, mySBM$memberships), relevance)
+      expect_gt(ARI(cl, sbm$memberships), relevance)
 
     }
   }
 })
 
 
-## WITH COVARIATES ==============================================
-
+## ========================================================================
+## A SBM model with covariates
 
 set.seed(178303)
-### A SBM model : ###
 N <- 300
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45,Q) + .05                 # connectivity matrix
+gamma <- missSBM:::logit(pi)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
-M <- 10
+M <- 2
 covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
-covarParam  <- rnorm(M,0,1)
+covarParam  <- rnorm(M, -1, 1)
 
-mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
-A_full <- mySBM$adjMatrix
-
-psi <- runif(M, -5, 5)
-
-A_dyad <- sampleNetwork(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
-A_node <- sampleNetwork(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
+sbm <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam)
 
 test_that("Init clustering with covariate is consistent", {
+
+  A_full <- sbm$adjMatrix
+  psi <- runif(M, -5, 5)
+  A_dyad <- sampleNetwork(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
+  A_node <- sampleNetwork(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
 
   for (A in list(A_full, A_dyad, A_node)) {
     for (method in c("hierarchical", "spectral", "kmeans")) {
@@ -151,13 +150,13 @@ test_that("Init clustering with covariate is consistent", {
       missSBM:::init_clustering(
         adjacencyMatrix = A,
         nBlocks = Q,
-        covarArray = mySBM$covarArray,
+        covarArray = sbm$covarArray,
         clusterInit = method
       )
-      relevance <- .6
+      relevance <- .4
       expect_is(cl, "integer")
       expect_equal(length(cl), N)
-      expect_gt(ARI(cl, mySBM$memberships), relevance)
+      expect_gt(ARI(cl, sbm$memberships), relevance)
     }
   }
 })
