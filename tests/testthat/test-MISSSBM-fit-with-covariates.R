@@ -1,5 +1,7 @@
 context("test missSBM-fit with covariates")
 
+source("utils_test.R")
+
 ## ========================================================================
 ## With covariates
 
@@ -20,14 +22,6 @@ sbm <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
 
 ## control parameter for the VEM
 control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
-
-error <- function(beta1, beta2, sort = FALSE) {
-  if (sort)
-    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
-  else
-    err <- sum((beta1 - beta2)^2)/length(beta2)
-  err
-}
 
 ## Consistency
 tol_truth <- 1e-2
@@ -55,8 +49,8 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$mixtureParam, sbm$mixtureParam, sort = TRUE), tol_truth)
 
-### FIXME: estimation of pi is poor...
-##  expect_lt(error(missSBM$fittedSBM$connectParam, sbm$connectParam), tol_truth)
+### FIXME: estimation of gamma is poor...
+  expect_lt(error(missSBM$fittedSBM$connectProb, sbm$connectProb), tol_truth*10)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth)
@@ -87,8 +81,8 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$mixtureParam, sbm$mixtureParam, sort = TRUE), tol_truth)
 
-### FIXME: estimation of pi is still biased ...
-##  expect_lt(error(missSBM$fittedSBM$connectParam, sbm$connectParam), tol_truth)
+### FIXME: estimation of gamma is poor ...
+  expect_lt(error(missSBM$fittedSBM$connectProb, sbm$connectProb), tol_truth*10)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth)

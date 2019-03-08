@@ -2,14 +2,7 @@ context("test sbm fit with covariates (class SBM_fit_covariates)")
 
 library(aricode)
 library(blockmodels)
-
-error <- function(beta1, beta2, sort = FALSE) {
-  if (sort)
-    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
-  else
-    err <- sum((beta1 - beta2)^2)/length(beta2)
-  err
-}
+source("utils_test.R")
 
 set.seed(178303)
 ### A SBM model : ###

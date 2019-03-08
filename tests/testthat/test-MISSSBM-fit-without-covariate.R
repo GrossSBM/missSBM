@@ -1,6 +1,7 @@
 context("test missSBM-fit without covariate")
 
 library(aricode)
+source("utils_test.R")
 
 set.seed(1890718)
 ### A SBM model : ###
@@ -19,14 +20,6 @@ samplings <- list(
   list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit"),
   list(name = "block-node", psi = c(.1, .3, .2, .5, .7), class = "blockSampling_fit")
 )
-
-error <- function(beta1, beta2, sort = FALSE) {
-  if (sort)
-    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
-  else
-    err <- sum((beta1 - beta2)^2)/length(beta2)
-  err
-}
 
 ## control parameter for the VEM
 control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)

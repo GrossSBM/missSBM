@@ -1,12 +1,6 @@
 context("test network sampling fit with covariates (Classes nodeSampling_fit and dyadSampling_fit)")
 
-error <- function(beta1, beta2, sort = FALSE) {
-  if (sort)
-    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
-  else
-    err <- sum((beta1 - beta2)^2)/length(beta2)
-  err
-}
+source("utils_test.R")
 
 set.seed(178303)
 ### SBM model
