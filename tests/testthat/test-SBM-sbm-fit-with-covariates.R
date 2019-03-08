@@ -3,6 +3,14 @@ context("test sbm fit with covariates (class SBM_fit_covariates)")
 library(aricode)
 library(blockmodels)
 
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
+
 set.seed(178303)
 ### A SBM model : ###
 N <- 300
@@ -42,7 +50,7 @@ test_that("Creation of a SBM_fit_covariates", {
 
 test_that("Consistency of VEM of a SBM_fit_covariates with the number of block given", {
 
-  tol <- 1e-2
+  tol <- 1e-4
 
   ## testing all initialization
   mySBM_fit_hier <- missSBM:::SBM_fit_covariates$new(A, cl_hier, mySBM$covarArray)
@@ -54,14 +62,16 @@ test_that("Consistency of VEM of a SBM_fit_covariates with the number of block g
   out_kmns <- mySBM_fit_kmns$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
 
   ## checking estimation consistency
-  expect_lt(sum((mySBM_fit_spec$connectParam - mySBM$connectParam)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam - mySBM$connectParam)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam - mySBM$connectParam)^2), tol)
+  expect_lt(error(mySBM_fit_spec$connectProb, mySBM$connectProb), tol)
+  expect_lt(error(mySBM_fit_hier$connectProb, mySBM$connectProb), tol)
+  expect_lt(error(mySBM_fit_kmns$connectProb, mySBM$connectProb), tol)
 
   ## checking consistency of the clustering
   expect_lt(1 - ARI(mySBM_fit_hier$memberships, mySBM$memberships), tol)
   expect_lt(1 - ARI(mySBM_fit_spec$memberships, mySBM$memberships), tol)
   expect_lt(1 - ARI(mySBM_fit_kmns$memberships, mySBM$memberships), tol)
+
+  tol <- 1e-3
 
   ## checking consistency between the ICL and with the value comptued by blockmodels
   expect_lt(abs(mySBM_fit_hier$vBound(A) - mySBM_fit_spec$vBound(A))/abs(mySBM_fit_spec$vBound(A)), tol)
@@ -109,9 +119,10 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   tol <- 1e-2
   expect_lt(sum(((-.5 * vICLs - BM$ICL)/BM$ICL)^2), tol)
 
-  error_missSBM <- sum((mySBM$connectParam - bestICL$connectParam)^2)
-  error_BM      <- sum((mySBM$connectParam - missSBM:::logistic(BM$model_parameters[[2]]$m))^2)
+  error_missSBM <- error(mySBM$connectProb, bestICL$connectProb)
+  error_BM      <- error(missSBM:::logistic(bestICL$connectParam),
+                         missSBM:::logistic(BM$model_parameters[[2]]$m))
   expect_lt(error_missSBM, tol)
   expect_lt(error_BM     , tol)
-  expect_lt(abs(error_missSBM - error_BM), tol)
+
 })

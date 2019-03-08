@@ -51,7 +51,7 @@ test_that("SBM sampler with covariates", {
   expect_null(mySBM$adjMatrix)
   expect_null(mySBM$blocks)
   expect_error(mySBM$memberships)
-  expect_equal(mySBM$connectParam, pi)
+  expect_equal(missSBM:::logistic(mySBM$connectParam), pi)
   expect_equal(mySBM$mixtureParam, alpha)
   expect_true(mySBM$hasCovariates)
   expect_equal(mySBM$covarParam, covarParam)
