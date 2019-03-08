@@ -67,7 +67,8 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
 #       adjacencyMatrix = refAlgo$Y,
 #       vBlocks = truth$Q,
 #       sampling = ifelse(sampling == "covDyad", "dyad", "node"),
-#       trace = FALSE
+#       trace = FALSE,
+#       covarMatrix =
 #     )
 #     newAlgo <- missSBM_out[[1]]
 #
@@ -77,7 +78,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
 #     expect_lt(error(sort(refAlgo$alpha), sort(truth$alpha)), tol_truth)
 #
 #     ## pi
-#     expect_lt(error(newAlgo$fittedSBM$connectParam, refAlgo$pi), tol_ref)
+#     expect_lt(error(newAlgo$fittedSBM$connectParam, missSBM:::logistic(refAlgo$gamma_covDyad)), tol_ref)
 #     expect_lt(error(newAlgo$fittedSBM$connectParam, truth$pi), tol_truth)
 #     expect_lt(error(refAlgo$pi, truth$pi), tol_truth)
 #
