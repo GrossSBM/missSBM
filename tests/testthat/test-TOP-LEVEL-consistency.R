@@ -1,4 +1,4 @@
-context("test-consistency-of-misssbm-with-dyad-sampling")
+context("test consistency missSBM top-level function")
 
 library(aricode)
 

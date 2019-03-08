@@ -1,10 +1,8 @@
-context("test-sbm-with-missing-values")
+context("test missSBM-fit without covariate")
 
 library(aricode)
 
 set.seed(1890718)
-
-
 ### A SBM model : ###
 N <- 400
 Q <- 5
@@ -15,12 +13,11 @@ directed <- FALSE         # if the network is directed or not
 ### Draw a SBM model
 sbm <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 
-truth <- list(
-  "sbm"  = sbm,
-  "dyad"            = list(psi = 0.3, class = "dyadSampling_fit"),
-  "node"            = list(psi = 0.2, class = "nodeSampling_fit"),
-  "double-standard" = list(psi =  c(.3, .6), class = "doubleStandardSampling_fit"),
-  "block-node"      = list(psi = c(.1, .3, .2, .5, .7), class = "blockSampling_fit")
+samplings <- list(
+  list(name = "dyad", psi = 0.3, class = "dyadSampling_fit"),
+  list(name = "node", psi = 0.2, class = "nodeSampling_fit"),
+  list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit"),
+  list(name = "block-node", psi = c(.1, .3, .2, .5, .7), class = "blockSampling_fit")
 )
 
 error <- function(beta1, beta2, sort = FALSE) {
@@ -31,28 +28,30 @@ error <- function(beta1, beta2, sort = FALSE) {
   err
 }
 
+## control parameter for the VEM
+control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+
 test_that("missSBM-fit works and is consistent for all samplings", {
 
   ## Consistency
   tol_truth <- 1e-2
   tol_ARI   <- .8
 
-  cat("Tested sampling:")
-  for (sampling in c("dyad", "node", "double-standard", "block-node")) {
-    cat("\n -", sampling)
-    refSampling <- truth[[sampling]]
+##  cat("Tested sampling:")
+  for (sampling in samplings) {
+##    cat("\n -", sampling$name)
 
     ## sampled the network
-    sampledNet <- sampleNetwork(A, sampling, refSampling$psi, truth$sbm$memberships)
+    sampledNet <- sampleNetwork(sbm$adjMatrix, sampling$name, sampling$psi, sbm$memberships)
 
     ## Perform inference
-    missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, sampling)
+    missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, sampling$name)
     out <- missSBM$doVEM(control)
 
     ## Sanity check
     expect_is(missSBM, "missingSBM_fit")
     expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
-    expect_is(missSBM$fittedSampling, refSampling$class)
+    expect_is(missSBM$fittedSampling, sampling$class)
     expect_is(missSBM$sampledNetwork, "sampledNetwork")
     expect_equal(out, missSBM$monitoring)
 
@@ -60,14 +59,14 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     expect_gt(diff(range(out$objective, na.rm = TRUE)), 0)
 
     ## SBM: parameters estimation
-    expect_lt(error(missSBM$fittedSBM$connectParam, truth$sbm$connectParam), tol_truth)
-    expect_lt(error(missSBM$fittedSBM$mixtureParam, truth$sbm$mixtureParam, sort = TRUE), tol_truth)
+    expect_lt(error(missSBM$fittedSBM$connectParam, sbm$connectParam), tol_truth)
+    expect_lt(error(missSBM$fittedSBM$mixtureParam, sbm$mixtureParam, sort = TRUE), tol_truth)
 
     ## sampling design: parameters estimation
-    expect_lt(error(missSBM$fittedSampling$parameters, refSampling$psi, sort = TRUE), tol_truth)
+    expect_lt(error(missSBM$fittedSampling$parameters, sampling$psi, sort = TRUE), tol_truth)
 
     ## clustering
-    expect_gt(ARI(missSBM$fittedSBM$memberships, mySBM$memberships), tol_ARI)
+    expect_gt(ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
   }
 
 })

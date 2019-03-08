@@ -1,4 +1,4 @@
-context("test-network-data-samplings")
+context("testing network samplers (top-level function sampleNetwork)")
 
 set.seed(178303)
 ### A SBM model : ###

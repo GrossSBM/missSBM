@@ -1,4 +1,4 @@
-context("test-sbm-sampler")
+context("testing SBM samplers (class SBM_sampler)")
 
 
 test_that("SBM sampler without covariates", {

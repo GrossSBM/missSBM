@@ -1,4 +1,4 @@
-context("test-network-samplers")
+context("test network samplers (Class networkSampler and chidren)")
 
 set.seed(178303)
 ### A SBM model : ###

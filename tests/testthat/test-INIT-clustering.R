@@ -1,4 +1,4 @@
-context("test-clustering_initialization")
+context("test clustering function used in initialization")
 
 library(aricode)
 

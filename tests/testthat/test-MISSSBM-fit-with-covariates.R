@@ -1,4 +1,4 @@
-context("test-MISSSBM-fit-with-covariates")
+context("test missSBM-fit with covariate")
 
 ## ========================================================================
 ## With covariates

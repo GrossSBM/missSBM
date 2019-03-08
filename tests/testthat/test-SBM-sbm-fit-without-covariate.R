@@ -1,4 +1,4 @@
-context("test-sbm-fit-without-covariate")
+context("test sbm fit without covariate (class SBM_fit_nocovariate)")
 
 library(aricode)
 library(blockmodels)
