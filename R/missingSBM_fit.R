@@ -23,11 +23,10 @@ missingSBM_fit <-
       stopifnot(inherits(sampledNet, "sampledNetwork"))
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
-      ## Save the sampledNetwork object in the current environment
-      private$sampledNet <- sampledNet
+      ## Compute the array of covariates, used in all SBM-related computations
+      covarArray  <- getCovarArray(covarMatrix, covarSimilarity)
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      covarArray  <- getCovarArray(covarMatrix, covarSimilarity)
       clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, covarArray, clusterInit)
 
       ## network data with basic imputation at startup
@@ -37,10 +36,12 @@ missingSBM_fit <-
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
       private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
+      ## Save the sampledNetwork object in the current environment
+      private$sampledNet <- sampledNet
+
+      ## Initialize the sampling fit and the SBM fit
       if (is.null(covarMatrix)) {
-        ## construct and initialize the SBM fit
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
-        ## construct the network sampling fits
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit$new(private$sampledNet),
           "node"            = nodeSampling_fit$new(private$sampledNet),
@@ -50,9 +51,7 @@ missingSBM_fit <-
           "degree"          = degreeSampling_fit$new(private$sampledNet, private$SBM$blocks, private$SBM$connectParam)
         )
       } else {
-        ## construct and initialize the SBM fit
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarArray)
-        ## construct the network sampling fits
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, covarArray),
           "node"            = nodeSampling_fit_covariates$new(private$sampledNet, covarMatrix)
@@ -99,7 +98,7 @@ missingSBM_fit$set("public", "doVEM",
       #
       for (k in seq.int(control$fixPointIter)) {
         # update the variational parameters for missing entries (a.k.a nu)
-        nu <- private$sampling$update_imputation(private$SBM$blocks, private$SBM$connectParam)
+        nu <- private$sampling$update_imputation(private$SBM$connectProb)
         private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
         # update the variational parameters for block memberships (a.k.a tau)
         private$SBM$update_blocks(private$imputedNet, log_lambda = private$sampling$log_lambda)

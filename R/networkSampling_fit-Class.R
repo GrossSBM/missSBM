@@ -21,10 +21,7 @@ networkSamplingDyads_fit <-
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(NULL)},
-    update_imputation = function(Z, pi) { ## good for MCAR on node, dyads and NMAR with blocks
-      nu <- check_boundaries(logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z)))
-      nu
-    }
+    update_imputation = function(PI) {PI} ## good for MCAR on node, dyads and NMAR with blocks
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
@@ -57,10 +54,7 @@ networkSamplingNodes_fit <-
     ## initialize estimation and imputation function
     ## by default, nothing to do (corresponds to MAR sampling)
     update_parameters = function(...) {invisible(NULL)},
-    update_imputation = function(Z, pi) { ## good for MCAR on node, dyads and NMAR with blocks (dyad and node)
-      nu <- check_boundaries(logistic(Z %*% (log(pi/(1 - pi))) %*% t(Z)))
-      nu
-    }
+    update_imputation = function(PI) {PI} ## good for MCAR on node, dyads and NMAR with blocks
   ),
   active = list(
     ## nDyads automatically handles the directed/undirected cases
@@ -82,6 +76,7 @@ dyadSampling_fit <-
       private$card_D_o <- length(sampledNetwork$observedDyads)
       private$card_D_m <- length(sampledNetwork$missingDyads )
       private$psi      <- check_boundaries(private$card_D_o / (private$card_D_m + private$card_D_o))
+      private$rho      <- rep(private$psi, private$card_D)
     }
   ),
   active = list(
@@ -103,10 +98,10 @@ dyadSampling_fit_covariates <-
     initialize = function(sampledNetwork, covarArray, ...) {
       super$initialize(sampledNetwork, "dyad")
       X <- apply(covarArray, 3, as.vector)
-      y <- 1*as.vector(!sampledNetwork$NAs)
+      y <- 1 * as.vector(!sampledNetwork$NAs)
       glm_out     <- glm.fit(X, y, family = binomial())
       private$psi <- coefficients(glm_out)
-      private$rho <- fitted(glm_out)
+      private$rho <- roundProduct(covarArray, private$psi)
       private$D_obs <- sampledNetwork$D_obs
     }
   ),
@@ -153,7 +148,7 @@ nodeSampling_fit_covariates <-
       super$initialize(sampledNetwork, "node")
       y <- 1 * (sampledNetwork$observedNodes)
       glm_out     <- glm.fit(covarMatrix, y, family = binomial())
-      private$psi <- coefficients(glm_out)
+      private$psi <- covarMatrix %*% coefficients(glm_out)
       private$rho <- fitted(glm_out)
     }
   ),
@@ -189,8 +184,8 @@ doubleStandardSampling_fit <-
       private$Sm.bar <- sum(1 - imputedNet[private$D_miss])
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
-    update_imputation = function(Z, pi) {
-      nu <- check_boundaries(logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + Z %*% log(pi/(1 - pi)) %*% t(Z)))
+    update_imputation = function(PI) {
+      nu <- check_boundaries(logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + logit(PI) ))
       nu
     }
   ),
@@ -309,9 +304,9 @@ degreeSampling_fit <-
       nu[!private$NAs] <- 0
       private$Dij <- matrix(private$D, nrow(imputedNet), ncol(imputedNet)) - nu
     },
-    update_imputation = function(Z, pi) {
+    update_imputation = function(PI) {
       C <- 2 * h(private$ksi) * (private$psi[1] * private$psi[2] + private$psi[2]^2 * (1 + private$Dij))
-      nu <- check_boundaries((Z %*% log(pi/(1 - pi)) %*% t(Z) - private$psi[2] + C + t(C) ))
+      nu <- check_boundaries((logit(PI) - private$psi[2] + C + t(C) ))
       nu
     }
   ),

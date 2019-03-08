@@ -44,10 +44,11 @@ R6::R6Class(classname = "SBM",
     },
     connectParam = function(value) { # matrix of connectivity (a.k.a. pi)
       if (missing(value)) {
-        if (self$hasCovariates)
-          return(logistic(private$pi))
-        else
-          return(private$pi)
+        return(private$pi)
+        # if (self$hasCovariates)
+        #   return(logistic(private$pi)) ## the covariate part is missing
+        # else
+        #   return(private$pi)
       } else {
         private$pi <- value
       }

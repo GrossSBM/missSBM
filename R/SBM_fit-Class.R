@@ -23,11 +23,12 @@ R6::R6Class(classname = "SBM_fit",
     penalty     = function(value) {(self$df_connectParams + self$df_covarParams) * log(self$nDyads) + self$df_mixtureParams * log(self$nNodes)},
     entropy     = function(value) {-sum(xlogx(private$tau))},
     connectProb = function(value) {
-      PI <- private$tau %*% private$pi %*% t(private$tau)
-      if (self$has_covariates) {
-        PI <- logistic(PI + roundProduct(private$phi, private$beta))
+      if (self$hasCovariates) {## pi is gamma in covariate SBM
+        Prob <- check_boundaries(logistic(private$tau %*% private$pi %*% t(private$tau) + roundProduct(private$phi, private$beta)))
+      } else {
+        Prob <- check_boundaries(logistic(private$tau %*% logit(private$pi) %*% t(private$tau)))
       }
-      PI
+      Prob
     }
   )
 )

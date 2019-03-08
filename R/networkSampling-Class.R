@@ -13,7 +13,7 @@ R6::R6Class(classname = "networkSampling",
   private = list(
     name  = NULL, # type of sampling
     psi   = NULL, # vector of missing parameters
-    rho   = NULL # the prior probability for sampling either and dyad or an node
+    rho   = NULL  # the prior probability for sampling either and dyad or an node
   ),
   public = list(
     ## methods
