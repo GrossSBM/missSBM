@@ -40,7 +40,7 @@ test_that("Creation of a SBM_fit_covariates", {
 
 })
 
-test_that("Consistency of VEM of a SBM_fit with the number of block given", {
+test_that("Consistency of VEM of a SBM_fit_covariates with the number of block given", {
 
   tol <- 1e-2
 
@@ -70,10 +70,8 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
 
 })
 
-
 ## CONSISTENCY WITH BLOCKMODELS
-
-test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nBlocks", {
+test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nBlocks", {
 
   ### A SBM model : ###
   N <- 40

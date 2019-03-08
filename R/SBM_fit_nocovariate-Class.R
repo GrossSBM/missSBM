@@ -4,7 +4,7 @@ SBM_fit_nocovariate <-
 R6::R6Class(classname = "SBM_fit_nocovariate",
   inherit = SBM_fit,
   public = list(
-    initialize =   function(adjacencyMatrix, clusterInit) {
+    initialize = function(adjacencyMatrix, clusterInit) {
 
       # Basic fields intialization and call to super constructor
       nBlocks <- length(unique(clusterInit))

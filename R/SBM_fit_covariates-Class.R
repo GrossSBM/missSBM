@@ -10,12 +10,12 @@ R6::R6Class(classname = "SBM_fit_covariates",
       # Basic fields intialization and call to super constructor
       nBlocks <- length(unique(clusterInit))
       super$initialize(
-        directed        = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
-        nNodes          = nrow(adjacencyMatrix),
-        mixtureParam    = rep(NA,nBlocks),
-        connectParam    = matrix(NA,nBlocks, nBlocks),
-        covarParam      = numeric(dim(covarArray)[3]),
-        covarArray      = covarArray
+        directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
+        nNodes       = nrow(adjacencyMatrix),
+        mixtureParam = rep(NA, nBlocks),
+        connectParam = matrix(NA, nBlocks, nBlocks),
+        covarParam   = numeric(dim(covarArray)[3]),
+        covarArray   = covarArray
       )
 
       ## Initial Clustering
@@ -30,7 +30,6 @@ R6::R6Class(classname = "SBM_fit_covariates",
       invisible(self)
     },
     update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
-
       optim_out  <-
         nloptr::nloptr(
           # starting parameters
@@ -45,7 +44,6 @@ R6::R6Class(classname = "SBM_fit_covariates",
       private$beta  <- optim_out$solution[-(1:(private$Q^2))]
       private$pi    <- matrix(optim_out$solution[1:(private$Q^2)], private$Q, private$Q)
       private$alpha <- check_boundaries(colMeans(private$tau))
-
     },
     vExpec = function(adjMatrix) {
       vExpec_covariates(
