@@ -18,6 +18,9 @@ covarParam  <- rnorm(M,-.1, .1)
 
 mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
 
+## control parameter for the VEM
+control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+
 test_that("missSBM with covariates and dyad sampling works", {
 
   ## sampled the network
