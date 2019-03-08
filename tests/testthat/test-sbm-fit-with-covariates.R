@@ -18,9 +18,6 @@ covarParam  <- rnorm(M,0,1)
 mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam, missSBM:::l1_similarity)
 A <- mySBM$adjMatrix
 
-## Formatting covariates for blockmodels
-covariates_BM <- lapply(seq(dim(mySBM$covarArray)[3]), function(x) mySBM$covarArray[ , , x])
-
 ### Draw a undirected SBM model
 cl_rand <- sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, mySBM$covarArray, "spectral")
@@ -74,23 +71,49 @@ test_that("Consistency of VEM of a SBM_fit with the number of block given", {
 })
 
 
-# test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nBlocks", {
-#
-#   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", A, covariates_BM, verbosity = 0, explore_min = 5, explore_max = 5, plotting = "", ncores = 1)
-#   BM$estimate()
-#
-#   vBlocks <- 1:5
-#   models <- lapply(vBlocks, function(nBlocks) {
-#     cl0 <- missSBM:::init_clustering(mySBM$adjMatrix, nBlocks, mySBM$co, "hierarchical")
-#     myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjMatrix, cl0)
-#     myFit$doVEM(mySBM$adjMatrix)
-#     myFit
-#   })
-#
-#   vICLs  <- sapply(models, function(model) model$vICL(mySBM$adjMatrix))
-#   bestICL <- models[[which.min(vICLs)]]
-#
-#   expect_equal(which.min(vICLs), which.max(BM$ICL))
-#
-#   expect_lt(sum((-.5 * vICLs - BM$ICL)/BM$ICL^2), 1e-6)
-# })
+## CONSISTENCY WITH BLOCKMODELS
+
+test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nBlocks", {
+
+  ### A SBM model : ###
+  N <- 40
+  Q <- 2
+  alpha <- rep(1,Q)/Q                     # mixture parameter
+  pi <- diag(.45,Q) + .05                 # connectivity matrix
+  directed <- FALSE
+
+  ### Draw a SBM model (Bernoulli, undirected) with covariates
+  M <- 2
+  covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+  covarParam  <- rnorm(M,0,1)
+  mySBM <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam, missSBM:::l1_similarity)
+  A <- mySBM$adjMatrix
+
+  ## Formatting covariates for blockmodels
+  covariates_BM <- lapply(seq(dim(mySBM$covarArray)[3]), function(x) mySBM$covarArray[ , , x])
+
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", A, covariates_BM, verbosity = 0, explore_min = 4, explore_max = 4, plotting = "", ncores = 1)
+  BM$estimate()
+
+  vBlocks <- 1:4
+  models <- lapply(vBlocks, function(nBlocks) {
+    cl0 <- missSBM:::init_clustering(mySBM$adjMatrix, nBlocks, mySBM$covarArray, "hierarchical")
+    myFit <- missSBM:::SBM_fit_covariates$new(mySBM$adjMatrix, cl0, mySBM$covarArray)
+    myFit$doVEM(mySBM$adjMatrix)
+    myFit
+  })
+
+  vICLs  <- sapply(models, function(model) model$vICL(mySBM$adjMatrix))
+  bestICL <- models[[which.min(vICLs)]]
+
+  expect_equal(which.min(vICLs), which.max(BM$ICL))
+
+  tol <- 1e-2
+  expect_lt(sum(((-.5 * vICLs - BM$ICL)/BM$ICL)^2), tol)
+
+  error_missSBM <- sum((mySBM$connectParam - bestICL$connectParam)^2)
+  error_BM      <- sum((mySBM$connectParam - missSBM:::logistic(BM$model_parameters[[2]]$m))^2)
+  expect_lt(error_missSBM, tol)
+  expect_lt(error_BM     , tol)
+  expect_lt(abs(error_missSBM - error_BM), tol)
+})
