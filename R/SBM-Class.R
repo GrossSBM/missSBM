@@ -3,27 +3,25 @@ SBM <- # this virtual class is the mother of all subtypes of SBM (either sample 
 R6::R6Class(classname = "SBM",
   ## fields for internal use (refering to mathematical notations)
   private = list(
+    directed = NULL, # directed or undirected network
     N        = NULL, # number of nodes
     Q        = NULL, # number of blocks
     M        = NULL, # number of covariates
     alpha    = NULL, # vector of block parameters
     pi       = NULL, # matrix of connectivity
-    directed = NULL, # directed or undirected network
     beta     = NULL, # vector of covariates parameters
     phi      = NULL  # the similarity array (N x N x M)
   ),
   public = list(
     ## constructor
-    initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
+    initialize = function(directed=FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
       private$directed <- directed
       private$N        <- nNodes
-      private$Q        <- nrow(connectParam)
+      private$Q        <- length(mixtureParam)
       private$M        <- ifelse(is.null(covarArray), 0, length(covarParam))
       private$alpha    <- mixtureParam
       if (!is.null(covarArray)) {
-        stopifnot(dim(covarArray)[1] == private$N)
-        stopifnot(dim(covarArray)[2] == private$N)
-        stopifnot(dim(covarArray)[3] == private$M)
+        stopifnot(all.equal(dim(covarArray), c(private$N, private$N, private$M)))
         private$phi  <- covarArray
         private$beta <- covarParam
         private$pi   <- logit(connectParam)
