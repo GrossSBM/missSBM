@@ -29,8 +29,9 @@ getBestModel(Robject)
 \method{getBestModel}{missSBMcollection}(Robject)
 
 missSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarchical",
-  trace = TRUE, smoothing = c("none", "forward", "backward", "both"),
-  mc.cores = 1, iter_both = 1, control_VEM = list())
+  covarMatrix = NULL, covarSimilarity = l1_similarity, trace = TRUE,
+  smoothing = c("none", "forward", "backward", "both"), mc.cores = 1,
+  iter_both = 1, control_VEM = list())
 }
 \arguments{
 \item{Robject}{an object with class \code{missSBMcollection}}
@@ -42,7 +43,9 @@ missSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarchical",
 \item{sampling}{The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block"
 by default "undirected" is choosen}
 
-\item{clusterInit}{character in "hierarchical" or "spectral" for initialization}
+\item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
+
+\item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is #' @param clusterInit character in "hierarchical" or "spectral" for initialization}
 
 \item{trace}{logical, control the verbosity. Default to \code{TRUE}.}
 

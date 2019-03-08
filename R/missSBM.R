@@ -6,7 +6,8 @@
 #' @param vBlocks The vector of number of blocks considered in the collection
 #' @param sampling The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block"
 #' by default "undirected" is choosen
-#' @param clusterInit character in "hierarchical" or "spectral" for initialization
+#' @param covarMatrix An optional matrix of covariates with dimension N x M (M covariates per node).
+#' @param covarSimilarity An optional R x R -> R function  to compute similarity between node covariates. Default is #' @param clusterInit character in "hierarchical" or "spectral" for initialization
 #' @param trace logical, control the verbosity. Default to \code{TRUE}.
 #' @param mc.cores integer, the number of cores to use when multiply model are fitted
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
@@ -52,6 +53,8 @@ missSBM <- function(
   vBlocks,
   sampling,
   clusterInit = "hierarchical",
+  covarMatrix = NULL,
+  covarSimilarity = l1_similarity,
   trace     = TRUE,
   smoothing = c("none", "forward", "backward", "both"),
   mc.cores = 1,
@@ -73,9 +76,9 @@ missSBM <- function(
     function(nBlocks) {
     if (trace) cat(" Initialization of model with", nBlocks,"blocks.", "\r")
       if (is.list(clusterInit)) {
-        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit[[nBlocks]])
+        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit[[nBlocks]], covarMatrix, covarSimilarity)
       } else {
-        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit)
+        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit, covarMatrix, covarSimilarity)
       }
     }, mc.cores = mc.cores
   )
@@ -108,7 +111,7 @@ missSBM <- function(
                          init_hierarchical)
     }
     control$trace <- FALSE # forcing no trace while smoothing
-    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, split_fn, mc.cores, iter_both, control)
+    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, covarMatrix, covarSimilarity, split_fn, mc.cores, iter_both, control)
 
   }
 
