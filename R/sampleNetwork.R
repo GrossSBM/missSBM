@@ -2,7 +2,7 @@
 #'
 #' Samples a matrix (the adjacency matrix of a network) under the SBM
 #'
-#' @param adjMatrix The adjacency matrix of the network
+#' @param adjacencyMatrix The adjacency matrix of the network
 #' @param sampling The sampling design used to sample the adjacency matrix
 #' @param parameters The sampling parameters adapted to each sampling
 #' @param clusters Clusters membership vector of the nodes, only necessary for class sampling, by default equal to
@@ -51,24 +51,24 @@ sampleNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL
   stopifnot(sampling %in% available_samplings)
   if (!is.null(covarMatrix)) stopifnot(sampling %in% available_samplings_covariates)
 
-  N <- ncol(adjMatrix)
-  directed <- !isSymmetric(adjMatrix)
+  N <- ncol(adjacencyMatrix)
+  directed <- !isSymmetric(adjacencyMatrix)
 
   ## instantiate the sampler
   mySampler <-
     switch(sampling,
       "dyad"            = simpleDyadSampler$new(parameters, N, directed, getCovarArray(covarMatrix, covarSimilarity)),
       "node"            = simpleNodeSampler$new(parameters, N, directed, covarMatrix),
-      "double-standard" = doubleStandardSampler$new(parameters, adjMatrix, directed),
+      "double-standard" = doubleStandardSampler$new(parameters, adjacencyMatrix, directed),
       "block-dyad"      = blockDyadSampler$new(parameters, N, directed, clusters),
       "block-node"      = blockNodeSampler$new(parameters, N, directed, clusters),
-      "degree"          = degreeSampler$new(parameters, rowSums(adjMatrix), directed)
+      "degree"          = degreeSampler$new(parameters, rowSums(adjacencyMatrix), directed)
   )
   ## draw a sampling matrix R
   mySampler$rSamplingMatrix()
 
   ## turn this matrix to a sampled Network object
-  adjMatrix[mySampler$samplingMatrix == 0] <- NA
-  sampledNet <- sampledNetwork$new(adjMatrix)
+  adjacencyMatrix[mySampler$samplingMatrix == 0] <- NA
+  sampledNet <- sampledNetwork$new(adjacencyMatrix)
   sampledNet
 }
