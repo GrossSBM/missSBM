@@ -46,7 +46,7 @@
 #'      samplingParameters
 #'    )
 #' @export
-sampleNetwork <- function(adjMatrix, sampling, parameters, clusters = NULL, covarMatrix = NULL, covarSimilarity = l1_similarity){
+sampleNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covarMatrix = NULL, covarSimilarity = l1_similarity){
 
   stopifnot(sampling %in% available_samplings)
   if (!is.null(covarMatrix)) stopifnot(sampling %in% available_samplings_covariates)
@@ -62,7 +62,7 @@ sampleNetwork <- function(adjMatrix, sampling, parameters, clusters = NULL, cova
       "double-standard" = doubleStandardSampler$new(parameters, adjMatrix, directed),
       "block-dyad"      = blockDyadSampler$new(parameters, N, directed, clusters),
       "block-node"      = blockNodeSampler$new(parameters, N, directed, clusters),
-      "degree"          = degreeSampler$new(parameters, rowSums(adjMatrix), directed),
+      "degree"          = degreeSampler$new(parameters, rowSums(adjMatrix), directed)
   )
   ## draw a sampling matrix R
   mySampler$rSamplingMatrix()
