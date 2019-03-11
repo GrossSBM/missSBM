@@ -16,7 +16,7 @@ missingSBM_fit <-
   ),
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling,
-      clusterInit = "hierarchical", covarMatrix = NULL, covarSimilarity = l1_similarity) {
+      clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"), covarMatrix = NULL, covarSimilarity = l1_similarity) {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)

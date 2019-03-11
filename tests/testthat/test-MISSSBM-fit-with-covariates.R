@@ -21,7 +21,7 @@ covarParam  <- rnorm(M, -1, 1)
 sbm <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam)
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+control <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = TRUE)
 
 ## Consistency
 tol_truth <- 1e-2
@@ -33,7 +33,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   sampledNet <- sampleNetwork(sbm$adjMatrix, "dyad", covarParam, covarMatrix = covarMatrix)
 
   ## Perform inference
-  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix)
+  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix, clusterInit = "spectral")
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -54,8 +54,8 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth)
-## what the heck??? expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
+  ## expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
 
   ## clustering
   expect_gt(ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)

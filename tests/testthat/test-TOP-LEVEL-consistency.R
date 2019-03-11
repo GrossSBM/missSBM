@@ -63,7 +63,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       adjacencyMatrix = refAlgo$Y,
       vBlocks = truth$Q,
       sampling = ifelse(sampling == "covDyad", "dyad", "node"),
-      trace = FALSE,
+      trace = TRUE,
       covarMatrix = truth$covMatrix,
     )
     newAlgo <- missSBM_out[[1]]
@@ -72,12 +72,12 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     expect_lt(error(newAlgo$fittedSBM$mixtureParam, refAlgo$alpha, sort = TRUE), tol_ref)
     expect_lt(error(newAlgo$fittedSBM$mixtureParam, truth$alpha, sort = TRUE), tol_truth)
     ## refAlgo is poor for alpha and clsutering, but good for estimating gamma !!
-    ## expect_lt(error(refAlgo$alpha, truth$alpha, sort = TRUE), tol_truth)
+    expect_lt(error(refAlgo$alpha, truth$alpha, sort = TRUE), tol_truth)
 
     ## PI
     # expect_lt(error(newAlgo$fittedSBM$connectProb, refAlgo$pi), tol_ref)
-    # expect_lt(error(missSBM:::logistic(newAlgo$fittedSBM$connectParam), missSBM:::logistic(truth$gamma)), tol_truth)
-    # expect_lt(error(missSBM:::logistic(refAlgo$gamma_covDyad), missSBM:::logistic(truth$gamma)), tol_truth)
+    # expect_lt(error(logistic(newAlgo$fittedSBM$connectParam), missSBM:::logistic(truth$gamma)), tol_truth)
+    # expect_lt(error(logistic(refAlgo$gamma_covDyad), missSBM:::logistic(truth$gamma)), tol_truth)
 
     ## clustering
 ##    expect_gt(ARI(newAlgo$fittedSBM$memberships, refAlgo$cl), tol_ARI)
