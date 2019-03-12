@@ -120,8 +120,8 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       expect_lt(err_new, tol_truth*2)
       cat(" new better on connectivity")
     } else {
-      expect_lt(err_new, 5*tol_ref)
-      expect_lt(err_old, 5*tol_ref)
+      expect_lt(err_new, 10*tol_ref)
+      expect_lt(err_old, 10*tol_ref)
     }
 
     ## clustering
