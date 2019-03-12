@@ -39,7 +39,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
           # optimizer parameters
           opts = list("algorithm" = "NLOPT_LD_MMA", "xtol_rel" = 1.0e-4),
           # additional argument for objective/gradient function
-          Y = adjMatrix, cov = private$phi, Tau = private$tau
+          Y = adjMatrix, cov = private$phi, Tau = private$tau,
         )
       private$beta  <- optim_out$solution[-(1:(private$Q^2))]
       private$pi    <- matrix(optim_out$solution[1:(private$Q^2)], private$Q, private$Q)

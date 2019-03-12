@@ -103,7 +103,8 @@ dyadSampling_fit_covariates <-
       private$psi   <- coefficients(glm_out)
       private$rho   <- fitted(glm_out)
       private$D_obs <- sampledNetwork$D_obs
-    }
+    },
+    update_imputation = function(PI) {1 * (PI > mean(PI))}
   ),
   active = list(
     prob_obs = function(value) {private$rho},
@@ -150,7 +151,8 @@ nodeSampling_fit_covariates <-
       glm_out     <- glm.fit(covarMatrix, y, family = binomial())
       private$psi <- coefficients(glm_out)
       private$rho <- fitted(glm_out)
-    }
+    },
+    update_imputation = function(PI) {1 * (PI > mean(PI))}
   ),
   active = list(
     prob_obs = function(value) {private$rho},
