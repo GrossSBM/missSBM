@@ -118,7 +118,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   }
 
   ## checking consistency of the clustering
-  expect_lt(1 - ARI(mySBM_fit$memberships, truth$memberships), 0.15)
+  expect_gt(ARI(mySBM_fit$memberships, truth$memberships), 0.7)
 
 })
 
