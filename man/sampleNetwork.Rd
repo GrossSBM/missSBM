@@ -4,11 +4,11 @@
 \alias{sampleNetwork}
 \title{Sampling of a network}
 \usage{
-sampleNetwork(adjMatrix, sampling, parameters, clusters = NULL,
+sampleNetwork(adjacencyMatrix, sampling, parameters, clusters = NULL,
   covarMatrix = NULL, covarSimilarity = l1_similarity)
 }
 \arguments{
-\item{adjMatrix}{The adjacency matrix of the network}
+\item{adjacencyMatrix}{The adjacency matrix of the network}
 
 \item{sampling}{The sampling design used to sample the adjacency matrix}
 
