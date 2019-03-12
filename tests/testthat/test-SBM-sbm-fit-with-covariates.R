@@ -50,7 +50,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates with the number of block g
   ## testing just hierarchical clustering (best init)
   mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_spec, sbm$covarArray)
 
-  out <- mySBM_fit$doVEM(sbm$adjMatrix, trace = TRUE, threshold = tol, maxIter = 10, fixPointIter = 3)
+  out <- mySBM_fit$doVEM(sbm$adjMatrix, trace = FALSE, threshold = tol, maxIter = 10, fixPointIter = 3)
 
   ## A bit long, but it works: we do just as good as blockmodels, sometimes better
   covariates_BM <- lapply(seq(dim(sbm$covarArray)[3]), function(x) sbm$covarArray[ , , x])
@@ -64,7 +64,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates with the number of block g
 
   ## similar estimation thant BM for regression parameters
   error_BM      <- error(sbm$covarParam, as.numeric(BM$model_parameters[[3]]$beta))
-  error_missSBM <- error(sbm$covarParam, mySBM_fit_hier$covarParam)
+  error_missSBM <- error(sbm$covarParam, mySBM_fit$covarParam)
   expect_lt(abs(error_missSBM - error_BM), 1e-2)
 
   ## checking estimation consistency
@@ -86,12 +86,12 @@ referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", packa
 test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nBlocks", {
 
   truth   <- referenceResults$true_sbm_cov
-  cl_init <- missSBM:::init_clustering(truth$adjMatrix, Q, truth$covarArray, "hierarchical")
+  cl_init <- missSBM:::init_clustering(truth$adjMatrix, Q, truth$covarArray, "spectral")
 
   ## testing just hierarchical clustering (best init)
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(truth$adjMatrix, cl_spec, truth$covarArray)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(truth$adjMatrix, cl_init, truth$covarArray)
 
-  out <- mySBM_fit$doVEM(truth$adjMatrix, trace = TRUE, threshold = tol, maxIter = 10, fixPointIter = 3)
+  out <- mySBM_fit$doVEM(truth$adjMatrix, trace = FALSE, threshold = 1e-4, maxIter = 10, fixPointIter = 3)
 
   ## A bit long, but it works: we do just as good as blockmodels, sometimes better
   covariates_BM <- lapply(seq(dim(truth$covarArray)[3]), function(x) truth$covarArray[ , , x])
@@ -118,7 +118,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   }
 
   ## checking consistency of the clustering
-  expect_lt(1 - ARI(mySBM_fit$memberships, truth$memberships), tol)
+  expect_lt(1 - ARI(mySBM_fit$memberships, truth$memberships), 0.15)
 
 })
 
