@@ -47,48 +47,81 @@ test_that("Consistency of VEM of a SBM_fit_covariates with the number of block g
 
   tol <- 1e-3
 
-  ## testing just hirarchical clustering (best init)
-  mySBM_fit_hier <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_hier, sbm$covarArray)
-  # mySBM_fit_spec <- missSBM:::SBM_fit_covariates$new(A, cl_spec, sbm$covarArray)
-  # mySBM_fit_kmns <- missSBM:::SBM_fit_covariates$new(A, cl_kmns, sbm$covarArray)
+  ## testing just hierarchical clustering (best init)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_spec, sbm$covarArray)
 
-  out_hier <- mySBM_fit_hier$doVEM(sbm$adjMatrix, trace = TRUE, threshold = tol, maxIter = 10, fixPointIter = 3)
-  # out_spec <- mySBM_fit_spec$doVEM(A, trace = TRUE, threshold = tol, maxIter = 10, fixPointIter = 3)
-  # out_kmns <- mySBM_fit_kmns$doVEM(A, trace = TRUE, threshold = tol, maxIter = 10, fixPointIter = 3)
+  out <- mySBM_fit$doVEM(sbm$adjMatrix, trace = TRUE, threshold = tol, maxIter = 10, fixPointIter = 3)
 
   ## A bit long, but it works: we do just as good as blockmodels, sometimes better
-  # covariates_BM <- lapply(seq(dim(sbm$covarArray)[3]), function(x) sbm$covarArray[ , , x])
-  # BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates_BM, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
-  # BM$estimate()
-  # error_BM      <- error(sbm$connectParam, BM$model_parameters[[3]]$m)
-  # error_missSBM <- error(sbm$connectParam, mySBM_fit_hier$connectParam)
-  # expect_lt(error_missSBM, error_BM)
-  #
-  # error_BM      <- error(sbm$covarParam, BM$model_parameters[[3]]$beta)
-  # error_missSBM <- error(sbm$covarParam, mySBM_fit_hier$covarParam)
-  # expect_lt(abs(error_missSBM - error_BM), tol)
+  covariates_BM <- lapply(seq(dim(sbm$covarArray)[3]), function(x) sbm$covarArray[ , , x])
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates_BM, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
+  BM$estimate()
+
+  ## similar estimation thant BM for connection parameters
+  error_BM      <- error(sbm$connectParam, BM$model_parameters[[3]]$m)
+  error_missSBM <- error(sbm$connectParam, mySBM_fit$connectParam)
+  expect_lt(abs(error_missSBM - error_BM), 1e-2)
+
+  ## similar estimation thant BM for regression parameters
+  error_BM      <- error(sbm$covarParam, as.numeric(BM$model_parameters[[3]]$beta))
+  error_missSBM <- error(sbm$covarParam, mySBM_fit_hier$covarParam)
+  expect_lt(abs(error_missSBM - error_BM), 1e-2)
 
   ## checking estimation consistency
-  expect_lt(error(logistic(mySBM_fit_hier$connectParam), pi), tol)
-  # expect_lt(error(logistic(mySBM_fit_spec$connectParam), pi), tol)
-  # expect_lt(error(logistic(mySBM_fit_kmns$connectParam), pi), tol)
+  expect_lt(error(logistic(mySBM_fit$connectParam), pi), tol)
 
-  expect_lt(error(mySBM_fit_hier$covarParam, covarParam), tol)
-  # expect_lt(error(missSBM:::logistic(mySBM_fit_kmns$connectParam), pi), tol)
+  expect_lt(error(mySBM_fit$covarParam, covarParam), tol*10)
 
   ## checking consistency of the clustering
-  expect_lt(1 - ARI(mySBM_fit_hier$memberships, sbm$memberships), tol)
-  # expect_lt(1 - ARI(mySBM_fit_spec$memberships, sbm$memberships), tol)
-  # expect_lt(1 - ARI(mySBM_fit_kmns$memberships, sbm$memberships), tol)
+  expect_lt(1 - ARI(mySBM_fit$memberships, sbm$memberships), tol)
 
   tol <- 1e-3
 
-  ## checking consistency between the ICL and with the value comptued by blockmodels
-  # expect_lt(abs(mySBM_fit_hier$vBound(A) - mySBM_fit_spec$vBound(A))/abs(mySBM_fit_spec$vBound(A)), tol)
-  # expect_lt(abs(mySBM_fit_hier$vBound(A) - mySBM_fit_kmns$vBound(A))/abs(mySBM_fit_kmns$vBound(A)), tol)
-  # expect_lt(abs(mySBM_fit_kmns$vBound(A) - mySBM_fit_spec$vBound(A))/abs(mySBM_fit_spec$vBound(A)), tol)
+})
+
+## CONSISTENCY WITH BLOCKMODELS AND ON TIMOTHÉE'S EXAMPLE
+
+referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", package = "missSBM"))
+
+test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nBlocks", {
+
+  truth   <- referenceResults$true_sbm_cov
+  cl_init <- missSBM:::init_clustering(truth$adjMatrix, Q, truth$covarArray, "hierarchical")
+
+  ## testing just hierarchical clustering (best init)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(truth$adjMatrix, cl_spec, truth$covarArray)
+
+  out <- mySBM_fit$doVEM(truth$adjMatrix, trace = TRUE, threshold = tol, maxIter = 10, fixPointIter = 3)
+
+  ## A bit long, but it works: we do just as good as blockmodels, sometimes better
+  covariates_BM <- lapply(seq(dim(truth$covarArray)[3]), function(x) truth$covarArray[ , , x])
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", truth$adjMatrix, covariates_BM, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
+  BM$estimate()
+
+  ## similar estimation thant BM for connection parameters
+  error_BM      <- error(logistic(sbm$connectParam), logistic(BM$model_parameters[[3]]$m))
+  error_missSBM <- error(logistic(sbm$connectParam), logistic(mySBM_fit$connectParam))
+
+  if (error_missSBM > error_BM) {
+    expect_lt(abs(error_missSBM - error_BM), 5e-2)
+  } else {
+    cat('bette than BM.')
+  }
+
+  ## similar estimation thant BM for regression parameters
+  error_BM      <- error(truth$covarParam, as.numeric(BM$model_parameters[[3]]$beta))
+  error_missSBM <- error(truth$covarParam, mySBM_fit$covarParam)
+  if (error_missSBM > error_BM) {
+    expect_lt(abs(error_missSBM - error_BM), 5e-2)
+  } else {
+    cat('bette than BM.')
+  }
+
+  ## checking consistency of the clustering
+  expect_lt(1 - ARI(mySBM_fit$memberships, truth$memberships), tol)
 
 })
+
 
 ## CONSISTENCY WITH BLOCKMODELS
 
