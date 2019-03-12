@@ -51,7 +51,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       cat(" new better on connectivity")
     } else {
       expect_lt(err_old, tol_ref)
-      expect_lt(err_old, tol_ref)
+      expect_lt(err_gap, tol_ref)
     }
 
     ## clustering
@@ -71,8 +71,8 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
         expect_lt(err_new, tol_truth)
         cat(" new better on sampling parameters")
       } else {
-        expect_lt(gap_old, tol_ref)
-        expect_lt(gap_old, tol_ref)
+        expect_lt(err_old, tol_ref)
+        expect_lt(err_gap, tol_ref)
       }
     }
     cat("\n")
@@ -95,7 +95,8 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       vBlocks = truth$nBlocks,
       sampling = ifelse(sampling == "dyad-covariates", "dyad", "node"),
       trace = TRUE,
-      covarMatrix = refAlgo$covarMatrix
+      covarMatrix = refAlgo$covarMatrix,
+      clusterInit = "spectral"
     )
     newAlgo <- missSBM_out[[1]]
 
@@ -107,8 +108,8 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       expect_lt(err_new, tol_truth)
       cat(" new better on mixture")
     } else {
-      expect_lt(gap_old, tol_ref)
-      expect_lt(gap_old, tol_ref)
+      expect_lt(err_old, tol_ref)
+      expect_lt(err_gap, tol_ref)
     }
 
     ## connectivity parameters (pi)
@@ -116,11 +117,11 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     err_old <- error(logistic(refAlgo$connectParam)          , logistic(truth$connectParam), sort = TRUE)
     err_gap <- error(logistic(newAlgo$fittedSBM$connectParam), logistic(refAlgo$connectParam), sort = TRUE)
     if (err_new < err_old) {
-      expect_lt(err_new, tol_truth)
+      expect_lt(err_new, tol_truth*2)
       cat(" new better on connectivity")
     } else {
-      expect_lt(gap_old, tol_ref)
-      expect_lt(gap_old, tol_ref)
+      expect_lt(err_new, 5*tol_ref)
+      expect_lt(err_old, 5*tol_ref)
     }
 
     ## clustering

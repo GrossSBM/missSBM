@@ -33,38 +33,30 @@ missingSBM_fit <-
       ## network data with basic imputation at startup
       adjancency0 <- sampledNet$adjMatrix; adjancency0[sampledNet$NAs] <- 0
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
+      private$imputedNet <- sampledNet$adjMatrix
+      private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
 
-      ## Initialize the sampling fit
+      ## Initialize the sampling fit and the SBM fit
       if (is.null(covarMatrix)) {
+        private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit$new(private$sampledNet),
           "node"            = nodeSampling_fit$new(private$sampledNet),
           "block-node"      = blockSampling_fit$new(private$sampledNet, Z),
           "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
           "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, Z),
-          "degree"          = degreeSampling_fit$new(private$sampledNet, Z, pi0)
+          "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam)
         )
       } else {
+        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarArray)
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, covarArray),
           "node"            = nodeSampling_fit_covariates$new(private$sampledNet, covarMatrix)
         )
       }
-      ## Initialize the SBM fit
-      private$imputedNet <- sampledNet$adjMatrix
-      if (is.null(covarMatrix)) {
-        private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
-        private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
-
-      } else {
-        PI <- 1 * logistic( (Z %*% logit(pi0) %*% t(Z)) - roundProduct(covarArray, private$sampling$parameters)) > .5
-        private$imputedNet[sampledNet$NAs] <- PI[sampledNet$NAs]
-        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarArray)
-      }
-
     }
   ),
   active = list(
