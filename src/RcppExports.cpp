@@ -19,12 +19,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // vExpec_covariates
-double vExpec_covariates(Rcpp::IntegerMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha);
+double vExpec_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha);
 RcppExport SEXP _missSBM_vExpec_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type roundProd(roundProdSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
@@ -34,12 +34,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // E_step_covariates
-Rcpp::NumericMatrix E_step_covariates(Rcpp::IntegerMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha);
+Rcpp::NumericMatrix E_step_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha);
 RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type roundProd(roundProdSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
@@ -49,13 +49,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // Mstep_covariates_undirected
-List Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau);
+List Mstep_covariates_undirected(arma::vec param, NumericMatrix Y, arma::cube cov, NumericMatrix Tau);
 RcppExport SEXP _missSBM_Mstep_covariates_undirected(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type param(paramSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
     rcpp_result_gen = Rcpp::wrap(Mstep_covariates_undirected(param, Y, cov, Tau));
@@ -63,13 +63,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // Mstep_covariates_directed
-List Mstep_covariates_directed(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau);
+List Mstep_covariates_directed(arma::vec param, NumericMatrix Y, arma::cube cov, NumericMatrix Tau);
 RcppExport SEXP _missSBM_Mstep_covariates_directed(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type param(paramSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
     rcpp_result_gen = Rcpp::wrap(Mstep_covariates_directed(param, Y, cov, Tau));

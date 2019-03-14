@@ -22,7 +22,7 @@ Rcpp::NumericMatrix roundProduct(arma::cube phi, arma::vec beta) {
 
 // [[Rcpp::export]]
 double vExpec_covariates(
-    Rcpp::IntegerMatrix Y,
+    Rcpp::NumericMatrix Y,
     Rcpp::NumericMatrix roundProd,
     Rcpp::NumericMatrix gamma,
     Rcpp::NumericMatrix Tau,
@@ -50,7 +50,7 @@ double vExpec_covariates(
 
 // [[Rcpp::export]]
 Rcpp::NumericMatrix E_step_covariates(
-    Rcpp::IntegerMatrix Y,
+    Rcpp::NumericMatrix Y,
     Rcpp::NumericMatrix roundProd,
     Rcpp::NumericMatrix gamma,
     Rcpp::NumericMatrix Tau,
@@ -80,7 +80,7 @@ Rcpp::NumericMatrix E_step_covariates(
 }
 
 // [[Rcpp::export]]
-List Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
+List Mstep_covariates_undirected(arma::vec param, NumericMatrix Y, arma::cube cov, NumericMatrix Tau) {
 
   int N = Y.ncol();
   int Q = Tau.ncol();
@@ -117,7 +117,7 @@ List Mstep_covariates_undirected(arma::vec param, IntegerMatrix Y, arma::cube co
 }
 
 // [[Rcpp::export]]
-List Mstep_covariates_directed(arma::vec param, IntegerMatrix Y, arma::cube cov, NumericMatrix Tau) {
+List Mstep_covariates_directed(arma::vec param, NumericMatrix Y, arma::cube cov, NumericMatrix Tau) {
 
   int N = Y.ncol();
   int Q = Tau.ncol();

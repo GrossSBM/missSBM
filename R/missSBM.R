@@ -52,7 +52,7 @@ missSBM <- function(
   adjacencyMatrix,
   vBlocks,
   sampling,
-  clusterInit = "hierarchical",
+  clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"),
   covarMatrix = NULL,
   covarSimilarity = l1_similarity,
   trace     = TRUE,

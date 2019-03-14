@@ -16,7 +16,7 @@ missingSBM_fit <-
   ),
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling,
-      clusterInit = "hierarchical", covarMatrix = NULL, covarSimilarity = l1_similarity) {
+      clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"), covarMatrix = NULL, covarSimilarity = l1_similarity) {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)
@@ -28,12 +28,12 @@ missingSBM_fit <-
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
       clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, covarArray, clusterInit)
+      Z <- clustering_indicator(clusterInit)
 
       ## network data with basic imputation at startup
-      private$imputedNet <- sampledNet$adjMatrix
-      Z <- clustering_indicator(clusterInit)
       adjancency0 <- sampledNet$adjMatrix; adjancency0[sampledNet$NAs] <- 0
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
+      private$imputedNet <- sampledNet$adjMatrix
       private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
       ## Save the sampledNetwork object in the current environment
@@ -45,10 +45,10 @@ missingSBM_fit <-
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit$new(private$sampledNet),
           "node"            = nodeSampling_fit$new(private$sampledNet),
-          "block-node"      = blockSampling_fit$new(private$sampledNet, private$SBM$blocks),
+          "block-node"      = blockSampling_fit$new(private$sampledNet, Z),
           "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
-          "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, private$SBM$blocks),
-          "degree"          = degreeSampling_fit$new(private$sampledNet, private$SBM$blocks, private$SBM$connectParam)
+          "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, Z),
+          "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam)
         )
       } else {
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarArray)
@@ -88,6 +88,7 @@ missingSBM_fit$set("public", "doVEM",
     if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
     if (control$trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM.\n", sep = "")
     if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
+
     while (!cond) {
       i <- i + 1
       if (control$trace) cat(" iteration #:", i, "\r")
