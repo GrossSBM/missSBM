@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulateSBM.R
 \name{simulateSBM}
 \alias{simulateSBM}
-\title{Simulation of a Stochastic Block Model}
+\title{Simulatation of a Stochastic Block Model}
 \usage{
 simulateSBM(N, alpha, pi, directed = FALSE, covarMatrix = NULL,
   covarParam = NULL, covarSimilarity = l1_similarity)
@@ -12,10 +12,9 @@ simulateSBM(N, alpha, pi, directed = FALSE, covarMatrix = NULL,
 
 \item{alpha}{The mixture parameters}
 
-\item{pi}{The connectivity matrix (probabilities inter and intra clusters)}
+\item{pi}{The connectivity matrix (either probabilities of inter and intra clusters )}
 
-\item{directed}{Boolean variable to indicate whether the network is directed or not,
-by default "undirected" is choosen}
+\item{directed}{Boolean variable to indicate whether the network is directed or not. Default to \code{FALSE}.}
 
 \item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
 
@@ -24,19 +23,35 @@ by default "undirected" is choosen}
 \item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
 }
 \value{
-a object with class \code{SBM-Class}
+an object with class \code{SBM_sampler}
 }
 \description{
-Generates realizations (blocks and adjancency) of a Stochastic Block model
+Generates a realization (blocks and adjancency matrix) of a Stochastic Block model
 }
 \examples{
-### A SBM model : ###
-N <- 300
-Q <- 3
+## SBM parameters
+N <- 300 # number of nodes
+Q <- 3   # number of clusters
 alpha <- rep(1,Q)/Q     # mixture parameter
 pi <- diag(.45,Q) + .05 # connectivity matrix
-directed <- FALSE
-## Simulation of an Bernoulli non-directed SBM
-mySBM <- simulateSBM(N, alpha, pi, directed)
+gamma <- log(pi/(1-pi)) # logit transform fo the model with covariates
+M <- 2 # two Gaussian covariates
+covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+covarParam  <- rnorm(M, -1, 1)
 
+## draw a SBM without covariates
+sbm <- simulateSBM(N, alpha, pi, directed)
+
+## draw a SBM model with covariates
+sbm_cov <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam)
+
+\dontrun{
+par(mfrow = c(1,2))
+plot(sbm)
+plot(sbm_cov)
+}
+
+}
+\seealso{
+The class \code{\link{SBM_sampler}}
 }

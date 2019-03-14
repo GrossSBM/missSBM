@@ -1,8 +1,48 @@
-#' R6 Class definition of a sampler for a Stochastic Block Model
+#' An R6 Class to represent a sampler for a SBM
 #'
-#' this class is used to sample from an SBM, thus has some additional fields and methods related to the blocks and the adjacency matrix (Z and Y)
+#' The function \code{\link{simulateSBM}} produces an instance of an object with class \code{SBM_sampler}.
+#'
+#' All fields of this class are only accessible for reading. This class comes with a set of methods,
+#' some of them being useful for the user (see examples)
+#' \itemize{
+#' \item{R6 methods:}{$rBlocks(), $rAdjancencyMatrix()}
+#' \item{S3 methods}{print(), plot()}
+#' }
+#'
+#' @field nNodes The number of nodes
+#' @field nBlocks The number of blocks
+#' @field nCovariates  The number of covariates
+#' @field nDyads The number of possible dyad in the network (depends on the direction)
+#' @field direction A character indicating if the network is directed or undirected
+#' @field hasCovariates a boolean indicating if the model has covariates
+#' @field mixtureParam the vector of mixture parameters
+#' @field connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
+#' @field covarParam the vector of parameters associated with the covariates
+#' @field covarArray the array of covariates
 #'
 #' @include SBM-Class.R
+#' @importFrom R6 R6Class
+#' @examples
+#' ## SBM parameters
+#' N <- 300 # number of nodes
+#' Q <- 3   # number of clusters
+#' alpha <- rep(1,Q)/Q     # mixture parameter
+#' pi <- diag(.45,Q) + .05 # connectivity matrix
+#' gamma <- log(pi/(1-pi)) # logit transform fo the model with covariates
+#' M <- 2 # two Gaussian covariates
+#' covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+#' covarParam  <- rnorm(M, -1, 1)
+#'
+#' ## draw a SBM without covariates through simulateSBM
+#' sbm <- simulateSBM(N, alpha, pi, directed)
+#'
+#' ## equivalent construction from the SBM_sampler class itslef
+#' sbm_s <- SBM_sampler$new(directed, N, alpha, pi)
+#' sbm_s$rBlocks() # draw some blocks
+#' sbm_s$rAdjMatrix() # draw some edges
+#'
+#' @seealso The function \code{\link{simulateSBM}}.
+#' @export
 SBM_sampler <-
   R6::R6Class(classname = "SBM_sampler",
   inherit = SBM,
@@ -54,7 +94,7 @@ function(model = "Sampler for Stochastic Block Model\n") {
   cat("* Additional fields \n")
   cat("  $blocks, $memberships, $adjMatrix, $connectProb\n")
   cat("* S3 methods \n")
-  cat("  $plot\n")
+  cat("  plot, print\n")
 })
 
 SBM_sampler$set("public", "print", function() self$show())
@@ -67,7 +107,7 @@ SBM_sampler$set("public", "plot",
     }
     if (type == "connectivity") {
       plot(
-        graph_from_adjacency_matrix(
+        igraph::graph_from_adjacency_matrix(
           private$pi,
           mode = ifelse(private$directed, "directed", "undirected"),
           weighted = TRUE, diag = TRUE

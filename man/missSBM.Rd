@@ -28,7 +28,8 @@ getBestModel(Robject)
 
 \method{getBestModel}{missSBMcollection}(Robject)
 
-missSBM(adjacencyMatrix, vBlocks, sampling, clusterInit = "hierarchical",
+missSBM(adjacencyMatrix, vBlocks, sampling,
+  clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"),
   covarMatrix = NULL, covarSimilarity = l1_similarity, trace = TRUE,
   smoothing = c("none", "forward", "backward", "both"), mc.cores = 1,
   iter_both = 1, control_VEM = list())
