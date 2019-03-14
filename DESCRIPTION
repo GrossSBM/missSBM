@@ -29,6 +29,12 @@ Imports:
     R6
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
+    'AmericanCollegeFootball.R'
+    'AmericanPolBooks.R'
+    'DavidCopperfield.R'
+    'ESR1.R'
+    'Euresearch.R'
+    'FrenchPolBlogs.R'
     'RcppExports.R'
     'S3-methods_missSBMcollection.R'
     'SBM-Class.R'
@@ -36,7 +42,7 @@ Collate:
     'SBM_fit_covariates-Class.R'
     'SBM_fit_nocovariate-Class.R'
     'SBM_sampler-Class.R'
-    'data.R'
+    'foodweb.R'
     'initialization.R'
     'missSBM-package.R'
     'smoother_SBM.R'
