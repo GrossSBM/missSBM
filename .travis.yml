@@ -6,7 +6,6 @@ cache: packages
 warnings_are_errors: false
 latex: false
 r_check_args: --as-cran
-install: travis_wait 30 mvn install
 
 matrix:
   include:
@@ -16,7 +15,7 @@ matrix:
         - covr
         - pkgdown
       after_success:
-        - Rscript -e 'covr::codecov(quiet=FALSE)'
+        - travis_wait 20 Rscript -e 'covr::codecov(quiet=FALSE)'
         - R CMD INSTALL .
         - Rscript -e 'pkgdown::build_site()'
       deploy:
