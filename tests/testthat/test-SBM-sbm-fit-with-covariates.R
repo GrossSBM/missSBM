@@ -79,48 +79,48 @@ test_that("Consistency of VEM of a SBM_fit_covariates with the number of block g
 
 })
 
-## CONSISTENCY WITH BLOCKMODELS AND ON TIMOTHÉE'S EXAMPLE
-
-referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", package = "missSBM"))
-
-test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nBlocks", {
-
-  truth   <- referenceResults$true_sbm_cov
-  cl_init <- missSBM:::init_clustering(truth$adjMatrix, Q, truth$covarArray, "spectral")
-
-  ## testing just hierarchical clustering (best init)
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(truth$adjMatrix, cl_init, truth$covarArray)
-
-  out <- mySBM_fit$doVEM(truth$adjMatrix, trace = FALSE, threshold = 1e-4, maxIter = 10, fixPointIter = 3)
-
-  ## A bit long, but it works: we do just as good as blockmodels, sometimes better
-  covariates_BM <- lapply(seq(dim(truth$covarArray)[3]), function(x) truth$covarArray[ , , x])
-  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", truth$adjMatrix, covariates_BM, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
-  BM$estimate()
-
-  ## similar estimation thant BM for connection parameters
-  error_BM      <- error(logistic(sbm$connectParam), logistic(BM$model_parameters[[3]]$m))
-  error_missSBM <- error(logistic(sbm$connectParam), logistic(mySBM_fit$connectParam))
-
-  if (error_missSBM > error_BM) {
-    expect_lt(abs(error_missSBM - error_BM), 5e-2)
-  } else {
-    cat('bette than BM.')
-  }
-
-  ## similar estimation thant BM for regression parameters
-  error_BM      <- error(truth$covarParam, as.numeric(BM$model_parameters[[3]]$beta))
-  error_missSBM <- error(truth$covarParam, mySBM_fit$covarParam)
-  if (error_missSBM > error_BM) {
-    expect_lt(abs(error_missSBM - error_BM), 5e-2)
-  } else {
-    cat('bette than BM.')
-  }
-
-  ## checking consistency of the clustering
-  expect_gt(ARI(mySBM_fit$memberships, truth$memberships), 0.6)
-
-})
+# ## CONSISTENCY WITH BLOCKMODELS AND ON TIMOTHÉE'S EXAMPLE
+#
+# referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", package = "missSBM"))
+#
+# test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nBlocks", {
+#
+#   truth   <- referenceResults$true_sbm_cov
+#   cl_init <- missSBM:::init_clustering(truth$adjMatrix, Q, truth$covarArray, "spectral")
+#
+#   ## testing just hierarchical clustering (best init)
+#   mySBM_fit <- missSBM:::SBM_fit_covariates$new(truth$adjMatrix, cl_init, truth$covarArray)
+#
+#   out <- mySBM_fit$doVEM(truth$adjMatrix, trace = FALSE, threshold = 1e-4, maxIter = 10, fixPointIter = 3)
+#
+#   ## A bit long, but it works: we do just as good as blockmodels, sometimes better
+#   covariates_BM <- lapply(seq(dim(truth$covarArray)[3]), function(x) truth$covarArray[ , , x])
+#   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", truth$adjMatrix, covariates_BM, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
+#   BM$estimate()
+#
+#   ## similar estimation thant BM for connection parameters
+#   error_BM      <- error(logistic(sbm$connectParam), logistic(BM$model_parameters[[3]]$m))
+#   error_missSBM <- error(logistic(sbm$connectParam), logistic(mySBM_fit$connectParam))
+#
+#   if (error_missSBM > error_BM) {
+#     expect_lt(abs(error_missSBM - error_BM), 5e-2)
+#   } else {
+#     cat('bette than BM.')
+#   }
+#
+#   ## similar estimation thant BM for regression parameters
+#   error_BM      <- error(truth$covarParam, as.numeric(BM$model_parameters[[3]]$beta))
+#   error_missSBM <- error(truth$covarParam, mySBM_fit$covarParam)
+#   if (error_missSBM > error_BM) {
+#     expect_lt(abs(error_missSBM - error_BM), 5e-2)
+#   } else {
+#     cat('bette than BM.')
+#   }
+#
+#   ## checking consistency of the clustering
+#   expect_gt(ARI(mySBM_fit$memberships, truth$memberships), 0.6)
+#
+# })
 
 
 ## CONSISTENCY WITH BLOCKMODELS

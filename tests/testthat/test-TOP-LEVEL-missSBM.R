@@ -90,7 +90,3 @@ test_that("missSBM with a collection of models", {
     expect_true(is.data.frame(optimizationStatus(collection)))
   }
 })
-
-# test_that("infer SBM with degree sampling works", {
-#
-# })
