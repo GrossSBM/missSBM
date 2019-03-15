@@ -1,4 +1,46 @@
-#' @import R6
+#' An R6 Class to represent a sampler for a SBM
+#'
+#' The function \code{\link{simulateSBM}} produces an instance of an object with class \code{SBM_sampler}.
+#'
+#' All fields of this class are only accessible for reading. This class comes with a basic plot and print methods
+#'
+#' @field samplingRate percentage of observed dyads
+#' @field nNodes number of nodes
+#' @field nDyads number of dyads
+#' @field is_directed direction
+#' @field adjMatrix adjacency matrix (with NA)
+#' @field covarMatrix the matrix of covariates (if applicable)
+#' @field covarArray the array of covariates (if applicable)
+#' @field dyads list of potential dyads in the network
+#' @field missingDyads array indices of missing dyads
+#' @field observedDyads array indices of observed dyads
+#' @field samplingMatrix matrix of observed and non-observed edges
+#' @field observedNodes vector of observed and non-observed nodes
+#' @field NAs boolean for NA entries in the adjacencyMatrix
+#'
+#' @importFrom R6 R6Class
+#' @examples
+#' ## SBM parameters
+#' directed <- FALSE
+#' N <- 300 # number of nodes
+#' Q <- 3   # number of clusters
+#' alpha <- rep(1,Q)/Q     # mixture parameter
+#' pi <- diag(.45,Q) + .05 # connectivity matrix
+#'
+#' ## draw a SBM without covariates
+#' sbm <- simulateSBM(N, alpha, pi, directed)
+#'
+#' ## Sampling of the network data
+#' sampled_network <-
+#'      sampleNetwork(
+#'        adjacencyMatrix = sbm$adjMatrix,
+#'        sampling        = "double-standard",
+#'        parameters      = c(0.4, 0.8)
+#'      )
+#'
+#' print(sampled_network)
+#' plot(sampled_network)
+#'@export
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
@@ -82,17 +124,11 @@ sampledNetwork <-
   )
 )
 
-#' @export
 sampledNetwork$set("public", "plot",
-function(title = "Network sampling") {
-  par(mfrow = c(1,2))
-  image_NA(self$samplingMatrix , main = "sampling matrix")
-  image_NA(self$adjMatrix, main = "adjacency matrix")
-  title(main = paste("\n",title,"with sampling rate:", signif(self$samplingRate,3)), outer = TRUE)
-  par(mfrow=c(1,1))
+function(main = paste("Network sampling with sampling rate:", signif(self$samplingRate,3))) {
+  image_NA(self$adjMatrix, main = main)
 })
 
-#' @export
 sampledNetwork$set("public", "show",
 function(model = "Sampled Network\n") {
   cat(model)

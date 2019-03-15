@@ -6,7 +6,6 @@
 #' @include networkSampling-Class.R
 #' @include utils.R
 #' @import R6
-#' @export
 networkSampler <-
   R6::R6Class(classname = "networkSampler",
   inherit = networkSampling,
