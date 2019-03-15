@@ -1,5 +1,5 @@
-missSBM: Handling missing data in Stochastic Block Models
-================
+
+# missSBM: Handling missing data in Stochastic Block Models
 
 [![Travis build
 status](https://travis-ci.org/jchiquet/missSBM.svg?branch=master)](https://travis-ci.org/jchiquet/missSBM)
@@ -21,10 +21,11 @@ status](https://codecov.io/gh/jchiquet/missSBM/branch/master/graph/badge.svg)](h
 devtools::install_github("jchiquet/missSBM")
 ```
 
-## References
+## Reference
 
-Please cite our work using the following references:
+Please cite our work using the following reference:
 
-  - T. Tabouy, P. Barbillon, J. Chiquet. *Variational Inference for
-    Stochastic Block Models from Sampled Data*, 2018
-    [link](https://arxiv.org/abs/1707.04141)
+Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational
+Inference for Stochastic Block Models from Sampled Data”, *Journal of
+the American Statistical Association*, DOI:
+[10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934)
