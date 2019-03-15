@@ -38,3 +38,7 @@ src/*.o
 src/*.so
 src/*.dll
 src/Makevars
+
+# ignore local pkgdown outputs
+^docs$
+/docs/

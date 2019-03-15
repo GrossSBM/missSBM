@@ -1,7 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: false
+sudo: required
 cache: packages
 warnings_are_errors: false
 latex: false
@@ -13,9 +13,19 @@ matrix:
       r: release
       r_packages:
         - covr
+        - pkgdown
       after_success:
         - Rscript -e 'covr::codecov(quiet=FALSE)'
-      env: NB='w/ covr' ## Just a label      
+        - R CMD INSTALL .
+        - Rscript -e 'pkgdown::build_site()'
+      deploy:
+        - provider: pages
+          skip-cleanup: true
+          github-token: $GITHUB_PAT
+          keep-history: true
+          local-dir: docs
+          on:
+            branch: master
     - os: linux
       r: devel
     - os: osx
@@ -24,7 +34,7 @@ matrix:
 before_install:
   - Rscript -e 'c(physical = parallel::detectCores(logical = FALSE), logical = parallel::detectCores())'
   - export _R_CHECK_TIMINGS_=0  ## Report on timing for all tests
-  
+
 notifications:
   email:
     on_success: change

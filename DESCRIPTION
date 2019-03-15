@@ -3,7 +3,7 @@ Type: Package
 Title: Handling missing data in Stochastic Block Models
 Version: 0.1.0-9000
 Authors@R: c(
-  person("Pierre", "Barbillon", role = c("aut"), email = "pierre.barbillon@agroparistech.fr"),
+  person("Pierre", "Barbillon", role = c("ctb"), email = "pierre.barbillon@agroparistech.fr"),
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inra.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
   person("Timothée", "Tabouy", role = c("aut"), email = "timothee.tabouy@agroparistech.fr")
