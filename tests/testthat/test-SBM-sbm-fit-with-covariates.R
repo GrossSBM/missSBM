@@ -129,6 +129,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
 
   ## ========================================================================
   ## A SBM model with covariates
+  set.seed(178304)
   N <- 40
   Q <- 2
   alpha <- rep(1,Q)/Q                     # mixture parameter
