@@ -6,6 +6,7 @@ cache: packages
 warnings_are_errors: false
 latex: false
 r_check_args: --as-cran
+install: travis_wait 30 mvn install
 
 matrix:
   include:
@@ -31,9 +32,9 @@ matrix:
     - os: osx
       r: release
 
-before_install:
-  - Rscript -e 'c(physical = parallel::detectCores(logical = FALSE), logical = parallel::detectCores())'
-  - export _R_CHECK_TIMINGS_=0  ## Report on timing for all tests
+# before_install:
+#   - Rscript -e 'c(physical = parallel::detectCores(logical = FALSE), logical = parallel::detectCores())'
+#   - export _R_CHECK_TIMINGS_=0  ## Report on timing for all tests
 
 notifications:
   email:
