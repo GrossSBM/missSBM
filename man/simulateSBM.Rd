@@ -30,6 +30,7 @@ Generates a realization (blocks and adjancency matrix) of a Stochastic Block mod
 }
 \examples{
 ## SBM parameters
+directed <- FALSE
 N <- 300 # number of nodes
 Q <- 3   # number of clusters
 alpha <- rep(1,Q)/Q     # mixture parameter

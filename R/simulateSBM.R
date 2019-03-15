@@ -13,6 +13,7 @@
 #' @seealso The class \code{\link{SBM_sampler}}
 #' @examples
 #' ## SBM parameters
+#' directed <- FALSE
 #' N <- 300 # number of nodes
 #' Q <- 3   # number of clusters
 #' alpha <- rep(1,Q)/Q     # mixture parameter

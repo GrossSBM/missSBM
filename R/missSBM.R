@@ -4,10 +4,10 @@
 #'
 #' @param adjacencyMatrix The adjacency matrix of the network
 #' @param vBlocks The vector of number of blocks considered in the collection
-#' @param sampling The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block"
-#' by default "undirected" is choosen
+#' @param sampling The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block" by default "undirected" is choosen
 #' @param covarMatrix An optional matrix of covariates with dimension N x M (M covariates per node).
-#' @param covarSimilarity An optional R x R -> R function  to compute similarity between node covariates. Default is #' @param clusterInit character in "hierarchical" or "spectral" for initialization
+#' @param covarSimilarity An optional R x R -> R function  to compute similarity between node covariates. Default is #'
+#' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering
 #' @param trace logical, control the verbosity. Default to \code{TRUE}.
 #' @param mc.cores integer, the number of cores to use when multiply model are fitted
 #' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
