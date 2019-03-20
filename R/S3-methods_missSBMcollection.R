@@ -1,14 +1,14 @@
-#' @rdname missSBM
+#' @rdname estimate
 #' @export
 is.missSBMcollection <- function(Robject) {
   inherits(Robject, "missSBMcollection")
 }
 
-#' @rdname missSBM
+#' @rdname estimate
 #' @export
 ICL <- function(Robject) { UseMethod("ICL", Robject) }
 
-#' @rdname missSBM
+#' @rdname estimate
 #' @importFrom stats setNames
 #' @export
 ICL.missSBMcollection <- function(Robject) {
@@ -16,11 +16,11 @@ ICL.missSBMcollection <- function(Robject) {
   setNames(sapply(Robject, function(model) model$vICL), names(Robject))
 }
 
-#' @rdname missSBM
+#' @rdname estimate
 #' @export
 optimizationStatus <- function(Robject) { UseMethod("optimizationStatus", Robject) }
 
-#' @rdname missSBM
+#' @rdname estimate
 #' @export
 optimizationStatus.missSBMcollection <- function(Robject) {
   stopifnot(is.missSBMcollection(Robject))
@@ -34,11 +34,11 @@ optimizationStatus.missSBMcollection <- function(Robject) {
   )
 }
 
-#' @rdname missSBM
+#' @rdname estimate
 #' @export
 getBestModel <- function(Robject) {UseMethod("getBestModel", Robject)}
 
-#' @rdname missSBM
+#' @rdname estimate
 #' @export
 getBestModel.missSBMcollection <- function(Robject) {
   stopifnot(is.missSBMcollection(Robject))

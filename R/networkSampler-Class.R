@@ -4,7 +4,7 @@
 #' it has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
 #'
 #' @include networkSampling-Class.R
-#' @include utils.R
+#' @include utils_missSBM.R
 #' @import R6
 networkSampler <-
   R6::R6Class(classname = "networkSampler",

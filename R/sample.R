@@ -1,4 +1,4 @@
-#' Sampling of a network data set
+#' Sampling of network data
 #'
 #' Samples a matrix (the adjacency matrix of a network), possible generated under a stochastic block model
 #'
@@ -9,7 +9,7 @@
 #' @param covarMatrix An optional matrix of covariates with dimension N x M (M covariates per node).
 #' @param covarSimilarity An optional R x R -> R function to compute the similarity between node covariates. The default internal function missSBM:::l1_smilarity is based on the oppositite of the absolute difference between two vector of covariates.
 #'
-#' @return \code{sampleNetwork} returns an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
+#' @return an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
 #' @seealso The class \code{\link{sampledNetwork}}
 #'
 #' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings. See \cite{1} for details.
@@ -35,10 +35,10 @@
 #' alpha <- rep(1,Q)/Q     # mixture parameter
 #' pi <- diag(.45,Q) + .05 # connectivity matrix
 #'
-#' ## draw a SBM without covariates
-#' sbm <- simulateSBM(N, alpha, pi, directed)
+#' ## simulate a SBM without covariates
+#' sbm <- missSBM::simulate(N, alpha, pi, directed)
 #'
-#' ## Sampling of the network data
+#' ## Sample network data
 #'
 #' # some sampling design and their associated parameters
 #' sampling_parameters <- list(
@@ -54,7 +54,7 @@
 #'
 #' for (sampling in names(sampling_parameters)) {
 #'   sampled_networks[[sampling]] <-
-#'      sampleNetwork(
+#'      missSBM::sample(
 #'        adjacencyMatrix = sbm$adjMatrix,
 #'        sampling        = sampling,
 #'        parameters      = sampling_parameters[[sampling]],
@@ -69,7 +69,7 @@
 #' par(mfrow = c(1,1))
 #' }
 #' @export
-sampleNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covarMatrix = NULL, covarSimilarity = l1_similarity){
+sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covarMatrix = NULL, covarSimilarity = l1_similarity) {
 
   stopifnot(sampling %in% available_samplings)
   if (!is.null(covarMatrix)) stopifnot(sampling %in% available_samplings_covariates)

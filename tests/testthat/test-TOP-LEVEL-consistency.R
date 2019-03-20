@@ -21,7 +21,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     refAlgo <- referenceResults[[sampling]]
     cat(sampling)
 
-    missSBM_out <- missSBM::missSBM(
+    missSBM_out <- missSBM::estimate(
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
       sampling = sampling,
@@ -90,7 +90,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
 
     refAlgo <- referenceResults[[sampling]]
 
-    missSBM_out <- missSBM::missSBM(
+    missSBM_out <- missSBM::estimate(
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
       sampling = ifelse(sampling == "dyad-covariates", "dyad", "node"),

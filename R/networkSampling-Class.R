@@ -4,7 +4,7 @@
 #' It is used to define a sampling model for a network.
 #' It has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
 #'
-#' @include utils.R
+#' @include utils_missSBM.R
 #'
 #' @import R6
 networkSampling <-

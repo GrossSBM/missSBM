@@ -4,19 +4,19 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 500
 Q <- 3
-alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45, Q) + .05                 # connectivity matrix
+alpha <- rep(1, Q)/Q                     # mixture parameter
+pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
-mySBM <- simulateSBM(N, alpha, pi, directed)
+mySBM <- missSBM::simulate(N, alpha, pi, directed)
 A <- mySBM$adjMatrix
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
 covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M,0,1)
-mySBM_cov <- simulateSBM(N, alpha, pi, directed, covarMatrix, covarParam)
+mySBM_cov <- missSBM::simulate(N, alpha, pi, directed, covarMatrix, covarParam)
 A_cov <- mySBM_cov$adjMatrix
 
 ## tolerance for tests
@@ -116,11 +116,11 @@ test_that("Consistency of degree network sampling", {
 
 test_that("Consistency of block-dyad sampling", {
 
-  psi <- diag(.45, Q) + .05
+  psi <- diag(.45, Q, Q) + .05
   mySampler <- missSBM:::blockDyadSampler$new(psi, N, directed, mySBM$memberships)
   expect_is(mySampler, "blockDyadSampler")
   expect_equal(mySampler$type, "block-dyad")
-  expect_equal(mySampler$df, Q * (Q + 1) /2 )
+  expect_equal(mySampler$df, Q * (Q + 1) / 2)
   expect_equal(mySampler$parameters, psi)
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))

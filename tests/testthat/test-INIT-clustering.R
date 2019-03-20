@@ -5,22 +5,22 @@ library(aricode)
 set.seed(178303)
 N <- 400
 Q <- 5
-alpha <- rep(1,Q)/Q       # mixture parameter
-pi <- diag(.45,Q) + .05   # connectivity matrix
+alpha <- rep(1, Q)/Q       # mixture parameter
+pi <- diag(.45, Q, Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
-sbm <- simulateSBM(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
+sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
 
 A_full <- sbm$adjMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)
 psi <- 0.3
-sampledNet <- sampleNetwork(A_full, "dyad", psi)
+sampledNet <- missSBM::sample(A_full, "dyad", psi)
 A_dyad <- sampledNet$adjMatrix
 
 psi <- 0.3
-sampledNet <- sampleNetwork(A_full, "node", psi)
+sampledNet <- missSBM::sample(A_full, "node", psi)
 A_node <- sampledNet$adjMatrix
 
 test_that("Spectral clustering is consistent", {
@@ -126,7 +126,7 @@ set.seed(178303)
 N <- 300
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45,Q) + .05                 # connectivity matrix
+pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
 gamma <- missSBM:::logit(pi)
 directed <- FALSE
 
@@ -135,14 +135,14 @@ M <- 2
 covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam)
 
 test_that("Init clustering with covariate is consistent", {
 
   A_full <- sbm$adjMatrix
   psi <- runif(M, -5, 5)
-  A_dyad <- sampleNetwork(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
-  A_node <- sampleNetwork(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
+  A_dyad <- missSBM::sample(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
+  A_node <- missSBM::sample(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
 
   for (A in list(A_full, A_dyad, A_node)) {
     for (method in c("hierarchical", "spectral", "kmeans")) {

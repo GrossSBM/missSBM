@@ -6,12 +6,12 @@ set.seed(1890718)
 ### A SBM model : ###
 N <- 300
 Q <- 3
-alpha <- rep(1,Q)/Q       # mixture parameter
-pi <- diag(.45,Q) + .05   # connectivity matrix
+alpha <- rep(1, Q)/Q       # mixture parameter
+pi <- diag(.45, Q, Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
-mySBM <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
+mySBM <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$adjMatrix             # the adjacency matrix
 
 test_that("missSBM and class missSBM-fit are coherent", {
@@ -29,7 +29,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
 
     sampling <- names(l_psi)[k]
 
-    sampledNet <- sampleNetwork(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
+    sampledNet <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
 
     ## control parameter for the VEM
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
@@ -39,7 +39,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     out_missSBM <- missSBM$doVEM(control)
 
     ## Perform inference with the top level function
-    collection <- missSBM(
+    collection <- missSBM::estimate(
       adjacencyMatrix = sampledNet$adjMatrix,
       vBlocks         = Q,
       sampling        = sampling,
@@ -70,11 +70,11 @@ test_that("missSBM with a collection of models", {
 
     sampling <- names(l_psi)[k]
 
-    sampledNet <- sampleNetwork(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
+    sampledNet <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
     ## Perform inference with the top level function
-    collection <- missSBM(
+    collection <- missSBM::estimate(
       adjacencyMatrix = sampledNet$adjMatrix,
       vBlocks         = 1:5,
       sampling        = "dyad",

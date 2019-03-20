@@ -1,5 +1,6 @@
 context("test missSBM-fit with covariates")
 
+library(aricode)
 source("utils_test.R")
 
 ## ========================================================================
@@ -9,7 +10,7 @@ set.seed(178303)
 N <- 300
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45,Q) + .05                 # connectivity matrix
+pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
 gamma <- missSBM:::logit(pi)
 directed <- FALSE
 
@@ -18,7 +19,7 @@ M <- 2
 covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam)
 
 ## control parameter for the VEM
 control <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = TRUE)
@@ -30,7 +31,7 @@ tol_ARI   <- .9
 test_that("missSBM with covariates and dyad sampling works", {
 
   ## sampled the network
-  sampledNet <- sampleNetwork(sbm$adjMatrix, "dyad", covarParam, covarMatrix = covarMatrix)
+  sampledNet <- missSBM::sample(sbm$adjMatrix, "dyad", covarParam, covarMatrix = covarMatrix)
 
   ## Perform inference
   missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix, clusterInit = "spectral")
@@ -55,14 +56,14 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
 
   ## clustering
-  expect_gt(ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
+  expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
 
 })
 
 test_that("miss SBM with covariates and node sampling works", {
 
   ## sampled the network
-  sampledNet <- sampleNetwork(sbm$adjMatrix, "node", covarParam, covarMatrix = covarMatrix)
+  sampledNet <- missSBM::sample(sbm$adjMatrix, "node", covarParam, covarMatrix = covarMatrix)
 
   ## Perform inference
   missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "node", covarMatrix = covarMatrix)
@@ -86,6 +87,6 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth*10)
 
   ## clustering
-  expect_gt(ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
+  expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
 
 })

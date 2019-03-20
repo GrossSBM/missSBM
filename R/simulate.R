@@ -1,4 +1,4 @@
-#' Simulatation of a Stochastic Block Model
+#' Simulation of an SBM
 #'
 #' Generates a realization (blocks and adjancency matrix) of a Stochastic Block model
 #'
@@ -24,10 +24,10 @@
 #' covarParam  <- rnorm(M, -1, 1)
 #'
 #' ## draw a SBM without covariates
-#' sbm <- simulateSBM(N, alpha, pi, directed)
+#' sbm <- missSBM::simulate(N, alpha, pi, directed)
 #'
 #' ## draw a SBM model with covariates
-#' sbm_cov <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam)
+#' sbm_cov <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam)
 #'
 #' \dontrun{
 #' par(mfrow = c(1,2))
@@ -36,8 +36,16 @@
 #' }
 #'
 #' @export
-simulateSBM <- function(N, alpha, pi, directed = FALSE, covarMatrix = NULL, covarParam = NULL, covarSimilarity=l1_similarity){
-  mySBM <- SBM_sampler$new(directed, N, alpha, pi, covarParam, getCovarArray(covarMatrix, covarSimilarity))
+simulate <- function(N, alpha, pi, directed = FALSE, covarMatrix = NULL, covarParam = NULL, covarSimilarity=l1_similarity){
+  mySBM <-
+    SBM_sampler$new(
+      directed     = directed,
+      nNodes       = N,
+      mixtureParam = alpha,
+      connectParam = pi,
+      covarParam   = covarParam,
+      covarArray   = getCovarArray(covarMatrix, covarSimilarity)
+    )
   mySBM$rBlocks()
   mySBM$rAdjMatrix()
   mySBM

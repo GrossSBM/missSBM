@@ -1,6 +1,6 @@
-#' Inference of Stochastic Block Model from sampled data
+#' Inference of an SBM with missing data
 #'
-#' Perform variational inference of Stochastic Block Model from sampled adjacency matrix
+#' Perform variational inference of a Stochastic Block Model from a sampled adjacency matrix
 #'
 #' @param adjacencyMatrix The adjacency matrix of the network
 #' @param vBlocks The vector of number of blocks considered in the collection
@@ -15,40 +15,30 @@
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
 #' @param Robject an object with class \code{missSBMcollection}
 #' @return Returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
-#' @references [1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
-#' @seealso \code{\link{sampleNetwork}} and \code{\link{simulateSBM}} and \code{\link{missingSBM_fit}}.
+#' @seealso \code{\link{sample}}, \code{\link{simulate}} and \code{\link{missingSBM_fit}}.
 #' @examples
-#' ### A SBM model : ###
-#' N <- 300
-#' Q <- 3
+#' ## SBM parameters
+#' directed <- FALSE
+#' N <- 300 # number of nodes
+#' Q <- 3   # number of clusters
 #' alpha <- rep(1,Q)/Q     # mixture parameter
 #' pi <- diag(.45,Q) + .05 # connectivity matrix
-#' directed <- FALSE
-#' ## Simulation of an Bernoulli non-directed SBM
-#' mySBM <- simulateSBM(N, alpha, pi, directed)
 #'
-#' ## Sampling of the data : ##
+#' ## simulate a SBM without covariates
+#' sbm <- missSBM::simulate(N, alpha, pi, directed)
+#'
+#' ## Sample network data
 #' samplingParameters <- .5 # the sampling rate
 #' sampling <- "dyad"       # the sampling design
-#' sampledNet <-
-#'    sampleNetwork(
-#'      mySBM$adjMatrix,
-#'      sampling,
-#'      samplingParameters
-#'    )
+#' sampledNet <- missSBM::sample(sbm$adjMatrix, sampling, samplingParameters)
 #'
 #' ## Inference :
 #' vBlocks <- 1:5 # number of classes
-#' sbm <-
-#'    missSBM(
-#'       sampledNet$adjMatrix,
-#'       vBlocks,
-#'       sampling
-#'    )
+#' sbm <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
 #' @import R6 parallel
-#' @include smoother_SBM.R
+#' @include utils_smoothing.R
 #' @export
-missSBM <- function(
+estimate <- function(
   adjacencyMatrix,
   vBlocks,
   sampling,

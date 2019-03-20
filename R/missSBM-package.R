@@ -1,12 +1,10 @@
 #' An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions
 #'
-#' The SBM package provides three categories of important functions:
-#' \code{\link{simulateSBM}}, \code{\link{sampleNetwork}}, \code{\link{missSBM}}.
+#' The SBM package provides three main functions: \code{\link{simulate}}, \code{\link{sample}}, \code{\link{estimate}}.
 #'
 #' @docType package
 #' @author Timothée Tabouy, Pierre Barbillon, Julien Chiquet
-#' @references [1] Tabouy et al., Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.
-#' @references [2] Kolaczyk Erik D. (2009). Statistical Analysis of Network Data: Methods and Models. Springer.
+#' @references Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, <doi:10.1080/01621459.2018.1562934>
 #' @import R6 methods
 #' @useDynLib missSBM
 #' @importFrom Rcpp sourceCpp

@@ -9,7 +9,7 @@
 SBM_sampler
 }
 \description{
-The function \code{\link{simulateSBM}} produces an instance of an object with class \code{SBM_sampler}.
+The function \code{\link{simulate}} produces an instance of an object with class \code{SBM_sampler}.
 }
 \details{
 All fields of this class are only accessible for reading. This class comes with a set of methods,
@@ -56,7 +56,7 @@ covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M, -1, 1)
 
 ## draw a SBM without covariates through simulateSBM
-sbm <- simulateSBM(N, alpha, pi, directed)
+sbm <- missSBM::simulate(N, alpha, pi, directed)
 
 ## equivalent construction from the SBM_sampler class itslef
 sbm_s <- SBM_sampler$new(directed, N, alpha, pi)
@@ -65,6 +65,6 @@ sbm_s$rAdjMatrix() # draw some edges
 
 }
 \seealso{
-The function \code{\link{simulateSBM}}.
+The function \code{\link{simulate}}.
 }
 \keyword{datasets}

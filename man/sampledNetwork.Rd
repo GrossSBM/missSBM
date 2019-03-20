@@ -9,7 +9,7 @@
 sampledNetwork
 }
 \description{
-The function \code{\link{simulateSBM}} produces an instance of an object with class \code{SBM_sampler}.
+The function \code{\link{simulate}} produces an instance of an object with class \code{SBM_sampler}.
 }
 \details{
 All fields of this class are only accessible for reading. This class comes with a basic plot and print methods
@@ -52,12 +52,12 @@ Q <- 3   # number of clusters
 alpha <- rep(1,Q)/Q     # mixture parameter
 pi <- diag(.45,Q) + .05 # connectivity matrix
 
-## draw a SBM without covariates
-sbm <- simulateSBM(N, alpha, pi, directed)
+## simulate a SBM without covariates
+sbm <- missSBM::simulate(N, alpha, pi, directed)
 
-## Sampling of the network data
+## Sample network data
 sampled_network <-
-     sampleNetwork(
+     missSBM::sample(
        adjacencyMatrix = sbm$adjMatrix,
        sampling        = "double-standard",
        parameters      = c(0.4, 0.8)

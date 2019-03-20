@@ -41,7 +41,7 @@ init_spectral <- function(X, K) {
 
   if (K > 1) {
     if (length(connected) == 0) {
-      cl0 <- as.integer(sample(1:K, n, replace = TRUE))
+      cl0 <- as.integer(base::sample(1:K, n, replace = TRUE))
     } else {
       X <- X[connected,connected]
       ## Normalized Laplacian

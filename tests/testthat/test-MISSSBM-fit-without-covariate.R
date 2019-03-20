@@ -7,12 +7,12 @@ set.seed(1890718)
 ### A SBM model : ###
 N <- 400
 Q <- 5
-alpha <- rep(1,Q)/Q       # mixture parameter
-pi <- diag(.45,Q) + .05   # connectivity matrix
+alpha <- rep(1, Q)/Q       # mixture parameter
+pi <- diag(.45, Q, Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
-sbm <- simulateSBM(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
+sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 
 samplings <- list(
   list(name = "dyad", psi = 0.3, class = "dyadSampling_fit"),
@@ -35,7 +35,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 ##    cat("\n -", sampling$name)
 
     ## sampled the network
-    sampledNet <- sampleNetwork(sbm$adjMatrix, sampling$name, sampling$psi, sbm$memberships)
+    sampledNet <- missSBM::sample(sbm$adjMatrix, sampling$name, sampling$psi, sbm$memberships)
 
     ## Perform inference
     missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, sampling$name)

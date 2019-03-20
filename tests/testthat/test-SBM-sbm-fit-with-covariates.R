@@ -19,10 +19,10 @@ M <- 2
 covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam)
 
 ### Draw a undirected SBM model
-cl_rand <- sample(sbm$memberships)
+cl_rand <- base::sample(sbm$memberships)
 cl_spec <- missSBM:::init_clustering(sbm$adjMatrix, Q, sbm$covarArray, "spectral")
 cl_hier <- missSBM:::init_clustering(sbm$adjMatrix, Q, sbm$covarArray, "hierarchical")
 cl_kmns <- missSBM:::init_clustering(sbm$adjMatrix, Q, sbm$covarArray, "kmeans")
@@ -141,7 +141,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   M <- 2
   covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
   covarParam  <- rnorm(M,0,1)
-  sbm <- simulateSBM(N, alpha, gamma, directed, covarMatrix, covarParam, missSBM:::l1_similarity)
+  sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam, missSBM:::l1_similarity)
 
   ## Formatting covariates for blockmodels
   covariates_BM <- lapply(seq(dim(sbm$covarArray)[3]), function(x) sbm$covarArray[ , , x])
