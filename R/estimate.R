@@ -57,55 +57,18 @@ estimate <- function(
     stop("Only binary graphs are supported.")
   )
 
-  ## Create the sampledNetwork object
-  sampledNet <- sampledNetwork$new(adjacencyMatrix)
-
-  ## Compute the array of covariates, used in all SBM-related computations
-  covarArray  <- getCovarArray(covarMatrix, covarSimilarity)
-
-  if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
-
-  if (trace) cat("\n")
-  if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-  if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
-  if (trace) cat("\n")
-  models <- mcmapply(
-    function(nBlock, clInit) {
-      if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-      missingSBM_fit$new(sampledNet, nBlock, sampling, clInit, covarMatrix, covarArray)
-    }, nBlock = vBlocks, clInit = clusterInit, mc.cores = mc.cores
-  )
-
   ## defaut control parameter for VEM, overwritten by user specification
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
-  cat("\n")
-  mclapply(models,
-    function(model) {
-      if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-      model$doVEM(control)
-    }, mc.cores = mc.cores
-  )
+
+  ## Instatntiate the collection of missingSBM_fit
+  myCollection <- missSBM_collection(adjacencyMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, trace)
+
+  myCollection$estimate(control, mc.cores, trace)
 
   smoothing <- match.arg(smoothing)
   if (smoothing != "none") {
-    if (trace) cat("\n Smoothing ICL\n")
-    smoothing_fn <- switch(smoothing,
-                           "forward"  = smoothingForward ,
-                           "backward" = smoothingBackward,
-                           "both"     = smoothingForBackWard
-    )
-    if (!is.character(clusterInit)) {
-      split_fn <- init_hierarchical
-    } else {
-      split_fn <- switch(clusterInit,
-                         "spectral" = init_spectral,
-                         "hierarchical" = init_hierarchical,
-                         init_hierarchical)
-    }
-    control$trace <- FALSE # forcing no trace while smoothing
-    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, covarMatrix, covarSimilarity, split_fn, mc.cores, iter_both, control)
-
+    myCollection$smooth_ICL(smoothing, control,  clusterInit, trace)
   }
 
   structure(setNames(models, vBlocks), class = "missSBMcollection")
