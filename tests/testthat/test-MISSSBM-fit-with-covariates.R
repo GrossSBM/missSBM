@@ -17,7 +17,9 @@ directed <- FALSE
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 2
 covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
 covarParam  <- rnorm(M, -1, 1)
+
 
 sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam)
 
@@ -34,7 +36,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   sampledNet <- missSBM::sample(sbm$adjMatrix, "dyad", covarParam, covarMatrix = covarMatrix)
 
   ## Perform inference
-  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix, clusterInit = "spectral")
+  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix, covarArray = covarArray, clusterInit = "spectral")
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -66,7 +68,7 @@ test_that("miss SBM with covariates and node sampling works", {
   sampledNet <- missSBM::sample(sbm$adjMatrix, "node", covarParam, covarMatrix = covarMatrix)
 
   ## Perform inference
-  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "node", covarMatrix = covarMatrix)
+  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "node", covarMatrix = covarMatrix, covarArray = covarArray)
   out <- missSBM$doVEM(control)
 
   ## Sanity check

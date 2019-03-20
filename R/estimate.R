@@ -57,20 +57,23 @@ estimate <- function(
     stop("Only binary graphs are supported.")
   )
 
+  ## Create the sampledNetwork object
   sampledNet <- sampledNetwork$new(adjacencyMatrix)
+
+  ## Compute the array of covariates, used in all SBM-related computations
+  covarArray  <- getCovarArray(covarMatrix, covarSimilarity)
+
+  if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
+
   if (trace) cat("\n")
   if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
   if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
   if (trace) cat("\n")
-  models <- mclapply(vBlocks,
-    function(nBlocks) {
-    if (trace) cat(" Initialization of model with", nBlocks,"blocks.", "\r")
-      if (is.list(clusterInit)) {
-        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit[[nBlocks]], covarMatrix, covarSimilarity)
-      } else {
-        missingSBM_fit$new(sampledNet, nBlocks, sampling, clusterInit, covarMatrix, covarSimilarity)
-      }
-    }, mc.cores = mc.cores
+  models <- mcmapply(
+    function(nBlock, clInit) {
+      if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
+      missingSBM_fit$new(sampledNet, nBlock, sampling, clInit, covarMatrix, covarArray)
+    }, nBlock = vBlocks, clInit = clusterInit, mc.cores = mc.cores
   )
 
   ## defaut control parameter for VEM, overwritten by user specification

@@ -43,7 +43,7 @@ Collate:
     'utils_missSBM.R'
     'networkSampling-Class.R'
     'networkSampling_fit-Class.R'
-    'missingSBM_fit.R'
+    'missingSBM_fit-Class.R'
     'networkSampler-Class.R'
     'sample.R'
     'sampledNetwork-Class.R'

@@ -16,15 +16,12 @@ missingSBM_fit <-
   ),
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling,
-      clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"), covarMatrix = NULL, covarSimilarity = l1_similarity) {
+      clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"), covarMatrix = NULL, covarArray = NULL) {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(sampledNet, "sampledNetwork"))
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
-
-      ## Compute the array of covariates, used in all SBM-related computations
-      covarArray  <- getCovarArray(covarMatrix, covarSimilarity)
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
       clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, covarArray, clusterInit)
