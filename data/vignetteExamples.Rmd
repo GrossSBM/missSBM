@@ -1,0 +1,64 @@
+---
+title: "Examples"
+author: "missSBM core team"
+date: "March 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(igraph)
+library(missSBM)
+knitr::opts_chunk$set(echo = TRUE,cache = TRUE)
+```
+
+## War network
+
+```{r loadCOW}
+load("CorrofWar.Rdata")
+```
+
+This dataset contains two networks where the nodes are countries and an edge in network `Gwar` means that the two countries have been at least once at war between years 1816 to 2007 while an edge in network `Gall` means that the two countries have had a formal alliance between years 1816 to 2012. The network `Gwar` have less nodes since countries which have not been at war are not considered.
+These two networs were extracted from **http://www.correlatesofwar.org/** (version 4.0 for war data see *Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.*, version 4.1 for formal alliance see *Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.*).
+
+
+```{r plot,fig.height=10,fig.width=20}
+plot(Gall,main="Alliance")
+plot(Gwar,main="War")
+```
+
+### Missing data
+
+Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered, therefore there is block of missing data on the diagonal of the adjacency matrix.
+
+```{r sampling}
+Awar = as.matrix(get.adjacency(Gwar))
+sampling <- "node"
+samplingParameters <- c(.6)
+sampledNetwar <- sampleNetwork(Awar, sampling, samplingParameters)
+Awarspld = sampledNetwar$adjMatrix
+```
+
+
+
+```{r inferencew}
+vBlocks <- 1:6
+sbm <- missSBM(Awarspld, vBlocks, sampling,clusterInit = "spectral", smoothing = "both", mc.cores = 2)
+```
+```{r plotICL}
+plot(ICL(sbm))
+```
+
+```{r cluster}
+which.min(ICL(sbm))
+table(sbm[[3]]$fittedSBM$memberships)
+```
+
+We compare with clusterings obtained with the fully observed network.
+```{r inferencewfull}
+vBlocks <- 1:6
+sbmfull <- missSBM(Awar, vBlocks, sampling,clusterInit = "spectral", smoothing = "none", mc.cores = 2)
+sbmfull <- missSBM(Awar, vBlocks, sampling,clusterInit = "spectral", smoothing = "both", mc.cores = 2)
+ICL(sbmfull)
+```
+
+
