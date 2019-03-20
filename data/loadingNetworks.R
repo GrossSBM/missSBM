@@ -73,3 +73,29 @@
 # modFW$estimate()
 # kbest = which.max(modFW$ICL)
 # table(apply(modFW$memberships[[kbest]]$Z,1,which.max))
+
+
+
+# War data
+# http://www.correlatesofwar.org/
+# load("data/CorrofWar.Rdata")
+# plot(Gwar) # war network an edge if two countries were at war
+# plot(Gall) # alliance network and edge if two countries have ever had an alliance treaty
+# modwar = BM_bernoulli("SBM_sym",as.matrix(get.adjacency(Gwar)))
+# modwar$estimate()
+# kwar = which.max(modwar$ICL)
+# Zwar = apply(modwar$memberships[[kwar]]$Z,1,which.max)
+# get.vertex.attribute(Gwar,name = "name")[Zwar==1]
+# get.vertex.attribute(Gwar,name = "name")[Zwar==2]
+# get.vertex.attribute(Gwar,name = "name")[Zwar==3]
+#
+# modall = BM_bernoulli("SBM_sym",as.matrix(get.adjacency(Gall)))
+# modall$estimate()
+# kall = which.max(modall$ICL)
+# Zall = apply(modall$memberships[[kall]]$Z,1,which.max)
+# for (i in 1:kall)
+# {
+#   cat("\n")
+#   print(get.vertex.attribute(Gall,name = "name")[Zall==i])
+#   cat("\n")
+# }
