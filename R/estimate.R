@@ -51,26 +51,20 @@ estimate <- function(
   iter_both = 1,
   control_VEM = list()) {
 
-  ## some sanity checks
-  try(
-    !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
-    stop("Only binary graphs are supported.")
-  )
-
   ## defaut control parameter for VEM, overwritten by user specification
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
 
   ## Instatntiate the collection of missingSBM_fit
-  myCollection <- missSBM_collection(adjacencyMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, trace)
+  myCollection <- missSBM_collection$new(adjacencyMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, mc.cores, trace)
 
+  ## Launch estimation of each missingSBM_fit
   myCollection$estimate(control, mc.cores, trace)
 
-  smoothing <- match.arg(smoothing)
-  if (smoothing != "none") {
-    myCollection$smooth_ICL(smoothing, control,  clusterInit, trace)
-  }
+  ## ICL smoothing if needed
+  myCollection$smooth_ICL(match.arg(smoothing), control, mc.cores, iter_both, trace)
 
-  structure(setNames(models, vBlocks), class = "missSBMcollection")
+  ## Return the collection of optimized missingSBM_fit
+  myCollection
 }
 
