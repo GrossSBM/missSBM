@@ -19,7 +19,10 @@
 
 # produced vignettes
 vignettes/*.html
+vignettes/*.R
 vignettes/*.pdf
+vignettes/*_cache/
+vignettes/cache/
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
@@ -42,3 +45,11 @@ src/Makevars
 # ignore local pkgdown outputs
 ^docs$
 /docs/
+inst/doc
+
+
+# Mac bullsh.
+.DS_Store
+
+# Plot in testthat
+tests/testthat/Rplots.pdf
