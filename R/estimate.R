@@ -9,11 +9,8 @@
 #' @param covarSimilarity An optional R x R -> R function  to compute similarity between node covariates. Default is #'
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering
 #' @param trace logical, control the verbosity. Default to \code{TRUE}.
-#' @param mc.cores integer, the number of cores to use when multiply model are fitted
-#' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
-#' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
+#' @param cores integer, the number of cores to use when multiply model are fitted
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
-#' @param Robject an object with class \code{missSBMcollection}
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missingSBM_fit}}.
 #' @examples
@@ -47,9 +44,7 @@ estimate <- function(
   covarMatrix = NULL,
   covarSimilarity = l1_similarity,
   trace     = TRUE,
-  smoothing = c("none", "forward", "backward", "both"),
-  mc.cores = 1,
-  iter_both = 1,
+  cores = 1,
   control_VEM = list()) {
 
   ## defaut control parameter for VEM, overwritten by user specification
@@ -58,22 +53,18 @@ estimate <- function(
 
   ## Instatntiate the collection of missingSBM_fit
   myCollection <- missSBM_collection$new(
-      adjMatrix = adjacencyMatrix,
-      vBlocks = vBlocks,
-      sampling = sampling,
-      clusterInit = clusterInit,
-      covarMatrix = covarMatrix,
+      adjMatrix       = adjacencyMatrix,
+      vBlocks         = vBlocks,
+      sampling        = sampling,
+      clusterInit     = clusterInit,
+      covarMatrix     = covarMatrix,
       covarSimilarity = covarSimilarity,
-      smoothing = match.arg(smoothing),
-      mc.cores = mc.cores,
-      trace = trace
-    )
+      cores           = cores,
+      trace           = trace
+  )
 
   ## Launch estimation of each missingSBM_fit
-  myCollection$estimate(control, mc.cores, trace)
-
-  ## ICL smoothing if needed
-  myCollection$smooth_ICL(match.arg(smoothing), control, mc.cores, iter_both, trace)
+  myCollection$estimate(control, cores, trace)
 
   ## Return the collection of optimized missingSBM_fit
   myCollection

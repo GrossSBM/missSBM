@@ -12,7 +12,7 @@ directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
 mySBM <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
-A <- mySBM$adjMatrix             # the adjacency matrix
+A <- mySBM$adjMatrix # the adjacency matrix
 
 test_that("missSBM and class missSBM-fit are coherent", {
 
@@ -43,13 +43,12 @@ test_that("missSBM and class missSBM-fit are coherent", {
       adjacencyMatrix = sampledNet$adjMatrix,
       vBlocks         = Q,
       sampling        = sampling,
-      smoothing       = "none",
       control_VEM     = control,
       trace           = FALSE
     )
 
     expect_is(collection, "missSBM_collection")
-    expect_equivalent(collection$bestModel, missSBM)
+    expect_equivalent(collection$models[[1]], missSBM)
 
   }
 
@@ -69,7 +68,6 @@ test_that("missSBM with a collection of models", {
   for (k in seq_along(l_psi)) {
 
     sampling <- names(l_psi)[k]
-
     sampledNet <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
@@ -78,7 +76,6 @@ test_that("missSBM with a collection of models", {
       adjacencyMatrix = sampledNet$adjMatrix,
       vBlocks         = 1:5,
       sampling        = "dyad",
-      smoothing       = "none",
       control_VEM     = control,
       trace           = FALSE
     )

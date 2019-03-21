@@ -12,50 +12,28 @@ directed <- FALSE         # if the network is directed or not
 mySBM <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$adjMatrix             # the adjacency matrix
 
-mc.cores <- 5
-
+mc.cores <- 1
 
 test_that("missSBMcollection works", {
 
-#  l_psi <- list(
-#    "dyad" = c(.3),
-#    "node" = c(.3),
-#    "double-standard" = c(0.4, 0.8),
-#    "block-node" = c(.3, .8, .5),
-#    "block-dyad" = mySBM$connectParam,
-#    "degree" = c(.01, .01)
-#  )
+  sampledNet <- missSBM::sample(A, "dyad", .5, clusters = mySBM$memberships)
 
-#  for (k in seq_along(l_psi)) {
+  ## Instatntiate the collection of missingSBM_fit
+  collection <- missSBM_collection$new(
+    adjMatrix = sampledNet$adjMatrix,
+    vBlocks = 1:5,
+    sampling = "dyad",
+    clusterInit = 'hierarchical', NULL, NULL, mc.cores, TRUE)
 
-    sampling <- "dyad"
+  ## control parameter for the VEM
+  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
-    sampledNet <- missSBM::sample(A, sampling, .5, clusters = mySBM$memberships)
+  ## VEM Estimation on each element of the collection
+  collection$estimate(control, mc.cores, TRUE)
 
-    ## Instatntiate the collection of missingSBM_fit
-    collection <- missSBM_collection$new(
-      adjMatrix = sampledNet$adjMatrix,
-      vBlocks = 1:5,
-      sampling = sampling,
-      clusterInit = 'hierarchical', NULL, NULL, "none", mc.cores, TRUE)
+  smooth(collection, "forward" , cores = 2)
+  smooth(collection, "backward", cores = 2)
+  smooth(collection, "both"    , cores = 2)
 
-    ## control parameter for the VEM
-    control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
-
-    ## VEM Estimation on each element of the collection
-    collection$estimate(control, mc.cores, TRUE)
-
-    collection$smooth_ICL("none", control, mc.cores, NA, TRUE)
-
-    collection$smooth_ICL("forward", control, mc.cores, NA, TRUE)
-
-    collection$smooth_ICL("backward", control, mc.cores, NA, TRUE)
-
-    collection$smooth_ICL("both", control, mc.cores, 2, TRUE)
-
-    expect_is(collection, "missSBM_collection")
-
-    expect_equal(which.min(collection$ICL), 3)
-
-#  }
+  expect_is(collection, "missSBM_collection")
 })

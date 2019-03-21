@@ -17,18 +17,12 @@
 missSBM_collection <-
   R6::R6Class(classname = "missSBM_collection",
   public = list(
-    sampledNet   = NULL, # network data with convenient encoding (object of class 'sampledNetwork')
-    vBlocks      = NULL, # vectors of block number
-    sampling     = NULL, # the sampling design
-    clusterInit  = NULL, # rule for initial clustering
-    covarMatrix  = NULL, # the matrix of covariates
-    covarArray   = NULL, # the array of covariates
-    splitting_fn = NULL, # function use to split the clustering during the smoothing of the ICL
-    models       = NULL  # a list of models
+    models = NULL  # a list of models
   ),
   active = list(
     ICL = function(value) {setNames(sapply(self$models, function(model) model$vICL), names(self$vBlocks))},
     bestModel = function(value) {self$models[[which.min(self$ICL)]]},
+    vBlocks = function(value) {sapply(self$models, function(model) model$fittedSBM$nBlocks)},
     optimizationStatus = function(value) {
       Reduce("rbind",
         lapply(self$models, function(model) {
@@ -42,71 +36,96 @@ missSBM_collection <-
 )
 
 missSBM_collection$set("public", "initialize",
-function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarSimilarity, smoothing, mc.cores, trace) {
-
-  ## Storage...
-  self$sampledNet   <- sampledNetwork$new(adjMatrix)
-  self$vBlocks      <- vBlocks
-  self$sampling     <- sampling
-  self$covarMatrix  <- covarMatrix
-  self$covarArray   <- getCovarArray(covarMatrix, covarSimilarity)
-
-  ## Function use to split the clusters durint the smoothing of the ICL
-  if (!is.character(clusterInit)) {
-    self$splitting_fn <- init_hierarchical
-  } else {
-    self$splitting_fn <- switch(clusterInit,
-                                "spectral" = init_spectral,
-                                "hierarchical" = init_hierarchical,
-                                init_hierarchical)
-  }
-  if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
-  self$clusterInit <- clusterInit
+function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarSimilarity, cores, trace) {
 
   if (trace) cat("\n")
   if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
   if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
   if (trace) cat("\n")
+  if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
+
+  covarArray <- getCovarArray(covarMatrix, covarSimilarity)
+  sampledNet <- sampledNetwork$new(adjMatrix)
   self$models <- mcmapply(
-    function(nBlock, clInit) {
+    function(nBlock, cl0) {
       if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-      missingSBM_fit$new(self$sampledNet, nBlock, self$sampling, clInit, self$covarMatrix, self$covarArray)
-    }, nBlock = vBlocks, clInit = clusterInit, mc.cores = mc.cores
+      missingSBM_fit$new(sampledNet, nBlock, sampling, cl0, covarMatrix, covarArray)
+    }, nBlock = vBlocks, cl0 = clusterInit, mc.cores = cores
   )
 })
-
 
 missSBM_collection$set("public", "estimate",
 function(control_VEM, mc.cores, trace) {
   if (trace) cat("\n")
   invisible(
     mclapply(self$models,
-             function(model) {
-               if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-               model$doVEM(control_VEM)
-             }, mc.cores = mc.cores
+       function(model) {
+         if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
+           model$doVEM(control_VEM)
+       }, mc.cores = mc.cores
     )
   )
   invisible(self)
 })
 
 missSBM_collection$set("public", "smooth_ICL",
-function(type, control, mc.cores, iter, trace) {
-  if (trace & type != "none") cat("\n Smoothing ICL\n")
-  control$trace <- FALSE
+function(type, control) {
+  if (control$trace) cat("\n Smoothing ICL\n")
   if (type == "forward")
-    private$smoothing_forward(control, mc.cores, trace)
+    private$smoothing_forward(control)
   if (type == "backward")
-    private$smoothing_backward(control, mc.cores, trace)
+    private$smoothing_backward(control)
   if (type == "both")
-    for (i in 1:iter) {
-      private$smoothing_forward(control, mc.cores, trace)
-      private$smoothing_backward(control, mc.cores, trace)
+    for (i in 1:control$iterates) {
+      private$smoothing_forward(control)
+      private$smoothing_backward(control)
     }
 })
 
+#' Smooth path of models in a collection
+#'
+#' Apply a split and/or merge strategy to the path of model in a collection of SBM, in order to find better initialization. This should result in
+#' a "smoothing" of the ICL, that should be close to concave.
+#'
+#' @param Robject an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}
+#' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".
+#' @param split character indicating the function use to split nodes during the forward algorithm. Either "hierarchical", "spectral" or "kmeans". Default is "hierarchical".
+#' @param control_VEM a list controlling the variational EM algorithm. See details in \code{\link{estimate}}.
+#' @param cores integer, the number of cores to use when multiply model are fitted. Default is 2.
+#' @param iterates integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.
+#' @param trace logical, control the verbosity. Default to \code{TRUE}.
+#'
+#' @return an invisible missSBM_collection, in which the ICL has been smoothed
+#' @export
+smooth <- function(Robject, type = c("forward", "backward", "both"), split = c("hierarchical", "spectral", "kmeans"), control_VEM = list(), cores = 2, iterates = 1, trace = TRUE) {
+
+  stopifnot(inherits(Robject, "missSBM_collection"))
+
+  ## defaut control parameter for VEM, overwritten by user specification
+  control <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 5, trace = trace)
+  control[names(control_VEM)] <- control_VEM
+  ## add some additional control param to pass to smoothing
+  control$iterates <- iterates
+  control$mc.cores <- cores
+  ## select which clustering method will be used for splitting a group
+  control$split_fn <- switch(match.arg(split),
+    "spectral"     = init_spectral,
+    "hierarchical" = init_hierarchical,
+    "kmeans"       = init_kmeans
+  )
+
+  Robject$smooth_ICL(match.arg(type), control)
+
+  invisible(Robject)
+}
+
 missSBM_collection$set("private", "smoothing_forward",
-function(control, mc.cores, trace) {
+function(control) {
+  trace <- control$trace; control$trace <- FALSE
+  sampledNet  <- self$models[[1]]$sampledNetwork
+  sampling    <- self$models[[1]]$fittedSampling$type
+  covarMatrix <- sampledNet$covarMatrix
+  covarArray  <- self$models[[1]]$fittedSBM$covarArray
 
   if (trace) cat("   Going forward ")
   for (i in self$vBlocks[-length(self$vBlocks)]) {
@@ -117,15 +136,15 @@ function(control, mc.cores, trace) {
       candidates <- mclapply(1:i, function(j) {
         cl <- as.numeric(cl_split); indices <- which(cl == j)
         if (length(cl[indices]) > 10) { ## ???? What is this "10"
-          cut <- as.numeric(self$splitting_fn(self$sampledNet$adjMatrix[indices, indices],2))
+          cut <- as.numeric(control$split_fn(sampledNet$adjMatrix[indices, indices],2))
           cl[which(cl == j)][which(cut == 1)] <- j; cl[which(cl == j)][which(cut == 2)] <- i + 1
-          model <- missingSBM_fit$new(self$sampledNet, i + 1, self$sampling, cl, self$covarMatrix, self$covarArray)
+          model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl, covarMatrix, covarArray)
           model$doVEM(control)
           model
         } else {
           self$models[[i + 1]]
         }
-      }, mc.cores = 1)
+      }, mc.cores = control$mc.cores)
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
       best_one <- candidates[[which.min(vICLs)]]
       if (is.na(self$models[[i + 1]]$vICL)) {
@@ -139,7 +158,12 @@ function(control, mc.cores, trace) {
 })
 
 missSBM_collection$set("private", "smoothing_backward",
-function(control, mc.cores, trace) {
+function(control) {
+  trace <- control$trace; control$trace <- FALSE
+  sampledNet  <- self$models[[1]]$sampledNetwork
+  sampling    <- self$models[[1]]$fittedSampling$type
+  covarMatrix <- sampledNet$covarMatrix
+  covarArray  <- self$models[[1]]$fittedSBM$covarArray
 
   if (trace) cat("   Going backward ")
   for (i in rev(self$vBlocks[-1])) {
@@ -150,10 +174,10 @@ function(control, mc.cores, trace) {
         cl_fusion <- cl0
         levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
         levels(cl_fusion) <- as.character(1:(i - 1))
-        model <- missingSBM_fit$new(self$sampledNet, i - 1, self$sampling, cl_fusion, self$covarMatrix, self$covarArray)
+        model <- missingSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion, covarMatrix, covarArray)
         model$doVEM(control)
         model
-      }, mc.cores = mc.cores)
+      }, mc.cores = control$mc.cores)
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
       best_one <- candidates[[which.min(vICLs)]]
       if (is.na(self$models[[i - 1]]$vICL)) {

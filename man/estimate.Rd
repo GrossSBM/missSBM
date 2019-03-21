@@ -7,8 +7,7 @@
 estimate(adjacencyMatrix, vBlocks, sampling,
   clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"),
   covarMatrix = NULL, covarSimilarity = l1_similarity, trace = TRUE,
-  smoothing = c("none", "forward", "backward", "both"), mc.cores = 1,
-  iter_both = 1, control_VEM = list())
+  cores = 1, control_VEM = list())
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
@@ -25,15 +24,9 @@ estimate(adjacencyMatrix, vBlocks, sampling,
 
 \item{trace}{logical, control the verbosity. Default to \code{TRUE}.}
 
-\item{smoothing}{character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"}
-
-\item{mc.cores}{integer, the number of cores to use when multiply model are fitted}
-
-\item{iter_both}{integer for the number of iteration in case of foward-backward (aka both) smoothing}
+\item{cores}{integer, the number of cores to use when multiply model are fitted}
 
 \item{control_VEM}{a list controlling the variational EM algorithm. See details.}
-
-\item{Robject}{an object with class \code{missSBMcollection}}
 }
 \value{
 Returns an R6 object with class \code{\link{missSBM_collection}}.
