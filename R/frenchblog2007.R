@@ -1,4 +1,4 @@
-#' French Political Blogosphere network
+#' Political Blogosphere network prior to 2007 French presidential election
 #'
 #' French Political Blogosphere network dataset consists of a single day snapshot of
 #' over 200 political blogs automatically extracted the 14 october 2006 and manually classified by
@@ -7,10 +7,12 @@
 #' @format An igraph object with 196,. The vertex attribute "party" provides a possible clustering of the nodes.
 #' @source \url{https://www.linkfluence.com/}
 #' @examples
-#' data(blogosphere2006)
-#' V(blogosphere2006)
+#' data(frenchblog2007)
+#' igraph::V(frenchblog2007)$party
 #' \dontrun{
-#' igraph::plot(blogosphere2006)
+#' igraph::plot(frenchblog2007,
+#'   vertex.color = factor(igraph::V(frenchblog2007)$party),
+#'   vertex.label = NA
+#'  )
 #' }
-#' @export
-"blogosphere2006"
+"frenchblog2007"
