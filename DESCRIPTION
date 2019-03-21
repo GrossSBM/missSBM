@@ -30,7 +30,6 @@ Imports:
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'
-    'S3-methods_missSBMcollection.R'
     'SBM-Class.R'
     'SBM_fit-Class.R'
     'SBM_fit_covariates-Class.R'

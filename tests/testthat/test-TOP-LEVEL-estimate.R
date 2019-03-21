@@ -48,8 +48,8 @@ test_that("missSBM and class missSBM-fit are coherent", {
       trace           = FALSE
     )
 
-    expect_true(is.missSBMcollection(collection))
-    expect_equivalent(collection[[1]], missSBM)
+    expect_is(collection, "missSBM_collection")
+    expect_equivalent(collection$bestModel, missSBM)
 
   }
 
@@ -83,10 +83,9 @@ test_that("missSBM with a collection of models", {
       trace           = FALSE
     )
 
-    expect_true(is.missSBMcollection(collection))
-    expect_equal(getBestModel(collection)$fittedSBM$nBlocks, Q)
-    expect_true(which.min(ICL(collection)) == Q)
-
-    expect_true(is.data.frame(optimizationStatus(collection)))
+    expect_is(collection, "missSBM_collection")
+    expect_equal(collection$bestModel$fittedSBM$nBlocks, Q)
+    expect_true(which.min(collection$ICL) == Q)
+    expect_true(is.data.frame(collection$optimizationStatus))
   }
 })

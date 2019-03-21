@@ -3,12 +3,30 @@
 \docType{data}
 \name{missSBM_collection}
 \alias{missSBM_collection}
-\title{R6 Class definition of an missSBMcollection}
+\title{An R6 Class to represent a collection of missSBM_fit}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 missSBM_collection
 }
 \description{
-This class is to store a collection fo missSBM-fit
+The function \code{\link{estimate}} produces an instance of this class.
+}
+\details{
+This class comes with a set of methods, some of them being useful for the user:
+See the documentation for \code{\link[=smoothing_ICL]{smoothing_ICL}},
+\code{\link[=plot.missSBM_collection]{plot}}.
+}
+\section{Fields}{
+
+\describe{
+\item{\code{ICL}}{the vector of Integrated Classfication Criterion (ICL) associated to the models of the collection: the smaller, the better}
+
+\item{\code{bestModel}}{the best model according to the ICL}
+
+\item{\code{optimizationStatus}}{a data.frame summarizing the optimization process for all models}
+}}
+
+\seealso{
+\code{\link{estimate}}
 }
 \keyword{datasets}

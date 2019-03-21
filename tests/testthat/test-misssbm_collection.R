@@ -55,6 +55,7 @@ test_that("missSBMcollection works", {
 
     expect_is(collection, "missSBM_collection")
 
+    expect_equal(which.min(collection$ICL), 3)
 
 #  }
 })

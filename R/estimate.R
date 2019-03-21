@@ -14,8 +14,8 @@
 #' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
 #' @param Robject an object with class \code{missSBMcollection}
-#' @return Returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
-#' @seealso \code{\link{sample}}, \code{\link{simulate}} and \code{\link{missingSBM_fit}}.
+#' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
+#' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missingSBM_fit}}.
 #' @examples
 #' ## SBM parameters
 #' directed <- FALSE
@@ -34,7 +34,8 @@
 #'
 #' ## Inference :
 #' vBlocks <- 1:5 # number of classes
-#' sbm <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
+#' collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
+#' collection$ICL
 #' @import R6 parallel
 #' @include utils_smoothing.R
 #' @export
@@ -56,7 +57,17 @@ estimate <- function(
   control[names(control_VEM)] <- control_VEM
 
   ## Instatntiate the collection of missingSBM_fit
-  myCollection <- missSBM_collection$new(adjacencyMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, mc.cores, trace)
+  myCollection <- missSBM_collection$new(
+      adjMatrix = adjacencyMatrix,
+      vBlocks = vBlocks,
+      sampling = sampling,
+      clusterInit = clusterInit,
+      covarMatrix = covarMatrix,
+      covarSimilarity = covarSimilarity,
+      smoothing = match.arg(smoothing),
+      mc.cores = mc.cores,
+      trace = trace
+    )
 
   ## Launch estimation of each missingSBM_fit
   myCollection$estimate(control, mc.cores, trace)
