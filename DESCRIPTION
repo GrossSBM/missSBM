@@ -30,7 +30,6 @@ Imports:
     R6
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
-    'ESR1.R'
     'RcppExports.R'
     'S3-methods_missSBMcollection.R'
     'SBM-Class.R'
@@ -38,6 +37,8 @@ Collate:
     'SBM_fit_covariates-Class.R'
     'SBM_fit_nocovariate-Class.R'
     'SBM_sampler-Class.R'
+    'blogosphere2006.R'
+    'er_network.R'
     'utils_smoothing.R'
     'estimate.R'
     'missSBM-package.R'
