@@ -5,8 +5,8 @@
 \title{Smooth path of models in a collection}
 \usage{
 smooth(Robject, type = c("forward", "backward", "both"),
-  split = c("hierachical", "spectral", "kmeans"), control_VEM = list(),
-  cores = 2, iterates = 1, trace = TRUE)
+  split = c("hierarchical", "spectral", "kmeans"),
+  control_VEM = list(), cores = 2, iterates = 1, trace = TRUE)
 }
 \arguments{
 \item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}}
