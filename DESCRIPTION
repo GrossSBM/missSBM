@@ -22,7 +22,6 @@ RoxygenNote: 6.1.1
 Depends: R (>= 3.4.0)
 Imports: 
     Rcpp,
-    RcppArmadillo,
     methods,
     ape,
     igraph,
