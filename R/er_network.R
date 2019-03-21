@@ -2,7 +2,7 @@
 #'
 #' A dataset containing the weigthed PPI network centred around the ESR1 (ER) protein
 #'
-#' @format A sparse symmetric matrix with 741 rows and 741 columns \code{er_network}
+#' @format A sparse symmetric matrix with 741 rows and 741 columns \code{ESR1}
 #' @examples
 #' data("er_network")
 #' class(er_network)
