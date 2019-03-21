@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions — is.missSBMcollection • missSBM</title>
+<title>An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions — missSBM • missSBM</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,11 +30,9 @@
 
 
 
-<meta property="og:title" content="An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions — is.missSBMcollection" />
+<meta property="og:title" content="An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions — missSBM" />
 
-<meta property="og:description" content="The SBM package provides three categories of important functions:
-simulateSBM, sampleNetwork, missSBM.
-Perform variational inference of Stochastic Block Model from sampled adjacency matrix" />
+<meta property="og:description" content="The SBM package provides three main functions: simulate, sample, estimate." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,158 +106,29 @@ Perform variational inference of Stochastic Block Model from sampled adjacency m
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/S3-methods_missSBMcollection.R'><code>R/S3-methods_missSBMcollection.R</code></a>, <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM-package.R'><code>R/missSBM-package.R</code></a>, <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM.R'><code>R/missSBM.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM-package.R'><code>R/missSBM-package.R</code></a></small>
     <div class="hidden name"><code>missSBM.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The SBM package provides three categories of important functions:
-<code><a href='simulateSBM.html'>simulateSBM</a></code>, <code><a href='sampleNetwork.html'>sampleNetwork</a></code>, <code>missSBM</code>.</p>
-<p>Perform variational inference of Stochastic Block Model from sampled adjacency matrix</p>
+    <p>The SBM package provides three main functions: <code><a href='simulate.html'>simulate</a></code>, <code><a href='sample.html'>sample</a></code>, <code><a href='estimate.html'>estimate</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>is.missSBMcollection</span>(<span class='no'>Robject</span>)
-
-<span class='fu'>ICL</span>(<span class='no'>Robject</span>)
-
-<span class='co'># S3 method for missSBMcollection</span>
-<span class='fu'>ICL</span>(<span class='no'>Robject</span>)
-
-<span class='fu'>optimizationStatus</span>(<span class='no'>Robject</span>)
-
-<span class='co'># S3 method for missSBMcollection</span>
-<span class='fu'>optimizationStatus</span>(<span class='no'>Robject</span>)
-
-<span class='fu'>getBestModel</span>(<span class='no'>Robject</span>)
-
-<span class='co'># S3 method for missSBMcollection</span>
-<span class='fu'>getBestModel</span>(<span class='no'>Robject</span>)
-
-<span class='fu'>missSBM</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>,
-  <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ifelse'>ifelse</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NULL'>is.null</a></span>(<span class='no'>covarMatrix</span>), <span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>),
-  <span class='kw'>covarMatrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>covarSimilarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>smoothing</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"forward"</span>, <span class='st'>"backward"</span>, <span class='st'>"both"</span>), <span class='kw'>mc.cores</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>iter_both</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>control_VEM</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>Robject</th>
-      <td><p>an object with class <code>missSBMcollection</code></p></td>
-    </tr>
-    <tr>
-      <th>adjacencyMatrix</th>
-      <td><p>The adjacency matrix of the network</p></td>
-    </tr>
-    <tr>
-      <th>vBlocks</th>
-      <td><p>The vector of number of blocks considered in the collection</p></td>
-    </tr>
-    <tr>
-      <th>sampling</th>
-      <td><p>The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block" by default "undirected" is choosen</p></td>
-    </tr>
-    <tr>
-      <th>clusterInit</th>
-      <td><p>Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code> providing a user-defined clustering</p></td>
-    </tr>
-    <tr>
-      <th>covarMatrix</th>
-      <td><p>An optional matrix of covariates with dimension N x M (M covariates per node).</p></td>
-    </tr>
-    <tr>
-      <th>covarSimilarity</th>
-      <td><p>An optional R x R -&gt; R function  to compute similarity between node covariates. Default is #'</p></td>
-    </tr>
-    <tr>
-      <th>trace</th>
-      <td><p>logical, control the verbosity. Default to <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>smoothing</th>
-      <td><p>character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"</p></td>
-    </tr>
-    <tr>
-      <th>mc.cores</th>
-      <td><p>integer, the number of cores to use when multiply model are fitted</p></td>
-    </tr>
-    <tr>
-      <th>iter_both</th>
-      <td><p>integer for the number of iteration in case of foward-backward (aka both) smoothing</p></td>
-    </tr>
-    <tr>
-      <th>control_VEM</th>
-      <td><p>a list controlling the variational EM algorithm. See details.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Returns an S3 object with class <code>missSBMcollection</code>, which is a list with all models estimated for all Q in vBlocks. <code>missSBMcollection</code> owns a couple of S3 methods: <code>is.missSBMcollection</code> to test the class of the object, a method <code>ICL</code> to extract the values of the Integrated Classification Criteria for each model, a method <code>getBestModel</code> which extract from the list the best model (and object of class <code>missSBM-fit</code>) according to the ICL, and a method <code>optimizationStatus</code> to monitor the objective function a convergence of the VEM algorithm.</p>
-    
+        
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>[1] Tabouy et al., Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.</p>
-<p>[2] Kolaczyk Erik D. (2009). Statistical Analysis of Network Data: Methods and Models. Springer.</p>
-<p>[1] Tabouy, P. Barbillon, J. Chiquet. Variationnal inference of Stochastic Block Model from sampled data (2017). arXiv:1707.04141.</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='sampleNetwork.html'>sampleNetwork</a></code> and <code><a href='simulateSBM.html'>simulateSBM</a></code> and <code><a href='missingSBM_fit.html'>missingSBM_fit</a></code>.</p></div>
+    <p>Timothée Tabouy, Pierre Barbillon &amp; Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, &lt;doi:10.1080/01621459.2018.1562934&gt;</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>### A SBM model : ###</span>
-<span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>300</span>
-<span class='no'>Q</span> <span class='kw'>&lt;-</span> <span class='fl'>3</span>
-<span class='no'>alpha</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>,<span class='no'>Q</span>)/<span class='no'>Q</span>     <span class='co'># mixture parameter</span>
-<span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/diag'>diag</a></span>(<span class='fl'>.45</span>,<span class='no'>Q</span>) + <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
-<span class='no'>directed</span> <span class='kw'>&lt;-</span> <span class='fl'>FALSE</span>
-<span class='co'>## Simulation of an Bernoulli non-directed SBM</span>
-<span class='no'>mySBM</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='simulateSBM.html'>simulateSBM</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
-
-<span class='co'>## Sampling of the data : ##</span>
-<span class='no'>samplingParameters</span> <span class='kw'>&lt;-</span> <span class='fl'>.5</span> <span class='co'># the sampling rate</span>
-<span class='no'>sampling</span> <span class='kw'>&lt;-</span> <span class='st'>"dyad"</span>       <span class='co'># the sampling design</span>
-<span class='no'>sampledNet</span> <span class='kw'>&lt;-</span>
-   <span class='fu'><a href='sampleNetwork.html'>sampleNetwork</a></span>(
-     <span class='no'>mySBM</span>$<span class='no'>adjMatrix</span>,
-     <span class='no'>sampling</span>,
-     <span class='no'>samplingParameters</span>
-   )
-
-<span class='co'>## Inference :</span>
-<span class='no'>vBlocks</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>5</span> <span class='co'># number of classes</span>
-<span class='no'>sbm</span> <span class='kw'>&lt;-</span>
-   <span class='fu'>missSBM</span>(
-      <span class='no'>sampledNet</span>$<span class='no'>adjMatrix</span>,
-      <span class='no'>vBlocks</span>,
-      <span class='no'>sampling</span>
-   )</div><div class='output co'>#&gt; 
-#&gt; 
-#&gt;  Adjusting Variational EM for Stochastic Block Model
-#&gt; 
-#&gt; 	Imputation assumes a 'dyad' network-sampling process
-#&gt; 
-#&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#references">References</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
     <h2>Author</h2>
     <p>Timothée Tabouy, Pierre Barbillon, Julien Chiquet</p>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simulatation of a Stochastic Block Model — simulateSBM • missSBM</title>
+<title>Simulation of an SBM — simulate • missSBM</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Simulatation of a Stochastic Block Model — simulateSBM" />
+<meta property="og:title" content="Simulation of an SBM — simulate" />
 
 <meta property="og:description" content="Generates a realization (blocks and adjancency matrix) of a Stochastic Block model" />
 <meta name="twitter:card" content="summary" />
@@ -105,9 +105,9 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simulatation of a Stochastic Block Model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/simulateSBM.R'><code>R/simulateSBM.R</code></a></small>
-    <div class="hidden name"><code>simulateSBM.Rd</code></div>
+    <h1>Simulation of an SBM</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/simulate.R'><code>R/simulate.R</code></a></small>
+    <div class="hidden name"><code>simulate.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -116,7 +116,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>simulateSBM</span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='kw'>directed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>covarMatrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>simulate</span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='kw'>directed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>covarMatrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>covarParam</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>covarSimilarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -174,10 +174,10 @@
 <span class='no'>covarParam</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='no'>M</span>, -<span class='fl'>1</span>, <span class='fl'>1</span>)
 
 <span class='co'>## draw a SBM without covariates</span>
-<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='fu'>simulateSBM</span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
+<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
 
 <span class='co'>## draw a SBM model with covariates</span>
-<span class='no'>sbm_cov</span> <span class='kw'>&lt;-</span> <span class='fu'>simulateSBM</span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>gamma</span>, <span class='no'>directed</span>, <span class='no'>covarMatrix</span>, <span class='no'>covarParam</span>)</div><span class='co'># NOT RUN {</span>
+<span class='no'>sbm_cov</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>gamma</span>, <span class='no'>directed</span>, <span class='no'>covarMatrix</span>, <span class='no'>covarParam</span>)</div><span class='co'># NOT RUN {</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sbm</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sbm_cov</span>)

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sampling of a network data set — sampleNetwork • missSBM</title>
+<title>Sampling of network data — sample • missSBM</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Sampling of a network data set — sampleNetwork" />
+<meta property="og:title" content="Sampling of network data — sample" />
 
 <meta property="og:description" content="Samples a matrix (the adjacency matrix of a network), possible generated under a stochastic block model" />
 <meta name="twitter:card" content="summary" />
@@ -105,9 +105,9 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Sampling of a network data set</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/sampleNetwork.R'><code>R/sampleNetwork.R</code></a></small>
-    <div class="hidden name"><code>sampleNetwork.Rd</code></div>
+    <h1>Sampling of network data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/sample.R'><code>R/sample.R</code></a></small>
+    <div class="hidden name"><code>sample.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -116,7 +116,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>sampleNetwork</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>sampling</span>, <span class='no'>parameters</span>, <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>sample</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>sampling</span>, <span class='no'>parameters</span>, <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>covarMatrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>covarSimilarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -150,7 +150,7 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>sampleNetwork</code> returns an object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code> containing all the useful information about the sampling.</p>
+    <p>an object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code> containing all the useful information about the sampling.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -180,10 +180,10 @@
 <span class='no'>alpha</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>,<span class='no'>Q</span>)/<span class='no'>Q</span>     <span class='co'># mixture parameter</span>
 <span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/diag'>diag</a></span>(<span class='fl'>.45</span>,<span class='no'>Q</span>) + <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
 
-<span class='co'>## draw a SBM without covariates</span>
-<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='simulateSBM.html'>simulateSBM</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
+<span class='co'>## simulate a SBM without covariates</span>
+<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
 
-<span class='co'>## Sampling of the network data</span>
+<span class='co'>## Sample network data</span>
 
 <span class='co'># some sampling design and their associated parameters</span>
 <span class='no'>sampling_parameters</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(
@@ -199,7 +199,7 @@
 
 <span class='kw'>for</span> (<span class='no'>sampling</span> <span class='kw'>in</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sampling_parameters</span>)) {
   <span class='no'>sampled_networks</span><span class='kw'>[[</span><span class='no'>sampling</span>]] <span class='kw'>&lt;-</span>
-     <span class='fu'>sampleNetwork</span>(
+     <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/sample'>sample</a></span>(
        <span class='kw'>adjacencyMatrix</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>adjMatrix</span>,
        <span class='kw'>sampling</span>        <span class='kw'>=</span> <span class='no'>sampling</span>,
        <span class='kw'>parameters</span>      <span class='kw'>=</span> <span class='no'>sampling_parameters</span><span class='kw'>[[</span><span class='no'>sampling</span>]],

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>R6 Class definition of an SBM-fit — missingSBM_fit • missSBM</title>
+<title>War_graphs data set — war_graphs • missSBM</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="R6 Class definition of an SBM-fit — missingSBM_fit" />
+<meta property="og:title" content="War_graphs data set — war_graphs" />
 
-<meta property="og:description" content="This class is designed to adjust a Stochastic Block Model on a network with missing entries." />
+<meta property="og:description" content="This dataset contains two networks where the nodes are countries and an edge in network &quot;beligerent&quot;
+means that the two countries have been at least once at war between years 1816 to 2007 while an edge in network &quot;alliance&quot;
+means that the two countries have had a formal alliance between years 1816 to 2012. The network `beligenrent` have less nodes since countries which have not been at war are not considered." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -105,31 +107,66 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>R6 Class definition of an SBM-fit</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missingSBM_fit-Class.R'><code>R/missingSBM_fit-Class.R</code></a></small>
-    <div class="hidden name"><code>missingSBM_fit.Rd</code></div>
+    <h1>War_graphs data set</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/war_graphs.R'><code>R/war_graphs.R</code></a></small>
+    <div class="hidden name"><code>war_graphs.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This class is designed to adjust a Stochastic Block Model on a network with missing entries.</p>
+    <p>This dataset contains two networks where the nodes are countries and an edge in network "beligerent"
+means that the two countries have been at least once at war between years 1816 to 2007 while an edge in network "alliance"
+means that the two countries have had a formal alliance between years 1816 to 2012. The network `beligenrent` have less nodes since countries which have not been at war are not considered.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>missingSBM_fit</span></pre>
+    <pre class="usage"><span class='no'>war_graphs</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>An object of class <code>R6ClassGenerator</code> of length 24.</p>
+    <p>A list with 2 two igraph objects, <code>alliance</code> and <code>beligerent</code>.</p>
+    
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>networs were extracted from &lt;http://www.correlatesofwar.org/&gt;</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.</p>
+<p>Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>war_graphs</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/class'>class</a></span>(<span class='no'>war_graphs</span>$<span class='no'>beligerent</span>)</div><div class='output co'>#&gt; [1] "igraph"</div><div class='input'><span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/igraph/topics/gorder'>gorder</a></span>(<span class='no'>war_graphs</span>$<span class='no'>alliance</span>)</div><div class='output co'>#&gt; [1] 182</div><div class='input'><span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/igraph/topics/edge'>edges</a></span>(<span class='no'>war_graphs</span>$<span class='no'>alliance</span>)</div><div class='output co'>#&gt; [[1]]
+#&gt; IGRAPH c364df0 UN-- 182 1694 -- 
+#&gt; + attr: name (v/c)
+#&gt; + edges from c364df0 (vertex names):
+#&gt;  [1] United States of America--Canada             
+#&gt;  [2] United States of America--Bahamas            
+#&gt;  [3] United States of America--Cuba               
+#&gt;  [4] United States of America--Haiti              
+#&gt;  [5] United States of America--Dominican Republic 
+#&gt;  [6] United States of America--Jamaica            
+#&gt;  [7] United States of America--Trinidad and Tobago
+#&gt;  [8] United States of America--Barbados           
+#&gt; + ... omitted several edges
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "igraph.edge"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       
       <li><a href="#format">Format</a></li>
-          </ul>
+
+      <li><a href="#source">Source</a></li>
+
+      <li><a href="#references">References</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="An R6 Class to represent a sampler for a SBM — SBM_sampler" />
 
-<meta property="og:description" content="The function simulateSBM produces an instance of an object with class SBM_sampler." />
+<meta property="og:description" content="The function simulate produces an instance of an object with class SBM_sampler." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -112,7 +112,7 @@
 
     <div class="ref-description">
     
-    <p>The function <code><a href='simulateSBM.html'>simulateSBM</a></code> produces an instance of an object with class <code>SBM_sampler</code>.</p>
+    <p>The function <code><a href='simulate.html'>simulate</a></code> produces an instance of an object with class <code>SBM_sampler</code>.</p>
     
     </div>
 
@@ -148,7 +148,7 @@ some of them being useful for the user (see examples)</p><ul>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>The function <code><a href='simulateSBM.html'>simulateSBM</a></code>.</p></div>
+    <div class='dont-index'><p>The function <code><a href='simulate.html'>simulate</a></code>.</p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -164,7 +164,7 @@ some of them being useful for the user (see examples)</p><ul>
 <span class='no'>covarParam</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='no'>M</span>, -<span class='fl'>1</span>, <span class='fl'>1</span>)
 
 <span class='co'>## draw a SBM without covariates through simulateSBM</span>
-<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='simulateSBM.html'>simulateSBM</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
+<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
 
 <span class='co'>## equivalent construction from the SBM_sampler class itslef</span>
 <span class='no'>sbm_s</span> <span class='kw'>&lt;-</span> <span class='no'>SBM_sampler</span>$<span class='fu'>new</span>(<span class='no'>directed</span>, <span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>)

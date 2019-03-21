@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="An R6 Class to represent a sampler for a SBM — sampledNetwork" />
 
-<meta property="og:description" content="The function simulateSBM produces an instance of an object with class SBM_sampler." />
+<meta property="og:description" content="The function simulate produces an instance of an object with class SBM_sampler." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -112,7 +112,7 @@
 
     <div class="ref-description">
     
-    <p>The function <code><a href='simulateSBM.html'>simulateSBM</a></code> produces an instance of an object with class <code>SBM_sampler</code>.</p>
+    <p>The function <code><a href='simulate.html'>simulate</a></code> produces an instance of an object with class <code>SBM_sampler</code>.</p>
     
     </div>
 
@@ -154,12 +154,12 @@
 <span class='no'>alpha</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>,<span class='no'>Q</span>)/<span class='no'>Q</span>     <span class='co'># mixture parameter</span>
 <span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/diag'>diag</a></span>(<span class='fl'>.45</span>,<span class='no'>Q</span>) + <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
 
-<span class='co'>## draw a SBM without covariates</span>
-<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='simulateSBM.html'>simulateSBM</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
+<span class='co'>## simulate a SBM without covariates</span>
+<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
 
-<span class='co'>## Sampling of the network data</span>
+<span class='co'>## Sample network data</span>
 <span class='no'>sampled_network</span> <span class='kw'>&lt;-</span>
-     <span class='fu'><a href='sampleNetwork.html'>sampleNetwork</a></span>(
+     <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/sample'>sample</a></span>(
        <span class='kw'>adjacencyMatrix</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>adjMatrix</span>,
        <span class='kw'>sampling</span>        <span class='kw'>=</span> <span class='st'>"double-standard"</span>,
        <span class='kw'>parameters</span>      <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.4</span>, <span class='fl'>0.8</span>)
