@@ -14,4 +14,8 @@ ESR1
 \description{
 A dataset containing the weigthed PPI network centred around ESR1
 }
+\examples{
+data(ESR1)
+class(ESR1)
+}
 \keyword{datasets}

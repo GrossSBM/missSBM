@@ -4,4 +4,7 @@
 #'
 #' @format A sparse symmetric matrix with 741 rows and 741 columns \code{ESR1}
 #' @source \url{https://string-db.org/}
+#' @examples
+#' data(ESR1)
+#' class(ESR1)
 "ESR1"

@@ -10,3 +10,5 @@
 ^README.Rmd
 ^inst/tries
 ^inst/tests_against_timCode
+^vignettes/*_cache/
+^vignettes/cache/

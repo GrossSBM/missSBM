@@ -25,6 +25,7 @@ Imports:
     RcppArmadillo,
     methods,
     ape,
+    igraph,
     nloptr,
     R6
 LinkingTo: Rcpp, RcppArmadillo
@@ -49,6 +50,7 @@ Collate:
     'sampledNetwork-Class.R'
     'simulate.R'
     'utils_initialization.R'
+    'war_graphs.R'
 Suggests: 
     aricode,
     blockmodels,
