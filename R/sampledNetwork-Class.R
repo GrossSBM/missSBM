@@ -91,6 +91,9 @@ sampledNetwork <-
 
       ## adjacency matrix
       stopifnot(is.matrix(adjMatrix))
+      ## Only binary graph supported
+      stopifnot(all.equal(unique(as.numeric(adjMatrix[!is.na(adjMatrix)])), c(0,1)))
+
       if (isSymmetric(adjMatrix)) private$directed <- FALSE else private$directed <- TRUE
       private$Y  <- adjMatrix
 

@@ -28,7 +28,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       trace = FALSE,
       clusterInit = "spectral"
     )
-    newAlgo <- missSBM_out[[1]]
+    newAlgo <- missSBM_out$bestModel
 
     ## mixture parameters (alpha)
     err_new <- error(newAlgo$fittedSBM$mixtureParam, truth$mixtureParam, sort = TRUE)
@@ -98,7 +98,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       covarMatrix = refAlgo$covarMatrix,
       clusterInit = "spectral"
     )
-    newAlgo <- missSBM_out[[1]]
+    newAlgo <- missSBM_out$bestModel
 
     ## mixture parameters (alpha)
     err_new <- error(newAlgo$fittedSBM$mixtureParam, truth$mixtureParam, sort = TRUE)

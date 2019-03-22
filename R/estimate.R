@@ -9,13 +9,10 @@
 #' @param covarSimilarity An optional R x R -> R function  to compute similarity between node covariates. Default is #'
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering
 #' @param trace logical, control the verbosity. Default to \code{TRUE}.
-#' @param mc.cores integer, the number of cores to use when multiply model are fitted
-#' @param smoothing character indicating what kind of ICL smoothing should be use among "none", "forward", "backward" or "both"
-#' @param iter_both integer for the number of iteration in case of foward-backward (aka both) smoothing
+#' @param cores integer, the number of cores to use when multiply model are fitted
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
-#' @param Robject an object with class \code{missSBMcollection}
-#' @return Returns an S3 object with class \code{missSBMcollection}, which is a list with all models estimated for all Q in vBlocks. \code{missSBMcollection} owns a couple of S3 methods: \code{is.missSBMcollection} to test the class of the object, a method \code{ICL} to extract the values of the Integrated Classification Criteria for each model, a method \code{getBestModel} which extract from the list the best model (and object of class \code{missSBM-fit}) according to the ICL, and a method \code{optimizationStatus} to monitor the objective function a convergence of the VEM algorithm.
-#' @seealso \code{\link{sample}}, \code{\link{simulate}} and \code{\link{missingSBM_fit}}.
+#' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
+#' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missingSBM_fit}}.
 #' @examples
 #' ## SBM parameters
 #' directed <- FALSE
@@ -34,9 +31,9 @@
 #'
 #' ## Inference :
 #' vBlocks <- 1:5 # number of classes
-#' sbm <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
+#' collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
+#' collection$ICL
 #' @import R6 parallel
-#' @include utils_smoothing.R
 #' @export
 estimate <- function(
   adjacencyMatrix,
@@ -46,68 +43,29 @@ estimate <- function(
   covarMatrix = NULL,
   covarSimilarity = l1_similarity,
   trace     = TRUE,
-  smoothing = c("none", "forward", "backward", "both"),
-  mc.cores = 1,
-  iter_both = 1,
+  cores = 1,
   control_VEM = list()) {
-
-  ## some sanity checks
-  try(
-    !all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)),
-    stop("Only binary graphs are supported.")
-  )
-
-  ## Create the sampledNetwork object
-  sampledNet <- sampledNetwork$new(adjacencyMatrix)
-
-  ## Compute the array of covariates, used in all SBM-related computations
-  covarArray  <- getCovarArray(covarMatrix, covarSimilarity)
-
-  if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
-
-  if (trace) cat("\n")
-  if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-  if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
-  if (trace) cat("\n")
-  models <- mcmapply(
-    function(nBlock, clInit) {
-      if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-      missingSBM_fit$new(sampledNet, nBlock, sampling, clInit, covarMatrix, covarArray)
-    }, nBlock = vBlocks, clInit = clusterInit, mc.cores = mc.cores
-  )
 
   ## defaut control parameter for VEM, overwritten by user specification
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
-  cat("\n")
-  mclapply(models,
-    function(model) {
-      if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-      model$doVEM(control)
-    }, mc.cores = mc.cores
+
+  ## Instatntiate the collection of missingSBM_fit
+  myCollection <- missSBM_collection$new(
+      adjMatrix       = adjacencyMatrix,
+      vBlocks         = vBlocks,
+      sampling        = sampling,
+      clusterInit     = clusterInit,
+      covarMatrix     = covarMatrix,
+      covarSimilarity = covarSimilarity,
+      cores           = cores,
+      trace           = trace
   )
 
-  smoothing <- match.arg(smoothing)
-  if (smoothing != "none") {
-    if (trace) cat("\n Smoothing ICL\n")
-    smoothing_fn <- switch(smoothing,
-                           "forward"  = smoothingForward ,
-                           "backward" = smoothingBackward,
-                           "both"     = smoothingForBackWard
-    )
-    if (!is.character(clusterInit)) {
-      split_fn <- init_hierarchical
-    } else {
-      split_fn <- switch(clusterInit,
-                         "spectral" = init_spectral,
-                         "hierarchical" = init_hierarchical,
-                         init_hierarchical)
-    }
-    control$trace <- FALSE # forcing no trace while smoothing
-    models <- smoothing_fn(models, vBlocks, sampledNet, sampling, covarMatrix, covarSimilarity, split_fn, mc.cores, iter_both, control)
+  ## Launch estimation of each missingSBM_fit
+  myCollection$estimate(control, cores, trace)
 
-  }
-
-  structure(setNames(models, vBlocks), class = "missSBMcollection")
+  ## Return the collection of optimized missingSBM_fit
+  myCollection
 }
 
