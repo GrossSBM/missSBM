@@ -1,25 +1,23 @@
 #' An R6 Class to represent a collection of missSBM_fit
 #'
 #' The function \code{\link{estimate}} produces an instance of this class.
+#' The function \code{\link{smooth}} (also available as ann R6 method of this class) can be used
+#' to smooth the ICL on a collection of model, as post-treatment.
 #'
-#' This class comes with a set of methods, some of them being useful for the user:
-#' See the documentation for \code{\link[=smoothing_ICL]{smoothing_ICL}},
-#' \code{\link[=plot.missSBM_collection]{plot}}.
-#'
+#' @field models a list of models
 #' @field ICL the vector of Integrated Classfication Criterion (ICL) associated to the models of the collection: the smaller, the better
 #' @field bestModel the best model according to the ICL
 #' @field optimizationStatus a data.frame summarizing the optimization process for all models
 #'
-#' @seealso \code{\link{estimate}}
+#' @seealso \code{\link{estimate}}, \code{\link{smooth}}
 #' @include utils_smoothing.R
 #' @include missingSBM_fit-Class.R
 #' @export
 missSBM_collection <-
   R6::R6Class(classname = "missSBM_collection",
-  public = list(
-    models = NULL  # a list of models
-  ),
+  private = list(missSBM_fit = NULL), # a list of models
   active = list(
+    models = function(value) (private$missSBM_fit),
     ICL = function(value) {setNames(sapply(self$models, function(model) model$vICL), names(self$vBlocks))},
     bestModel = function(value) {self$models[[which.min(self$ICL)]]},
     vBlocks = function(value) {sapply(self$models, function(model) model$fittedSBM$nBlocks)},
@@ -46,7 +44,7 @@ function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarSimilarity
 
   covarArray <- getCovarArray(covarMatrix, covarSimilarity)
   sampledNet <- sampledNetwork$new(adjMatrix)
-  self$models <- mcmapply(
+  private$missSBM_fit <- mcmapply(
     function(nBlock, cl0) {
       if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
       missingSBM_fit$new(sampledNet, nBlock, sampling, cl0, covarMatrix, covarArray)
@@ -58,7 +56,7 @@ missSBM_collection$set("public", "estimate",
 function(control_VEM, mc.cores, trace) {
   if (trace) cat("\n")
   invisible(
-    mclapply(self$models,
+    mclapply(private$missSBM_fit,
        function(model) {
          if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
            model$doVEM(control_VEM)
@@ -68,7 +66,7 @@ function(control_VEM, mc.cores, trace) {
   invisible(self)
 })
 
-missSBM_collection$set("public", "smooth_ICL",
+missSBM_collection$set("public", "smooth",
 function(type, control) {
   if (control$trace) cat("\n Smoothing ICL\n")
   if (type == "forward")
@@ -113,8 +111,8 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), split = c("
     "hierarchical" = init_hierarchical,
     "kmeans"       = init_kmeans
   )
-
-  Robject$smooth_ICL(match.arg(type), control)
+  ## Run the smoothing
+  Robject$smooth(match.arg(type), control)
 
   invisible(Robject)
 }
@@ -122,15 +120,15 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), split = c("
 missSBM_collection$set("private", "smoothing_forward",
 function(control) {
   trace <- control$trace; control$trace <- FALSE
-  sampledNet  <- self$models[[1]]$sampledNetwork
-  sampling    <- self$models[[1]]$fittedSampling$type
+  sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
+  sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
   covarMatrix <- sampledNet$covarMatrix
-  covarArray  <- self$models[[1]]$fittedSBM$covarArray
+  covarArray  <- private$missSBM_fit[[1]]$fittedSBM$covarArray
 
   if (trace) cat("   Going forward ")
   for (i in self$vBlocks[-length(self$vBlocks)]) {
     if (trace) cat("+")
-    cl_split <- factor(self$models[[i]]$fittedSBM$memberships)
+    cl_split <- factor(private$missSBM_fit[[i]]$fittedSBM$memberships)
     levels(cl_split) <- c(levels(cl_split), as.character(i + 1))
     if (nlevels(cl_split) - 1 == i) {
       candidates <- mclapply(1:i, function(j) {
@@ -142,15 +140,15 @@ function(control) {
           model$doVEM(control)
           model
         } else {
-          self$models[[i + 1]]
+          private$missSBM_fit[[i + 1]]
         }
       }, mc.cores = control$mc.cores)
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
       best_one <- candidates[[which.min(vICLs)]]
-      if (is.na(self$models[[i + 1]]$vICL)) {
-        self$models[[i + 1]] <- best_one
-      } else if (best_one$vICL < self$models[[i + 1]]$vICL) {
-        self$models[[i + 1]] <- best_one
+      if (is.na(private$missSBM_fit[[i + 1]]$vICL)) {
+        private$missSBM_fit[[i + 1]] <- best_one
+      } else if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
+        private$missSBM_fit[[i + 1]] <- best_one
       }
     }
   }
@@ -160,15 +158,15 @@ function(control) {
 missSBM_collection$set("private", "smoothing_backward",
 function(control) {
   trace <- control$trace; control$trace <- FALSE
-  sampledNet  <- self$models[[1]]$sampledNetwork
-  sampling    <- self$models[[1]]$fittedSampling$type
+  sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
+  sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
   covarMatrix <- sampledNet$covarMatrix
-  covarArray  <- self$models[[1]]$fittedSBM$covarArray
+  covarArray  <- private$missSBM_fit[[1]]$fittedSBM$covarArray
 
   if (trace) cat("   Going backward ")
   for (i in rev(self$vBlocks[-1])) {
     if (trace) cat('+')
-    cl0 <- factor(self$models[[i]]$fittedSBM$memberships)
+    cl0 <- factor(private$missSBM_fit[[i]]$fittedSBM$memberships)
     if (nlevels(cl0) == i) {
       candidates <- mclapply(combn(i, 2, simplify = FALSE), function(couple) {
         cl_fusion <- cl0
@@ -180,10 +178,10 @@ function(control) {
       }, mc.cores = control$mc.cores)
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
       best_one <- candidates[[which.min(vICLs)]]
-      if (is.na(self$models[[i - 1]]$vICL)) {
-        self$models[[i - 1]] <- best_one
-      } else if (best_one$vICL < self$models[[i - 1]]$vICL) {
-        self$models[[i - 1]] <- best_one
+      if (is.na(private$missSBM_fit[[i - 1]]$vICL)) {
+        private$missSBM_fit[[i - 1]] <- best_one
+      } else if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
+        private$missSBM_fit[[i - 1]] <- best_one
       }
     }
   }
@@ -192,10 +190,11 @@ function(control) {
 missSBM_collection$set("public", "show",
 function() {
   cat("--------------------------------------------------------\n")
-  cat("COLLECTION OF", length(self$models), "SBM fits          \n")
+  cat("COLLECTION OF", length(self$vBlocks), "SBM fits          \n")
   cat("========================================================\n")
   cat(" - Number of blocks considers: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
   cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nBlocks, "\n", sep = "")
+  cat(" - Fields: $models, $ICL, $vBlocks, $bestModel, $optimizationStatus\n")
 })
 missSBM_collection$set("public", "print", function() self$show())
 
