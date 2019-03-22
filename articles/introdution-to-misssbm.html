@@ -74,7 +74,7 @@
       <h1>Introduction to missSBM</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">2019-03-21</h4>
+            <h4 class="date">2019-03-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jchiquet/missSBM/blob/master/vignettes/introdution-to-misssbm.Rmd"><code>vignettes/introdution-to-misssbm.Rmd</code></a></small>
       <div class="hidden name"><code>introdution-to-misssbm.Rmd</code></div>
@@ -98,9 +98,9 @@
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(missSBM)</a></code></pre></div>
 <pre><code>## 
 ## Attaching package: 'missSBM'</code></pre>
-<pre><code>## The following object is masked from 'package:stats':
+<pre><code>## The following objects are masked from 'package:stats':
 ## 
-##     simulate</code></pre>
+##     simulate, smooth</code></pre>
 <pre><code>## The following object is masked from 'package:base':
 ## 
 ##     sample</code></pre>
@@ -125,32 +125,48 @@
 <a class="sourceLine" id="cb12-4" data-line-number="4">sampledNetwar &lt;-<span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/sample">sample</a></span>(Awar, sampling, samplingParameters)</a>
 <a class="sourceLine" id="cb12-5" data-line-number="5">Awarspld &lt;-<span class="st"> </span>sampledNetwar<span class="op">$</span>adjMatrix</a></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">vBlocks &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">sbm &lt;-<span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(Awarspld, vBlocks, sampling,<span class="dt">clusterInit =</span> <span class="st">"spectral"</span>, <span class="dt">smoothing =</span> <span class="st">"none"</span>, <span class="dt">mc.cores =</span> <span class="dv">2</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb13-2" data-line-number="2">collection_sbm &lt;-<span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(Awarspld, vBlocks, sampling,<span class="dt">clusterInit =</span> <span class="st">"spectral"</span>, <span class="dt">cores =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## 
 ## 
 ##  Adjusting Variational EM for Stochastic Block Model
 ## 
 ##  Imputation assumes a 'node' network-sampling process</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw"><a href="../reference/estimate.html">ICL</a></span>(sbm))</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm<span class="op">$</span>ICL)</a></code></pre></div>
 <p><img src="introdution-to-misssbm_files/figure-html/plotICL-1.png" width="700"></p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which.min">which.min</a></span>(<span class="kw"><a href="../reference/estimate.html">ICL</a></span>(sbm))</a></code></pre></div>
-<pre><code>## 3 
-## 3</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(sbm[[<span class="dv">3</span>]]<span class="op">$</span>fittedSBM<span class="op">$</span>memberships)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm, <span class="st">"forward"</span>)</a></code></pre></div>
+<pre><code>## 
+##  Smoothing ICL
+##    Going forward +++++
+                                                                                                    </code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm<span class="op">$</span>ICL)</a></code></pre></div>
+<p><img src="introdution-to-misssbm_files/figure-html/smoothed-1.png" width="700"></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships)</a></code></pre></div>
 <pre><code>## 
 ##  1  2  3 
-## 64 12 16</code></pre>
+## 58 15 19</code></pre>
 <p>We compare with clusterings obtained with the fully observed network.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">vBlocks &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2">sbmfull &lt;-<span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(Awar, vBlocks, sampling, <span class="dt">clusterInit =</span> <span class="st">"spectral"</span>, <span class="dt">smoothing =</span> <span class="st">"none"</span>, <span class="dt">mc.cores =</span> <span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">vBlocks &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">collection_sbm_full &lt;-<span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(Awar, vBlocks, sampling, <span class="dt">clusterInit =</span> <span class="st">"hierarchical"</span>, <span class="dt">cores =</span> <span class="dv">1</span>, <span class="dt">trace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## 
 ## 
 ##  Adjusting Variational EM for Stochastic Block Model
 ## 
-##  Imputation assumes a 'node' network-sampling process</code></pre>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="../reference/estimate.html">ICL</a></span>(sbmfull)</a></code></pre></div>
-<pre><code>##   1   2   3   4   5   6 
-## NaN NaN NaN NaN NaN NaN</code></pre>
+##  Imputation assumes a 'node' network-sampling process
+## 
+##  Initialization of model with 1 blocks. 
+ Initialization of model with 2 blocks. 
+ Initialization of model with 3 blocks. 
+ Initialization of model with 4 blocks. 
+ Initialization of model with 5 blocks. 
+ Initialization of model with 6 blocks. 
+##  Performing VEM inference for model with 1 blocks.
+ Performing VEM inference for model with 2 blocks.
+ Performing VEM inference for model with 3 blocks.
+ Performing VEM inference for model with 4 blocks.
+ Performing VEM inference for model with 5 blocks.
+ Performing VEM inference for model with 6 blocks.</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">collection_sbm_full<span class="op">$</span>ICL</a></code></pre></div>
+<pre><code>## [1] NaN NaN NaN NaN NaN NaN</code></pre>
 </div>
 </div>
   </div>
