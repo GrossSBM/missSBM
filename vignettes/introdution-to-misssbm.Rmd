@@ -81,9 +81,9 @@ table(collection_sbm$bestModel$fittedSBM$memberships,collection_sbm_full$bestMod
 
 ```{r blockmodelscomparison}
 library(blockmodels)
-mod=BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)))
+mod=BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0)
 mod$estimate()
-mod=BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)))
+mod=BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0)
 mod$estimate()
 ```
 
