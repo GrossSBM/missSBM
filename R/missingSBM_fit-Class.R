@@ -122,7 +122,6 @@ missingSBM_fit$set("public", "doVEM",
   }
 )
 
-#' @export
 missingSBM_fit$set("public", "show",
 function() {
   cat("missSBM-fit\n")
