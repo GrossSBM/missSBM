@@ -26,7 +26,6 @@ networkSamplingDyads_fit <-
   active = list(
     ## nDyads automatically handles the directed/undirected cases
     penalty = function(value) {log(private$card_D) * self$df},
-##    entropy = function(value) {-sum(xlogx(private$nu[private$NAs]) + xlogx(1 - private$nu[private$NAs]))}
     log_lambda = function(value) {0}
   )
 )
@@ -81,7 +80,8 @@ dyadSampling_fit <-
   ),
   active = list(
     vExpec = function(value) {
-      res <- private$card_D_o * log(private$psi) + private$card_D_m * log(1 - private$psi)
+      res <- private$card_D_o * log(private$psi + 1 * (private$psi == 0)) +
+        private$card_D_m * log(1 - private$psi + 1 * (private$psi == 1))
       res
     }
   )
@@ -131,7 +131,8 @@ nodeSampling_fit <-
   ),
   active = list(
     vExpec = function() {
-      res <- private$card_N_o * log(private$psi) + private$card_N_m * log(1 - private$psi)
+      res <- private$card_N_o * log(private$psi + 1 * (private$psi == 0)) +
+        private$card_N_m * log(1 - private$psi + 1 * (private$psi == 1) )
       res
     }
   )
