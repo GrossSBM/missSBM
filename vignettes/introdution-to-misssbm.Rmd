@@ -40,25 +40,24 @@ plot(war_graphs$beligerent , main = "Beligerent")
 Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered, therefore there is block of missing data on the diagonal of the adjacency matrix.
 
 ```{r sampling}
-Awar <- as.matrix(get.adjacency(war_graphs$beligerent))
-sampling <- "node"
-samplingParameters <- c(.6)
-sampledNetwar <- missSBM::sample(Awar, sampling, samplingParameters)
-Awarspld <- sampledNetwar$adjMatrix
+sampledNet_war <- war_graphs$beligerent %>% 
+  as_adj(sparse = FALSE) %>% missSBM::sample(sampling = "node", parameters = .6)
+plot(sampledNet_war)
 ```
 
 
 
 ```{r inferencew}
 vBlocks <- 1:6
-collection_sbm <- missSBM::estimate(Awarspld, vBlocks, sampling,clusterInit = "spectral", cores = 2)
+collection_sbm <- sampledNet_war$adjMatrix %>% 
+  missSBM::estimate(vBlocks = vBlocks, sampling = "node", clusterInit = "spectral", cores = 2)
 ```
 ```{r plotICL}
 plot(collection_sbm$ICL)
 ```
 
 ```{r smoothed}
-smooth(collection_sbm, "forward")
+smooth(collection_sbm, "both", iterates = 2, cores = 2)
 plot(collection_sbm$ICL)
 ```
 
@@ -68,8 +67,9 @@ table(collection_sbm$bestModel$fittedSBM$memberships)
 
 We compare with clusterings obtained with the fully observed network.
 ```{r inferencewfull}
-vBlocks <- 1:6
-collection_sbm_full <- missSBM::estimate(Awar, vBlocks, sampling, clusterInit = "hierarchical", cores = 1, trace = TRUE)
+collection_sbm_full <- war_graphs$beligerent %>% 
+  as_adj(sparse = FALSE) %>% 
+  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical", cores = 1, trace = TRUE)
 collection_sbm_full$ICL
 ```
 
