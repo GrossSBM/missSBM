@@ -34,7 +34,6 @@
 #' collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
 #' collection$ICL
 #' @import R6 parallel
-#' @include utils_smoothing.R
 #' @export
 estimate <- function(
   adjacencyMatrix,

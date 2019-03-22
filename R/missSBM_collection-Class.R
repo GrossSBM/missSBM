@@ -10,7 +10,6 @@
 #' @field optimizationStatus a data.frame summarizing the optimization process for all models
 #'
 #' @seealso \code{\link{estimate}}, \code{\link{smooth}}
-#' @include utils_smoothing.R
 #' @include missingSBM_fit-Class.R
 #' @export
 missSBM_collection <-
