@@ -72,6 +72,14 @@ collection_sbm_full <- war_graphs$beligerent %>%
   missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "spectral", cores = 2, trace = TRUE)
 smooth(collection_sbm_full, "both", iterates = 4)
 plot(collection_sbm_full$ICL)
+test =as.matrix(get.adjacency(war_graphs$beligerent))
+isSymmetric(test)
+test[1,2] = 1
+isSymmetric(test)
+collection_sbm_full2 <- test %>% 
+  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "spectral", cores = 2, trace = TRUE)
+smooth(collection_sbm_full2, "both", iterates = 4)
+plot(collection_sbm_full2$ICL)
 ```
 
 ```{r clustercomparison}
