@@ -78,6 +78,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/introdution-to-misssbm.html">Introduction to missSBM</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -117,87 +129,15 @@
       <tr>
         <th colspan="2">
           <h2 id="section-top-level-fitting-functions" class="hasAnchor"><a href="#section-top-level-fitting-functions" class="anchor"></a>Top-level fitting functions</h2>
-          <p class="section-desc"><p>Main functions for simulating, sampling and inferring an SBM with missing data</p></p>
+          <p class="section-desc"><p>Main functions for simulating, sampling and estimating an SBM with missing data</p></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="SBM_fit.html">SBM_fit</a></code> </p>
+          <p><code><a href="simulate.html">simulate()</a></code> </p>
         </td>
-        <td><p>R6 Class definition of an SBM-fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="SBM_sampler.html">SBM_sampler</a></code> </p>
-        </td>
-        <td><p>An R6 Class to represent a sampler for a SBM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="dyadSampler.html">dyadSampler</a></code> </p>
-        </td>
-        <td><p>Virtual class for all dyad-centered samplers</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="er_network.html">er_network</a></code> </p>
-        </td>
-        <td><p>ER ego centred network</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="estimate.html">estimate()</a></code> </p>
-        </td>
-        <td><p>Inference of an SBM with missing data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="frenchblog2007.html">frenchblog2007</a></code> </p>
-        </td>
-        <td><p>Political Blogosphere network prior to 2007 French presidential election</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="missSBM.html">missSBM</a></code> </p>
-        </td>
-        <td><p>An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="missSBM_collection.html">missSBM_collection</a></code> </p>
-        </td>
-        <td><p>An R6 Class to represent a collection of missSBM_fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="missingSBM_fit.html">missingSBM_fit</a></code> </p>
-        </td>
-        <td><p>R6 Class definition of an SBM-fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSampler.html">networkSampler</a></code> </p>
-        </td>
-        <td><p>Definition of R6 Class 'networkSampling_sampler'</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSampling.html">networkSampling</a></code> </p>
-        </td>
-        <td><p>definition of R6 Class 'networkSampling'</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSamplingDyads_fit.html">networkSamplingDyads_fit</a></code> </p>
-        </td>
-        <td><p>Virtual class used to define a family of networkSamplingDyads_fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSamplingNodes_fit.html">networkSamplingNodes_fit</a></code> </p>
-        </td>
-        <td><p>Virtual class used to define a family of networkSamplingNodes_fit</p></td>
+        <td><p>Simulation of an SBM</p></td>
       </tr><tr>
         
         <td>
@@ -207,38 +147,32 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="sampledNetwork.html">sampledNetwork</a></code> </p>
+          <p><code><a href="estimate.html">estimate()</a></code> </p>
         </td>
-        <td><p>An R6 Class to represent a sampler for a SBM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="simulate.html">simulate()</a></code> </p>
-        </td>
-        <td><p>Simulation of an SBM</p></td>
+        <td><p>Inference of an SBM with missing data</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="smooth.html">smooth()</a></code> </p>
         </td>
         <td><p>Smooth path of models in a collection</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="war_graphs.html">war_graphs</a></code> </p>
-        </td>
-        <td><p>War_graphs data set</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-classes-of-object-fit" class="hasAnchor"><a href="#section-classes-of-object-fit" class="anchor"></a>Classes of object fit</h2>
+          <h2 id="section-classes-of-objects" class="hasAnchor"><a href="#section-classes-of-objects" class="anchor"></a>Classes of objects</h2>
           <p class="section-desc"><p>Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.</p></p>
         </th>
       </tr>
       <tr>
         
         <td>
+          <p><code><a href="missSBM_collection.html">missSBM_collection</a></code> </p>
+        </td>
+        <td><p>An R6 Class to represent a collection of missSBM_fit</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="missingSBM_fit.html">missingSBM_fit</a></code> </p>
         </td>
         <td><p>R6 Class definition of an SBM-fit</p></td>
@@ -276,40 +210,16 @@
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-data-set" class="hasAnchor"><a href="#section-data-set" class="anchor"></a>Data set</h2>
+          <h2 id="section-data-sets" class="hasAnchor"><a href="#section-data-sets" class="anchor"></a>Data sets</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="SBM_fit.html">SBM_fit</a></code> </p>
+          <p><code><a href="war_graphs.html">war_graphs</a></code> </p>
         </td>
-        <td><p>R6 Class definition of an SBM-fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="SBM_sampler.html">SBM_sampler</a></code> </p>
-        </td>
-        <td><p>An R6 Class to represent a sampler for a SBM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="dyadSampler.html">dyadSampler</a></code> </p>
-        </td>
-        <td><p>Virtual class for all dyad-centered samplers</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="er_network.html">er_network</a></code> </p>
-        </td>
-        <td><p>ER ego centred network</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="estimate.html">estimate()</a></code> </p>
-        </td>
-        <td><p>Inference of an SBM with missing data</p></td>
+        <td><p>War_graphs data set</p></td>
       </tr><tr>
         
         <td>
@@ -319,75 +229,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="missSBM.html">missSBM</a></code> </p>
+          <p><code><a href="er_network.html">er_network</a></code> </p>
         </td>
-        <td><p>An R package for adjusting Stochastic Block Models from networks data sampled under various missing data conditions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="missSBM_collection.html">missSBM_collection</a></code> </p>
-        </td>
-        <td><p>An R6 Class to represent a collection of missSBM_fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="missingSBM_fit.html">missingSBM_fit</a></code> </p>
-        </td>
-        <td><p>R6 Class definition of an SBM-fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSampler.html">networkSampler</a></code> </p>
-        </td>
-        <td><p>Definition of R6 Class 'networkSampling_sampler'</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSampling.html">networkSampling</a></code> </p>
-        </td>
-        <td><p>definition of R6 Class 'networkSampling'</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSamplingDyads_fit.html">networkSamplingDyads_fit</a></code> </p>
-        </td>
-        <td><p>Virtual class used to define a family of networkSamplingDyads_fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="networkSamplingNodes_fit.html">networkSamplingNodes_fit</a></code> </p>
-        </td>
-        <td><p>Virtual class used to define a family of networkSamplingNodes_fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sample.html">sample()</a></code> </p>
-        </td>
-        <td><p>Sampling of network data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sampledNetwork.html">sampledNetwork</a></code> </p>
-        </td>
-        <td><p>An R6 Class to represent a sampler for a SBM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="simulate.html">simulate()</a></code> </p>
-        </td>
-        <td><p>Simulation of an SBM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="smooth.html">smooth()</a></code> </p>
-        </td>
-        <td><p>Smooth path of models in a collection</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="war_graphs.html">war_graphs</a></code> </p>
-        </td>
-        <td><p>War_graphs data set</p></td>
+        <td><p>ER ego centred network</p></td>
       </tr>
     </tbody>
     </table>
@@ -397,8 +241,8 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-top-level-fitting-functions">Top-level fitting functions</a></li>
-      <li><a href="#section-classes-of-object-fit">Classes of object fit</a></li>
-      <li><a href="#section-data-set">Data set</a></li>
+      <li><a href="#section-classes-of-objects">Classes of objects</a></li>
+      <li><a href="#section-data-sets">Data sets</a></li>
     </ul>
   </div>
 </div>
