@@ -88,15 +88,15 @@ table(
 ```
 
 
-```{r blockmodelscomparison}
-library(blockmodels)
-modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="")
-modsym$estimate()
-plot(modsym$ICL)
-mod <- BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="")
-mod$estimate()
-plot(mod$ICL)
-```
+<!-- ```{r blockmodelscomparison} -->
+<!-- library(blockmodels) -->
+<!-- modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
+<!-- modsym$estimate() -->
+<!-- plot(modsym$ICL) -->
+<!-- mod <- BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
+<!-- mod$estimate() -->
+<!-- plot(mod$ICL) -->
+<!-- ``` -->
 
 
 
