@@ -74,7 +74,7 @@
       <h1>Introduction to missSBM</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">2019-03-22</h4>
+            <h4 class="date">2019-03-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jchiquet/missSBM/blob/master/vignettes/introdution-to-misssbm.Rmd"><code>vignettes/introdution-to-misssbm.Rmd</code></a></small>
       <div class="hidden name"><code>introdution-to-misssbm.Rmd</code></div>
@@ -95,7 +95,8 @@
 <pre><code>## The following object is masked from 'package:base':
 ## 
 ##     union</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(missSBM)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(magrittr)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(missSBM)</a></code></pre></div>
 <pre><code>## 
 ## Attaching package: 'missSBM'</code></pre>
 <pre><code>## The following objects are masked from 'package:stats':
@@ -110,7 +111,7 @@
 <a href="#war-network" class="anchor"></a>War network</h2>
 <p>The <code>war_graphs</code> dataset comes with the <code>missSBM</code> package:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"war_graphs"</span>)</a></code></pre></div>
-<p>This dataset contains a list of two networks where the nodes are countries and an edge in network <code>beligerent</code> means that the two countries have been at least once at war between years 1816 to 2007 while an edge in network <code>alliance</code> means that the two countries have had a formal alliance between years 1816 to 2012. The network <code>beligenrent</code> have less nodes since countries which have not been at war are not considered. These two networs were extracted from <strong><a href="http://www.correlatesofwar.org/" class="uri">http://www.correlatesofwar.org/</a></strong> (version 4.0 for war data see <em>Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.</em>, version 4.1 for formal alliance see <em>Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.</em>).</p>
+<p>This dataset contains a list of two networks where the nodes are countries and an edge in network <code>beligerent</code> means that the two countries have been at least once at war between years 1816 to 2007 while an edge in network <code>alliance</code> means that the two countries have had a formal alliance between years 1816 to 2012. The network <code>beligerent</code> have less nodes since countries which have not been at war are not considered. These two networs were extracted from <strong><a href="http://www.correlatesofwar.org/" class="uri">http://www.correlatesofwar.org/</a></strong> (version 4.0 for war data see <em>Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.</em>, version 4.1 for formal alliance see <em>Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.</em>).</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(war_graphs<span class="op">$</span>alliance   , <span class="dt">main =</span> <span class="st">"Alliance"</span>)</a></code></pre></div>
 <p><img src="introdution-to-misssbm_files/figure-html/plot-1.png" width="1920"></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(war_graphs<span class="op">$</span>beligerent , <span class="dt">main =</span> <span class="st">"Beligerent"</span>)</a></code></pre></div>
@@ -125,32 +126,7 @@
 <p><img src="introdution-to-misssbm_files/figure-html/sampling-1.png" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">vBlocks &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></a>
 <a class="sourceLine" id="cb13-2" data-line-number="2">collection_sbm &lt;-<span class="st"> </span>sampledNet_war<span class="op">$</span>adjMatrix <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(<span class="dt">vBlocks =</span> vBlocks, <span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">clusterInit =</span> <span class="st">"spectral"</span>, <span class="dt">cores =</span> <span class="dv">2</span>)</a></code></pre></div>
-<pre><code>## 
-## 
-##  Adjusting Variational EM for Stochastic Block Model
-## 
-##  Imputation assumes a 'node' network-sampling process</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm<span class="op">$</span>ICL)</a></code></pre></div>
-<p><img src="introdution-to-misssbm_files/figure-html/plotICL-1.png" width="700"></p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm, <span class="st">"both"</span>, <span class="dt">iterates =</span> <span class="dv">2</span>, <span class="dt">cores =</span> <span class="dv">2</span>)</a></code></pre></div>
-<pre><code>## 
-##  Smoothing ICL
-##    Going forward +++++
-                                                                                                    
-   Going backward +++++   Going forward +++++
-                                                                                                    
-   Going backward +++++</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm<span class="op">$</span>ICL)</a></code></pre></div>
-<p><img src="introdution-to-misssbm_files/figure-html/smoothed-1.png" width="700"></p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships)</a></code></pre></div>
-<pre><code>## 
-##  1  2  3 
-## 72 10 10</code></pre>
-<p>We compare with clusterings obtained with the fully observed network.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">collection_sbm_full &lt;-<span class="st"> </span>war_graphs<span class="op">$</span>beligerent <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(<span class="dt">sparse =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(<span class="dt">vBlocks =</span> vBlocks, <span class="st">"node"</span>, <span class="dt">clusterInit =</span> <span class="st">"hierarchical"</span>, <span class="dt">cores =</span> <span class="dv">1</span>, <span class="dt">trace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(<span class="dt">vBlocks =</span> vBlocks, <span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">clusterInit =</span> <span class="st">"spectral"</span>)</a></code></pre></div>
 <pre><code>## 
 ## 
 ##  Adjusting Variational EM for Stochastic Block Model
@@ -169,16 +145,99 @@
  Performing VEM inference for model with 4 blocks.
  Performing VEM inference for model with 5 blocks.
  Performing VEM inference for model with 6 blocks.</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm<span class="op">$</span>ICL, <span class="dt">type =</span> <span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="introdution-to-misssbm_files/figure-html/inferencew-1.png" width="700"></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm, <span class="st">"both"</span>, <span class="dt">iterates =</span> <span class="dv">2</span>)</a></code></pre></div>
+<pre><code>## 
+##  Smoothing ICL
+##    Going forward +++++
+                                                                                                    
+   Going backward +++++
+                                                                                                    
+   Going forward +++++
+                                                                                                    
+   Going backward +++++
+                                                                                                    </code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm<span class="op">$</span>ICL, <span class="dt">type =</span> <span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="introdution-to-misssbm_files/figure-html/smoothed-1.png" width="700"></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships)</a></code></pre></div>
+<pre><code>## 
+##  1  2  3 
+## 49 30 13</code></pre>
+<p>We compare with clusterings obtained with the fully observed network.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">collection_sbm_full &lt;-<span class="st"> </span>war_graphs<span class="op">$</span>beligerent <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(<span class="dt">sparse =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(<span class="dt">vBlocks =</span> vBlocks, <span class="st">"node"</span>, <span class="dt">clusterInit =</span> <span class="st">"hierarchical"</span>, <span class="dt">cores =</span> <span class="dv">2</span>, <span class="dt">trace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## 
+## 
+##  Adjusting Variational EM for Stochastic Block Model
+## 
+##  Imputation assumes a 'node' network-sampling process</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_full, <span class="st">"both"</span>, <span class="dt">iterates =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## 
 ##  Smoothing ICL
 ##    Going forward +++++
                                                                                                     
-   Going backward +++++   Going forward +++++
+   Going backward +++++
                                                                                                     
-   Going backward +++++</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm_full<span class="op">$</span>ICL)</a></code></pre></div>
+   Going forward +++++
+                                                                                                    
+   Going backward +++++
+                                                                                                    </code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm_full<span class="op">$</span>ICL, <span class="dt">type =</span> <span class="st">"l"</span>)</a></code></pre></div>
 <p><img src="introdution-to-misssbm_files/figure-html/inferencewfull-1.png" width="700"></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">test =<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">get.adjacency</a></span>(war_graphs<span class="op">$</span>beligerent))</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/isSymmetric">isSymmetric</a></span>(test)</a></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">test[<span class="dv">1</span>,<span class="dv">2</span>] =<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/isSymmetric">isSymmetric</a></span>(test)</a></code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">collection_sbm_full2 &lt;-<span class="st"> </span>test <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(<span class="dt">vBlocks =</span> vBlocks, <span class="st">"node"</span>, <span class="dt">clusterInit =</span> <span class="st">"spectral"</span>, <span class="dt">cores =</span> <span class="dv">2</span>, <span class="dt">trace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## 
+## 
+##  Adjusting Variational EM for Stochastic Block Model
+## 
+##  Imputation assumes a 'node' network-sampling process</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_full2, <span class="st">"both"</span>, <span class="dt">iterates =</span> <span class="dv">4</span>)</a></code></pre></div>
+<pre><code>## 
+##  Smoothing ICL
+##    Going forward +++++
+                                                                                                    
+   Going backward +++++
+                                                                                                    
+   Going forward +++++
+                                                                                                    
+   Going backward +++++
+                                                                                                    
+   Going forward +++++
+                                                                                                    
+   Going backward +++++
+                                                                                                    
+   Going forward +++++
+                                                                                                    
+   Going backward +++++
+                                                                                                    </code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm_full2<span class="op">$</span>ICL)</a></code></pre></div>
+<p><img src="introdution-to-misssbm_files/figure-html/inferencewfull-2.png" width="700"></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(</a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">  collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships,</a>
+<a class="sourceLine" id="cb35-3" data-line-number="3">  collection_sbm_full<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships</a>
+<a class="sourceLine" id="cb35-4" data-line-number="4">  )</a></code></pre></div>
+<pre><code>##    
+##      1  2  3  4
+##   1  3  0 46  0
+##   2 26  2  2  0
+##   3  0  8  0  5</code></pre>
+<!-- ```{r blockmodelscomparison} -->
+<!-- library(blockmodels) -->
+<!-- modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
+<!-- modsym$estimate() -->
+<!-- plot(modsym$ICL) -->
+<!-- mod <- BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
+<!-- mod$estimate() -->
+<!-- plot(mod$ICL) -->
+<!-- ``` -->
 </div>
 </div>
   </div>
