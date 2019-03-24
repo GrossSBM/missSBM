@@ -31,9 +31,9 @@ test_that("missSBMcollection works", {
   ## VEM Estimation on each element of the collection
   collection$estimate(control, mc.cores, TRUE)
 
-  smooth(collection, "forward" )
-  smooth(collection, "backward")
-  smooth(collection, "both"    )
+  smooth(collection, "forward" , cores = 1)
+  smooth(collection, "backward", cores = 1)
+  smooth(collection, "both"    , cores = 1)
 
   expect_is(collection, "missSBM_collection")
 })
