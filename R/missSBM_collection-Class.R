@@ -129,12 +129,12 @@ function(control) {
     if (trace) cat("+")
     cl_split <- factor(private$missSBM_fit[[i]]$fittedSBM$memberships)
     levels(cl_split) <- c(levels(cl_split), as.character(i + 1))
-    if (nlevels(cl_split) - 1 == i) {
+    if (nlevels(cl_split) - 1 == i) { # when would this happens ?
       candidates <- mclapply(1:i, function(j) {
-        cl <- as.numeric(cl_split); indices <- which(cl == j)
-        if (length(cl[indices]) > 10) { ## ???? What is this "10"
-          cut <- as.numeric(control$split_fn(sampledNet$adjMatrix[indices, indices],2))
-          cl[which(cl == j)][which(cut == 1)] <- j; cl[which(cl == j)][which(cut == 2)] <- i + 1
+        cl <- as.numeric(cl_split); J <- which(cl == j)
+        if (length(cl[J]) > 10) { ## ???? minimal group size for allowing splitting
+          cut <- as.numeric(control$split_fn(sampledNet$adjMatrix[J, J], 2))
+          cl[J][which(cut == 1)] <- j; cl[J][which(cut == 2)] <- i + 1
           model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl, covarMatrix, covarArray)
           model$doVEM(control)
           model
@@ -142,11 +142,10 @@ function(control) {
           private$missSBM_fit[[i + 1]]
         }
       }, mc.cores = control$mc.cores)
+
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
       best_one <- candidates[[which.min(vICLs)]]
-      if (is.na(private$missSBM_fit[[i + 1]]$vICL)) {
-        private$missSBM_fit[[i + 1]] <- best_one
-      } else if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
+      if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
         private$missSBM_fit[[i + 1]] <- best_one
       }
     }
@@ -175,15 +174,15 @@ function(control) {
         model$doVEM(control)
         model
       }, mc.cores = control$mc.cores)
+
       vICLs <- sapply(candidates, function(candidate) candidate$vICL)
       best_one <- candidates[[which.min(vICLs)]]
-      if (is.na(private$missSBM_fit[[i - 1]]$vICL)) {
-        private$missSBM_fit[[i - 1]] <- best_one
-      } else if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
+      if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
         private$missSBM_fit[[i - 1]] <- best_one
       }
     }
   }
+  if (trace) cat("\r                                                                                                    \r")
 })
 
 missSBM_collection$set("public", "show",

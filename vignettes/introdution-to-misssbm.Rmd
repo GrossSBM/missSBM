@@ -47,19 +47,16 @@ plot(sampledNet_war)
 ```
 
 
-
 ```{r inferencew}
 vBlocks <- 1:6
 collection_sbm <- sampledNet_war$adjMatrix %>% 
   missSBM::estimate(vBlocks = vBlocks, sampling = "node", clusterInit = "spectral", cores = 2)
-```
-```{r plotICL}
-plot(collection_sbm$ICL)
+plot(collection_sbm$ICL, type = "l")
 ```
 
 ```{r smoothed}
-smooth(collection_sbm, "both", iterates = 4, cores = 2)
-plot(collection_sbm$ICL)
+smooth(collection_sbm, "both", iterates = 2, cores = 2)
+plot(collection_sbm$ICL, type = "l")
 ```
 
 ```{r cluster}
@@ -72,7 +69,7 @@ collection_sbm_full <- war_graphs$beligerent %>%
   as_adj(sparse = FALSE) %>% 
   missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical", cores = 2, trace = TRUE)
 smooth(collection_sbm_full, "both", iterates = 2)
-plot(collection_sbm_full$ICL)
+plot(collection_sbm_full$ICL, type = "l")
 test =as.matrix(get.adjacency(war_graphs$beligerent))
 isSymmetric(test)
 test[1,2] = 1
@@ -84,16 +81,19 @@ plot(collection_sbm_full2$ICL)
 ```
 
 ```{r clustercomparison}
-table(collection_sbm$bestModel$fittedSBM$memberships,collection_sbm_full$bestModel$fittedSBM$memberships)
+table(
+  collection_sbm$bestModel$fittedSBM$memberships,
+  collection_sbm_full$bestModel$fittedSBM$memberships
+  )
 ```
 
 
 ```{r blockmodelscomparison}
 library(blockmodels)
-modsym=BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="")
+modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="")
 modsym$estimate()
 plot(modsym$ICL)
-mod=BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="")
+mod <- BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="")
 mod$estimate()
 plot(mod$ICL)
 ```
