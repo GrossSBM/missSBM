@@ -6,7 +6,7 @@
 \usage{
 smooth(Robject, type = c("forward", "backward", "both"),
   split = c("hierarchical", "spectral", "kmeans"),
-  control_VEM = list(), cores = 2, iterates = 1, trace = TRUE)
+  control_VEM = list(), cores = 1, iterates = 1, trace = TRUE)
 }
 \arguments{
 \item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}}
@@ -17,7 +17,7 @@ smooth(Robject, type = c("forward", "backward", "both"),
 
 \item{control_VEM}{a list controlling the variational EM algorithm. See details in \code{\link{estimate}}.}
 
-\item{cores}{integer, the number of cores to use when multiply model are fitted. Default is 2.}
+\item{cores}{integer, the number of cores to use when multiply model are fitted. Default is 1.}
 
 \item{iterates}{integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.}
 

@@ -88,13 +88,13 @@ function(type, control) {
 #' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".
 #' @param split character indicating the function use to split nodes during the forward algorithm. Either "hierarchical", "spectral" or "kmeans". Default is "hierarchical".
 #' @param control_VEM a list controlling the variational EM algorithm. See details in \code{\link{estimate}}.
-#' @param cores integer, the number of cores to use when multiply model are fitted. Default is 2.
+#' @param cores integer, the number of cores to use when multiply model are fitted. Default is 1.
 #' @param iterates integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.
 #' @param trace logical, control the verbosity. Default to \code{TRUE}.
 #'
 #' @return an invisible missSBM_collection, in which the ICL has been smoothed
 #' @export
-smooth <- function(Robject, type = c("forward", "backward", "both"), split = c("hierarchical", "spectral", "kmeans"), control_VEM = list(), cores = 2, iterates = 1, trace = TRUE) {
+smooth <- function(Robject, type = c("forward", "backward", "both"), split = c("hierarchical", "spectral", "kmeans"), control_VEM = list(), cores = 1, iterates = 1, trace = TRUE) {
 
   stopifnot(inherits(Robject, "missSBM_collection"))
 

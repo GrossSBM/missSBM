@@ -50,12 +50,12 @@ plot(sampledNet_war)
 ```{r inferencew}
 vBlocks <- 1:6
 collection_sbm <- sampledNet_war$adjMatrix %>% 
-  missSBM::estimate(vBlocks = vBlocks, sampling = "node", clusterInit = "spectral", cores = 2)
+  missSBM::estimate(vBlocks = vBlocks, sampling = "node", clusterInit = "spectral")
 plot(collection_sbm$ICL, type = "l")
 ```
 
 ```{r smoothed}
-smooth(collection_sbm, "both", iterates = 2, cores = 2)
+smooth(collection_sbm, "both", iterates = 2)
 plot(collection_sbm$ICL, type = "l")
 ```
 
