@@ -29,6 +29,7 @@ reference:
     - '`simulate`'
     - '`sample`'
     - '`estimate`'
+    - '`smooth`'
 - title: 'Classes of objects'
   desc: >
     Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.
