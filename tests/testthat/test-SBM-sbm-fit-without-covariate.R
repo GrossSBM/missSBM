@@ -12,7 +12,7 @@ pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
 directed <- FALSE
 
 ### Draw a undirected SBM model
-mySBM <- simulate(N, alpha, pi, directed)
+mySBM <- missSBM::simulate(N, alpha, pi, directed)
 A <- mySBM$adjMatrix
 cl_rand <- base::sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
