@@ -54,6 +54,7 @@ Suggests:
     aricode,
     blockmodels,
     testthat,
+    magrittr,
     covr,
     knitr,
     rmarkdown
