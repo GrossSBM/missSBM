@@ -14,7 +14,7 @@ Description: When a network is partially observed (here, missing dyads, that is,
     those NAs. missSBM is an R package for adjusting the popular Stochastic Block Models from network data 
     sampled under various missing data conditions.
 URL: https://github.com/jchiquet/missSBM (dev version)
-BugReports: https://github.com/jchiqut/missSBM/issues
+BugReports: https://github.com/jchiquet/missSBM/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
