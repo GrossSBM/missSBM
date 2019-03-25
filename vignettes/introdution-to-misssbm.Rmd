@@ -42,7 +42,7 @@ Some data may be missing for some countries in the sense that data were collecte
 
 ```{r sampling}
 sampledNet_war <- war_graphs$beligerent %>% 
-  as_adj(sparse = FALSE) %>% missSBM::sample(sampling = "node", parameters = .6)
+  as_adj(sparse = FALSE) %>% missSBM::sample(sampling = "node", parameters = .8)
 plot(sampledNet_war)
 ```
 
@@ -71,6 +71,10 @@ collection_sbm_full <- war_graphs$beligerent %>%
 smooth(collection_sbm_full, "both", iterates = 2)
 plot(collection_sbm_full$ICL, type = "l")
 test =as.matrix(get.adjacency(war_graphs$beligerent))
+```
+
+
+<!--```{r asymmetric}
 isSymmetric(test)
 test[1,2] = 1
 isSymmetric(test)
@@ -78,7 +82,8 @@ collection_sbm_full2 <- test %>%
   missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "spectral", cores = 2, trace = TRUE)
 smooth(collection_sbm_full2, "both", iterates = 4)
 plot(collection_sbm_full2$ICL)
-```
+```-->
+
 
 ```{r clustercomparison}
 table(
@@ -100,5 +105,11 @@ table(
 
 
 
+### Taking covariates into account
 
+```{r}
+mil = load("../inst/covmilitarypower.Rdata")
+cbind(belmilpow,get.vertex.attribute(war_graphs$beligerent)$name) #  get military power for countries in beligerent network
+cbind(allmilpow,get.vertex.attribute(war_graphs$alliance)$name) #  get military power for countries in alliance network
+```
 
