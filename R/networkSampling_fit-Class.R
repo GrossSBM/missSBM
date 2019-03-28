@@ -210,7 +210,7 @@ blockDyadSampling_fit <-
   ),
   public = list(
     initialize = function(sampledNetwork, blockInit) {
-      super$initialize(sampledNetwork, "block_dyad")
+      super$initialize(sampledNetwork, "block-dyad")
       private$NAs      <- sampledNetwork$NAs
       private$R        <- sampledNetwork$samplingMatrix
       private$directed <- sampledNetwork$is_directed
@@ -242,7 +242,7 @@ blockSampling_fit <-
   ),
   public = list(
     initialize = function(sampledNetwork, blockInit) {
-      super$initialize(sampledNetwork, "block")
+      super$initialize(sampledNetwork, "block-node")
       self$update_parameters(NA, blockInit)
     },
     update_parameters = function(imputedNet, Z) {
