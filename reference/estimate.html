@@ -146,7 +146,7 @@
     </tr>
     <tr>
       <th>sampling</th>
-      <td><p>The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block" by default "undirected" is choosen</p></td>
+      <td><p>The sampling design for missing data modeling : "dyad", "node", "double-standard", "block-dyad", "block-node" ,"degree</p></td>
     </tr>
     <tr>
       <th>clusterInit</th>
@@ -201,14 +201,8 @@
 
 <span class='co'>## Inference :</span>
 <span class='no'>vBlocks</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>5</span> <span class='co'># number of classes</span>
-<span class='no'>collection</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/estimate'>estimate</a></span>(<span class='no'>sampledNet</span>$<span class='no'>adjMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>)</div><div class='output co'>#&gt; 
-#&gt; 
-#&gt;  Adjusting Variational EM for Stochastic Block Model
-#&gt; 
-#&gt; 	Imputation assumes a 'dyad' network-sampling process
-#&gt; 
-#&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107404.94 101010.79  95767.52  95934.17  96122.00</div></pre>
+<span class='no'>collection</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/estimate'>estimate</a></span>(<span class='no'>sampledNet</span>$<span class='no'>adjMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107404.94 101010.79  95767.52  95934.17  96122.00</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

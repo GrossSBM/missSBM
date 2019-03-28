@@ -86,7 +86,7 @@
       <h1>Introduction to missSBM</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">2019-03-24</h4>
+            <h4 class="date">2019-03-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jchiquet/missSBM/blob/master/vignettes/introdution-to-misssbm.Rmd"><code>vignettes/introdution-to-misssbm.Rmd</code></a></small>
       <div class="hidden name"><code>introdution-to-misssbm.Rmd</code></div>
@@ -133,7 +133,7 @@
 <a href="#missing-data" class="anchor"></a>Missing data</h3>
 <p>Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered, therefore there is block of missing data on the diagonal of the adjacency matrix.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">sampledNet_war &lt;-<span class="st"> </span>war_graphs<span class="op">$</span>beligerent <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(<span class="dt">sparse =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/sample">sample</a></span>(<span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">parameters =</span> <span class="fl">.6</span>)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(<span class="dt">sparse =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/sample">sample</a></span>(<span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">parameters =</span> <span class="fl">.8</span>)</a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(sampledNet_war)</a></code></pre></div>
 <p><img src="introdution-to-misssbm_files/figure-html/sampling-1.png" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">vBlocks &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></a>
@@ -174,8 +174,8 @@
 <p><img src="introdution-to-misssbm_files/figure-html/smoothed-1.png" width="700"></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships)</a></code></pre></div>
 <pre><code>## 
-##  1  2  3 
-## 10 73  9</code></pre>
+##  1  2  3  4 
+##  5 49 10 28</code></pre>
 <p>We compare with clusterings obtained with the fully observed network.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">collection_sbm_full &lt;-<span class="st"> </span>war_graphs<span class="op">$</span>beligerent <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb21-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(<span class="dt">sparse =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -198,49 +198,26 @@
                                                                                                     </code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm_full<span class="op">$</span>ICL, <span class="dt">type =</span> <span class="st">"l"</span>)</a></code></pre></div>
 <p><img src="introdution-to-misssbm_files/figure-html/inferencewfull-1.png" width="700"></p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">test =<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">get.adjacency</a></span>(war_graphs<span class="op">$</span>beligerent))</a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/isSymmetric">isSymmetric</a></span>(test)</a></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">test[<span class="dv">1</span>,<span class="dv">2</span>] =<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/isSymmetric">isSymmetric</a></span>(test)</a></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">collection_sbm_full2 &lt;-<span class="st"> </span>test <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(<span class="dt">vBlocks =</span> vBlocks, <span class="st">"node"</span>, <span class="dt">clusterInit =</span> <span class="st">"spectral"</span>, <span class="dt">cores =</span> <span class="dv">2</span>, <span class="dt">trace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## 
-## 
-##  Adjusting Variational EM for Stochastic Block Model
-## 
-##  Imputation assumes a 'node' network-sampling process</code></pre>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_full2, <span class="st">"both"</span>, <span class="dt">iterates =</span> <span class="dv">4</span>)</a></code></pre></div>
-<pre><code>## 
-##  Smoothing ICL
-##    Going forward +++++
-                                                                                                    
-   Going backward +++++
-                                                                                                    
-   Going forward +++++
-                                                                                                    
-   Going backward +++++
-                                                                                                    
-   Going forward +++++
-                                                                                                    
-   Going backward +++++
-                                                                                                    
-   Going forward +++++
-                                                                                                    
-   Going backward +++++
-                                                                                                    </code></pre>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(collection_sbm_full2<span class="op">$</span>ICL)</a></code></pre></div>
-<p><img src="introdution-to-misssbm_files/figure-html/inferencewfull-2.png" width="700"></p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">  collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships,</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3">  collection_sbm_full<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships</a>
-<a class="sourceLine" id="cb35-4" data-line-number="4">  )</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">test =<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">get.adjacency</a></span>(war_graphs<span class="op">$</span>beligerent))</a></code></pre></div>
+<!--```{r asymmetric}
+isSymmetric(test)
+test[1,2] = 1
+isSymmetric(test)
+collection_sbm_full2 <- test %>% 
+  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "spectral", cores = 2, trace = TRUE)
+smooth(collection_sbm_full2, "both", iterates = 4)
+plot(collection_sbm_full2$ICL)
+```-->
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">  collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships,</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">  collection_sbm_full<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships</a>
+<a class="sourceLine" id="cb27-4" data-line-number="4">  )</a></code></pre></div>
 <pre><code>##    
 ##      1  2  3  4
-##   1  0  7  0  3
-##   2 26  0 47  0
-##   3  3  3  1  2</code></pre>
+##   1  0  0  0  5
+##   2  1  0 48  0
+##   3  0 10  0  0
+##   4 28  0  0  0</code></pre>
 <!-- ```{r blockmodelscomparison} -->
 <!-- library(blockmodels) -->
 <!-- modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
@@ -250,6 +227,289 @@
 <!-- mod$estimate() -->
 <!-- plot(mod$ICL) -->
 <!-- ``` -->
+</div>
+<div id="taking-covariates-into-account" class="section level3">
+<h3 class="hasAnchor">
+<a href="#taking-covariates-into-account" class="anchor"></a>Taking covariates into account</h3>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">mil =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/load">load</a></span>(<span class="st">"../inst/covmilitarypower.Rdata"</span>)</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(belmilpow,<span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/vertex_attr">get.vertex.attribute</a></span>(war_graphs<span class="op">$</span>beligerent)<span class="op">$</span>name) <span class="co">#  get military power for countries in beligerent network</span></a></code></pre></div>
+<pre><code>##       belmilpow                                                
+##  [1,] "0.158091569035533"    "United States of America"        
+##  [2,] "0.0115406"            "Canada"                          
+##  [3,] "0.00195213394495413"  "Cuba"                            
+##  [4,] "0.00822248736263736"  "Mexico"                          
+##  [5,] "0.000556307586206897" "Guatemala"                       
+##  [6,] "0.000271228947368421" "Honduras"                        
+##  [7,] "0.000361394927536232" "El Salvador"                     
+##  [8,] "0.000274437168141593" "Nicaragua"                       
+##  [9,] "0.00242690054945055"  "Colombia"                        
+## [10,] "0.000731810691823899" "Ecuador"                         
+## [11,] "0.00198920459770115"  "Peru"                            
+## [12,] "0.0131159209424084"   "Brazil"                          
+## [13,] "0.000689544848484849" "Bolivia"                         
+## [14,] "0.000397243827160494" "Paraguay"                        
+## [15,] "0.0023324816091954"   "Chile"                           
+## [16,] "0.00525814709302326"  "Argentina"                       
+## [17,] "0.149893492385787"    "United Kingdom"                  
+## [18,] "0.0103306414507772"   "Netherlands"                     
+## [19,] "0.0141152346368715"   "Belgium"                         
+## [20,] "0.0739111846938776"   "France"                          
+## [21,] "0.017904921319797"    "Spain"                           
+## [22,] "0.0046196883248731"   "Portugal"                        
+## [23,] "0.00321152333333333"  "Hanover"                         
+## [24,] "0.00748003571428571"  "Bavaria"                         
+## [25,] "0.0814871477124183"   "Germany"                         
+## [26,] "0.00217347857142857"  "Baden"                           
+## [27,] "0.00407268846153846"  "Saxony"                          
+## [28,] "0.00237015714285714"  "Wuerttemburg"                    
+## [29,] "0.00149586862745098"  "Hesse Electoral"                 
+## [30,] "0.00171706346153846"  "Hesse Grand Ducal"               
+## [31,] "0.0006665"            "Mecklenburg Schwerin"            
+## [32,] "0.0147876511111111"   "Poland"                          
+## [33,] "0.0614307174757282"   "Austria-Hungary"                 
+## [34,] "0.00380774842105263"  "Hungary"                         
+## [35,] "0.0105638857142857"   "Czechoslovakia"                  
+## [36,] "0.0233042593908629"   "Italy"                           
+## [37,] "0.00730329333333333"  "Papal States"                    
+## [38,] "0.0242919630434783"   "Two Sicilies"                    
+## [39,] "0.000691042105263158" "Modena"                          
+## [40,] "0.00248203333333333"  "Tuscany"                         
+## [41,] "0.00387827067669173"  "Yugoslavia"                      
+## [42,] "0.00260057759562842"  "Greece"                          
+## [43,] "0.000176364150943396" "Cyprus"                          
+## [44,] "0.00271037333333333"  "Bulgaria"                        
+## [45,] "0.00617496666666667"  "Romania"                         
+## [46,] "0.125353304060914"    "Russia"                          
+## [47,] "0.000510671111111111" "Estonia"                         
+## [48,] "0.000890842222222222" "Latvia"                          
+## [49,] "0.000853275555555556" "Lithuania"                       
+## [50,] "0.0006538"            "Armenia"                         
+## [51,] "0.00134385"           "Azerbaijan"                      
+## [52,] "0.001739671875"       "Finland"                         
+## [53,] "0.00161594711538462"  "Norway"                          
+## [54,] "0.00306761554404145"  "Denmark"                         
+## [55,] "0.000418584905660377" "Chad"                            
+## [56,] "0.00279141886792453"  "Democratic Republic of the Congo"
+## [57,] "0.000989747058823529" "Uganda"                          
+## [58,] "0.00145348846153846"  "Tanzania"                        
+## [59,] "0.000553722641509434" "Somalia"                         
+## [60,] "0.00380857387387387"  "Ethiopia"                        
+## [61,] "0.001553195"          "Eritrea"                         
+## [62,] "0.00157787105263158"  "Angola"                          
+## [63,] "0.00601466989247312"  "South Africa"                    
+## [64,] "0.0022710243902439"   "Morocco"                         
+## [65,] "0.00118892096774194"  "Libya"                           
+## [66,] "0.00650338101265823"  "Iran"                            
+## [67,] "0.0224816248730964"   "Turkey"                          
+## [68,] "0.00419932345679012"  "Iraq"                            
+## [69,] "0.00715255865384615"  "Egypt"                           
+## [70,] "0.00287690923076923"  "Syria"                           
+## [71,] "0.000556110447761194" "Lebanon"                         
+## [72,] "0.000917914925373134" "Jordan"                          
+## [73,] "0.00275581692307692"  "Israel"                          
+## [74,] "0.00489543372093023"  "Saudi Arabia"                    
+## [75,] "0.00058674"           "Yemen Arab Republic"             
+## [76,] "0.00185800106382979"  "Afghanistan"                     
+## [77,] "0.133189767320261"    "China"                           
+## [78,] "0.000319070652173913" "Mongolia"                        
+## [79,] "0.0077023609375"      "Taiwan"                          
+## [80,] "0.00826933076923077"  "North Korea"                     
+## [81,] "0.014949734375"       "South Korea"                     
+## [82,] "0.0385482414965986"   "Japan"                           
+## [83,] "0.0583233363636364"   "India"                           
+## [84,] "0.0113781424242424"   "Pakistan"                        
+## [85,] "0.00414287222222222"  "Thailand"                        
+## [86,] "0.001141755"          "Cambodia"                        
+## [87,] "0.00055852"           "Laos"                            
+## [88,] "0.00754765593220339"  "Vietnam"                         
+## [89,] "0.00566707272727273"  "Republic of Vietnam"             
+## [90,] "0.00441002835820896"  "Philippines"                     
+## [91,] "0.00750758817204301"  "Australia"                       
+## [92,] "0.000803283870967742" "New Zealand"</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(allmilpow,<span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/vertex_attr">get.vertex.attribute</a></span>(war_graphs<span class="op">$</span>alliance)<span class="op">$</span>name) <span class="co">#  get military power for countries in alliance network</span></a></code></pre></div>
+<pre><code>##        allmilpow                                                
+##   [1,] "0.158091569035533"    "United States of America"        
+##   [2,] "0.0115406"            "Canada"                          
+##   [3,] "0.0001005575"         "Bahamas"                         
+##   [4,] "0.00195213394495413"  "Cuba"                            
+##   [5,] "0.000476808088235294" "Haiti"                           
+##   [6,] "0.00048826875"        "Dominican Republic"              
+##   [7,] "0.0001687"            "Jamaica"                         
+##   [8,] "0.000522396078431373" "Trinidad and Tobago"             
+##   [9,] "1.93255319148936e-05" "Barbados"                        
+##  [10,] "2.38171428571429e-06" "Dominica"                        
+##  [11,] "4.30692307692308e-06" "Grenada"                         
+##  [12,] "4.68617647058824e-06" "St. Lucia"                       
+##  [13,] "3.53352941176471e-06" "St. Vincent and the Grenadines"  
+##  [14,] "3.1275e-06"           "Antigua &amp; Barbuda"               
+##  [15,] "1.788e-06"            "St. Kitts and Nevis"             
+##  [16,] "0.00822248736263736"  "Mexico"                          
+##  [17,] "1.7684375e-05"        "Belize"                          
+##  [18,] "0.000556307586206897" "Guatemala"                       
+##  [19,] "0.000271228947368421" "Honduras"                        
+##  [20,] "0.000361394927536232" "El Salvador"                     
+##  [21,] "0.000274437168141593" "Nicaragua"                       
+##  [22,] "0.000160210752688172" "Costa Rica"                      
+##  [23,] "0.000198790909090909" "Panama"                          
+##  [24,] "0.00242690054945055"  "Colombia"                        
+##  [25,] "0.0023297511627907"   "Venezuela"                       
+##  [26,] "6.17297872340426e-05" "Guyana"                          
+##  [27,] "5.69105263157895e-05" "Suriname"                        
+##  [28,] "0.000731810691823899" "Ecuador"                         
+##  [29,] "0.00198920459770115"  "Peru"                            
+##  [30,] "0.0131159209424084"   "Brazil"                          
+##  [31,] "0.000689544848484849" "Bolivia"                         
+##  [32,] "0.000397243827160494" "Paraguay"                        
+##  [33,] "0.0023324816091954"   "Chile"                           
+##  [34,] "0.00525814709302326"  "Argentina"                       
+##  [35,] "0.000846996183206107" "Uruguay"                         
+##  [36,] "0.149893492385787"    "United Kingdom"                  
+##  [37,] "0.0103306414507772"   "Netherlands"                     
+##  [38,] "0.0141152346368715"   "Belgium"                         
+##  [39,] "0.00185453666666667"  "Luxembourg"                      
+##  [40,] "0.0739111846938776"   "France"                          
+##  [41,] "0.017904921319797"    "Spain"                           
+##  [42,] "0.0046196883248731"   "Portugal"                        
+##  [43,] "0.00321152333333333"  "Hanover"                         
+##  [44,] "0.00748003571428571"  "Bavaria"                         
+##  [45,] "0.0814871477124183"   "Germany"                         
+##  [46,] "0.0339410888888889"   "German Federal Republic"         
+##  [47,] "0.0092275027027027"   "German Democratic Republic"      
+##  [48,] "0.00217347857142857"  "Baden"                           
+##  [49,] "0.00407268846153846"  "Saxony"                          
+##  [50,] "0.00237015714285714"  "Wuerttemburg"                    
+##  [51,] "0.00149586862745098"  "Hesse Electoral"                 
+##  [52,] "0.00171706346153846"  "Hesse Grand Ducal"               
+##  [53,] "0.0006665"            "Mecklenburg Schwerin"            
+##  [54,] "0.0147876511111111"   "Poland"                          
+##  [55,] "0.0614307174757282"   "Austria-Hungary"                 
+##  [56,] "0.00352836794871795"  "Austria"                         
+##  [57,] "0.00380774842105263"  "Hungary"                         
+##  [58,] "0.0105638857142857"   "Czechoslovakia"                  
+##  [59,] "0.0028159"            "Czech Republic"                  
+##  [60,] "0.001507535"          "Slovakia"                        
+##  [61,] "0.0233042593908629"   "Italy"                           
+##  [62,] "0.00730329333333333"  "Papal States"                    
+##  [63,] "0.0242919630434783"   "Two Sicilies"                    
+##  [64,] "0.000691042105263158" "Modena"                          
+##  [65,] "0.00068264"           "Parma"                           
+##  [66,] "0.00248203333333333"  "Tuscany"                         
+##  [67,] "3.33591836734694e-05" "Malta"                           
+##  [68,] "0.000482067368421053" "Albania"                         
+##  [69,] "0.000954052380952381" "Croatia"                         
+##  [70,] "0.00387827067669173"  "Yugoslavia"                      
+##  [71,] "0.000559347619047619" "Bosnia and Herzegovina"          
+##  [72,] "0.00260057759562842"  "Greece"                          
+##  [73,] "0.000176364150943396" "Cyprus"                          
+##  [74,] "0.00271037333333333"  "Bulgaria"                        
+##  [75,] "0.000449768181818182" "Moldova"                         
+##  [76,] "0.00617496666666667"  "Romania"                         
+##  [77,] "0.125353304060914"    "Russia"                          
+##  [78,] "0.000510671111111111" "Estonia"                         
+##  [79,] "0.000890842222222222" "Latvia"                          
+##  [80,] "0.000853275555555556" "Lithuania"                       
+##  [81,] "0.0139597545454545"   "Ukraine"                         
+##  [82,] "0.00224461363636364"  "Belarus"                         
+##  [83,] "0.0006538"            "Armenia"                         
+##  [84,] "0.000528754545454545" "Georgia"                         
+##  [85,] "0.00134385"           "Azerbaijan"                      
+##  [86,] "0.001739671875"       "Finland"                         
+##  [87,] "0.00819544314720812"  "Sweden"                          
+##  [88,] "0.00161594711538462"  "Norway"                          
+##  [89,] "0.00306761554404145"  "Denmark"                         
+##  [90,] "2.36188405797101e-05" "Iceland"                         
+##  [91,] "2.76578947368421e-05" "Cape Verde"                      
+##  [92,] "9.85342105263158e-06" "Sao Tome and Principe"           
+##  [93,] "0.000121115384615385" "Guinea-Bissau"                   
+##  [94,] "4.58755555555556e-05" "Equatorial Guinea"               
+##  [95,] "4.641875e-05"         "Gambia"                          
+##  [96,] "0.000452379245283019" "Mali"                            
+##  [97,] "0.000582364150943396" "Senegal"                         
+##  [98,] "0.0002985"            "Benin"                           
+##  [99,] "0.000194432075471698" "Mauritania"                      
+## [100,] "0.000351688679245283" "Niger"                           
+## [101,] "0.00080467358490566"  "Ivory Coast"                     
+## [102,] "0.000423392727272727" "Guinea"                          
+## [103,] "0.000457254716981132" "Burkina Faso"                    
+## [104,] "0.000159468817204301" "Liberia"                         
+## [105,] "0.000246757692307692" "Sierra Leone"                    
+## [106,] "0.000924641071428571" "Ghana"                           
+## [107,] "0.000224605660377358" "Togo"                            
+## [108,] "0.000757190566037736" "Cameroon"                        
+## [109,] "0.00643468301886792"  "Nigeria"                         
+## [110,] "0.000135049056603774" "Gabon"                           
+## [111,] "0.00018358679245283"  "Central African Republic"        
+## [112,] "0.000418584905660377" "Chad"                            
+## [113,] "0.00028902641509434"  "Congo"                           
+## [114,] "0.00279141886792453"  "Democratic Republic of the Congo"
+## [115,] "0.000989747058823529" "Uganda"                          
+## [116,] "0.001292794"          "Kenya"                           
+## [117,] "0.00145348846153846"  "Tanzania"                        
+## [118,] "0.000346401960784314" "Burundi"                         
+## [119,] "0.000417766666666667" "Rwanda"                          
+## [120,] "0.000553722641509434" "Somalia"                         
+## [121,] "0.000110163888888889" "Djibouti"                        
+## [122,] "0.00380857387387387"  "Ethiopia"                        
+## [123,] "0.001553195"          "Eritrea"                         
+## [124,] "0.00157787105263158"  "Angola"                          
+## [125,] "0.00103419210526316"  "Mozambique"                      
+## [126,] "0.000712595918367347" "Zambia"                          
+## [127,] "0.0009825375"         "Zimbabwe"                        
+## [128,] "0.00601466989247312"  "South Africa"                    
+## [129,] "0.000152595652173913" "Namibia"                         
+## [130,] "5.16044444444444e-05" "Swaziland"                       
+## [131,] "0.000672481132075472" "Madagascar"                      
+## [132,] "6.94022222222222e-05" "Mauritius"                       
+## [133,] "0.0022710243902439"   "Morocco"                         
+## [134,] "0.00319120588235294"  "Algeria"                         
+## [135,] "0.00172615"           "Tunisia"                         
+## [136,] "0.00118892096774194"  "Libya"                           
+## [137,] "0.00180512807017544"  "Sudan"                           
+## [138,] "0.0011241"            "South Sudan"                     
+## [139,] "0.00650338101265823"  "Iran"                            
+## [140,] "0.0224816248730964"   "Turkey"                          
+## [141,] "0.00419932345679012"  "Iraq"                            
+## [142,] "0.00715255865384615"  "Egypt"                           
+## [143,] "0.00287690923076923"  "Syria"                           
+## [144,] "0.000556110447761194" "Lebanon"                         
+## [145,] "0.000917914925373134" "Jordan"                          
+## [146,] "0.00275581692307692"  "Israel"                          
+## [147,] "0.00489543372093023"  "Saudi Arabia"                    
+## [148,] "0.00058674"           "Yemen Arab Republic"             
+## [149,] "0.0015101652173913"   "Yemen"                           
+## [150,] "0.000382716666666667" "Yemen People's Republic"         
+## [151,] "0.00158064230769231"  "Kuwait"                          
+## [152,] "0.000456880952380952" "Bahrain"                         
+## [153,] "0.000680235714285714" "Qatar"                           
+## [154,] "0.00174247380952381"  "United Arab Emirates"            
+## [155,] "0.000769990476190476" "Oman"                            
+## [156,] "0.00185800106382979"  "Afghanistan"                     
+## [157,] "0.000712140909090909" "Turkmenistan"                    
+## [158,] "0.000368681818181818" "Tajikistan"                      
+## [159,] "0.000368727272727273" "Kyrgyzstan"                      
+## [160,] "0.00267125454545455"  "Uzbekistan"                      
+## [161,] "0.00344237727272727"  "Kazakhstan"                      
+## [162,] "0.133189767320261"    "China"                           
+## [163,] "0.000319070652173913" "Mongolia"                        
+## [164,] "0.0077023609375"      "Taiwan"                          
+## [165,] "0.00289129473684211"  "Korea"                           
+## [166,] "0.00826933076923077"  "North Korea"                     
+## [167,] "0.014949734375"       "South Korea"                     
+## [168,] "0.0385482414965986"   "Japan"                           
+## [169,] "0.0583233363636364"   "India"                           
+## [170,] "0.0113781424242424"   "Pakistan"                        
+## [171,] "0.00620018095238095"  "Bangladesh"                      
+## [172,] "0.00384039076923077"  "Myanmar"                         
+## [173,] "0.00414287222222222"  "Thailand"                        
+## [174,] "0.001141755"          "Cambodia"                        
+## [175,] "0.00055852"           "Laos"                            
+## [176,] "0.00754765593220339"  "Vietnam"                         
+## [177,] "0.00566707272727273"  "Republic of Vietnam"             
+## [178,] "0.00267961607142857"  "Malaysia"                        
+## [179,] "0.00441002835820896"  "Philippines"                     
+## [180,] "0.0133547703125"      "Indonesia"                       
+## [181,] "0.00750758817204301"  "Australia"                       
+## [182,] "0.000803283870967742" "New Zealand"</code></pre>
 </div>
 </div>
   </div>
