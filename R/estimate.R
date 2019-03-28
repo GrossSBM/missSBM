@@ -4,7 +4,7 @@
 #'
 #' @param adjacencyMatrix The adjacency matrix of the network
 #' @param vBlocks The vector of number of blocks considered in the collection
-#' @param sampling The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block" by default "undirected" is choosen
+#' @param sampling The sampling design for missing data modeling : "dyad", "node", "double-standard", "block-dyad", "block-node" ,"degree
 #' @param covarMatrix An optional matrix of covariates with dimension N x M (M covariates per node).
 #' @param covarSimilarity An optional R x R -> R function  to compute similarity between node covariates. Default is #'
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering
@@ -31,7 +31,7 @@
 #'
 #' ## Inference :
 #' vBlocks <- 1:5 # number of classes
-#' collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
+#' collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling, trace = FALSE)
 #' collection$ICL
 #' @import R6 parallel
 #' @export

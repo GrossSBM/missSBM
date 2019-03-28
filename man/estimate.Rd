@@ -14,7 +14,7 @@ estimate(adjacencyMatrix, vBlocks, sampling,
 
 \item{vBlocks}{The vector of number of blocks considered in the collection}
 
-\item{sampling}{The sampling design for missing data modeling : "dyad", "double_standard", "node", "snowball", "degree", "block" by default "undirected" is choosen}
+\item{sampling}{The sampling design for missing data modeling : "dyad", "node", "double-standard", "block-dyad", "block-node" ,"degree}
 
 \item{clusterInit}{Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering}
 
@@ -52,7 +52,7 @@ sampledNet <- missSBM::sample(sbm$adjMatrix, sampling, samplingParameters)
 
 ## Inference :
 vBlocks <- 1:5 # number of classes
-collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling)
+collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling, trace = FALSE)
 collection$ICL
 }
 \seealso{

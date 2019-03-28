@@ -173,7 +173,7 @@ doubleStandardSampling_fit <-
   ),
   public = list(
     initialize = function(sampledNetwork, ...) {
-      super$initialize(sampledNetwork, "double_standard")
+      super$initialize(sampledNetwork, "double-standard")
       private$So      <- sum(    sampledNetwork$adjMatrix[sampledNetwork$observedDyads])
       private$So.bar  <- sum(1 - sampledNetwork$adjMatrix[sampledNetwork$observedDyads])
       ## can we do better than that?
