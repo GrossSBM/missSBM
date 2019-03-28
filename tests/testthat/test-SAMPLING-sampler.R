@@ -4,8 +4,9 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 500
 Q <- 3
-alpha <- rep(1, Q)/Q                     # mixture parameter
-pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
+alpha <- rep(1, Q)/Q        # mixture parameter
+pi <- diag(.45, Q, Q) + .05 # connectivity matrix
+gamma <- log(pi/(1 - pi))   # logit transform of pi for the model with covariates
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
@@ -14,10 +15,12 @@ A <- mySBM$adjMatrix
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
-covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
-covarParam  <- rnorm(M,0,1)
-mySBM_cov <- missSBM::simulate(N, alpha, pi, directed, covarMatrix, covarParam)
-A_cov <- mySBM_cov$adjMatrix
+covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+covarMatrix <- simplify2array(covariates)
+covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+covarParam  <- rnorm(M, 0, 1)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
+A_cov <- sbm$adjMatrix
 
 ## tolerance for tests
 tol <- 1e-2
@@ -38,7 +41,7 @@ test_that("Consistency of dyad-centered sampler", {
 
   ## with covariates
   psi <- runif(M, -5, 5)
-  mySampler <- missSBM:::simpleDyadSampler$new(psi, N, directed, mySBM_cov$covarArray)
+  mySampler <- missSBM:::simpleDyadSampler$new(psi, N, directed, covarArray)
   expect_is(mySampler, "simpleDyadSampler")
   expect_equal(mySampler$type, "dyad")
   expect_equal(mySampler$df, M)

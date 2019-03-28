@@ -16,10 +16,11 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 2
-covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
-covarParam  <- rnorm(M, -1, 1)
-
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam)
+covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+covarMatrix <- simplify2array(covariates)
+covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+covarParam  <- rnorm(M, 0, 1)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
 
 ### Draw a undirected SBM model
 cl_rand <- base::sample(sbm$memberships)
@@ -29,7 +30,7 @@ cl_kmns <- missSBM:::init_clustering(sbm$adjMatrix, Q, sbm$covarArray, "kmeans")
 
 test_that("Creation of a SBM_fit_covariates", {
 
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_rand, sbm$covarArray)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_rand, covarArray)
   expect_is(mySBM_fit, "SBM_fit_covariates")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
@@ -48,12 +49,12 @@ test_that("Consistency of VEM of a SBM_fit_covariates with the number of block g
   tol <- 1e-3
 
   ## testing just hierarchical clustering (best init)
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_spec, sbm$covarArray)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_spec, covarArray)
 
   out <- mySBM_fit$doVEM(sbm$adjMatrix, trace = FALSE, threshold = tol, maxIter = 10, fixPointIter = 3)
 
   ## A bit long, but it works: we do just as good as blockmodels, sometimes better
-  covariates_BM <- lapply(seq(dim(sbm$covarArray)[3]), function(x) sbm$covarArray[ , , x])
+  covariates_BM <- lapply(seq(dim(covarArray)[3]), function(x) sbm$covarArray[ , , x])
   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates_BM, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
   BM$estimate()
 
@@ -139,19 +140,21 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
   M <- 2
-  covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
-  covarParam  <- rnorm(M,0,1)
-  sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam, missSBM:::l1_similarity)
+  covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+  covarMatrix <- simplify2array(covariates)
+  covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+  covarParam  <- rnorm(M, 0, 1)
+  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
 
   ## Formatting covariates for blockmodels
-  covariates_BM <- lapply(seq(dim(sbm$covarArray)[3]), function(x) sbm$covarArray[ , , x])
+  covariates_BM <- lapply(seq(dim(covarArray)[3]), function(x) sbm$covarArray[ , , x])
 
   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates_BM, verbosity = 0, explore_min = 4, explore_max = 4, plotting = "", ncores = 1)
   BM$estimate()
 
   vBlocks <- 1:4
   models <- lapply(vBlocks, function(nBlocks) {
-    cl0 <- missSBM:::init_clustering(sbm$adjMatrix, nBlocks, sbm$covarArray, "hierarchical")
+    cl0 <- missSBM:::init_clustering(sbm$adjMatrix, nBlocks, covarArray, "hierarchical")
     myFit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl0, sbm$covarArray)
     myFit$doVEM(sbm$adjMatrix)
     myFit

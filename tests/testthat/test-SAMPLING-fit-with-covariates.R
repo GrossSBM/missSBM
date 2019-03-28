@@ -14,16 +14,18 @@ A <- mySBM$adjMatrix
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
-covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
-covarParam  <- rnorm(M,0,1)
-mySBM_cov <- missSBM::simulate(N, alpha, pi, directed, covarMatrix, covarParam)
-A_cov <- mySBM$adjMatrix
+covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+covarMatrix <- simplify2array(covariates)
+covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+covarParam  <- rnorm(M, 0, 1)
+sbm <- missSBM::simulate(N, alpha, log(pi/(1-pi)), directed, covariates, covarParam)
+A_cov <- sbm$adjMatrix
 
 test_that("Parameter estimation in dyad-centered sampling with covariates", {
 
   sampledNet <- missSBM::sample(A_cov, "dyad", covarParam, covarMatrix = covarMatrix)
 
-  fittedSampling <- missSBM:::dyadSampling_fit_covariates$new(sampledNet, mySBM_cov$covarArray)
+  fittedSampling <- missSBM:::dyadSampling_fit_covariates$new(sampledNet, covarArray)
   expect_is(fittedSampling, "dyadSampling_fit_covariates")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 

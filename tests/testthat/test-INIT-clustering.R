@@ -132,10 +132,11 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 2
-covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
+covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+covarMatrix <- simplify2array(covariates)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covarMatrix, covarParam)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
 
 test_that("Init clustering with covariate is consistent", {
 
