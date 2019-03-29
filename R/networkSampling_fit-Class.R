@@ -92,7 +92,7 @@ dyadSampling_fit_covariates <-
   inherit = networkSamplingDyads_fit,
   private = list(
     D_obs = NULL, # observed dyads
-    rho   = NULL # matrix of predicted probabilities of observation
+    rho   = NULL  # matrix of predicted probabilities of observation
   ),
   public = list(
     initialize = function(sampledNetwork, covarArray, ...) {

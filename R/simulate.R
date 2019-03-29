@@ -51,6 +51,7 @@ simulate <- function(nNodes, mixtureParam, connectParam, directed = FALSE, covar
       covariates <- getCovarArray(covariates, similarity)
   }
 
+  ## Instantiation of the SBM sampler
   mySBM <-
     SBM_sampler$new(
       directed     = directed,
@@ -60,7 +61,13 @@ simulate <- function(nNodes, mixtureParam, connectParam, directed = FALSE, covar
       covarParam   = covarParam,
       covarArray   = covariates
     )
+
+  ## draw blocks
   mySBM$rBlocks()
+
+  ## draw adjacency matrix
   mySBM$rAdjMatrix()
+
+  ## send the sampled SBM object
   mySBM
 }

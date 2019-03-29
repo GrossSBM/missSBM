@@ -50,7 +50,7 @@ estimate <- function(
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
 
-  ## Instatntiate the collection of missingSBM_fit
+  ## Instantiate the collection of missingSBM_fit
   myCollection <- missSBM_collection$new(
       adjMatrix       = adjacencyMatrix,
       vBlocks         = vBlocks,

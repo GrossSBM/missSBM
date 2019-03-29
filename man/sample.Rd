@@ -5,7 +5,7 @@
 \title{Sampling of network data}
 \usage{
 sample(adjacencyMatrix, sampling, parameters, clusters = NULL,
-  covarMatrix = NULL, covarSimilarity = l1_similarity)
+  covariates = NULL, similarity = l1_similarity)
 }
 \arguments{
 \item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample}
@@ -16,9 +16,10 @@ sample(adjacencyMatrix, sampling, parameters, clusters = NULL,
 
 \item{clusters}{An optional clustering membership vector of the nodes, only necessary for class sampling}
 
-\item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
+\item{covariates}{A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
+must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.}
 
-\item{covarSimilarity}{An optional R x R -> R function to compute the similarity between node covariates. The default internal function missSBM:::l1_smilarity is based on the oppositite of the absolute difference between two vector of covariates.}
+\item{similarity}{An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y). Only relevent when covariates is a list of size-N vectors.}
 }
 \value{
 an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.

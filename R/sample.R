@@ -6,8 +6,9 @@
 #' @param sampling The sampling design used to sample the adjacency matrix
 #' @param parameters The sampling parameters adapted to each sampling
 #' @param clusters An optional clustering membership vector of the nodes, only necessary for class sampling
-#' @param covarMatrix An optional matrix of covariates with dimension N x M (M covariates per node).
-#' @param covarSimilarity An optional R x R -> R function to compute the similarity between node covariates. The default internal function missSBM:::l1_smilarity is based on the oppositite of the absolute difference between two vector of covariates.
+#' @param covariates A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
+#' must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.
+#' @param similarity An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y). Only relevent when covariates is a list of size-N vectors.
 #'
 #' @return an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
 #' @seealso The class \code{\link{sampledNetwork}}
@@ -69,10 +70,17 @@
 #' par(mfrow = c(1,1))
 #' }
 #' @export
-sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covarMatrix = NULL, covarSimilarity = l1_similarity) {
+sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity) {
 
   stopifnot(sampling %in% available_samplings)
-  if (!is.null(covarMatrix)) stopifnot(sampling %in% available_samplings_covariates)
+
+  ## Conversion of covariates to an array
+  if (!is.null(covariates)) {
+    stopifnot(sampling %in% available_samplings_covariates)
+    covariates <- simplify2array(covariates)
+    if (is.matrix(covariates)) stopifnot(sampling == "node")
+    if (length(dim(covariates)) == 3) stopifnot(sampling  == "dyad")
+  }
 
   N <- ncol(adjacencyMatrix)
   directed <- !isSymmetric(adjacencyMatrix)
@@ -80,8 +88,8 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
   ## instantiate the sampler
   mySampler <-
     switch(sampling,
-      "dyad"            = simpleDyadSampler$new(parameters, N, directed, getCovarArray(covarMatrix, covarSimilarity)),
-      "node"            = simpleNodeSampler$new(parameters, N, directed, covarMatrix),
+      "dyad"            = simpleDyadSampler$new(parameters, N, directed, covariates),
+      "node"            = simpleNodeSampler$new(parameters, N, directed, covariates),
       "double-standard" = doubleStandardSampler$new(parameters, adjacencyMatrix, directed),
       "block-dyad"      = blockDyadSampler$new(parameters, N, directed, clusters),
       "block-node"      = blockNodeSampler$new(parameters, N, directed, clusters),

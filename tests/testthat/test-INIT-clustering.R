@@ -132,18 +132,18 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 2
-covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
-covarMatrix <- simplify2array(covariates)
+covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+covariates_dyad <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_node, covarParam)
 
 test_that("Init clustering with covariate is consistent", {
 
   A_full <- sbm$adjMatrix
   psi <- runif(M, -5, 5)
-  A_dyad <- missSBM::sample(A_full, "dyad", psi, covarMatrix = covarMatrix)$adjMatrix
-  A_node <- missSBM::sample(A_full, "node", psi, covarMatrix = covarMatrix)$adjMatrix
+  A_dyad <- missSBM::sample(A_full, "dyad", psi, covariates = covariates_dyad)$adjMatrix
+  A_node <- missSBM::sample(A_full, "node", psi, covariates = covariates_node)$adjMatrix
 
   for (A in list(A_full, A_dyad, A_node)) {
     for (method in c("hierarchical", "spectral", "kmeans")) {
