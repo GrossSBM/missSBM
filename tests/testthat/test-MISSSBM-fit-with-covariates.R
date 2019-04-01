@@ -7,7 +7,7 @@ source("utils_test.R")
 ## A SBM model with covariates
 
 set.seed(178303)
-N <- 300
+N <- 200
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
@@ -16,11 +16,11 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 2
-covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
-covarMatrix <- simplify2array(covariates)
+covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+covarMatrix <- simplify2array(covariates_node)
 covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
 covarParam  <- rnorm(M, -1, 1)
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
 
 ## control parameter for the VEM
 control <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = TRUE)
@@ -31,8 +31,10 @@ tol_ARI   <- .9
 
 test_that("missSBM with covariates and dyad sampling works", {
 
+  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
+
   ## sampled the network
-  sampledNet <- missSBM::sample(sbm$adjMatrix, "dyad", covarParam, covarMatrix = covarMatrix)
+  sampledNet <- missSBM::sample(sbm$adjMatrix, "dyad", covarParam, covariates = covariates_dyad)
 
   ## Perform inference
   missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix, covarArray = covarArray, clusterInit = "spectral")
@@ -63,8 +65,10 @@ test_that("missSBM with covariates and dyad sampling works", {
 
 test_that("miss SBM with covariates and node sampling works", {
 
+  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_node, covarParam)
+
   ## sampled the network
-  sampledNet <- missSBM::sample(sbm$adjMatrix, "node", covarParam, covarMatrix = covarMatrix)
+  sampledNet <- missSBM::sample(sbm$adjMatrix, "node", covarParam, covariates = covariates_node)
 
   ## Perform inference
   missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "node", covarMatrix = covarMatrix, covarArray = covarArray)
@@ -85,7 +89,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth*10)
+  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth*12)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)

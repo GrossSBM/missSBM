@@ -8,7 +8,8 @@ sample(adjacencyMatrix, sampling, parameters, clusters = NULL,
   covariates = NULL, similarity = l1_similarity)
 }
 \arguments{
-\item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample}
+\item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
+we assume an undirected network with no loop; otherwise the network is assumed directed.}
 
 \item{sampling}{The sampling design used to sample the adjacency matrix}
 

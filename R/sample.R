@@ -2,7 +2,8 @@
 #'
 #' Samples a matrix (the adjacency matrix of a network), possible generated under a stochastic block model
 #'
-#' @param adjacencyMatrix The N x N adjacency matrix of the network to sample
+#' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
+#' we assume an undirected network with no loop; otherwise the network is assumed directed.
 #' @param sampling The sampling design used to sample the adjacency matrix
 #' @param parameters The sampling parameters adapted to each sampling
 #' @param clusters An optional clustering membership vector of the nodes, only necessary for class sampling
@@ -72,29 +73,39 @@
 #' @export
 sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity) {
 
-  stopifnot(sampling %in% available_samplings)
-
-  ## Conversion of covariates to an array
+  ## Turn the covariates to an array if not null
   if (!is.null(covariates)) {
     stopifnot(sampling %in% available_samplings_covariates)
+    # Conversion of covariates to an array
     covariates <- simplify2array(covariates)
+    # if a list of vector (covariates node-centered), will be a matrix
     if (is.matrix(covariates)) stopifnot(sampling == "node")
+    # if a list of matrix (covariates dyad-centered), will be a 3-dimensional array
     if (length(dim(covariates)) == 3) stopifnot(sampling  == "dyad")
+  } else {
+    stopifnot(sampling %in% available_samplings)
   }
 
-  N <- ncol(adjacencyMatrix)
+  nNodes   <- ncol(adjacencyMatrix)
   directed <- !isSymmetric(adjacencyMatrix)
 
-  ## instantiate the sampler
+  ## SAMPLER INSTANTIATION
   mySampler <-
     switch(sampling,
-      "dyad"            = simpleDyadSampler$new(parameters, N, directed, covariates),
-      "node"            = simpleNodeSampler$new(parameters, N, directed, covariates),
-      "double-standard" = doubleStandardSampler$new(parameters, adjacencyMatrix, directed),
-      "block-dyad"      = blockDyadSampler$new(parameters, N, directed, clusters),
-      "block-node"      = blockNodeSampler$new(parameters, N, directed, clusters),
-      "degree"          = degreeSampler$new(parameters, rowSums(adjacencyMatrix), directed)
+      "dyad"       = simpleDyadSampler$new(
+        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covariates),
+      "node"       = simpleNodeSampler$new(
+        parameters = parameters, nNodes = nNodes, directed = directed, covarMatrix = covariates),
+      "double-standard" = doubleStandardSampler$new(
+        parameters = parameters, adjMatrix = adjacencyMatrix, directed = directed),
+      "block-dyad" = blockDyadSampler$new(
+        parameters = parameters, nNodes = nNodes, directed = directed, clusters = clusters),
+      "block-node" = blockNodeSampler$new(
+        parameters = parameters, nNodes = nNodes, directed = directed, clusters = clusters),
+      "degree"     = degreeSampler$new(
+        parameters = parameters, degrees = rowSums(adjacencyMatrix), directed = directed)
   )
+
   ## draw a sampling matrix R
   mySampler$rSamplingMatrix()
 

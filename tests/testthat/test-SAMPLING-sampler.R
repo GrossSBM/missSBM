@@ -1,5 +1,7 @@
 context("test network samplers (Class networkSampler and chidren)")
 
+source("utils_test.R")
+
 set.seed(178303)
 ### A SBM model : ###
 N <- 500
@@ -37,7 +39,7 @@ test_that("Consistency of dyad-centered sampler", {
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))
   psi_hat <- sum(mySampler$samplingMatrix)/N^2
-  expect_lt(abs(psi_hat - psi), tol)
+  expect_lt(error(psi_hat, psi), tol)
 
   ## with covariates
   psi <- runif(M, -5, 5)
@@ -48,6 +50,7 @@ test_that("Consistency of dyad-centered sampler", {
   expect_equal(mySampler$parameters, psi)
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))
+
 })
 
 test_that("Consistency of simple node-centered sampling", {
@@ -87,7 +90,6 @@ test_that("Consistency of double-standard sampling", {
   expect_equal(mySampler$parameters, psi)
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))
-
 })
 
 test_that("Consistency of block-node sampling", {
