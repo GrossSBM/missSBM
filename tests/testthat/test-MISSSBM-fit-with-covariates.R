@@ -65,7 +65,7 @@ test_that("missSBM with covariates and dyad sampling works", {
 
 test_that("miss SBM with covariates and node sampling works", {
 
-  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_node, covarParam)
+  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 
   ## sampled the network
   sampledNet <- missSBM::sample(sbm$adjMatrix, "node", covarParam, covariates = covariates_node)

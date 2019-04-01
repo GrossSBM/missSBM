@@ -17,11 +17,12 @@ A <- mySBM$adjMatrix
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
-covariates  <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
-covarMatrix <- simplify2array(covariates)
+covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+covarMatrix <- simplify2array(covariates_node)
 covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
 covarParam  <- rnorm(M, 0, 1)
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 A_cov <- sbm$adjMatrix
 
 ## tolerance for tests

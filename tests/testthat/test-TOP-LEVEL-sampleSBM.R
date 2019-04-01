@@ -15,11 +15,13 @@ sbm <- missSBM::simulate(N, alpha, pi, directed)
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
 covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
-covariates_dyad <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
+covarMatrix <- simplify2array(covariates_node)
+covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
 
 covarParam  <- rnorm(M, 0, 1)
 sbm_cov_dyad <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
-sbm_cov_node <- missSBM::simulate(N, alpha, gamma, directed, covariates_node, covarParam)
+sbm_cov_node <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 
 test_that("Consistency of dyad-centered sampling", {
 

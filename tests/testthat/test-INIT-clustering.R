@@ -136,7 +136,7 @@ covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
 covariates_dyad <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_node, covarParam)
+sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 
 test_that("Init clustering with covariate is consistent", {
 
