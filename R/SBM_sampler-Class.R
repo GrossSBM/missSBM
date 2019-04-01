@@ -76,7 +76,7 @@ SBM_sampler <-
     connectProb = function(value) {
       PI <- private$Z %*% private$pi %*% t(private$Z)
       if (self$hasCovariates) {
-        PI <- logistic(PI + roundProduct(private$phi, private$beta))
+        PI <- logistic(PI + roundProduct(private$X, private$beta))
       }
       PI
     }

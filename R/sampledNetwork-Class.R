@@ -71,7 +71,6 @@ sampledNetwork <-
     adjMatrix = function(value) {private$Y},
     # covariates matrix
     covarMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
-    # covarArray  = function(value) {private$phi},
     # list of potential dyads in the network
     dyads           = function(value) {private$D},
     # array indices of missing dyads

@@ -24,7 +24,7 @@ R6::R6Class(classname = "SBM_fit",
     entropy     = function(value) {-sum(xlogx(private$tau))},
     connectProb = function(value) {
       if (self$hasCovariates) {## pi is gamma in covariate SBM
-        Prob <- check_boundaries(logistic(private$tau %*% private$pi %*% t(private$tau) + roundProduct(private$phi, private$beta)))
+        Prob <- check_boundaries(logistic(private$tau %*% private$pi %*% t(private$tau) + roundProduct(private$X, private$beta)))
       } else {
         Prob <- check_boundaries(logistic(private$tau %*% logit(private$pi) %*% t(private$tau)))
       }

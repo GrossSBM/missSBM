@@ -10,7 +10,7 @@ R6::R6Class(classname = "SBM",
     alpha    = NULL, # vector of block parameters
     pi       = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
-    phi      = NULL  # the similarity array (N x N x M)
+    X        = NULL  # the array of covariates (N x N x M)
   ),
   public = list(
     ## constructor
@@ -23,7 +23,7 @@ R6::R6Class(classname = "SBM",
       private$pi       <- connectParam
       if (!is.null(covarArray)) {
         stopifnot(all.equal(dim(covarArray), c(private$N, private$N, private$M)))
-        private$phi  <- covarArray
+        private$X    <- covarArray
         private$beta <- covarParam
       }
     }
@@ -52,7 +52,7 @@ R6::R6Class(classname = "SBM",
       }
     },
     covarParam       = function(value) {if (missing(value)) return(private$beta) else private$beta <- value},
-    covarArray       = function(value) {private$phi},
+    covarArray       = function(value) {private$X},
     df_mixtureParams = function(value) {self$nBlocks - 1},
     df_connectParams = function(value) {ifelse(private$directed, self$nBlocks^2, self$nBlocks*(self$nBlocks + 1)/2)},
     df_covarParams   = function(value) {self$nCovariates}
