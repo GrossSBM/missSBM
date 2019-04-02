@@ -129,14 +129,15 @@
     </div>
 
     <pre class="usage"><span class='fu'>sample</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>sampling</span>, <span class='no'>parameters</span>, <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>covarMatrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>covarSimilarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>)</pre>
+  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>similarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>adjacencyMatrix</th>
-      <td><p>The N x N adjacency matrix of the network to sample</p></td>
+      <td><p>The N x N adjacency matrix of the network to sample. If <code>adjacencyMatrix</code> is symmetric,
+we assume an undirected network with no loop; otherwise the network is assumed directed.</p></td>
     </tr>
     <tr>
       <th>sampling</th>
@@ -151,12 +152,14 @@
       <td><p>An optional clustering membership vector of the nodes, only necessary for class sampling</p></td>
     </tr>
     <tr>
-      <th>covarMatrix</th>
-      <td><p>An optional matrix of covariates with dimension N x M (M covariates per node).</p></td>
+      <th>covariates</th>
+      <td><p>A list with M entries (the M covariates). If the covariates are node-centred, each entry of <code>covariates</code>
+must be a size-N vector;  if the covariates are dyad-centred, each entry of <code>covariates</code> must be N x N matrix.</p></td>
     </tr>
     <tr>
-      <th>covarSimilarity</th>
-      <td><p>An optional R x R -&gt; R function to compute the similarity between node covariates. The default internal function missSBM:::l1_smilarity is based on the oppositite of the absolute difference between two vector of covariates.</p></td>
+      <th>similarity</th>
+      <td><p>An optional R x R -&gt; R function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
+Only relevent when the covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></td>
     </tr>
     </table>
     

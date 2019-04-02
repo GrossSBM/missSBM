@@ -128,39 +128,35 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>simulate</span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='kw'>directed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>covarMatrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>covarParam</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>covarSimilarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>)</pre>
+    <pre class="usage"><span class='fu'>simulate</span>(<span class='no'>nNodes</span>, <span class='no'>mixtureParam</span>, <span class='no'>connectParam</span>, <span class='kw'>directed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>covarParam</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>N</th>
+      <th>nNodes</th>
       <td><p>The number of nodes</p></td>
     </tr>
     <tr>
-      <th>alpha</th>
+      <th>mixtureParam</th>
       <td><p>The mixture parameters</p></td>
     </tr>
     <tr>
-      <th>pi</th>
-      <td><p>The connectivity matrix (either probabilities of inter and intra clusters )</p></td>
+      <th>connectParam</th>
+      <td><p>The connectivity matrix (inter/intra clusters probabilities. provided on a logit scale for a model with covariates)</p></td>
     </tr>
     <tr>
       <th>directed</th>
       <td><p>Boolean variable to indicate whether the network is directed or not. Default to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
-      <th>covarMatrix</th>
-      <td><p>An optional matrix of covariates with dimension N x M (M covariates per node).</p></td>
+      <th>covariates</th>
+      <td><p>A list with M entries (the M covariates). Each entry of the list must be an N x N matrix.</p></td>
     </tr>
     <tr>
       <th>covarParam</th>
       <td><p>An optional vector of parameters associated with the covariates, with size M</p></td>
-    </tr>
-    <tr>
-      <th>covarSimilarity</th>
-      <td><p>An optional R x R -&gt; R function  to compute similarity between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).</p></td>
     </tr>
     </table>
     
@@ -178,18 +174,18 @@
 <span class='no'>directed</span> <span class='kw'>&lt;-</span> <span class='fl'>FALSE</span>
 <span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of nodes</span>
 <span class='no'>Q</span> <span class='kw'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
-<span class='no'>alpha</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>,<span class='no'>Q</span>)/<span class='no'>Q</span>     <span class='co'># mixture parameter</span>
-<span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/diag'>diag</a></span>(<span class='fl'>.45</span>,<span class='no'>Q</span>) + <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
-<span class='no'>gamma</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>pi</span>/(<span class='fl'>1</span>-<span class='no'>pi</span>)) <span class='co'># logit transform fo the model with covariates</span>
 <span class='no'>M</span> <span class='kw'>&lt;-</span> <span class='fl'>2</span> <span class='co'># two Gaussian covariates</span>
-<span class='no'>covarMatrix</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='no'>N</span>*<span class='no'>M</span>,<span class='kw'>mean</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>1</span>), <span class='no'>N</span>, <span class='no'>M</span>)
-<span class='no'>covarParam</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='no'>M</span>, -<span class='fl'>1</span>, <span class='fl'>1</span>)
+<span class='no'>alpha</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>, <span class='no'>Q</span>)/<span class='no'>Q</span>     <span class='co'># mixture parameters</span>
+<span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/diag'>diag</a></span>(<span class='fl'>.45</span>, <span class='no'>Q</span>) + <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
+<span class='no'>eta</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='no'>M</span>, -<span class='fl'>1</span>, <span class='fl'>1</span>)  <span class='co'># covaraite parametes</span>
+<span class='no'>gamma</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log</a></span>(<span class='no'>pi</span>/(<span class='fl'>1</span>-<span class='no'>pi</span>)) <span class='co'># logit transform of pi for the model with covariates</span>
+<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>replicate</a></span>(<span class='no'>M</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='no'>N</span> * <span class='no'>N</span> ,<span class='kw'>mean</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>1</span>), <span class='no'>N</span>, <span class='no'>N</span>), <span class='kw'>simplify</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='co'>## draw a SBM without covariates</span>
 <span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
 
-<span class='co'>## draw a SBM model with covariates</span>
-<span class='no'>sbm_cov</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>gamma</span>, <span class='no'>directed</span>, <span class='no'>covarMatrix</span>, <span class='no'>covarParam</span>)</div><span class='co'># NOT RUN {</span>
+<span class='co'>## draw a SBM model with node-centred covariates</span>
+<span class='no'>sbm_cov</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/simulate'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>gamma</span>, <span class='no'>directed</span>, <span class='no'>X</span>, <span class='no'>eta</span>)</div><span class='co'># NOT RUN {</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sbm</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sbm_cov</span>)
