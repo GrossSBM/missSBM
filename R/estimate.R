@@ -12,7 +12,7 @@
 #' @param cores integer, the number of cores to use when multiply model are fitted
 #' @param control_VEM a list controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
-#' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missingSBM_fit}}.
+#' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
 #' ## SBM parameters
 #' directed <- FALSE
@@ -45,7 +45,7 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
 
-  ## Instantiate the collection of missingSBM_fit
+  ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
       adjMatrix       = adjacencyMatrix,
       vBlocks         = vBlocks,
@@ -57,10 +57,10 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
       trace           = trace
   )
 
-  ## Launch estimation of each missingSBM_fit
+  ## Launch estimation of each missSBM_fit
   myCollection$estimate(control, cores, trace)
 
-  ## Return the collection of optimized missingSBM_fit
+  ## Return the collection of optimized missSBM_fit
   myCollection
 }
 

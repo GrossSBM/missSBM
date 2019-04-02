@@ -37,11 +37,11 @@ test_that("missSBM with covariates and dyad sampling works", {
   sampledNet <- missSBM::sample(sbm$adjMatrix, "dyad", covarParam, covariates = covariates_dyad)
 
   ## Perform inference
-  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix, covarArray = covarArray, clusterInit = "spectral")
+  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "dyad", covarMatrix = covarMatrix, covarArray = covarArray, clusterInit = "spectral")
   out <- missSBM$doVEM(control)
 
   ## Sanity check
-  expect_is(missSBM, "missingSBM_fit")
+  expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SBM_fit_covariates")
   expect_is(missSBM$fittedSampling, "dyadSampling_fit_covariates")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
@@ -71,11 +71,11 @@ test_that("miss SBM with covariates and node sampling works", {
   sampledNet <- missSBM::sample(sbm$adjMatrix, "node", covarParam, covariates = covariates_node)
 
   ## Perform inference
-  missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "node", covarMatrix = covarMatrix, covarArray = covarArray)
+  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "node", covarMatrix = covarMatrix, covarArray = covarArray)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
-  expect_is(missSBM, "missingSBM_fit")
+  expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SBM_fit_covariates")
   expect_is(missSBM$fittedSampling, "nodeSampling_fit_covariates")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")

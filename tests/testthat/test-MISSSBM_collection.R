@@ -18,7 +18,7 @@ test_that("missSBMcollection works", {
 
   sampledNet <- missSBM::sample(A, "dyad", .5, clusters = mySBM$memberships)
 
-  ## Instatntiate the collection of missingSBM_fit
+  ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
     adjMatrix = sampledNet$adjMatrix,
     vBlocks = 1:5,

@@ -56,5 +56,5 @@ collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling, trace =
 collection$ICL
 }
 \seealso{
-\code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missingSBM_fit}}.
+\code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 }

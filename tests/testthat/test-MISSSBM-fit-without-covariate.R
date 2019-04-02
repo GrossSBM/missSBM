@@ -38,11 +38,11 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     sampledNet <- missSBM::sample(sbm$adjMatrix, sampling$name, sampling$psi, sbm$memberships)
 
     ## Perform inference
-    missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, sampling$name)
+    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling$name)
     out <- missSBM$doVEM(control)
 
     ## Sanity check
-    expect_is(missSBM, "missingSBM_fit")
+    expect_is(missSBM, "missSBM_fit")
     expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
     expect_is(missSBM$fittedSampling, sampling$class)
     expect_is(missSBM$sampledNetwork, "sampledNetwork")
@@ -69,11 +69,11 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 #   psi <- c(-5, .1)
 #   sampledNet <- sampleNetwork(A, "degree", psi)
 #   ## Perform inference
-#   missSBM <- missSBM:::missingSBM_fit$new(sampledNet, Q, "degree")
+#   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "degree")
 #   out <- missSBM$doVEM(control)
 #
 #   ## Sanity check
-#   expect_is(missSBM, "missingSBM_fit")
+#   expect_is(missSBM, "missSBM_fit")
 #   expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
 #   expect_is(missSBM$fittedSampling, "degreeSampling_fit")
 #   expect_is(missSBM$sampledNetwork, "sampledNetwork")

@@ -5,8 +5,8 @@
 #' @include SBM_fit-Class.R
 #' @include networkSampling_fit-Class.R
 #' @export
-missingSBM_fit <-
-  R6::R6Class(classname = "missingSBM_fit",
+missSBM_fit <-
+  R6::R6Class(classname = "missSBM_fit",
   private = list(
     sampledNet = NULL, # network data with convenient encoding (object of class 'sampledNetwork')
     imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
@@ -74,7 +74,7 @@ missingSBM_fit <-
   )
 )
 
-missingSBM_fit$set("public", "doVEM",
+missSBM_fit$set("public", "doVEM",
   function(control) {
 
     ## Initialization of quantities that monitor convergence
@@ -122,7 +122,7 @@ missingSBM_fit$set("public", "doVEM",
   }
 )
 
-missingSBM_fit$set("public", "show",
+missSBM_fit$set("public", "show",
 function() {
   cat("missSBM-fit\n")
   cat("==================================================================\n")
@@ -135,4 +135,4 @@ function() {
   cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
   cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
 })
-missingSBM_fit$set("public", "print", function() self$show())
+missSBM_fit$set("public", "print", function() self$show())

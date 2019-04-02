@@ -10,7 +10,7 @@
 #' @field optimizationStatus a data.frame summarizing the optimization process for all models
 #'
 #' @seealso \code{\link{estimate}}, \code{\link{smooth}}
-#' @include missingSBM_fit-Class.R
+#' @include missSBM_fit-Class.R
 #' @export
 missSBM_collection <-
   R6::R6Class(classname = "missSBM_collection",
@@ -46,7 +46,7 @@ function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarSimilarity
   private$missSBM_fit <- mcmapply(
     function(nBlock, cl0) {
       if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-      missingSBM_fit$new(sampledNet, nBlock, sampling, cl0, covarMatrix, covarArray)
+      missSBM_fit$new(sampledNet, nBlock, sampling, cl0, covarMatrix, covarArray)
     }, nBlock = vBlocks, cl0 = clusterInit, mc.cores = cores
   )
 })
@@ -135,7 +135,7 @@ function(control) {
         if (length(cl[J]) > 10) { ## ???? minimal group size for allowing splitting
           cut <- as.numeric(control$split_fn(sampledNet$adjMatrix[J, J], 2))
           cl[J][which(cut == 1)] <- j; cl[J][which(cut == 2)] <- i + 1
-          model <- missingSBM_fit$new(sampledNet, i + 1, sampling, cl, covarMatrix, covarArray)
+          model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, covarMatrix, covarArray)
           model$doVEM(control)
           model
         } else {
@@ -170,7 +170,7 @@ function(control) {
         cl_fusion <- cl0
         levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
         levels(cl_fusion) <- as.character(1:(i - 1))
-        model <- missingSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion, covarMatrix, covarArray)
+        model <- missSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion, covarMatrix, covarArray)
         model$doVEM(control)
         model
       }, mc.cores = control$mc.cores)
