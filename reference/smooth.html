@@ -131,7 +131,6 @@ a "smoothing" of the ICL, that should be close to concave.</p>
     </div>
 
     <pre class="usage"><span class='fu'>smooth</span>(<span class='no'>Robject</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"forward"</span>, <span class='st'>"backward"</span>, <span class='st'>"both"</span>),
-  <span class='kw'>split</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>, <span class='st'>"kmeans"</span>),
   <span class='kw'>control_VEM</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>iterates</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -144,10 +143,6 @@ a "smoothing" of the ICL, that should be close to concave.</p>
     <tr>
       <th>type</th>
       <td><p>character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".</p></td>
-    </tr>
-    <tr>
-      <th>split</th>
-      <td><p>character indicating the function use to split nodes during the forward algorithm. Either "hierarchical", "spectral" or "kmeans". Default is "hierarchical".</p></td>
     </tr>
     <tr>
       <th>control_VEM</th>
