@@ -35,16 +35,11 @@
 #' collection$ICL
 #' @import R6 parallel
 #' @export
-estimate <- function(
-  adjacencyMatrix,
-  vBlocks,
-  sampling,
+estimate <- function(adjacencyMatrix, vBlocks, sampling,
   clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"),
   covarMatrix = NULL,
   covarSimilarity = l1_similarity,
-  trace     = TRUE,
-  cores = 1,
-  control_VEM = list()) {
+  trace = TRUE, cores = 1, control_VEM = list()) {
 
   ## defaut control parameter for VEM, overwritten by user specification
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)

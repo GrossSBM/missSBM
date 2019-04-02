@@ -9,7 +9,8 @@
 #' @param clusters An optional clustering membership vector of the nodes, only necessary for class sampling
 #' @param covariates A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.
-#' @param similarity An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y). Only relevent when covariates is a list of size-N vectors.
+#' @param similarity An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
+#' Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
 #'
 #' @return an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
 #' @seealso The class \code{\link{sampledNetwork}}

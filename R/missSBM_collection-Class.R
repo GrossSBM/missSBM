@@ -139,7 +139,7 @@ function(control) {
           model$doVEM(control)
           model
         } else {
-          private$missSBM_fit[[i + 1]]
+          private$missSBM_fit[[i + 1]]$clone()
         }
       }, mc.cores = control$mc.cores)
 

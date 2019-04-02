@@ -68,7 +68,7 @@ We compare with clusterings obtained with the fully observed network.
 collection_sbm_full <- war_graphs$beligerent %>% 
   as_adj(sparse = FALSE) %>% 
   missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical", cores = 2, trace = TRUE)
-smooth(collection_sbm_full, "both", iterates = 2)
+smooth(collection_sbm_full, "both", split = "spectral", iterates = 2)
 plot(collection_sbm_full$ICL, type = "l")
 test =as.matrix(get.adjacency(war_graphs$beligerent))
 ```
@@ -93,15 +93,12 @@ table(
 ```
 
 
-<!-- ```{r blockmodelscomparison} -->
-<!-- library(blockmodels) -->
-<!-- modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
-<!-- modsym$estimate() -->
-<!-- plot(modsym$ICL) -->
-<!-- mod <- BM_bernoulli("SBM",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
-<!-- mod$estimate() -->
-<!-- plot(mod$ICL) -->
-<!-- ``` -->
+```{r blockmodelscomparison}
+library(blockmodels)
+modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="")
+modsym$estimate()
+plot(modsym$ICL)
+```
 
 
 

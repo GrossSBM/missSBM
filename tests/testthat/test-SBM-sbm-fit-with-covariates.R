@@ -93,13 +93,15 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
   M <- 2
-  covariates  <- replicate(M, matrix(rnorm(N*N,mean = 0, sd = 1), N, N), simplify = FALSE)
-  covariates  <- lapply(covariates, Matrix::symmpart)
+  covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+  covarMatrix <- simplify2array(covariates_node)
+  covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+  covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
   covarParam  <- rnorm(M, 0, 1)
-  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
+  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 
   ## Formatting covariates for blockmodels
-  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates, verbosity = 0, explore_min = 4, explore_max = 4, plotting = "", ncores = 1)
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates_dyad, verbosity = 0, explore_min = 4, explore_max = 4, plotting = "", ncores = 1)
   BM$estimate()
 
   vBlocks <- 1:4
