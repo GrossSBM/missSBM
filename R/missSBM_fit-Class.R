@@ -15,8 +15,7 @@ missSBM_fit <-
     optStatus  = NULL  # status of the optimization process
   ),
   public = list(
-    initialize = function(sampledNet, nBlocks, netSampling,
-      clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"), covarMatrix = NULL, covarArray = NULL) {
+    initialize = function(sampledNet, nBlocks, netSampling, clusterInit, covarMatrix = NULL, covarArray = NULL) {
 
       ## Basic arguments checks
       stopifnot(netSampling %in% available_samplings)

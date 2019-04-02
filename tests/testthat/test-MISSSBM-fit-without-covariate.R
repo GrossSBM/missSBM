@@ -38,7 +38,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     sampledNet <- missSBM::sample(sbm$adjMatrix, sampling$name, sampling$psi, sbm$memberships)
 
     ## Perform inference
-    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling$name)
+    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling$name, "hierarchical")
     out <- missSBM$doVEM(control)
 
     ## Sanity check
@@ -69,7 +69,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 #   psi <- c(-5, .1)
 #   sampledNet <- sampleNetwork(A, "degree", psi)
 #   ## Perform inference
-#   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "degree")
+#   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "degree", "hierarchical)
 #   out <- missSBM$doVEM(control)
 #
 #   ## Sanity check
