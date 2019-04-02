@@ -17,7 +17,7 @@ missSBM_fit <-
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit, covarMatrix = NULL, covarArray = NULL) {
 
-      ## Basic arguments checks
+      ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(sampledNet, "sampledNetwork"))
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
