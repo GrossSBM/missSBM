@@ -86,7 +86,6 @@ function(type, control) {
 #'
 #' @param Robject an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}
 #' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".
-#' @param split character indicating the function use to split nodes during the forward algorithm. Either "hierarchical", "spectral" or "kmeans". Default is "hierarchical".
 #' @param control_VEM a list controlling the variational EM algorithm. See details in \code{\link{estimate}}.
 #' @param cores integer, the number of cores to use when multiply model are fitted. Default is 1.
 #' @param iterates integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.
@@ -94,7 +93,7 @@ function(type, control) {
 #'
 #' @return an invisible missSBM_collection, in which the ICL has been smoothed
 #' @export
-smooth <- function(Robject, type = c("forward", "backward", "both"), split = c("hierarchical", "spectral", "kmeans"), control_VEM = list(), cores = 1, iterates = 1, trace = TRUE) {
+smooth <- function(Robject, type = c("forward", "backward", "both"), control_VEM = list(), cores = 1, iterates = 1, trace = TRUE) {
 
   stopifnot(inherits(Robject, "missSBM_collection"))
 
@@ -104,12 +103,6 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), split = c("
   ## add some additional control param to pass to smoothing
   control$iterates <- iterates
   control$mc.cores <- cores
-  ## select which clustering method will be used for splitting a group
-  control$split_fn <- switch(match.arg(split),
-    "spectral"     = init_spectral,
-    "hierarchical" = init_hierarchical,
-    "kmeans"       = init_kmeans
-  )
   ## Run the smoothing
   Robject$smooth(match.arg(type), control)
 
@@ -123,6 +116,14 @@ function(control) {
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
   covarMatrix <- sampledNet$covarMatrix
   covarArray  <- private$missSBM_fit[[1]]$fittedSBM$covarArray
+  adjacencyMatrix <- sampledNet$adjMatrix
+  if (!is.null(covarArray)) {
+    y <- as.vector(adjacencyMatrix)
+    X <- apply(covarArray, 3, as.vector)
+    adjacencyMatrix <- matrix(NA, N, N)
+    NAs <- is.na(y)
+    adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
+  }
 
   if (trace) cat("   Going forward ")
   for (i in self$vBlocks[-length(self$vBlocks)]) {
@@ -133,7 +134,7 @@ function(control) {
       candidates <- mclapply(1:i, function(j) {
         cl <- as.numeric(cl_split); J <- which(cl == j)
         if (length(cl[J]) > 10) { ## ???? minimal group size for allowing splitting
-          cut <- as.numeric(control$split_fn(sampledNet$adjMatrix[J, J], 2))
+          cut <- as.numeric(init_hierarchical(adjacencyMatrix[J, ], 2))
           cl[J][which(cut == 1)] <- j; cl[J][which(cut == 2)] <- i + 1
           model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, covarMatrix, covarArray)
           model$doVEM(control)

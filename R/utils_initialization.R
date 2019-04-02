@@ -74,14 +74,13 @@ init_spectral <- function(X, K) {
 #' @importFrom ape additive
 #' @importFrom stats as.dist cutree dist hclust
 init_hierarchical <- function(X, K) {
-
   if (K > 1) {
     D  <- as.matrix(dist(X, method = "manhattan"))
-    D[which(X == 1)] <- D[which(X == 1)] - 2
+##    D[which(X == 1)] <- D[which(X == 1)] - 2
     D <- as.dist(ape::additive(D))
-    cl0 <- cutree(hclust(as.dist(D), method = "ward.D"), K)
+    cl0 <- cutree(hclust(D, method = "ward.D"), K)
   } else {
-    cl0 <- rep(1L,ncol(X))
+    cl0 <- rep(1L,nrow(X))
   }
   cl0
 }
@@ -93,7 +92,7 @@ init_kmeans <- function(X, K) {
     # D[which(X == 1)] <- D[which(X == 1)] - 2
     cl0 <- kmeans(ape::additive(D), K, nstart = 10, iter.max = 50)$cl
   } else {
-    cl0 <- rep(1L, ncol(X))
+    cl0 <- rep(1L, nrow(X))
   }
   cl0
 }

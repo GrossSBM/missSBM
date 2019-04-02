@@ -55,7 +55,7 @@ plot(collection_sbm$ICL, type = "l")
 ```
 
 ```{r smoothed}
-smooth(collection_sbm, "both", iterates = 2)
+smooth(collection_sbm, "both", iterates = 1)
 plot(collection_sbm$ICL, type = "l")
 ```
 
@@ -68,7 +68,7 @@ We compare with clusterings obtained with the fully observed network.
 collection_sbm_full <- war_graphs$beligerent %>% 
   as_adj(sparse = FALSE) %>% 
   missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical", cores = 2, trace = TRUE)
-smooth(collection_sbm_full, "both", split = "spectral", iterates = 2)
+smooth(collection_sbm_full, "both", iterates = 2)
 plot(collection_sbm_full$ICL, type = "l")
 test =as.matrix(get.adjacency(war_graphs$beligerent))
 ```

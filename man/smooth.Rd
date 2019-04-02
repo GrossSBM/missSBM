@@ -5,15 +5,12 @@
 \title{Smooth path of models in a collection}
 \usage{
 smooth(Robject, type = c("forward", "backward", "both"),
-  split = c("hierarchical", "spectral", "kmeans"),
   control_VEM = list(), cores = 1, iterates = 1, trace = TRUE)
 }
 \arguments{
 \item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}}
 
 \item{type}{character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".}
-
-\item{split}{character indicating the function use to split nodes during the forward algorithm. Either "hierarchical", "spectral" or "kmeans". Default is "hierarchical".}
 
 \item{control_VEM}{a list controlling the variational EM algorithm. See details in \code{\link{estimate}}.}
 
