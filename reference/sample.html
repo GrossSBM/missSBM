@@ -215,7 +215,7 @@ Only relevent when the covariates are node-centered (i.e. <code>covariates</code
 <span class='kw'>for</span> (<span class='no'>sampling</span> <span class='kw'>in</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sampling_parameters</span>)) {
   <span class='no'>sampled_networks</span><span class='kw'>[[</span><span class='no'>sampling</span>]] <span class='kw'>&lt;-</span>
      <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/sample'>sample</a></span>(
-       <span class='kw'>adjacencyMatrix</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>adjMatrix</span>,
+       <span class='kw'>adjacencyMatrix</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>adjacencyMatrix</span>,
        <span class='kw'>sampling</span>        <span class='kw'>=</span> <span class='no'>sampling</span>,
        <span class='kw'>parameters</span>      <span class='kw'>=</span> <span class='no'>sampling_parameters</span><span class='kw'>[[</span><span class='no'>sampling</span>]],
        <span class='kw'>cluster</span>         <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>memberships</span>

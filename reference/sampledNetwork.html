@@ -146,7 +146,7 @@
     <dt><code>nNodes</code></dt><dd><p>number of nodes</p></dd>
     <dt><code>nDyads</code></dt><dd><p>number of dyads</p></dd>
     <dt><code>is_directed</code></dt><dd><p>direction</p></dd>
-    <dt><code>adjMatrix</code></dt><dd><p>adjacency matrix (with NA)</p></dd>
+    <dt><code>adjacencyMatrix</code></dt><dd><p>adjacency matrix (with NA)</p></dd>
     <dt><code>covarMatrix</code></dt><dd><p>the matrix of covariates (if applicable)</p></dd>
     <dt><code>covarArray</code></dt><dd><p>the array of covariates (if applicable)</p></dd>
     <dt><code>dyads</code></dt><dd><p>list of potential dyads in the network</p></dd>
@@ -172,7 +172,7 @@
 <span class='co'>## Sample network data</span>
 <span class='no'>sampled_network</span> <span class='kw'>&lt;-</span>
      <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/sample'>sample</a></span>(
-       <span class='kw'>adjacencyMatrix</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>adjMatrix</span>,
+       <span class='kw'>adjacencyMatrix</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>adjacencyMatrix</span>,
        <span class='kw'>sampling</span>        <span class='kw'>=</span> <span class='st'>"double-standard"</span>,
        <span class='kw'>parameters</span>      <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.4</span>, <span class='fl'>0.8</span>)
      )
@@ -183,7 +183,7 @@
 #&gt; ==================================================================
 #&gt; * Useful fields 
 #&gt;   $nNodes, $nDyads, $is_directed
-#&gt;    $adjMatrix, $covarMatrix
+#&gt;    $adjacencyMatrix, $covarMatrix
 #&gt;    $dyads, $missingDyads, $observedDyads, $observedNodes
 #&gt;    $samplingRate, $samplingMatrix, $NAs
 #&gt; * Useful method: plot() </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sampled_network</span>)</div><div class='img'><img src='sampledNetwork-1.png' alt='' width='700' height='433' /></div></pre>

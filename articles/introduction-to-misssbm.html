@@ -86,7 +86,7 @@
       <h1>Introduction to missSBM</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">2019-04-02</h4>
+            <h4 class="date">2019-04-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jchiquet/missSBM/blob/master/vignettes/introduction-to-misssbm.Rmd"><code>vignettes/introduction-to-misssbm.Rmd</code></a></small>
       <div class="hidden name"><code>introduction-to-misssbm.Rmd</code></div>
@@ -137,7 +137,7 @@
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(sampledNet_war)</a></code></pre></div>
 <p><img src="introduction-to-misssbm_files/figure-html/sampling-1.png" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">vBlocks &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">collection_sbm &lt;-<span class="st"> </span>sampledNet_war<span class="op">$</span>adjMatrix <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">collection_sbm &lt;-<span class="st"> </span>sampledNet_war<span class="op">$</span>adjacencyMatrix <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(<span class="dt">vBlocks =</span> vBlocks, <span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">clusterInit =</span> <span class="st">"spectral"</span>)</a></code></pre></div>
 <pre><code>## 
 ## 
@@ -170,8 +170,8 @@
 <p><img src="introduction-to-misssbm_files/figure-html/smoothed-1.png" width="700"></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships)</a></code></pre></div>
 <pre><code>## 
-##  1  2  3  4 
-## 12 15  5 60</code></pre>
+##  1  2 
+## 15 77</code></pre>
 <p>We compare with clusterings obtained with the fully observed network.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">collection_sbm_full &lt;-<span class="st"> </span>war_graphs<span class="op">$</span>beligerent <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb21-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(<span class="dt">sparse =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -210,10 +210,8 @@ plot(collection_sbm_full2$ICL)
 <a class="sourceLine" id="cb27-4" data-line-number="4">  )</a></code></pre></div>
 <pre><code>##    
 ##      1  2  3  4
-##   1  2 10  0  0
-##   2 15  0  0  0
-##   3  0  0  0  5
-##   4 12  0 48  0</code></pre>
+##   1  1 10  4  0
+##   2 28  0  1 48</code></pre>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(blockmodels)</a></code></pre></div>
 <pre><code>## Loading required package: Rcpp</code></pre>
 <pre><code>## Loading required package: parallel</code></pre>
