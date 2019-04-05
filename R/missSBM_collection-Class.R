@@ -133,7 +133,8 @@ function(control) {
     if (nlevels(cl_split) - 1 == i) { # when would this happens ?
       candidates <- mclapply(1:i, function(j) {
         cl <- as.numeric(cl_split); J <- which(cl == j)
-        if (length(cl[J]) > 10) { ## ???? minimal group size for allowing splitting
+        cut <- as.numeric(init_hierarchical(adjacencyMatrix[J, ], 2))
+        if (length(unique(cut)) > 1) {
           cut <- as.numeric(init_hierarchical(adjacencyMatrix[J, ], 2))
           cl[J][which(cut == 1)] <- j; cl[J][which(cut == 2)] <- i + 1
           model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, covarMatrix, covarArray)
@@ -144,9 +145,8 @@ function(control) {
         }
       }, mc.cores = control$mc.cores)
 
-      vICLs <- sapply(candidates, function(candidate) candidate$vBound)
-      best_one <- candidates[[which.min(vICLs)]]
-      if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
+      best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
+      if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
         private$missSBM_fit[[i + 1]] <- best_one
       }
     }
@@ -176,9 +176,8 @@ function(control) {
         model
       }, mc.cores = control$mc.cores)
 
-      vICLs <- sapply(candidates, function(candidate) candidate$vICL)
-      best_one <- candidates[[which.min(vICLs)]]
-      if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
+      best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
+      if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
         private$missSBM_fit[[i - 1]] <- best_one
       }
     }
