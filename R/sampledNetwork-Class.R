@@ -8,7 +8,7 @@
 #' @field nNodes number of nodes
 #' @field nDyads number of dyads
 #' @field is_directed direction
-#' @field adjMatrix adjacency matrix (with NA)
+#' @field adjacencyMatrix adjacency matrix (with NA)
 #' @field covarMatrix the matrix of covariates (if applicable)
 #' @field covarArray the array of covariates (if applicable)
 #' @field dyads list of potential dyads in the network
@@ -33,7 +33,7 @@
 #' ## Sample network data
 #' sampled_network <-
 #'      missSBM::sample(
-#'        adjacencyMatrix = sbm$adjMatrix,
+#'        adjacencyMatrix = sbm$adjacencyMatrix,
 #'        sampling        = "double-standard",
 #'        parameters      = c(0.4, 0.8)
 #'      )
@@ -68,7 +68,7 @@ sampledNetwork <-
     # direction
     is_directed = function(value) {private$directed},
     # adjacency matrix
-    adjMatrix = function(value) {private$Y},
+    adjacencyMatrix = function(value) {private$Y},
     # covariates matrix
     covarMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
     # list of potential dyads in the network
@@ -86,15 +86,15 @@ sampledNetwork <-
   ),
   ## Constructor
   public = list(
-    initialize = function(adjMatrix, covarMatrix = NULL) {
+    initialize = function(adjacencyMatrix, covarMatrix = NULL) {
 
       ## adjacency matrix
-      stopifnot(is.matrix(adjMatrix))
+      stopifnot(is.matrix(adjacencyMatrix))
       ## Only binary graph supported
-      stopifnot(all.equal(unique(as.numeric(adjMatrix[!is.na(adjMatrix)])), c(0,1)))
+      stopifnot(all.equal(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)])), c(0,1)))
 
-      if (isSymmetric(adjMatrix)) private$directed <- FALSE else private$directed <- TRUE
-      private$Y  <- adjMatrix
+      if (isSymmetric(adjacencyMatrix)) private$directed <- FALSE else private$directed <- TRUE
+      private$Y  <- adjacencyMatrix
 
       ## array of covariates
       if (!is.null(covarMatrix)) {
@@ -102,19 +102,19 @@ sampledNetwork <-
       }
 
       ## sets of observed / unobserved dyads
-      private$nas <- is.na(adjMatrix)
+      private$nas <- is.na(adjacencyMatrix)
       if (private$directed) {
         ## remove diagonal (no loops)
-        private$D <- which(upper.tri(adjMatrix) | lower.tri(adjMatrix))
+        private$D <- which(upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix))
       } else {
-        private$D <- which(upper.tri(adjMatrix))
+        private$D <- which(upper.tri(adjacencyMatrix))
       }
       private$D_miss <- intersect(which( private$nas), private$D )
       private$D_obs  <- intersect(which(!private$nas), private$D )
 
       ## sets of observed / unobserved nodes
       S <- rep(FALSE, self$nNodes)
-      S[!is.na(rowSums(adjMatrix))] <- TRUE
+      S[!is.na(rowSums(adjacencyMatrix))] <- TRUE
       private$S <- S
 
       ## sampling matrix (indicating who is observed) : USELESS ??
@@ -128,7 +128,7 @@ sampledNetwork <-
 
 sampledNetwork$set("public", "plot",
 function(main = paste("Network sampling with sampling rate:", signif(self$samplingRate,3))) {
-  image_NA(self$adjMatrix, main = main)
+  image_NA(self$adjacencyMatrix, main = main)
 })
 
 sampledNetwork$set("public", "show",
@@ -138,7 +138,7 @@ function(model = "Sampled Network\n") {
   cat("Structure for storing a sampled network in missSBM.\n")
   cat("==================================================================\n")
   cat("* Useful fields \n")
-  cat("  $nNodes, $nDyads, $is_directed\n", "  $adjMatrix, $covarMatrix\n",
+  cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix\n",
       "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
   cat("* Useful method: plot() \n")
 })

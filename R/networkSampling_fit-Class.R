@@ -174,10 +174,10 @@ doubleStandardSampling_fit <-
   public = list(
     initialize = function(sampledNetwork, ...) {
       super$initialize(sampledNetwork, "double-standard")
-      private$So      <- sum(    sampledNetwork$adjMatrix[sampledNetwork$observedDyads])
-      private$So.bar  <- sum(1 - sampledNetwork$adjMatrix[sampledNetwork$observedDyads])
+      private$So      <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
+      private$So.bar  <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
       ## can we do better than that?
-      imputedNet      <- matrix(mean(sampledNetwork$adjMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+      imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
       self$update_parameters(imputedNet)
     },
     update_parameters = function(imputedNet, ...) {
@@ -214,7 +214,7 @@ blockDyadSampling_fit <-
       private$NAs      <- sampledNetwork$NAs
       private$R        <- sampledNetwork$samplingMatrix
       private$directed <- sampledNetwork$is_directed
-      imputedNet       <- matrix(mean(sampledNetwork$adjMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+      imputedNet       <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
       self$update_parameters(imputedNet, blockInit)
     },
     update_parameters = function(imputedNet, Z) {
@@ -278,13 +278,13 @@ degreeSampling_fit <-
 
       private$NAs <- sampledNetwork$NAs
       ## will remain the same
-      private$D <- rowSums(sampledNetwork$adjMatrix, na.rm = TRUE)
+      private$D <- rowSums(sampledNetwork$adjacencyMatrix, na.rm = TRUE)
 
       ## will fluctuate along the algorithm
       private$psi <- coefficients(glm(1*(private$N_obs) ~ private$D, family = binomial(link = "logit")))
 
       imputedNet <- blockInit %*% connectInit %*% t(blockInit)
-      imputedNet[!private$NAs] <- sampledNetwork$adjMatrix[!private$NAs]
+      imputedNet[!private$NAs] <- sampledNetwork$adjacencyMatrix[!private$NAs]
       self$update_parameters(imputedNet)
     },
     update_parameters = function(imputedNet, ...) {

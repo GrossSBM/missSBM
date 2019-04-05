@@ -20,7 +20,7 @@ test_that("missSBMcollection works", {
 
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
-    adjMatrix = sampledNet$adjMatrix,
+    adjMatrix = sampledNet$adjacencyMatrix,
     vBlocks = 1:5,
     sampling = "dyad",
     clusterInit = 'hierarchical', NULL, NULL, mc.cores, TRUE)

@@ -10,7 +10,7 @@ test_that("SBM_fit and missSBMfit are coherent", {
 
   ## coherence of sampledNetwork object
   sampledNet <- sampledNetwork$new(A)
-  expect_equal(A, sampledNet$adjMatrix)
+  expect_equal(A, sampledNet$adjacencyMatrix)
   expect_equal(ncol(A), sampledNet$nNodes)
   expect_equal(ncol(A) * (ncol(A)-1)/2, sampledNet$nDyads)
   expect_equal(length(sampledNet$missingDyads), 0)

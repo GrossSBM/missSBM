@@ -116,7 +116,7 @@ function(control) {
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
   covarMatrix <- sampledNet$covarMatrix
   covarArray  <- private$missSBM_fit[[1]]$fittedSBM$covarArray
-  adjacencyMatrix <- sampledNet$adjMatrix
+  adjacencyMatrix <- sampledNet$adjacencyMatrix
   if (!is.null(covarArray)) {
     y <- as.vector(adjacencyMatrix)
     X <- apply(covarArray, 3, as.vector)

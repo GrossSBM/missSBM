@@ -23,13 +23,13 @@ missSBM_fit <-
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjMatrix, nBlocks, covarArray, clusterInit)
+      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, covarArray, clusterInit)
       Z <- clustering_indicator(clusterInit)
 
       ## network data with basic imputation at startup
-      adjancency0 <- sampledNet$adjMatrix; adjancency0[sampledNet$NAs] <- 0
+      adjancency0 <- sampledNet$adjacencyMatrix; adjancency0[sampledNet$NAs] <- 0
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
-      private$imputedNet <- sampledNet$adjMatrix
+      private$imputedNet <- sampledNet$adjacencyMatrix
       private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
 
       ## Save the sampledNetwork object in the current environment
@@ -128,8 +128,8 @@ function() {
   cat("==================================================================\n")
   cat("Structure for storing a SBM fitted under missing data condition   \n")
   cat("==================================================================\n")
-  cat("* Useful fields (most are special obejct themselves)              \n")
-  cat("  $fittedSBM (the adjusted stochastoc bloc model)                 \n")
+  cat("* Useful fields (most are special object themselves)              \n")
+  cat("  $fittedSBM (the adjusted stochastic block model)                 \n")
   cat("  $fittedSampling (the estimated sampling process)                \n")
   cat("  $sampledNetwork (the sampled network data)                      \n")
   cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")

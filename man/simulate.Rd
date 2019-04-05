@@ -34,7 +34,7 @@ Q <- 3   # number of clusters
 M <- 2 # two Gaussian covariates
 alpha <- rep(1, Q)/Q     # mixture parameters
 pi <- diag(.45, Q) + .05 # connectivity matrix
-eta <- rnorm(M, -1, 1)  # covaraite parametes
+eta <- rnorm(M, -1, 1)  # covariate parametes
 gamma <- log(pi/(1-pi)) # logit transform of pi for the model with covariates
 X <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 

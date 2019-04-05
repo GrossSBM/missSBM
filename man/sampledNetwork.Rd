@@ -25,7 +25,7 @@ All fields of this class are only accessible for reading. This class comes with 
 
 \item{\code{is_directed}}{direction}
 
-\item{\code{adjMatrix}}{adjacency matrix (with NA)}
+\item{\code{adjacencyMatrix}}{adjacency matrix (with NA)}
 
 \item{\code{covarMatrix}}{the matrix of covariates (if applicable)}
 
@@ -58,7 +58,7 @@ sbm <- missSBM::simulate(N, alpha, pi, directed)
 ## Sample network data
 sampled_network <-
      missSBM::sample(
-       adjacencyMatrix = sbm$adjMatrix,
+       adjacencyMatrix = sbm$adjacencyMatrix,
        sampling        = "double-standard",
        parameters      = c(0.4, 0.8)
      )

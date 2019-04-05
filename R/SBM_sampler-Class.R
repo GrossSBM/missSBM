@@ -102,7 +102,7 @@ SBM_sampler$set("public", "plot",
   function(type = c("network", "connectivity")) {
     type <- match.arg(type)
     if (type == "network") {
-      image_NA(self$adjMatrix[order(self$memberships), order(self$memberships)])
+      image_NA(self$adjacencyMatrix[order(self$memberships), order(self$memberships)])
     }
     if (type == "connectivity") {
       plot(

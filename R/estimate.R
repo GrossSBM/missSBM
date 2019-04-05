@@ -27,11 +27,11 @@
 #' ## Sample network data
 #' samplingParameters <- .5 # the sampling rate
 #' sampling <- "dyad"       # the sampling design
-#' sampledNet <- missSBM::sample(sbm$adjMatrix, sampling, samplingParameters)
+#' sampledNet <- missSBM::sample(sbm$adjacencyMatrix, sampling, samplingParameters)
 #'
 #' ## Inference :
 #' vBlocks <- 1:5 # number of classes
-#' collection <- missSBM::estimate(sampledNet$adjMatrix, vBlocks, sampling, trace = FALSE)
+#' collection <- missSBM::estimate(sampledNet$adjacencyMatrix, vBlocks, sampling, trace = FALSE)
 #' collection$ICL
 #' @import R6 parallel
 #' @export

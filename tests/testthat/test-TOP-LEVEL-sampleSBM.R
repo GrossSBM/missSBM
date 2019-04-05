@@ -33,7 +33,7 @@ test_that("Consistency of dyad-centered sampling", {
   expect_gte(dyad$nNodes, N)
   expect_gte(dyad$nDyads, N * (N - 1)/2)
   expect_equal(dyad$is_directed, directed)
-  expect_equal(dim(dyad$adjMatrix), dim(sbm$adjacencyMatrix))
+  expect_equal(dim(dyad$adjacencyMatrix), dim(sbm$adjacencyMatrix))
 
   ## expect error if psi is negative
   expect_error(missSBM::sample(sbm$adjacencyMatrix, "dyad", -.1))
@@ -49,7 +49,7 @@ test_that("Consistency of dyad-centered sampling", {
   psi <- runif(M, -5, 5)
   dyad <- missSBM::sample(sbm_cov_dyad$adjacencyMatrix, "dyad", psi, covariates = covariates_dyad)
   expect_is(dyad, "sampledNetwork", "R6")
-  expect_equal(dim(dyad$adjMatrix), dim(sbm_cov_dyad$adjacencyMatrix))
+  expect_equal(dim(dyad$adjacencyMatrix), dim(sbm_cov_dyad$adjacencyMatrix))
 
 })
 
@@ -62,7 +62,7 @@ test_that("Consistency of node-centered network sampling", {
   expect_gte(node$nNodes, N)
   expect_gte(node$nDyads, N * (N-1)/2)
   expect_equal(node$is_directed, directed)
-  expect_equal(dim(node$adjMatrix), dim(sbm$adjacencyMatrix))
+  expect_equal(dim(node$adjacencyMatrix), dim(sbm$adjacencyMatrix))
   expect_error(missSBM::sample(sbm$adjacency, "node", -.1))
 
   # With node sampling, psi is the probability of sampling a node
@@ -76,7 +76,7 @@ test_that("Consistency of node-centered network sampling", {
   psi <- runif(M, -5, 5)
   node <- missSBM::sample(sbm_cov_node$adjacencyMatrix, "node", psi, covariates = covariates_node)
   expect_is(node, "sampledNetwork", "R6")
-  expect_equal(dim(node$adjMatrix), dim(sbm_cov_node$adjacencyMatrix))
+  expect_equal(dim(node$adjacencyMatrix), dim(sbm_cov_node$adjacencyMatrix))
 
 })
 
@@ -89,7 +89,7 @@ test_that("Consistency of block-node network sampling", {
   expect_gte(block$nNodes, N)
   expect_gte(block$nDyads, N * (N - 1)/2)
   expect_equal(block$is_directed, directed)
-  expect_equal(dim(block$adjMatrix), dim(sbm$adjacencyMatrix))
+  expect_equal(dim(block$adjacencyMatrix), dim(sbm$adjacencyMatrix))
   ## error if psi is not of size Q
   expect_error(missSBM::sample(sbm$adjacencyMatrix, "block-node", c(.1, .2), clusters = sbm$memberships))
   ## error if no clustering is given
@@ -106,7 +106,7 @@ test_that("Consistency of block-node network sampling", {
   expect_gte(block$nNodes, N)
   expect_gte(block$nDyads, N * (N - 1)/2)
   expect_equal(block$is_directed, directed)
-  expect_equal(dim(block$adjMatrix), dim(sbm$adjacencyMatrix))
+  expect_equal(dim(block$adjacencyMatrix), dim(sbm$adjacencyMatrix))
   ## error if psi is not of size Q x Q
   expect_error(missSBM::sample(sbm$adjacencyMatrix, "block-dyad", c(.1, .2, .7), clusters = sbm$memberships))
   ## error if psi is not probabilities
@@ -124,7 +124,7 @@ test_that("Consistency of double-standard sampling", {
   expect_gte(double_standard$nNodes, N)
   expect_gte(double_standard$nDyads, N * (N - 1)/2)
   expect_equal(double_standard$is_directed, directed)
-  expect_equal(dim(double_standard$adjMatrix), dim(sbm$adjacencyMatrix))
+  expect_equal(dim(double_standard$adjacencyMatrix), dim(sbm$adjacencyMatrix))
   expect_error(missSBM::sample(sbm$adjacency, "double-standard", c(-0.1, 0.5)))
   expect_error(missSBM::sample(sbm$adjacency, "double-standard", c(0.1, -0.5)))
   expect_error(missSBM::sample(sbm$adjacency, "double-standard", c(-0.1, -0.5)))
@@ -140,7 +140,7 @@ test_that("Consistency of degree network sampling", {
   expect_gte(degree$nNodes, N)
   expect_gte(degree$nDyads, N * (N-1)/2)
   expect_equal(degree$is_directed, directed)
-  expect_equal(dim(degree$adjMatrix), dim(sbm$adjacencyMatrix))
+  expect_equal(dim(degree$adjacencyMatrix), dim(sbm$adjacencyMatrix))
 
 })
 
