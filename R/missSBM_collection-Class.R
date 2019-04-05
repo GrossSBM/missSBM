@@ -144,7 +144,7 @@ function(control) {
         }
       }, mc.cores = control$mc.cores)
 
-      vICLs <- sapply(candidates, function(candidate) candidate$vICL)
+      vICLs <- sapply(candidates, function(candidate) candidate$vBound)
       best_one <- candidates[[which.min(vICLs)]]
       if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
         private$missSBM_fit[[i + 1]] <- best_one

@@ -16,7 +16,7 @@ test_that("Parameter estimation in dyad-centered sampling with covariates", {
   covarParam  <- rnorm(M, 0, 1)
   sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
 
-  sampledNet <- missSBM::sample(sbm$adjMatrix, "dyad", covarParam, covariates = covariates)
+  sampledNet <- missSBM::sample(sbm$adjacencyMatrix, "dyad", covarParam, covariates = covariates)
 
   fittedSampling <- missSBM:::dyadSampling_fit_covariates$new(sampledNet, sbm$covarArray)
   expect_is(fittedSampling, "dyadSampling_fit_covariates")
@@ -39,7 +39,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
 
   sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
 
-  sampledNet <- missSBM::sample(sbm$adjMatrix, "node", covarParam, covariates = covariates_node)
+  sampledNet <- missSBM::sample(sbm$adjacencyMatrix, "node", covarParam, covariates = covariates_node)
 
   fittedSampling <- missSBM:::nodeSampling_fit_covariates$new(sampledNet, simplify2array(covariates_node))
   expect_is(fittedSampling, "nodeSampling_fit_covariates")
@@ -58,7 +58,7 @@ test_that("Parameter estimation in degree sampling", {
   sbm <- missSBM::simulate(N, alpha, pi, directed)
 
   psi <- c(-.5,0.01)
-  sampledNet <- missSBM::sample(sbm$adjMatrix, "degree", psi)
+  sampledNet <- missSBM::sample(sbm$adjacencyMatrix, "degree", psi)
   Z0 <- missSBM:::clustering_indicator(sbm$memberships)
   fittedSampling <- missSBM:::degreeSampling_fit$new(sampledNet, Z0, sbm$connectParam)
 

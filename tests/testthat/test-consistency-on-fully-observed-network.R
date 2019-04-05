@@ -1,5 +1,7 @@
 context("test-consistency-on-fully-observed-network")
 
+library(igraph)
+
 test_that("SBM_fit and missSBMfit are coherent", {
   data("war_graphs")
 
@@ -23,13 +25,13 @@ test_that("SBM_fit and missSBMfit are coherent", {
 
   ## using SBM_fit class
   my_SBM <- missSBM:::SBM_fit_nocovariate$new(adjacencyMatrix = A, clusterInit = cl0)
-  my_SBM$doVEM(A, control$threshold, control$maxIter, control$fixPointIter, control$trace)
-  my_SBM$vICL(A)
+  my_SBM$doVEM(control$threshold, control$maxIter, control$fixPointIter, control$trace)
+  my_SBM$vICL
 
   ## using missSBM_fit class
   my_missSBM <- missSBM:::missSBM_fit$new(sampledNet = sampledNet, Q, netSampling = "node", clusterInit = cl0)
   my_missSBM$doVEM(control)
-  my_missSBM$fittedSBM$vICL(A)
+  my_missSBM$fittedSBM$vICL
 
 
   ## using missSBM_collection class
@@ -47,5 +49,5 @@ test_that("SBM_fit and missSBMfit are coherent", {
 
   expect_equivalent(my_SBM, my_missSBM$fittedSBM)
   expect_equivalent(my_SBM, my_collection$bestModel$fittedSBM)
-  expect_lt(my_SBM$vICL(A), my_collection$ICL) ## different due an addition df for sampling
+  expect_lt(my_SBM$vICL, my_collection$ICL) ## different due an addition df for sampling
 })
