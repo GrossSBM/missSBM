@@ -17,6 +17,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         covarParam   = numeric(dim(covarArray)[3]),
         covarArray   = covarArray
       )
+      private$Y <- adjacencyMatrix
 
       ## Initial Clustering
       Z <- clustering_indicator(clusterInit)
@@ -29,7 +30,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
 
       invisible(self)
     },
-    update_parameters = function(adjMatrix) { # NA not allowed in adjMatrix (should be imputed)
+    update_parameters = function() { # NA not allowed in adjMatrix (should be imputed)
       optim_out  <-
         nloptr::nloptr(
           # starting parameters
@@ -39,30 +40,32 @@ R6::R6Class(classname = "SBM_fit_covariates",
           # optimizer parameters
           opts = list("algorithm" = "NLOPT_LD_MMA", "xtol_rel" = 1.0e-4),
           # additional argument for objective/gradient function
-          Y = adjMatrix, cov = private$X, Tau = private$tau,
+          Y = private$Y, cov = private$X, Tau = private$tau,
         )
       private$beta  <- optim_out$solution[-(1:(private$Q^2))]
       private$pi    <- matrix(optim_out$solution[1:(private$Q^2)], private$Q, private$Q)
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
-    vExpec = function(adjMatrix) {
-      vExpec_covariates(
-        adjMatrix,
-        roundProduct(private$X, private$beta),
-        private$pi,
-        private$tau,
-        private$alpha
-      )
-    },
-    update_blocks =   function(adjMatrix, log_lambda = NULL) {
+    update_blocks =   function(log_lambda = NULL) {
       private$tau <-
         E_step_covariates(
-          adjMatrix,
+          private$Y,
           roundProduct(private$X, private$beta),
           private$pi,
           private$tau,
           private$alpha
         )
+    }
+  ),
+  active = list(
+    vExpec = function(value) {
+      vExpec_covariates(
+        private$Y,
+        roundProduct(private$X, private$beta),
+        private$pi,
+        private$tau,
+        private$alpha
+      )
     }
   )
 )

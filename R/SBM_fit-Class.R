@@ -13,11 +13,9 @@ R6::R6Class(classname = "SBM_fit",
   private = list(
     tau  = NULL  # variational parameters for posterior probablility of class belonging
   ),
-  public = list(
-    vBound = function(adjMatrix) {self$vExpec(adjMatrix) + self$entropy},
-    vICL   = function(adjMatrix) {-2 * self$vExpec(adjMatrix) + self$penalty}
-  ),
   active = list(
+    vBound      = function(value) {self$vExpec + self$entropy},
+    vICL        = function(value) {-2 * self$vExpec + self$penalty},
     blocks      = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
     memberships = function(value) {apply(private$tau, 1, which.max)},
     penalty     = function(value) {(self$df_connectParams + self$df_covarParams) * log(self$nDyads) + self$df_mixtureParams * log(self$nNodes)},
@@ -34,7 +32,7 @@ R6::R6Class(classname = "SBM_fit",
 )
 
 SBM_fit$set("public", "doVEM",
-  function(adjMatrix, threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE) {
+  function(threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE) {
 
     ## Initialization of quantities that monitor convergence
     delta     <- vector("numeric", maxIter)
@@ -50,14 +48,14 @@ SBM_fit$set("public", "doVEM",
       pi_old <- private$pi # save old value of parameters to assess convergence
 
       # Variational E-Step
-      for (i in seq.int(fixPointIter)) self$update_blocks(adjMatrix)
+      for (i in seq.int(fixPointIter)) self$update_blocks()
       # M-step
-      self$update_parameters(adjMatrix)
+      self$update_parameters()
 
       # Assess convergence
       delta[iterate] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
       stop <- (iterate > maxIter) |  (delta[iterate] < threshold)
-      objective[iterate] <- self$vBound(adjMatrix)
+      objective[iterate] <- self$vBound
     }
     if (trace) cat("\n")
     res <- data.frame(delta = delta[1:iterate], objective = objective[1:iterate])

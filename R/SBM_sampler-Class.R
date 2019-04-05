@@ -49,8 +49,7 @@ SBM_sampler <-
   inherit = SBM,
   ## fields for internal use (refering to mathematical notations)
   private = list(
-    Z     = NULL, # the sampled indicator of blocks
-    Y     = NULL  # the sampled adjacency matrix
+    Z     = NULL # the sampled indicator of blocks
   ),
   public = list(
     initialize = function(directed = FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
@@ -72,7 +71,6 @@ SBM_sampler <-
   active = list(
     blocks = function(value) {private$Z},
     memberships = function(value) {apply(private$Z, 1, which.max)},
-    adjMatrix   = function(value) {private$Y},
     connectProb = function(value) {
       PI <- private$Z %*% private$pi %*% t(private$Z)
       if (self$hasCovariates) {

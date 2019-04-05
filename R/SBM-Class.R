@@ -10,6 +10,7 @@ R6::R6Class(classname = "SBM",
     alpha    = NULL, # vector of block parameters
     pi       = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
+    Y        = NULL, # the adjacency matrix
     X        = NULL  # the array of covariates (N x N x M)
   ),
   public = list(
@@ -40,17 +41,8 @@ R6::R6Class(classname = "SBM",
     mixtureParam = function(value) { # vector of block parameters (a.k.a. alpha)
       if (missing(value)) return(private$alpha) else private$alpha <- value
     },
-    connectParam = function(value) { # matrix of connectivity (a.k.a. pi)
-      if (missing(value)) {
-        return(private$pi)
-        # if (self$hasCovariates)
-        #   return(logistic(private$pi)) ## the covariate part is missing
-        # else
-        #   return(private$pi)
-      } else {
-        private$pi <- value
-      }
-    },
+    connectParam     = function(value) {if (missing(value)) return(private$pi) else private$pi <- values},
+    adjacencyMatrix  = function(value) {if (missing(value)) return(private$Y) else private$Y <- value},
     covarParam       = function(value) {if (missing(value)) return(private$beta) else private$beta <- value},
     covarArray       = function(value) {private$X},
     df_mixtureParams = function(value) {self$nBlocks - 1},

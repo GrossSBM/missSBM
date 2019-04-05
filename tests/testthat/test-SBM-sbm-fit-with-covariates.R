@@ -22,13 +22,13 @@ sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
 
 ### Draw a undirected SBM model
 cl_rand <- base::sample(sbm$memberships)
-cl_spec <- missSBM:::init_clustering(sbm$adjMatrix, Q, sbm$covarArray, "spectral")
-cl_hier <- missSBM:::init_clustering(sbm$adjMatrix, Q, sbm$covarArray, "hierarchical")
-cl_kmns <- missSBM:::init_clustering(sbm$adjMatrix, Q, sbm$covarArray, "kmeans")
+cl_spec <- missSBM:::init_clustering(sbm$adjacencyMatrix, Q, sbm$covarArray, "spectral")
+cl_hier <- missSBM:::init_clustering(sbm$adjacencyMatrix, Q, sbm$covarArray, "hierarchical")
+cl_kmns <- missSBM:::init_clustering(sbm$adjacencyMatrix, Q, sbm$covarArray, "kmeans")
 
 test_that("Creation of a SBM_fit_covariates", {
 
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_rand, sbm$covarArray)
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjacencyMatrix, cl_rand, sbm$covarArray)
   expect_is(mySBM_fit, "SBM_fit_covariates")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
@@ -101,18 +101,18 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 
   ## Formatting covariates for blockmodels
-  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates_dyad, verbosity = 0, explore_min = 4, explore_max = 4, plotting = "", ncores = 1)
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjacencyMatrix, covariates_dyad, verbosity = 0, explore_min = 4, explore_max = 4, plotting = "", ncores = 1)
   BM$estimate()
 
   vBlocks <- 1:4
   models <- lapply(vBlocks, function(nBlocks) {
-    cl0 <- missSBM:::init_clustering(sbm$adjMatrix, nBlocks, sbm$covarArray, "hierarchical")
-    myFit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl0, sbm$covarArray)
-    myFit$doVEM(sbm$adjMatrix)
+    cl0 <- missSBM:::init_clustering(sbm$adjacencyMatrix, nBlocks, sbm$covarArray, "hierarchical")
+    myFit <- missSBM:::SBM_fit_covariates$new(sbm$adjacencyMatrix, cl0, sbm$covarArray)
+    myFit$doVEM()
     myFit
   })
 
-  vICLs  <- sapply(models, function(model) model$vICL(sbm$adjMatrix))
+  vICLs  <- sapply(models, function(model) model$vICL)
   bestICL <- models[[which.min(vICLs)]]
 
   expect_equal(which.min(vICLs), which.max(BM$ICL))

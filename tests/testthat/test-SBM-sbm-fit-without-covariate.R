@@ -13,7 +13,7 @@ directed <- FALSE
 
 ### Draw a undirected SBM model
 mySBM <- missSBM::simulate(N, alpha, pi, directed)
-A <- mySBM$adjMatrix
+A <- mySBM$adjacencyMatrix
 cl_rand <- base::sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
 cl_hier <- missSBM:::init_clustering(A, Q, NULL, "hierarchical")
@@ -43,9 +43,9 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
   mySBM_fit_spec <- missSBM:::SBM_fit_nocovariate$new(A, cl_spec)
   mySBM_fit_kmns <- missSBM:::SBM_fit_nocovariate$new(A, cl_kmns)
 
-  out_hier <- mySBM_fit_hier$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
-  out_spec <- mySBM_fit_spec$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
-  out_kmns <- mySBM_fit_kmns$doVEM(A, trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
+  out_hier <- mySBM_fit_hier$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
+  out_spec <- mySBM_fit_spec$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
+  out_kmns <- mySBM_fit_kmns$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
 
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_max = Q, plotting = "", ncores = 1)
   BM$estimate()
@@ -66,10 +66,10 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
   expect_lt(1 - ARI(mySBM_fit_spec$memberships, mySBM$memberships), tol)
   expect_lt(1 - ARI(mySBM_fit_kmns$memberships, mySBM$memberships), tol)
 
-  expect_equal(mySBM_fit_hier$vBound(A),
-               mySBM_fit_spec$vBound(A),
-               mySBM_fit_kmns$vBound(A))
-  expect_gt(mySBM_fit_hier$vBound(A) - .5 * mySBM_fit_hier$penalty,  BM$ICL[[Q]])
+  expect_equal(mySBM_fit_hier$vBound,
+               mySBM_fit_spec$vBound,
+               mySBM_fit_kmns$vBound)
+  expect_gt(mySBM_fit_hier$vBound - .5 * mySBM_fit_hier$penalty,  BM$ICL[[Q]])
 
 })
 
@@ -81,13 +81,13 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for
 
   vBlocks <- 1:8
   models <- lapply(vBlocks, function(nBlocks) {
-    cl0 <- missSBM:::init_clustering(mySBM$adjMatrix, nBlocks, NULL, "hierarchical")
-    myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjMatrix, cl0)
-    myFit$doVEM(mySBM$adjMatrix)
+    cl0 <- missSBM:::init_clustering(mySBM$adjacencyMatrix, nBlocks, NULL, "hierarchical")
+    myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
+    myFit$doVEM()
     myFit
   })
 
-  vICLs  <- sapply(models, function(model) model$vICL(mySBM$adjMatrix))
+  vICLs  <- sapply(models, function(model) model$vICL)
   bestICL <- models[[which.min(vICLs)]]
 
   expect_equal(which.min(vICLs), which.max(BM$ICL))
