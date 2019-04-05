@@ -129,8 +129,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>,
-  <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ifelse'>ifelse</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NULL'>is.null</a></span>(<span class='no'>covarMatrix</span>), <span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>),
-  <span class='kw'>covarMatrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>covarSimilarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ifelse'>ifelse</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NULL'>is.null</a></span>(<span class='no'>covariates</span>), <span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>),
+  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>similarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>control_VEM</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -153,12 +153,14 @@
       <td><p>Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code> providing a user-defined clustering</p></td>
     </tr>
     <tr>
-      <th>covarMatrix</th>
-      <td><p>An optional matrix of covariates with dimension N x M (M covariates per node).</p></td>
+      <th>covariates</th>
+      <td><p>A list with M entries (the M covariates). If the covariates are node-centred, each entry of <code>covariates</code>
+must be a size-N vector;  if the covariates are dyad-centred, each entry of <code>covariates</code> must be N x N matrix.</p></td>
     </tr>
     <tr>
-      <th>covarSimilarity</th>
-      <td><p>An optional R x R -&gt; R function  to compute similarity between node covariates. Default is #'</p></td>
+      <th>similarity</th>
+      <td><p>An optional R x R -&gt; R function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
+Only relevent when the covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></td>
     </tr>
     <tr>
       <th>trace</th>
