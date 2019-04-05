@@ -12,7 +12,7 @@ directed <- FALSE         # if the network is directed or not
 ### Draw a SBM model
 sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
 
-A_full <- sbm$adjMatrix             # the adjacency matrix
+A_full <- sbm$adjacencyMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)
 psi <- 0.3
@@ -140,7 +140,7 @@ sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 
 test_that("Init clustering with covariate is consistent", {
 
-  A_full <- sbm$adjMatrix
+  A_full <- sbm$adjacencyMatrix
   psi <- runif(M, -5, 5)
   A_dyad <- missSBM::sample(A_full, "dyad", psi, covariates = covariates_dyad)$adjMatrix
   A_node <- missSBM::sample(A_full, "node", psi, covariates = covariates_node)$adjMatrix

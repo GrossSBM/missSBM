@@ -66,8 +66,8 @@ missSBM_fit <-
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
       res
     },
-    vBound  = function(value) {private$SBM$vBound(private$imputedNet) + self$entropyImputed + private$sampling$vExpec},
-    vExpec  = function(value) {private$SBM$vExpec(private$imputedNet) + private$sampling$vExpec},
+    vBound  = function(value) {private$SBM$vBound + self$entropyImputed + private$sampling$vExpec},
+    vExpec  = function(value) {private$SBM$vExpec + private$sampling$vExpec},
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     vICL    = function(value) {-2 * self$vExpec + self$penalty}
   )
@@ -98,14 +98,15 @@ missSBM_fit$set("public", "doVEM",
         nu <- private$sampling$update_imputation(private$SBM$connectProb)
         private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
         # update the variational parameters for block memberships (a.k.a tau)
-        private$SBM$update_blocks(private$imputedNet, log_lambda = private$sampling$log_lambda)
+        private$SBM$adjacencyMatrix <- private$imputedNet
+        private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
       }
 
       ## ______________________________________________________
       ## M-step
       #
       # update the parameters of the SBM (a.k.a alpha and pi)
-      private$SBM$update_parameters(private$imputedNet)
+      private$SBM$update_parameters()
       # update the parameters of network sampling process (a.k.a psi)
       private$sampling$update_parameters(private$imputedNet, private$SBM$blocks)
 
