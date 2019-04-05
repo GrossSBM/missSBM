@@ -5,8 +5,8 @@
 \title{Inference of an SBM with missing data}
 \usage{
 estimate(adjacencyMatrix, vBlocks, sampling,
-  clusterInit = ifelse(is.null(covarMatrix), "hierarchical", "spectral"),
-  covarMatrix = NULL, covarSimilarity = l1_similarity, trace = TRUE,
+  clusterInit = ifelse(is.null(covariates), "hierarchical", "spectral"),
+  covariates = NULL, similarity = l1_similarity, trace = TRUE,
   cores = 1, control_VEM = list())
 }
 \arguments{
@@ -18,9 +18,11 @@ estimate(adjacencyMatrix, vBlocks, sampling,
 
 \item{clusterInit}{Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering}
 
-\item{covarMatrix}{An optional matrix of covariates with dimension N x M (M covariates per node).}
+\item{covariates}{A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
+must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.}
 
-\item{covarSimilarity}{An optional R x R -> R function  to compute similarity between node covariates. Default is #'}
+\item{similarity}{An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
+Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).}
 
 \item{trace}{logical, control the verbosity. Default to \code{TRUE}.}
 

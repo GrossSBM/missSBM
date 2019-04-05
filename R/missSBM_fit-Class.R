@@ -36,7 +36,7 @@ missSBM_fit <-
       private$sampledNet <- sampledNet
 
       ## Initialize the sampling fit and the SBM fit
-      if (is.null(covarMatrix)) {
+      if (is.null(covarArray)) {
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit$new(private$sampledNet),

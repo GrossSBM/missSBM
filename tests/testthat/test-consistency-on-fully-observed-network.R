@@ -36,14 +36,14 @@ test_that("SBM_fit and missSBMfit are coherent", {
 
   ## using missSBM_collection class
   my_collection <- missSBM_collection$new(
-      adjMatrix       = A,
-      vBlocks         = Q,
-      sampling        = "node",
-      clusterInit     = cl0,
-      covarMatrix     = NULL,
-      covarSimilarity = missSBM:::l1_similarity,
-      cores           = 1,
-      trace           = TRUE
+      adjMatrix    = A,
+      vBlocks      = Q,
+      sampling     = "node",
+      clusterInit  = cl0,
+      covarMatrix  = NULL,
+      covarArray   = NULL,
+      cores        = 1,
+      trace        = TRUE
   )
   my_collection$estimate(control, 1, TRUE)
 

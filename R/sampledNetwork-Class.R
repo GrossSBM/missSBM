@@ -46,7 +46,8 @@ sampledNetwork <-
   ## FIELDS : encode network with missing edges
   private = list(
     Y        = NULL, # adjacency matrix
-    X        = NULL, # M x N covariates matrix
+    X        = NULL, # the covariates matrix
+    phi      = NULL, # the covariates array
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
     nas      = NULL, # all NA in Y
@@ -69,6 +70,8 @@ sampledNetwork <-
     is_directed = function(value) {private$directed},
     # adjacency matrix
     adjacencyMatrix = function(value) {private$Y},
+    # covariates array
+    covarArray = function(value) {private$phi},
     # covariates matrix
     covarMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
     # list of potential dyads in the network
@@ -86,7 +89,7 @@ sampledNetwork <-
   ),
   ## Constructor
   public = list(
-    initialize = function(adjacencyMatrix, covarMatrix = NULL) {
+    initialize = function(adjacencyMatrix, covarMatrix = NULL, covarArray = NULL) {
 
       ## adjacency matrix
       stopifnot(is.matrix(adjacencyMatrix))
@@ -96,9 +99,12 @@ sampledNetwork <-
       if (isSymmetric(adjacencyMatrix)) private$directed <- FALSE else private$directed <- TRUE
       private$Y  <- adjacencyMatrix
 
-      ## array of covariates
+      ## covariates
       if (!is.null(covarMatrix)) {
         private$X <- covarMatrix
+      }
+      if (!is.null(covarArray)) {
+        private$phi <- covarArray
       }
 
       ## sets of observed / unobserved dyads
@@ -138,7 +144,7 @@ function(model = "Sampled Network\n") {
   cat("Structure for storing a sampled network in missSBM.\n")
   cat("==================================================================\n")
   cat("* Useful fields \n")
-  cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix\n",
+  cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
       "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
   cat("* Useful method: plot() \n")
 })

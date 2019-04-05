@@ -33,7 +33,7 @@ missSBM_collection <-
 )
 
 missSBM_collection$set("public", "initialize",
-function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarSimilarity, cores, trace) {
+function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, cores, trace) {
 
   if (trace) cat("\n")
   if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
@@ -41,8 +41,8 @@ function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarSimilarity
   if (trace) cat("\n")
   if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
 
-  covarArray <- getCovarArray(covarMatrix, covarSimilarity)
-  sampledNet <- sampledNetwork$new(adjMatrix)
+### TODO: should be passed/constructed above (redundant)
+  sampledNet <- sampledNetwork$new(adjMatrix, covarMatrix, covarArray)
   private$missSBM_fit <- mcmapply(
     function(nBlock, cl0) {
       if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
@@ -115,7 +115,7 @@ function(control) {
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
   covarMatrix <- sampledNet$covarMatrix
-  covarArray  <- private$missSBM_fit[[1]]$fittedSBM$covarArray
+  covarArray  <- sampledNet$covarArray
   adjacencyMatrix <- sampledNet$adjacencyMatrix
   if (!is.null(covarArray)) {
     y <- as.vector(adjacencyMatrix)

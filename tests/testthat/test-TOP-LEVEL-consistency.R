@@ -86,6 +86,11 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
   tol_truth <- 1e-2
   tol_ARI   <- .7
 
+  covarMatrix <- referenceResults$`dyad-covariates`$covarMatrix
+  covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+
+  referenceResults$`dyad-covariates`$covariates <- covarArray
+  referenceResults$`node-covariates`$covariates <- covarMatrix
   for (sampling in c("dyad-covariates", "node-covariates")) {
 
     refAlgo <- referenceResults[[sampling]]
@@ -95,7 +100,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       vBlocks = truth$nBlocks,
       sampling = ifelse(sampling == "dyad-covariates", "dyad", "node"),
       trace = TRUE,
-      covarMatrix = refAlgo$covarMatrix,
+      covariates = refAlgo$covariates,
       clusterInit = "spectral"
     )
     newAlgo <- missSBM_out$bestModel
