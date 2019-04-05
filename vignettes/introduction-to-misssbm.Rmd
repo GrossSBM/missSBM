@@ -49,7 +49,7 @@ plot(sampledNet_war)
 
 ```{r inferencew}
 vBlocks <- 1:6
-collection_sbm <- sampledNet_war$adjMatrix %>% 
+collection_sbm <- sampledNet_war$adjacencyMatrix %>% 
   missSBM::estimate(vBlocks = vBlocks, sampling = "node", clusterInit = "spectral")
 plot(collection_sbm$ICL, type = "l")
 ```
