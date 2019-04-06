@@ -95,9 +95,9 @@ dyadSampling_fit_covariates <-
     rho   = NULL  # matrix of predicted probabilities of observation
   ),
   public = list(
-    initialize = function(sampledNetwork, covarArray, ...) {
+    initialize = function(sampledNetwork, ...) {
       super$initialize(sampledNetwork, "dyad")
-      X <- apply(covarArray, 3, as.vector)
+      X <- apply(sampledNetwork$covarArray, 3, as.vector)
       y <- 1 * as.vector(!sampledNetwork$NAs)
       glm_out       <- glm.fit(X, y, family = binomial())
       private$psi   <- coefficients(glm_out)
@@ -145,10 +145,10 @@ nodeSampling_fit_covariates <-
     rho = NULL # vector of predicted probabilities of observation
   ),
   public = list(
-    initialize = function(sampledNetwork, covarMatrix, ...) {
+    initialize = function(sampledNetwork, ...) {
       super$initialize(sampledNetwork, "node")
       y <- 1 * (sampledNetwork$observedNodes)
-      glm_out     <- glm.fit(covarMatrix, y, family = binomial())
+      glm_out     <- glm.fit(sampledNetwork$covarMatrix, y, family = binomial())
       private$psi <- coefficients(glm_out)
       private$rho <- fitted(glm_out)
     }
@@ -156,7 +156,7 @@ nodeSampling_fit_covariates <-
   active = list(
     prob_obs = function(value) {private$rho},
     vExpec = function() {
-      res <- sum(log(private$rho[private$N_obs])) + sum(log(1-private$rho[!private$N_obs]))
+      res <- sum(log(private$rho[private$N_obs])) + sum(log(1 - private$rho[!private$N_obs]))
       res
     }
   )

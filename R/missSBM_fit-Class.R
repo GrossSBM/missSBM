@@ -49,8 +49,8 @@ missSBM_fit <-
       } else {
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, sampledNet$covarArray)
         private$sampling <- switch(netSampling,
-          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, sampledNet$covarArray),
-          "node"            = nodeSampling_fit_covariates$new(private$sampledNet, sampledNet$covarMatrix)
+          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet),
+          "node"            = nodeSampling_fit_covariates$new(private$sampledNet)
         )
       }
     }
