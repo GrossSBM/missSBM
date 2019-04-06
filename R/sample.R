@@ -74,7 +74,7 @@
 #' @export
 sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity) {
 
-  covar <- format_covariates(covariates, similarity, sampling)
+  covar <- format_covariates(covariates, sampling, similarity)
   nNodes   <- ncol(adjacencyMatrix)
   directed <- !isSymmetric(adjacencyMatrix)
 

@@ -47,7 +47,7 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
 
-  covar <- format_covariates(covariates, similarity, sampling)
+  covar <- format_covariates(covariates, sampling, similarity)
 
   sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
 
