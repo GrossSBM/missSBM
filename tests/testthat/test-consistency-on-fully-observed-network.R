@@ -12,7 +12,7 @@ test_that("SBM_fit and missSBMfit are coherent", {
   sampledNet <- sampledNetwork$new(A)
   expect_equal(A, sampledNet$adjacencyMatrix)
   expect_equal(ncol(A), sampledNet$nNodes)
-  expect_equal(ncol(A) * (ncol(A)-1)/2, sampledNet$nDyads)
+  expect_equal(ncol(A) * (ncol(A) - 1)/2, sampledNet$nDyads)
   expect_equal(length(sampledNet$missingDyads), 0)
   expect_equal(sampledNet$dyads, sampledNet$observedDyads)
   expect_equal(rep(TRUE, ncol(A)), sampledNet$observedNodes)
@@ -36,14 +36,12 @@ test_that("SBM_fit and missSBMfit are coherent", {
 
   ## using missSBM_collection class
   my_collection <- missSBM_collection$new(
-      adjMatrix    = A,
-      vBlocks      = Q,
-      sampling     = "node",
-      clusterInit  = cl0,
-      covarMatrix  = NULL,
-      covarArray   = NULL,
-      cores        = 1,
-      trace        = TRUE
+      sampledNet  = sampledNet,
+      vBlocks     = Q,
+      sampling    = "node",
+      clusterInit = cl0,
+      cores       = 1,
+      trace       = TRUE
   )
   my_collection$estimate(control, 1, TRUE)
 

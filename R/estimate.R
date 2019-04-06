@@ -47,40 +47,18 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
   control[names(control_VEM)] <- control_VEM
 
-  if (!is.null(covariates)) {
-    stopifnot(sampling %in% available_samplings_covariates)
-    # Conversion of covariates to an array
-    covariates <- simplify2array(covariates)
-    # if a list of vector (covariates node-centered), will be a matrix
-    # and thus must be node centered
-    if (is.matrix(covariates)) {
-      stopifnot(sampling == "node")
-      covarMatrix <- covariates
-      covarArray  <- getCovarArray(covarMatrix, similarity)
-    }
-    # if a list of matrix (covariates dyad-centered), will be a 3-dimensional array
-    # and thus must be dyad centered
-    if (length(dim(covariates)) == 3) {
-      stopifnot(sampling  == "dyad")
-      covarMatrix <- NULL
-      covarArray  <- covariates
-    }
-  } else {
-    stopifnot(sampling %in% available_samplings)
-    covarMatrix <- NULL
-    covarArray  <- NULL
-  }
+  covar <- format_covariates(covariates, similarity, sampling)
+
+  sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
-      adjMatrix    = adjacencyMatrix,
-      vBlocks      = vBlocks,
-      sampling     = sampling,
-      clusterInit  = clusterInit,
-      covarMatrix  = covarMatrix,
-      covarArray   = covarArray,
-      cores        = cores,
-      trace        = trace
+      sampledNet  = sampledNet,
+      vBlocks     = vBlocks,
+      sampling    = sampling,
+      clusterInit = clusterInit,
+      cores       = cores,
+      trace       = trace
   )
 
   ## Launch estimation of each missSBM_fit

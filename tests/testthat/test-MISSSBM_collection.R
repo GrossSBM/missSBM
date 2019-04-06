@@ -20,10 +20,10 @@ test_that("missSBMcollection works", {
 
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
-    adjMatrix = sampledNet$adjacencyMatrix,
-    vBlocks = 1:5,
-    sampling = "dyad",
-    clusterInit = 'hierarchical', NULL, NULL, mc.cores, TRUE)
+    sampledNet  = sampledNet,
+    vBlocks     = 1:5,
+    sampling    = "dyad",
+    clusterInit = 'hierarchical', mc.cores, TRUE)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)

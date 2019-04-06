@@ -33,7 +33,7 @@ missSBM_collection <-
 )
 
 missSBM_collection$set("public", "initialize",
-function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, cores, trace) {
+function(sampledNet, vBlocks, sampling, clusterInit, cores, trace) {
 
   if (trace) cat("\n")
   if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
@@ -41,8 +41,6 @@ function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, cor
   if (trace) cat("\n")
   if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
 
-### TODO: should be passed/constructed above (redundant)
-  sampledNet <- sampledNetwork$new(adjMatrix, covarMatrix, covarArray)
   private$missSBM_fit <- mcmapply(
     function(nBlock, cl0) {
       if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
