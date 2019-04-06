@@ -80,11 +80,23 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
     # Conversion of covariates to an array
     covariates <- simplify2array(covariates)
     # if a list of vector (covariates node-centered), will be a matrix
-    if (is.matrix(covariates)) stopifnot(sampling == "node")
+    # and thus must be node centered
+    if (is.matrix(covariates)) {
+      stopifnot(sampling == "node")
+      covarMatrix <- covariates
+      covarArray  <- getCovarArray(covarMatrix, similarity)
+    }
     # if a list of matrix (covariates dyad-centered), will be a 3-dimensional array
-    if (length(dim(covariates)) == 3) stopifnot(sampling  == "dyad")
+    # and thus must be dyad centered
+    if (length(dim(covariates)) == 3) {
+      stopifnot(sampling  == "dyad")
+      covarMatrix <- NULL
+      covarArray  <- covariates
+    }
   } else {
     stopifnot(sampling %in% available_samplings)
+    covarMatrix <- NULL
+    covarArray  <- NULL
   }
 
   nNodes   <- ncol(adjacencyMatrix)
@@ -94,9 +106,9 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
   mySampler <-
     switch(sampling,
       "dyad"       = simpleDyadSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covariates),
+        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covarArray),
       "node"       = simpleNodeSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, covarMatrix = covariates),
+        parameters = parameters, nNodes = nNodes, directed = directed, covarMatrix = covarMatrix),
       "double-standard" = doubleStandardSampler$new(
         parameters = parameters, adjMatrix = adjacencyMatrix, directed = directed),
       "block-dyad" = blockDyadSampler$new(
@@ -112,6 +124,6 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
 
   ## turn this matrix to a sampled Network object
   adjacencyMatrix[mySampler$samplingMatrix == 0] <- NA
-  sampledNet <- sampledNetwork$new(adjacencyMatrix)
+  sampledNet <- sampledNetwork$new(adjacencyMatrix, covarMatrix, covarArray)
   sampledNet
 }

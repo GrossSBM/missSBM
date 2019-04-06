@@ -66,6 +66,7 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
       covarArray  <- covariates
     }
   } else {
+    stopifnot(sampling %in% available_samplings)
     covarMatrix <- NULL
     covarArray  <- NULL
   }

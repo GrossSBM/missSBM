@@ -15,7 +15,7 @@ missSBM_fit <-
     optStatus  = NULL  # status of the optimization process
   ),
   public = list(
-    initialize = function(sampledNet, nBlocks, netSampling, clusterInit, covarMatrix = NULL, covarArray = NULL) {
+    initialize = function(sampledNet, nBlocks, netSampling, clusterInit) {
 
       ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
@@ -23,7 +23,7 @@ missSBM_fit <-
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
       ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, covarArray, clusterInit)
+      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, sampledNet$covarArray, clusterInit)
       Z <- clustering_indicator(clusterInit)
 
       ## network data with basic imputation at startup
@@ -36,7 +36,7 @@ missSBM_fit <-
       private$sampledNet <- sampledNet
 
       ## Initialize the sampling fit and the SBM fit
-      if (is.null(covarArray)) {
+      if (is.null(sampledNet$covarArray)) {
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
         private$sampling <- switch(netSampling,
           "dyad"            = dyadSampling_fit$new(private$sampledNet),
@@ -47,10 +47,10 @@ missSBM_fit <-
           "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam)
         )
       } else {
-        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, covarArray)
+        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, sampledNet$covarArray)
         private$sampling <- switch(netSampling,
-          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, covarArray),
-          "node"            = nodeSampling_fit_covariates$new(private$sampledNet, covarMatrix)
+          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet, sampledNet$covarArray),
+          "node"            = nodeSampling_fit_covariates$new(private$sampledNet, sampledNet$covarMatrix)
         )
       }
     }

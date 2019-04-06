@@ -46,7 +46,7 @@ function(adjMatrix, vBlocks, sampling, clusterInit, covarMatrix, covarArray, cor
   private$missSBM_fit <- mcmapply(
     function(nBlock, cl0) {
       if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-      missSBM_fit$new(sampledNet, nBlock, sampling, cl0, covarMatrix, covarArray)
+      missSBM_fit$new(sampledNet, nBlock, sampling, cl0)
     }, nBlock = vBlocks, cl0 = clusterInit, mc.cores = cores
   )
 })
@@ -114,12 +114,10 @@ function(control) {
   trace <- control$trace; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-  covarMatrix <- sampledNet$covarMatrix
-  covarArray  <- sampledNet$covarArray
   adjacencyMatrix <- sampledNet$adjacencyMatrix
-  if (!is.null(covarArray)) {
+  if (!is.null(sampledNet$covarArray)) {
     y <- as.vector(adjacencyMatrix)
-    X <- apply(covarArray, 3, as.vector)
+    X <- apply(sampledNet$covarArray, 3, as.vector)
     adjacencyMatrix <- matrix(NA, N, N)
     NAs <- is.na(y)
     adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
@@ -137,7 +135,7 @@ function(control) {
         if (length(unique(cut)) > 1) {
           cut <- as.numeric(init_hierarchical(adjacencyMatrix[J, ], 2))
           cl[J][which(cut == 1)] <- j; cl[J][which(cut == 2)] <- i + 1
-          model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, covarMatrix, covarArray)
+          model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl)
           model$doVEM(control)
           model
         } else {
@@ -159,8 +157,6 @@ function(control) {
   trace <- control$trace; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-  covarMatrix <- sampledNet$covarMatrix
-  covarArray  <- private$missSBM_fit[[1]]$fittedSBM$covarArray
 
   if (trace) cat("   Going backward ")
   for (i in rev(self$vBlocks[-1])) {
@@ -171,7 +167,7 @@ function(control) {
         cl_fusion <- cl0
         levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
         levels(cl_fusion) <- as.character(1:(i - 1))
-        model <- missSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion, covarMatrix, covarArray)
+        model <- missSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion)
         model$doVEM(control)
         model
       }, mc.cores = control$mc.cores)

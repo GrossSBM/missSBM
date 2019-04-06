@@ -37,7 +37,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   sampledNet <- missSBM::sample(sbm$adjacencyMatrix, "dyad", covarParam, covariates = covariates_dyad)
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "dyad", "spectral", covarMatrix = covarMatrix, covarArray = covarArray)
+  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "dyad", "spectral")
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -71,7 +71,7 @@ test_that("miss SBM with covariates and node sampling works", {
   sampledNet <- missSBM::sample(sbm$adjacencyMatrix, "node", covarParam, covariates = covariates_node)
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "node", clusterInit = "spectral", covarMatrix = covarMatrix, covarArray = covarArray)
+  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "node", clusterInit = "spectral")
   out <- missSBM$doVEM(control)
 
   ## Sanity check
