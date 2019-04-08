@@ -50,14 +50,15 @@ function(sampledNet, vBlocks, sampling, clusterInit, cores, trace) {
 })
 
 missSBM_collection$set("public", "estimate",
-function(control_VEM, mc.cores, trace) {
-  if (trace) cat("\n")
+function(control) {
+  if (control$trace > 1) control$trace <- TRUE else control$trace <- FALSE
+  if (control$trace) cat("\n")
   invisible(
     mclapply(private$missSBM_fit,
        function(model) {
          if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-           model$doVEM(control_VEM)
-       }, mc.cores = mc.cores
+           model$doVEM(control)
+       }, mc.cores = control$cores
     )
   )
   invisible(self)
@@ -65,6 +66,7 @@ function(control_VEM, mc.cores, trace) {
 
 missSBM_collection$set("public", "smooth",
 function(type, control) {
+  if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
   if (control$trace) cat("\n Smoothing ICL\n")
   if (type == "forward")
     private$smoothing_forward(control)
@@ -84,25 +86,29 @@ function(type, control) {
 #'
 #' @param Robject an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}
 #' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".
-#' @param control_VEM a list controlling the variational EM algorithm. See details in \code{\link{estimate}}.
-#' @param cores integer, the number of cores to use when multiply model are fitted. Default is 1.
-#' @param iterates integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.
-#' @param trace logical, control the verbosity. Default to \code{TRUE}.
+#' @param control a list controlling the variational EM algorithm. See details.
 #'
+#' @details The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
+#'  \itemize{
+#'  \item{"iterates"}{integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.}
+#'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
+#'  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+#'  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
+#'  \item{"cores"}{integer for number of cores used. Default is 1.}
+#'  \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}
+#' }
 #' @return an invisible missSBM_collection, in which the ICL has been smoothed
 #' @export
-smooth <- function(Robject, type = c("forward", "backward", "both"), control_VEM = list(), cores = 1, iterates = 1, trace = TRUE) {
+smooth <- function(Robject, type = c("forward", "backward", "both"), control = list()) {
 
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  control <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 5, trace = trace)
-  control[names(control_VEM)] <- control_VEM
-  ## add some additional control param to pass to smoothing
-  control$iterates <- iterates
-  control$mc.cores <- cores
+  ctrl <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 5, cores = 1, trace = 1, iterates = 1)
+  ctrl[names(control)] <- control
+
   ## Run the smoothing
-  Robject$smooth(match.arg(type), control)
+  Robject$smooth(match.arg(type), ctrl)
 
   invisible(Robject)
 }
@@ -152,6 +158,7 @@ function(control) {
 
 missSBM_collection$set("private", "smoothing_backward",
 function(control) {
+
   trace <- control$trace; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
@@ -168,7 +175,7 @@ function(control) {
         model <- missSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion)
         model$doVEM(control)
         model
-      }, mc.cores = control$mc.cores)
+      }, mc.cores = control$cores)
 
       best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
       if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {

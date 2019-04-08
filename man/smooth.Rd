@@ -5,20 +5,14 @@
 \title{Smooth path of models in a collection}
 \usage{
 smooth(Robject, type = c("forward", "backward", "both"),
-  control_VEM = list(), cores = 1, iterates = 1, trace = TRUE)
+  control = list())
 }
 \arguments{
 \item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}}
 
 \item{type}{character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".}
 
-\item{control_VEM}{a list controlling the variational EM algorithm. See details in \code{\link{estimate}}.}
-
-\item{cores}{integer, the number of cores to use when multiply model are fitted. Default is 1.}
-
-\item{iterates}{integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.}
-
-\item{trace}{logical, control the verbosity. Default to \code{TRUE}.}
+\item{control}{a list controlling the variational EM algorithm. See details.}
 }
 \value{
 an invisible missSBM_collection, in which the ICL has been smoothed
@@ -26,4 +20,15 @@ an invisible missSBM_collection, in which the ICL has been smoothed
 \description{
 Apply a split and/or merge strategy to the path of model in a collection of SBM, in order to find better initialization. This should result in
 a "smoothing" of the ICL, that should be close to concave.
+}
+\details{
+The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
+ \itemize{
+ \item{"iterates"}{integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.}
+ \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
+ \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+ \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
+ \item{"cores"}{integer for number of cores used. Default is 1.}
+ \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}
+}
 }
