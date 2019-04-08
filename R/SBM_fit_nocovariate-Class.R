@@ -43,11 +43,11 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
   ),
   active = list(
     vExpec = function(value) {
-      prob   <- quad_form(private$pi, t(private$tau))
       factor <- ifelse(private$directed, 1, .5)
-      adjMatrix_zeroDiag     <- private$Y ; diag(adjMatrix_zeroDiag) <- 0
-      adjMatrix_zeroDiag_bar <- 1 - private$Y ; diag(adjMatrix_zeroDiag_bar) <- 0
-      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + adjMatrix_zeroDiag_bar *  log(1 - prob))
+      adjMat <- private$Y ; diag(adjMat) <- 0
+      tmp <- factor * sum( adjMat * private$tau %*% log(private$pi) %*% t(private$tau) +
+                             bar(private$Y)  *  private$tau %*% log(1 - private$pi) %*% t(private$tau))
+      sum(private$tau %*% log(private$alpha)) +  tmp
     }
   )
 )
