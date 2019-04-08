@@ -67,7 +67,7 @@ We compare with clusterings obtained with the fully observed network.
 ```{r inferencewfull}
 collection_sbm_full <- war_graphs$beligerent %>% 
   as_adj(sparse = FALSE) %>% 
-  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical", cores = 2, trace = TRUE)
+  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical", control = list(cores = 1, trace = 2))
 smooth(collection_sbm_full, "both", iterates = 2)
 plot(collection_sbm_full$ICL, type = "l")
 test =as.matrix(get.adjacency(war_graphs$beligerent))

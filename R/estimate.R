@@ -64,12 +64,12 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
       vBlocks     = vBlocks,
       sampling    = sampling,
       clusterInit = clusterInit,
-      cores       = cores,
-      trace       = trace
+      cores       = ctrl$cores,
+      trace       = (ctrl$trace > 0)
   )
 
   ## Launch estimation of each missSBM_fit
-  myCollection$estimate(control, cores, trace)
+  myCollection$estimate(control, ctrl$cores, (ctrl$trace > 1))
 
   ## Return the collection of optimized missSBM_fit
   myCollection
