@@ -131,7 +131,7 @@ a "smoothing" of the ICL, that should be close to concave.</p>
     </div>
 
     <pre class="usage"><span class='fu'>smooth</span>(<span class='no'>Robject</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"forward"</span>, <span class='st'>"backward"</span>, <span class='st'>"both"</span>),
-  <span class='kw'>control_VEM</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>iterates</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,26 +145,25 @@ a "smoothing" of the ICL, that should be close to concave.</p>
       <td><p>character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".</p></td>
     </tr>
     <tr>
-      <th>control_VEM</th>
-      <td><p>a list controlling the variational EM algorithm. See details in <code><a href='estimate.html'>estimate</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>cores</th>
-      <td><p>integer, the number of cores to use when multiply model are fitted. Default is 1.</p></td>
-    </tr>
-    <tr>
-      <th>iterates</th>
-      <td><p>integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.</p></td>
-    </tr>
-    <tr>
-      <th>trace</th>
-      <td><p>logical, control the verbosity. Default to <code>TRUE</code>.</p></td>
+      <th>control</th>
+      <td><p>a list controlling the variational EM algorithm. See details.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>an invisible missSBM_collection, in which the ICL has been smoothed</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The list of parameters <code>control</code> controls the optimziation process and the variational EM algorithm, with the following entries</p><ul>
+<li><p>"iterates"integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.</p></li>
+<li><p>"threshold"stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.</p></li>
+<li><p>"maxiter"V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200</p></li>
+<li><p>"fixPointIter"number of fix-point iteration for the Variational E step. Default is 5.</p></li>
+<li><p>"cores"integer for number of cores used. Default is 1.</p></li>
+<li><p>"trace"integer for verbosity. Useless when <code>cores</code> &gt; 1</p></li>
+</ul>
     
 
   </div>
@@ -174,6 +173,8 @@ a "smoothing" of the ICL, that should be close to concave.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
           </ul>
 
   </div>

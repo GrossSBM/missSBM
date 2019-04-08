@@ -130,8 +130,7 @@
 
     <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>,
   <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ifelse'>ifelse</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NULL'>is.null</a></span>(<span class='no'>covariates</span>), <span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>),
-  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>similarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>control_VEM</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
+  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>similarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,15 +162,7 @@ must be a size-N vector;  if the covariates are dyad-centred, each entry of <cod
 Only relevent when the covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></td>
     </tr>
     <tr>
-      <th>trace</th>
-      <td><p>logical, control the verbosity. Default to <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>cores</th>
-      <td><p>integer, the number of cores to use when multiply model are fitted</p></td>
-    </tr>
-    <tr>
-      <th>control_VEM</th>
+      <th>control</th>
       <td><p>a list controlling the variational EM algorithm. See details.</p></td>
     </tr>
     </table>
@@ -179,6 +170,16 @@ Only relevent when the covariates are node-centered (i.e. <code>covariates</code
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns an R6 object with class <code><a href='missSBM_collection.html'>missSBM_collection</a></code>.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The list of parameters <code>control</code> controls the optimziation process and the variational EM algorithm, with the following entries</p><ul>
+<li><p>"threshold"stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.</p></li>
+<li><p>"maxiter"V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200</p></li>
+<li><p>"fixPointIter"number of fix-point iteration for the Variational E step. Default is 5.</p></li>
+<li><p>"cores"integer for number of cores used. Default is 1.</p></li>
+<li><p>"trace"integer for verbosity (0, 1, 2). Useless when <code>cores</code> &gt; 1</p></li>
+</ul>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -203,8 +204,14 @@ Only relevent when the covariates are node-centered (i.e. <code>covariates</code
 
 <span class='co'>## Inference :</span>
 <span class='no'>vBlocks</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>5</span> <span class='co'># number of classes</span>
-<span class='no'>collection</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/estimate'>estimate</a></span>(<span class='no'>sampledNet</span>$<span class='no'>adjacencyMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107404.94 101010.79  95767.52  95958.78  96138.79</div></pre>
+<span class='no'>collection</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/estimate'>estimate</a></span>(<span class='no'>sampledNet</span>$<span class='no'>adjacencyMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>)</div><div class='output co'>#&gt; 
+#&gt; 
+#&gt;  Adjusting Variational EM for Stochastic Block Model
+#&gt; 
+#&gt; 	Imputation assumes a 'dyad' network-sampling process
+#&gt; 
+#&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
+#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107404.94 101010.79  95767.52  95958.78  96138.79</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -212,6 +219,8 @@ Only relevent when the covariates are node-centered (i.e. <code>covariates</code
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
       
