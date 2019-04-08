@@ -25,7 +25,6 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
       sampling = sampling,
-      trace = FALSE,
       clusterInit = "spectral"
     )
     newAlgo <- missSBM_out$bestModel
@@ -99,7 +98,6 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
       sampling = ifelse(sampling == "dyad-covariates", "dyad", "node"),
-      trace = TRUE,
       covariates = refAlgo$covariates,
       clusterInit = "spectral"
     )

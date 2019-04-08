@@ -19,7 +19,7 @@
 #'  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
 #'  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
 #'  \item{"cores"}{integer for number of cores used. Default is 1.}
-#'  \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}
+#'  \item{"trace"}{integer for verbosity (0, 1, 2). Useless when \code{cores} > 1}
 #' }
 #' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
@@ -40,7 +40,7 @@
 #'
 #' ## Inference :
 #' vBlocks <- 1:5 # number of classes
-#' collection <- missSBM::estimate(sampledNet$adjacencyMatrix, vBlocks, sampling, trace = FALSE)
+#' collection <- missSBM::estimate(sampledNet$adjacencyMatrix, vBlocks, sampling)
 #' collection$ICL
 #' @import R6 parallel
 #' @export

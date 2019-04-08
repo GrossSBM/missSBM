@@ -12,8 +12,6 @@ directed <- FALSE         # if the network is directed or not
 mySBM <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$adjacencyMatrix             # the adjacency matrix
 
-mc.cores <- 1
-
 test_that("missSBMcollection works", {
 
   sampledNet <- missSBM::sample(A, "dyad", .5, clusters = mySBM$memberships)
@@ -23,13 +21,13 @@ test_that("missSBMcollection works", {
     sampledNet  = sampledNet,
     vBlocks     = 1:5,
     sampling    = "dyad",
-    clusterInit = 'hierarchical', mc.cores, TRUE)
+    clusterInit = 'hierarchical', 1, TRUE)
 
   ## control parameter for the VEM
-  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)
 
   ## VEM Estimation on each element of the collection
-  collection$estimate(control, mc.cores, TRUE)
+  collection$estimate(control)
 
   smooth(collection, "forward" )
   smooth(collection, "backward")

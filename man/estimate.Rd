@@ -38,7 +38,7 @@ The list of parameters \code{control} controls the optimziation process and the 
  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
  \item{"cores"}{integer for number of cores used. Default is 1.}
- \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}
+ \item{"trace"}{integer for verbosity (0, 1, 2). Useless when \code{cores} > 1}
 }
 }
 \examples{
@@ -59,7 +59,7 @@ sampledNet <- missSBM::sample(sbm$adjacencyMatrix, sampling, samplingParameters)
 
 ## Inference :
 vBlocks <- 1:5 # number of classes
-collection <- missSBM::estimate(sampledNet$adjacencyMatrix, vBlocks, sampling, trace = FALSE)
+collection <- missSBM::estimate(sampledNet$adjacencyMatrix, vBlocks, sampling)
 collection$ICL
 }
 \seealso{

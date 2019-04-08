@@ -43,7 +43,7 @@ test_that("SBM_fit and missSBMfit are coherent", {
       cores       = 1,
       trace       = TRUE
   )
-  my_collection$estimate(control, 1, TRUE)
+  my_collection$estimate(control)
 
   expect_equivalent(my_SBM, my_missSBM$fittedSBM)
   expect_equivalent(my_SBM, my_collection$bestModel$fittedSBM)

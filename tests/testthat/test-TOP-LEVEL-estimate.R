@@ -32,7 +32,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     sampledNet <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
 
     ## control parameter for the VEM
-    control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+    control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0)
 
     ## Perform inference with internal classes
     missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling, "hierarchical")
@@ -43,8 +43,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
       adjacencyMatrix = sampledNet$adjacencyMatrix,
       vBlocks         = Q,
       sampling        = sampling,
-      control_VEM     = control,
-      trace           = FALSE
+      control         = control
     )
 
     expect_is(collection, "missSBM_collection")
@@ -69,15 +68,14 @@ test_that("missSBM with a collection of models", {
 
     sampling <- names(l_psi)[k]
     sampledNet <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
-    control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+    control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0)
 
     ## Perform inference with the top level function
     collection <- missSBM::estimate(
       adjacencyMatrix = sampledNet$adjacencyMatrix,
       vBlocks         = 1:5,
       sampling        = "dyad",
-      control_VEM     = control,
-      trace           = FALSE
+      control         = control
     )
 
     expect_is(collection, "missSBM_collection")
