@@ -10,10 +10,17 @@
 #' @param similarity An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
 #' Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering
-#' @param trace logical, control the verbosity. Default to \code{TRUE}.
-#' @param cores integer, the number of cores to use when multiply model are fitted
-#' @param control_VEM a list controlling the variational EM algorithm. See details.
+#' @param control a list controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
+#'
+#' @details The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
+#'  \itemize{
+#'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
+#'  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+#'  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
+#'  \item{"cores"}{integer for number of cores used. Default is 1.}
+#'  \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}
+#' }
 #' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
 #' ## SBM parameters
@@ -41,11 +48,11 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
   clusterInit = ifelse(is.null(covariates), "hierarchical", "spectral"),
   covariates = NULL,
   similarity = l1_similarity,
-  trace = TRUE, cores = 1, control_VEM = list()) {
+  control = list()) {
 
   ## defaut control parameter for VEM, overwritten by user specification
-  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
-  control[names(control_VEM)] <- control_VEM
+  ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
+  ctrl[names(control)] <- control
 
   covar <- format_covariates(covariates, sampling, similarity)
 

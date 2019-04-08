@@ -6,8 +6,7 @@
 \usage{
 estimate(adjacencyMatrix, vBlocks, sampling,
   clusterInit = ifelse(is.null(covariates), "hierarchical", "spectral"),
-  covariates = NULL, similarity = l1_similarity, trace = TRUE,
-  cores = 1, control_VEM = list())
+  covariates = NULL, similarity = l1_similarity, control = list())
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network}
@@ -24,17 +23,23 @@ must be a size-N vector;  if the covariates are dyad-centred, each entry of \cod
 \item{similarity}{An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
 Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).}
 
-\item{trace}{logical, control the verbosity. Default to \code{TRUE}.}
-
-\item{cores}{integer, the number of cores to use when multiply model are fitted}
-
-\item{control_VEM}{a list controlling the variational EM algorithm. See details.}
+\item{control}{a list controlling the variational EM algorithm. See details.}
 }
 \value{
 Returns an R6 object with class \code{\link{missSBM_collection}}.
 }
 \description{
 Perform variational inference of a Stochastic Block Model from a sampled adjacency matrix
+}
+\details{
+The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
+ \itemize{
+ \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
+ \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+ \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
+ \item{"cores"}{integer for number of cores used. Default is 1.}
+ \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}
+}
 }
 \examples{
 ## SBM parameters
