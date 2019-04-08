@@ -51,12 +51,13 @@ function(sampledNet, vBlocks, sampling, clusterInit, cores, trace) {
 
 missSBM_collection$set("public", "estimate",
 function(control) {
-  if (control$trace > 1) control$trace <- TRUE else control$trace <- FALSE
-  if (control$trace) cat("\n")
+  trace_main <- control$trace > 0
+  control$trace <- ifelse (control$trace > 1, TRUE, FALSE)
+  if (trace_main) cat("\n")
   invisible(
     mclapply(private$missSBM_fit,
        function(model) {
-         if (trace) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
+         if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
            model$doVEM(control)
        }, mc.cores = control$cores
     )
@@ -115,7 +116,7 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), control = l
 
 missSBM_collection$set("private", "smoothing_forward",
 function(control) {
-  trace <- control$trace; control$trace <- FALSE
+  trace <- control$trace > 0; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
   adjacencyMatrix <- sampledNet$adjacencyMatrix
@@ -145,7 +146,7 @@ function(control) {
         } else {
           private$missSBM_fit[[i + 1]]$clone()
         }
-      }, mc.cores = control$mc.cores)
+      }, mc.cores = control$cores)
 
       best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
       if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
@@ -159,7 +160,7 @@ function(control) {
 missSBM_collection$set("private", "smoothing_backward",
 function(control) {
 
-  trace <- control$trace; control$trace <- FALSE
+  trace <- control$trace > 0; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
 
