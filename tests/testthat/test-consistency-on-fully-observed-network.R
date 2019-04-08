@@ -21,7 +21,7 @@ test_that("SBM_fit and missSBMfit are coherent", {
   Q <- 3
   cl0   <- missSBM:::init_hierarchical(A, Q)
 
-  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = TRUE)
+  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 1)
 
   ## using SBM_fit class
   my_SBM <- missSBM:::SBM_fit_nocovariate$new(adjacencyMatrix = A, clusterInit = cl0)
