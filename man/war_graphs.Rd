@@ -4,7 +4,7 @@
 \name{war_graphs}
 \alias{war_graphs}
 \title{War_graphs data set}
-\format{A list with 2 two igraph objects, \code{alliance} and \code{beligerent}.}
+\format{A list with 2 two igraph objects, \code{alliance} and \code{beligerent}. Each grapha have two vertex attributes: 'name' (the country name) and 'military_power' (a score related to military power: the higer, the better)}
 \source{
 networs were extracted from <http://www.correlatesofwar.org/>
 }
@@ -21,6 +21,7 @@ data(war_graphs)
 class(war_graphs$beligerent)
 igraph::gorder(war_graphs$alliance)
 igraph::edges(war_graphs$alliance)
+igraph::get.vertex.attribute(war_graphs$alliance)
 }
 \references{
 Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.
