@@ -57,7 +57,8 @@ Some data may be missing for some countries in the sense that data were collecte
 
 ```{r sampling node}
 sampledNet_war <- war_graphs$beligerent %>% 
-  as_adj(sparse = FALSE) %>% missSBM::sample(sampling = "node", parameters = .8)
+  as_adj(sparse = FALSE) %>% 
+  missSBM::sample(sampling = "node", parameters = .8)
 plot(sampledNet_war)
 ```
 
@@ -67,8 +68,7 @@ We can now adjust a Stochastic Block Model with the function `estimate` under th
 
 ```{r inference node, results='hide'}
 vBlocks <- 1:6
-collection_sbm <- sampledNet_war$adjacencyMatrix %>% 
-  missSBM::estimate(vBlocks = vBlocks, sampling = "node")
+collection_sbm <- missSBM::estimate(sampledNet_war, vBlocks = vBlocks, sampling = "node")
 plot(collection_sbm$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "raw ICL")
 ```
 
@@ -85,7 +85,7 @@ We compare with clusterings obtained with the fully observed network.
 
 ```{r inference full, results='hide'}
 collection_sbm_full <- war_graphs$beligerent %>% 
-  as_adj(sparse = FALSE) %>% 
+  as_adj(sparse = FALSE) %>% prepare_data() %>%  
   missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical")
 smooth(collection_sbm_full, "both")
 plot(collection_sbm_full$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "smoothed ICL on fully observed Network")

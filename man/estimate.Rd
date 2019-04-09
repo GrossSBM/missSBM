@@ -4,8 +4,7 @@
 \alias{estimate}
 \title{Inference of an SBM with missing data}
 \usage{
-estimate(sampledNet, vBlocks, sampling,
-  clusterInit = ifelse(is.null(covariates), "hierarchical", "spectral"),
+estimate(sampledNet, vBlocks, sampling, clusterInit = "hierarchical",
   control = list())
 }
 \arguments{
