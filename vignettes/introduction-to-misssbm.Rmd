@@ -1,10 +1,15 @@
 ---
-title: "Introduction to missSBM"
+title: "missSBM: a case study with war networks"
 author: "missSBM team"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 4
+bibliography: missSBMreferences.bib
+link-citations: yes
 vignette: >
-  %\VignetteIndexEntry{Introduction to missSBM}
+  %\VignetteIndexEntry{missSBM: a case study with war networks}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,15 +17,18 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Requirement
 
-```{r package requirement}
+## Prerequesites
+
+On top of **missSBM**, our analysis will rely on the **igraph** package for network data manipulation, and **magrittr** to use the pipe operate `%>%`:
+
+```{r package requirement, message=FALSE}
 library(igraph)
 library(magrittr)
 library(missSBM)
 ```
 
-## War network
+## The war network
 
 The `war_graphs` dataset comes with the `missSBM` package: 
 
@@ -28,33 +36,39 @@ The `war_graphs` dataset comes with the `missSBM` package:
 data("war_graphs")
 ```
 
-This dataset contains a list of two networks where the nodes are countries and an edge in network `beligerent` means that the two countries have been at least once at war between years 1816 to 2007 while an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012. The network `beligerent` have less nodes since countries which have not been at war are not considered.
-These two networs were extracted from **http://www.correlatesofwar.org/** (version 4.0 for war data see *Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.*, version 4.1 for formal alliance see *Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.*).
+This dataset contains a list of two networks (`belligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
+
+These two networs were extracted from [](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance).
 
 ```{r plot,fig.height=10,fig.width=20}
 plot(war_graphs$alliance   , main = "Alliance")
 plot(war_graphs$beligerent , main = "Beligerent")
 ```
 
-### Missing data
+### Generating missing data
 
-Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered, therefore there is block of missing data on the diagonal of the adjacency matrix.
+Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered and collect edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `sample` in **missSBM**:
 
-```{r sampling}
+```{r sampling node}
 sampledNet_war <- war_graphs$beligerent %>% 
   as_adj(sparse = FALSE) %>% missSBM::sample(sampling = "node", parameters = .8)
 plot(sampledNet_war)
 ```
 
+### Estimation
 
-```{r inferencew}
+We can now adjust a Stochastic Block Model with the function `estimate` under this type of sampling:
+
+```{r inference node}
 vBlocks <- 1:6
 collection_sbm <- sampledNet_war$adjacencyMatrix %>% 
-  missSBM::estimate(vBlocks = vBlocks, sampling = "node", clusterInit = "spectral")
+  missSBM::estimate(vBlocks = vBlocks, sampling = "node")
 plot(collection_sbm$ICL, type = "l")
 ```
 
-```{r smoothed}
+The `smooth` function allows the user to produce a smoothed version of the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will faciliate the choice of the number of group.
+
+```{r smoothed node}
 smooth(collection_sbm, "both")
 plot(collection_sbm$ICL, type = "l")
 ```
@@ -96,3 +110,4 @@ cbind(belmilpow,get.vertex.attribute(war_graphs$beligerent)$name) #  get militar
 cbind(allmilpow,get.vertex.attribute(war_graphs$alliance)$name) #  get military power for countries in alliance network
 ```
 
+## References
