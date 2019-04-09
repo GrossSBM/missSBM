@@ -11,27 +11,23 @@ bar <- function(X) {
   X.bar
 }
 
-format_covariates <- function(covariates, sampling, similarity) {
+format_covariates <- function(covariates, similarity) {
   if (!is.null(covariates)) {
-    stopifnot(sampling %in% available_samplings_covariates)
     # Conversion of covariates to an array
     covariates <- simplify2array(covariates)
     # if a list of vector (covariates node-centered), will be a matrix
     # and thus must be node centered
     if (is.matrix(covariates)) {
-      stopifnot(sampling == "node")
       covarMatrix <- covariates
       covarArray  <- getCovarArray(covarMatrix, similarity)
     }
     # if a list of matrix (covariates dyad-centered), will be a 3-dimensional array
     # and thus must be dyad centered
     if (length(dim(covariates)) == 3) {
-      stopifnot(sampling  == "dyad")
       covarMatrix <- NULL
       covarArray  <- covariates
     }
   } else {
-    stopifnot(sampling %in% available_samplings)
     covarMatrix <- NULL
     covarArray  <- NULL
   }

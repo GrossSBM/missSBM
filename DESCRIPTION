@@ -26,7 +26,8 @@ Imports:
     ape,
     igraph,
     nloptr,
-    R6
+    R6,
+    magrittr
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'
@@ -48,13 +49,13 @@ Collate:
     'sample.R'
     'sampledNetwork-Class.R'
     'simulate.R'
+    'utils-pipe.R'
     'utils_initialization.R'
     'war_graphs.R'
 Suggests: 
     aricode,
     blockmodels,
     testthat,
-    magrittr,
     covr,
     knitr,
     rmarkdown

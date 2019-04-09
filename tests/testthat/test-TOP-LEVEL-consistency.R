@@ -22,7 +22,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     cat(sampling)
 
     missSBM_out <- missSBM::estimate(
-      adjacencyMatrix = refAlgo$sampledNet,
+      sampledNet = prepare_data(refAlgo$sampledNet),
       vBlocks = truth$nBlocks,
       sampling = sampling,
       clusterInit = "spectral"
@@ -95,10 +95,9 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     refAlgo <- referenceResults[[sampling]]
 
     missSBM_out <- missSBM::estimate(
-      adjacencyMatrix = refAlgo$sampledNet,
-      vBlocks = truth$nBlocks,
-      sampling = ifelse(sampling == "dyad-covariates", "dyad", "node"),
-      covariates = refAlgo$covariates,
+      sampledNet  = prepare_data(refAlgo$sampledNet, refAlgo$covariates),
+      vBlocks     = truth$nBlocks,
+      sampling    = ifelse(sampling == "dyad-covariates", "dyad", "node"),
       clusterInit = "spectral"
     )
     newAlgo <- missSBM_out$bestModel

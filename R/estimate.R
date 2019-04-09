@@ -2,7 +2,7 @@
 #'
 #' Perform variational inference of a Stochastic Block Model from a sampled adjacency matrix
 #'
-#' @param adjacencyMatrix The adjacency matrix of the network
+#' @param sampledNet An object with class \code{\link{sampledNetwork}}, typically obtained wthe the function \code{\link{prepare_data}} or \code{\link{sample}}.
 #' @param vBlocks The vector of number of blocks considered in the collection
 #' @param sampling The sampling design for missing data modeling : "dyad", "node", "double-standard", "block-dyad", "block-node" ,"degree
 #' @param covariates A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
@@ -40,23 +40,15 @@
 #'
 #' ## Inference :
 #' vBlocks <- 1:5 # number of classes
-#' collection <- missSBM::estimate(sampledNet$adjacencyMatrix, vBlocks, sampling)
+#' collection <- missSBM::estimate(sampledNet, vBlocks, sampling)
 #' collection$ICL
 #' @import R6 parallel
 #' @export
-estimate <- function(adjacencyMatrix, vBlocks, sampling,
-  clusterInit = ifelse(is.null(covariates), "hierarchical", "spectral"),
-  covariates = NULL,
-  similarity = l1_similarity,
-  control = list()) {
+estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", control = list()) {
 
   ## defaut control parameter for VEM, overwritten by user specification
   ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
   ctrl[names(control)] <- control
-
-  covar <- format_covariates(covariates, sampling, similarity)
-
-  sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
@@ -75,3 +67,35 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling,
   myCollection
 }
 
+
+
+#' Prepare network data for estimation with missing data
+#'
+#' This function put together the adjacency matrix of a network and an optional list of covariates
+#' into a single \code{\link{sampledNetwork}} object, ready to use for inference with the \code{\link{estimate}}
+#' function of the missSBM package.
+#'
+#' @param adjacencyMatrix The adjacency matrix of the network (NAs allowed)
+#' @param covariates An optional list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
+#' must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.
+#' @param similarity An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
+#' Only relevent when the \code{covariates} is a list of size-N vectors.
+#' @return Returns an R6 object with class \code{\link{sampledNetwork}}.
+#'
+#' @seealso \code{\link{estimate}} and \code{\link{sampledNetwork}}.
+#' @importFrom igraph as_adj
+#' @examples
+#' data(war_graphs)
+#' adj_beligerent <- war_graphs$beligerent %>% igraph::as_adj(sparse = FALSE)
+#' sampledNet_war_nocov <- prepare_data(adj_beligerent)
+#' military_power <- igraph::get.vertex.attribute(war_graphs$beligerent)$military_power
+#' sampledNet_war_withcov <- prepare_data(adj_beligerent, list(military_power = military_power))
+#' @export
+prepare_data <- function(adjacencyMatrix, covariates = NULL, similarity = missSBM:::l1_similarity) {
+
+  covar <- format_covariates(covariates, similarity)
+
+  sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
+
+  sampledNet
+}

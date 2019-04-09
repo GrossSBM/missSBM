@@ -15,7 +15,11 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE, 
+  warning = FALSE,
+  fig.width = 5, fig.height = 4)
 ```
 
 ## Prerequesites
@@ -40,9 +44,11 @@ This dataset contains a list of two networks (`belligerent` and `alliance`) wher
 
 These two networs were extracted from [](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance).
 
-```{r plot,fig.height=10,fig.width=20}
+```{r war network plot, fig.height=4, fig.width=8}
+par(mfrow = c(1,2))
 plot(war_graphs$alliance   , main = "Alliance")
 plot(war_graphs$beligerent , main = "Beligerent")
+par(mfrow = c(1,1))
 ```
 
 ### Generating missing data
@@ -55,59 +61,50 @@ sampledNet_war <- war_graphs$beligerent %>%
 plot(sampledNet_war)
 ```
 
-### Estimation
+### Estimation with missing data
 
 We can now adjust a Stochastic Block Model with the function `estimate` under this type of sampling:
 
-```{r inference node}
+```{r inference node, results='hide'}
 vBlocks <- 1:6
 collection_sbm <- sampledNet_war$adjacencyMatrix %>% 
   missSBM::estimate(vBlocks = vBlocks, sampling = "node")
-plot(collection_sbm$ICL, type = "l")
+plot(collection_sbm$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "raw ICL")
 ```
 
 The `smooth` function allows the user to produce a smoothed version of the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will faciliate the choice of the number of group.
 
-```{r smoothed node}
+```{r smoothed node, results='hide'}
 smooth(collection_sbm, "both")
-plot(collection_sbm$ICL, type = "l")
+plot(collection_sbm$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "smoothed ICL")
 ```
 
-```{r cluster}
-table(collection_sbm$bestModel$fittedSBM$memberships)
-```
+### Estimation on fully observed network
 
 We compare with clusterings obtained with the fully observed network.
-```{r inferencewfull}
+
+```{r inference full, results='hide'}
 collection_sbm_full <- war_graphs$beligerent %>% 
   as_adj(sparse = FALSE) %>% 
-  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical", control = list(cores = 1, trace = 2))
-smooth(collection_sbm_full, "both", control = list(iterates = 1))
-plot(collection_sbm_full$ICL, type = "l")
+  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical")
+smooth(collection_sbm_full, "both")
+plot(collection_sbm_full$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "smoothed ICL on fully observed Network")
 ```
 
-```{r clustercomparison}
+
+```{r clustering comparison}
 table(
   collection_sbm$bestModel$fittedSBM$memberships,
   collection_sbm_full$bestModel$fittedSBM$memberships
   )
 ```
 
+<!-- ### Taking the covariates into account -->
 
-<!-- ```{r blockmodelscomparison} -->
-<!-- library(blockmodels) -->
-<!-- modsym <- BM_bernoulli("SBM_sym",as.matrix(get.adjacency(war_graphs$beligerent)),verbosity=0,plotting="") -->
-<!-- modsym$estimate() -->
-<!-- plot(modsym$ICL) -->
+<!-- ```{r} -->
+<!-- mil = load("../inst/covmilitarypower.Rdata") -->
+<!-- cbind(belmilpow,get.vertex.attribute(war_graphs$beligerent)$name) #  get military power for countries in beligerent network -->
+<!-- cbind(allmilpow,get.vertex.attribute(war_graphs$alliance)$name) #  get military power for countries in alliance network -->
 <!-- ``` -->
-
-
-### Taking covariates into account
-
-```{r}
-mil = load("../inst/covmilitarypower.Rdata")
-cbind(belmilpow,get.vertex.attribute(war_graphs$beligerent)$name) #  get military power for countries in beligerent network
-cbind(allmilpow,get.vertex.attribute(war_graphs$alliance)$name) #  get military power for countries in alliance network
-```
 
 ## References

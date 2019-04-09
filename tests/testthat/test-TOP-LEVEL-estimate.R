@@ -40,10 +40,10 @@ test_that("missSBM and class missSBM-fit are coherent", {
 
     ## Perform inference with the top level function
     collection <- missSBM::estimate(
-      adjacencyMatrix = sampledNet$adjacencyMatrix,
-      vBlocks         = Q,
-      sampling        = sampling,
-      control         = control
+      sampledNet = sampledNet,
+      vBlocks    = Q,
+      sampling   = sampling,
+      control    = control
     )
 
     expect_is(collection, "missSBM_collection")
@@ -72,10 +72,10 @@ test_that("missSBM with a collection of models", {
 
     ## Perform inference with the top level function
     collection <- missSBM::estimate(
-      adjacencyMatrix = sampledNet$adjacencyMatrix,
-      vBlocks         = 1:5,
-      sampling        = "dyad",
-      control         = control
+      sampledNet = sampledNet,
+      vBlocks    = 1:5,
+      sampling   = "dyad",
+      control    = control
     )
 
     expect_is(collection, "missSBM_collection")
