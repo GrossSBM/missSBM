@@ -20,27 +20,29 @@ knitr::opts_chunk$set(
   message = FALSE, 
   warning = FALSE,
   fig.width = 5, fig.height = 4)
+set.seed(9876) # set seed for reproducibility
 ```
 
 ## Prerequesites
 
-On top of **missSBM**, our analysis will rely on the **igraph** package for network data manipulation, and **magrittr** to use the pipe operate `%>%`:
+On top of **missSBM**, our analysis will rely on the **igraph** package for network data manipulation and **ggplot2** and **magrittr** for representation.
 
 ```{r package requirement, message=FALSE}
 library(igraph)
+library(ggplot2)
 library(magrittr)
 library(missSBM)
 ```
 
 ## The war network
 
-The `war_graphs` dataset comes with the `missSBM` package: 
+The `war_graphs` dataset comes with the `missSBM` package:
 
 ```{r load data set}
 data("war_graphs")
 ```
 
-This dataset contains a list of two networks (`belligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
+This dataset contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
 
 These two networs were extracted from [](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance).
 
@@ -51,14 +53,20 @@ plot(war_graphs$beligerent , main = "Beligerent")
 par(mfrow = c(1,1))
 ```
 
+In the following, we focus on the network `beligerent`. We extract here the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and the country names.
+
+```{r beligenrent network}
+beligerent_adjacency <- as_adj(war_graphs$beligerent, sparse = FALSE)
+military_power       <- get.vertex.attribute(war_graphs$beligerent)$military_power
+countries <- get.vertex.attribute(war_graphs$beligerent)$military_power
+```
+
 ### Generating missing data
 
 Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered and collect edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `sample` in **missSBM**:
 
 ```{r sampling node}
-sampledNet_war <- war_graphs$beligerent %>% 
-  as_adj(sparse = FALSE) %>% 
-  missSBM::sample(sampling = "node", parameters = .8)
+sampledNet_war <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = .8)
 plot(sampledNet_war)
 ```
 
@@ -67,16 +75,32 @@ plot(sampledNet_war)
 We can now adjust a Stochastic Block Model with the function `estimate` under this type of sampling:
 
 ```{r inference node, results='hide'}
-vBlocks <- 1:6
+vBlocks <- 1:5
 collection_sbm <- missSBM::estimate(sampledNet_war, vBlocks = vBlocks, sampling = "node")
-plot(collection_sbm$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "raw ICL")
+res_unsmoothed <- data.frame(
+  ICL     = collection_sbm$ICL,
+  nBlocks = vBlocks, 
+  type    = "raw"
+)
 ```
 
 The `smooth` function allows the user to produce a smoothed version of the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will faciliate the choice of the number of group.
 
 ```{r smoothed node, results='hide'}
 smooth(collection_sbm, "both")
-plot(collection_sbm$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "smoothed ICL")
+res_smoothed <- data.frame(
+  ICL     = collection_sbm$ICL,
+  nBlocks = vBlocks, 
+  type    = "smoothed"
+)
+```
+
+Let us now check that the smoothing did its job correctly:
+
+```{r smoothing effect plot}
+rbind(res_unsmoothed, res_smoothed) %>% 
+  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
+    geom_line() + theme_bw()
 ```
 
 ### Estimation on fully observed network
@@ -84,11 +108,27 @@ plot(collection_sbm$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "sm
 We compare with clusterings obtained with the fully observed network.
 
 ```{r inference full, results='hide'}
-collection_sbm_full <- war_graphs$beligerent %>% 
-  as_adj(sparse = FALSE) %>% prepare_data() %>%  
-  missSBM::estimate(vBlocks = vBlocks, "node", clusterInit = "hierarchical")
+collection_sbm_full <- 
+  missSBM::estimate(
+    sampledNet  = prepare_data(beligerent_adjacency), 
+    vBlocks     = vBlocks, "node",
+    clusterInit = "hierarchical"
+  )
 smooth(collection_sbm_full, "both")
-plot(collection_sbm_full$ICL, type = "l", xlab = "# blocks", ylab = "ICL", main = "smoothed ICL on fully observed Network")
+```
+
+```{r}
+res_missing <- res_smoothed
+res_missing$type <- "missing"
+res_full <- data.frame(
+  ICL     = collection_sbm_full$ICL,
+  nBlocks = vBlocks, 
+  type    = "full"
+)
+rbind(res_missing, res_full) %>% 
+  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
+    geom_line() + theme_bw()
+
 ```
 
 
@@ -99,12 +139,46 @@ table(
   )
 ```
 
-<!-- ### Taking the covariates into account -->
+### Taking the covariates into account
 
-<!-- ```{r} -->
-<!-- mil = load("../inst/covmilitarypower.Rdata") -->
-<!-- cbind(belmilpow,get.vertex.attribute(war_graphs$beligerent)$name) #  get military power for countries in beligerent network -->
-<!-- cbind(allmilpow,get.vertex.attribute(war_graphs$alliance)$name) #  get military power for countries in alliance network -->
-<!-- ``` -->
+We now introduce the covariate `military_power` into the analysis. We expect a part of the network to be explained by this covariate. 
+
+let us first prepare the data for missSBM inference on the full set of data
+
+```{r war network with covariates}
+sampleNet_cov <- prepare_data(beligerent_adjacency, list(military_power))
+```
+
+Then we run the inference on the fully observed network
+
+```{r war network with covariates full, results = 'hide'}
+collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = 1:5, sampling = "node")
+smooth(collection_sbm_cov_full)
+```
+
+We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries.
+
+```{r war network with covariates sampled, results = 'hide'}
+sampleNet_cov_miss <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = missSBM:::logistic(.95), covariates = list(military_power))
+collection_sbm_cov_miss <- estimate(sampleNet_cov_miss, vBlocks = 1:5, sampling = "node")
+smooth(collection_sbm_cov_miss, control = list(iterate = 3))
+```
+
+```{r comparison war with covariates}
+res_full <- data.frame(
+  ICL     = collection_sbm_cov_full$ICL,
+  nBlocks = vBlocks, 
+  type    = "full"
+)
+res_miss <- data.frame(
+  ICL     = collection_sbm_cov_miss$ICL,
+  nBlocks = vBlocks, 
+  type    = "miss"
+)
+rbind(res_miss, res_full) %>% 
+  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
+    geom_line() + theme_bw()
+```
+
 
 ## References
