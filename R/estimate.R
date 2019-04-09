@@ -5,10 +5,6 @@
 #' @param sampledNet An object with class \code{\link{sampledNetwork}}, typically obtained wthe the function \code{\link{prepare_data}} or \code{\link{sample}}.
 #' @param vBlocks The vector of number of blocks considered in the collection
 #' @param sampling The sampling design for missing data modeling : "dyad", "node", "double-standard", "block-dyad", "block-node" ,"degree
-#' @param covariates A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
-#' must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.
-#' @param similarity An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
-#' Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering
 #' @param control a list controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.

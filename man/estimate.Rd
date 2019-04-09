@@ -17,12 +17,6 @@ estimate(sampledNet, vBlocks, sampling, clusterInit = "hierarchical",
 \item{clusterInit}{Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering}
 
 \item{control}{a list controlling the variational EM algorithm. See details.}
-
-\item{covariates}{A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
-must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.}
-
-\item{similarity}{An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
-Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).}
 }
 \value{
 Returns an R6 object with class \code{\link{missSBM_collection}}.
