@@ -123,7 +123,7 @@ function(control) {
   if (!is.null(sampledNet$covarArray)) {
     y <- as.vector(adjacencyMatrix)
     X <- apply(sampledNet$covarArray, 3, as.vector)
-    adjacencyMatrix <- matrix(NA, N, N)
+    adjacencyMatrix <- matrix(NA, sampledNet$nNodes, sampledNet$nNodes)
     NAs <- is.na(y)
     adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
   }
