@@ -14,7 +14,7 @@ navbar:
     - text: "Articles"
       menu:
       - text: "Introduction to missSBM"
-        href: articles/introdution-to-misssbm.html
+        href: articles/introduction-to-misssbm.html
     - text: "Changelog"
       href: news/index.html
   right:
@@ -30,6 +30,7 @@ reference:
     - '`sample`'
     - '`estimate`'
     - '`smooth`'
+    - '`prepare_data`'
 - title: 'Classes of objects'
   desc: >
     Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.
