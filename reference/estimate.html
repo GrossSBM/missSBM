@@ -128,16 +128,15 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>,
-  <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ifelse'>ifelse</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NULL'>is.null</a></span>(<span class='no'>covariates</span>), <span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>),
-  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>similarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
+    <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>sampledNet</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='st'>"hierarchical"</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>adjacencyMatrix</th>
-      <td><p>The adjacency matrix of the network</p></td>
+      <th>sampledNet</th>
+      <td><p>An object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code>, typically obtained wthe the function <code><a href='prepare_data.html'>prepare_data</a></code> or <code><a href='sample.html'>sample</a></code>.</p></td>
     </tr>
     <tr>
       <th>vBlocks</th>
@@ -150,16 +149,6 @@
     <tr>
       <th>clusterInit</th>
       <td><p>Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code> providing a user-defined clustering</p></td>
-    </tr>
-    <tr>
-      <th>covariates</th>
-      <td><p>A list with M entries (the M covariates). If the covariates are node-centred, each entry of <code>covariates</code>
-must be a size-N vector;  if the covariates are dyad-centred, each entry of <code>covariates</code> must be N x N matrix.</p></td>
-    </tr>
-    <tr>
-      <th>similarity</th>
-      <td><p>An optional R x R -&gt; R function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
-Only relevent when the covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -204,7 +193,7 @@ Only relevent when the covariates are node-centered (i.e. <code>covariates</code
 
 <span class='co'>## Inference :</span>
 <span class='no'>vBlocks</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fl'>5</span> <span class='co'># number of classes</span>
-<span class='no'>collection</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/estimate'>estimate</a></span>(<span class='no'>sampledNet</span>$<span class='no'>adjacencyMatrix</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>)</div><div class='output co'>#&gt; 
+<span class='no'>collection</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/missSBM/topics/estimate'>estimate</a></span>(<span class='no'>sampledNet</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>)</div><div class='output co'>#&gt; 
 #&gt; 
 #&gt;  Adjusting Variational EM for Stochastic Block Model
 #&gt; 
