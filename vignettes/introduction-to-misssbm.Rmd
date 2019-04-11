@@ -150,7 +150,12 @@ library(blockmodels)
 modbm <- BM_bernoulli("SBM_sym",beligerent_adjacency,verbosity=0,plotting="")
 modbm$estimate()
 table(apply(modbm$memberships[[3]]$Z,1,which.max),collection_sbm_full$bestModel$fittedSBM$memberships)
+modbm$model_parameters[[3]]$pi
+collection_sbm_full$bestModel$fittedSBM$connectParam
+collection_sbm_full$bestModel$vICL
+modbm$ICL[3]*(-2)
 ```
+
 
 
 
