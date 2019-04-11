@@ -2,7 +2,7 @@ context("test-test-top-level-function-misssbm")
 
 library(aricode)
 
-set.seed(1890718)
+set.seed(1890719)
 ### A SBM model : ###
 N <- 300
 Q <- 3
@@ -75,6 +75,7 @@ test_that("missSBM with a collection of models", {
       sampledNet = sampledNet,
       vBlocks    = 1:5,
       sampling   = "dyad",
+      clusterInit = "hierarchical",
       control    = control
     )
 
