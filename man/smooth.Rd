@@ -2,7 +2,7 @@
 % Please edit documentation in R/missSBM_collection-Class.R
 \name{smooth}
 \alias{smooth}
-\title{Smooth path of models in a collection}
+\title{Smooth the path ICL in a collection of missSBM_fit models}
 \usage{
 smooth(Robject, type = c("forward", "backward", "both"),
   control = list())
@@ -18,13 +18,14 @@ smooth(Robject, type = c("forward", "backward", "both"),
 an invisible missSBM_collection, in which the ICL has been smoothed
 }
 \description{
-Apply a split and/or merge strategy to the path of model in a collection of SBM, in order to find better initialization. This should result in
-a "smoothing" of the ICL, that should be close to concave.
+Apply a split and/or merge strategy of the clustering in a path of models in a collection
+of SBM ordered by number of block. The goal is to find better initialization. This results
+in a "smoothing" of the ICL, that should be close to concave.
 }
 \details{
 The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
  \itemize{
- \item{"iterates"}{integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.}
+ \item{"iterates"}{integer for the number of iteration of smoothing. Default is 1.}
  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}

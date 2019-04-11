@@ -3,22 +3,22 @@
 \docType{data}
 \name{missSBM_collection}
 \alias{missSBM_collection}
-\title{An R6 Class to represent a collection of missSBM_fit}
+\title{An object to represent a collection of missSBM_fit}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 missSBM_collection
 }
 \description{
-The function \code{\link{estimate}} produces an instance of this class.
-The function \code{\link{smooth}} (also available as ann R6 method of this class) can be used
-to smooth the ICL on a collection of model, as post-treatment.
+This R6 class stores a collection of missSBM_fit. Comes with basic printing methods an
+field access.
 }
 \section{Fields}{
 
 \describe{
 \item{\code{models}}{a list of models}
 
-\item{\code{ICL}}{the vector of Integrated Classfication Criterion (ICL) associated to the models of the collection: the smaller, the better}
+\item{\code{ICL}}{the vector of Integrated Classfication Criterion (ICL) associated to
+the models in the collection (the smaller, the better)}
 
 \item{\code{bestModel}}{the best model according to the ICL}
 
@@ -26,6 +26,8 @@ to smooth the ICL on a collection of model, as post-treatment.
 }}
 
 \seealso{
-\code{\link{estimate}}, \code{\link{smooth}}
+The function \code{\link{estimate}}, which produces an instance of this class.
+The function \code{\link{smooth}} can be used to smooth the ICL on a collection of model,
+as post-treatment.
 }
 \keyword{datasets}
