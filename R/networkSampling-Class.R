@@ -1,4 +1,4 @@
-#' definition of R6 Class 'networkSampling'
+#' Definition of R6 Class 'networkSampling'
 #'
 #' this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
 #' It is used to define a sampling model for a network.

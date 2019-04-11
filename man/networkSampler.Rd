@@ -9,7 +9,11 @@
 networkSampler
 }
 \description{
-This class is use to define a sampling model for a network. Inherits from 'networkSampling'
-it has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
+This class is use to define a sampling model for a network. Inherits from 'networkSampling'.
+Owns a rSampling method which takes an adjacency matrix as an input and send back an object
+with class sampledNetwork.
+}
+\seealso{
+\code{\link{sampledNetwork}}
 }
 \keyword{datasets}

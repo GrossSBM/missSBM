@@ -3,7 +3,7 @@
 \docType{data}
 \name{networkSampling}
 \alias{networkSampling}
-\title{definition of R6 Class 'networkSampling'}
+\title{Definition of R6 Class 'networkSampling'}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 networkSampling

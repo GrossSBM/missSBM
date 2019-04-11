@@ -1,7 +1,7 @@
 #' Sampling of network data
 #'
-#' This function samples observations in an adjacency matrix according to a given sampling design. The final results is
-#' an adjacency matrix with the dimension as the input, yet with additional NAs.
+#' This function samples observations in an adjacency matrix according to a given sampling design.
+#' The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.
 #'
 #' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
 #' we assume an undirected network with no loop; otherwise the network is assumed directed.

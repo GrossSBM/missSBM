@@ -28,8 +28,8 @@ an object with class \code{\link{sampledNetwork}} containing all the useful info
 Can then feed the \code{\link{estimate}} function.
 }
 \description{
-This function samples observations in an adjacency matrix according to a given sampling design. The final results is
-an adjacency matrix with the dimension as the input, yet with additional NAs.
+This function samples observations in an adjacency matrix according to a given sampling design.
+The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.
 }
 \details{
 The differents sampling designs are splitted into two families in which we find dyad-centered and

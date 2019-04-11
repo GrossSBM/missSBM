@@ -141,7 +141,7 @@ sampledNetwork$set("public", "show",
 function(model = "Sampled Network\n") {
   cat(model)
   cat("==================================================================\n")
-  cat("Structure for storing a sampled network in missSBM.\n")
+  cat("Structure for storing a sampled network in missSBM\n")
   cat("==================================================================\n")
   cat("* Useful fields \n")
   cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
