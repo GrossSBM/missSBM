@@ -1,21 +1,44 @@
-#' Inference of an SBM with missing data
+#' Estimation of SBMs with missing data
 #'
-#' Perform variational inference of a Stochastic Block Model from a sampled adjacency matrix
+#' Variational inference from sampled network data on a collection of
+#' Stochastic Block Models indexed by block number.
 #'
-#' @param sampledNet An object with class \code{\link{sampledNetwork}}, typically obtained wthe the function \code{\link{prepare_data}} or \code{\link{sample}}.
+#' @param sampledNet An object with class \code{\link{sampledNetwork}}, typically obtained with
+#' the function \code{\link{prepare_data}} (real-worl data) or \code{\link{sample}} (simulation).
 #' @param vBlocks The vector of number of blocks considered in the collection
-#' @param sampling The sampling design for missing data modeling : "dyad", "node", "double-standard", "block-dyad", "block-node" ,"degree
-#' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)} providing a user-defined clustering
-#' @param control a list controlling the variational EM algorithm. See details.
+#' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node")
+#' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
+#' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
+#' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}
+#'providing a user-defined clustering
+#' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
-#' @details The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
+#' @details The list of parameters \code{control} essentially tunes the optimziation process and the
+#' variational EM algorithm, with the following parameters
 #'  \itemize{
 #'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
-#'  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
-#'  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
+#'  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+#'  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}
 #'  \item{"cores"}{integer for number of cores used. Default is 1.}
-#'  \item{"trace"}{integer for verbosity (0, 1, 2). Useless when \code{cores} > 1}
+#'  \item{"trace"}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
+#' }
+#'
+#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and
+#' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
+#' \itemize{
+#' \item Missing at Random (MAR)
+#'   \itemize{
+#'     \item{"dyad": parameter = p \deqn{p = P(Dyad (i,j) is sampled)}}
+#'     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
+#'   }
+#' \item Not Missing At Random (NMAR)
+#'   \itemize{
+#'     \item{"double-standard": parameter = (p0,p1) and \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
+#'     \item{"block-node": parameter = c(p(1),...,p(Q)) and \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
+#'     \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and \deqn{p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}}
+#'     \item{"degree": parameter = c(a,b) and \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
+#'   }
 #' }
 #' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
@@ -42,7 +65,7 @@
 #' @export
 estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", control = list()) {
 
-  ## defaut control parameter for VEM, overwritten by user specification
+  ## Defaut control parameters for VEM, overwritten by user specification
   ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
   ctrl[names(control)] <- control
 

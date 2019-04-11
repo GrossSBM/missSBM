@@ -28,10 +28,42 @@ test_that("missSBMcollection works", {
 
   ## VEM Estimation on each element of the collection
   collection$estimate(control)
+  expect_is(collection, "missSBM_collection")
 
-  smooth(collection, "forward" )
+  smooth(collection, "forward")
+  expect_is(collection, "missSBM_collection")
+
   smooth(collection, "backward")
-  smooth(collection, "both"    )
+  expect_is(collection, "missSBM_collection")
 
+  smooth(collection, "both")
+  expect_is(collection, "missSBM_collection")
+})
+
+test_that("More smoothing tests", {
+
+  sampledNet <- missSBM::sample(A, "dyad", .5, clusters = mySBM$memberships)
+
+  ## Instantiate the collection of missSBM_fit
+  collection <- missSBM_collection$new(
+    sampledNet  = sampledNet,
+    vBlocks     = 1:5,
+    sampling    = "dyad",
+    clusterInit = 'hierarchical', 1, TRUE)
+
+  ## control parameter for the VEM
+  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)
+
+  ## VEM Estimation on each element of the collection
+  collection$estimate(control)
+  expect_is(collection, "missSBM_collection")
+
+  smooth(collection, "forward", control = list(iterates = 2))
+  expect_is(collection, "missSBM_collection")
+
+  smooth(collection, "backward", control = list(iterates = 2))
+  expect_is(collection, "missSBM_collection")
+
+  smooth(collection, "both", control = list(iterates = 2))
   expect_is(collection, "missSBM_collection")
 })

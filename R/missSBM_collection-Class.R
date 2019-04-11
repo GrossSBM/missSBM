@@ -1,15 +1,18 @@
-#' An R6 Class to represent a collection of missSBM_fit
+#' An object to represent a collection of missSBM_fit
 #'
-#' The function \code{\link{estimate}} produces an instance of this class.
-#' The function \code{\link{smooth}} (also available as ann R6 method of this class) can be used
-#' to smooth the ICL on a collection of model, as post-treatment.
+#' This R6 class stores a collection of missSBM_fit. Comes with basic printing methods an
+#' field access.
 #'
 #' @field models a list of models
-#' @field ICL the vector of Integrated Classfication Criterion (ICL) associated to the models of the collection: the smaller, the better
+#' @field ICL the vector of Integrated Classfication Criterion (ICL) associated to
+#' the models in the collection (the smaller, the better)
 #' @field bestModel the best model according to the ICL
 #' @field optimizationStatus a data.frame summarizing the optimization process for all models
 #'
-#' @seealso \code{\link{estimate}}, \code{\link{smooth}}
+#' @seealso The function \code{\link{estimate}}, which produces an instance of this class.
+#' The function \code{\link{smooth}} can be used to smooth the ICL on a collection of model,
+#' as post-treatment.
+#'
 #' @include missSBM_fit-Class.R
 #' @export
 missSBM_collection <-
@@ -69,21 +72,17 @@ missSBM_collection$set("public", "smooth",
 function(type, control) {
   if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
   if (control$trace) cat("\n Smoothing ICL\n")
-  if (type == "forward")
-    private$smoothing_forward(control)
-  if (type == "backward")
-    private$smoothing_backward(control)
-  if (type == "both")
-    for (i in 1:control$iterates) {
-      private$smoothing_forward(control)
-      private$smoothing_backward(control)
-    }
+  for (i in 1:control$iterates) {
+    if (type %in% c('forward' , 'both')) private$smoothing_forward(control)
+    if (type %in% c('backward', 'both')) private$smoothing_backward(control)
+  }
 })
 
-#' Smooth path of models in a collection
+#' Smooth the path ICL in a collection of missSBM_fit models
 #'
-#' Apply a split and/or merge strategy to the path of model in a collection of SBM, in order to find better initialization. This should result in
-#' a "smoothing" of the ICL, that should be close to concave.
+#' Apply a split and/or merge strategy of the clustering in a path of models in a collection
+#' of SBM ordered by number of block. The goal is to find better initialization. This results
+#' in a "smoothing" of the ICL, that should be close to concave.
 #'
 #' @param Robject an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}
 #' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".
@@ -91,7 +90,7 @@ function(type, control) {
 #'
 #' @details The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
 #'  \itemize{
-#'  \item{"iterates"}{integer for the number of iteration in case of foward-backward (aka both) smoothing. Default is 1.}
+#'  \item{"iterates"}{integer for the number of iteration of smoothing. Default is 1.}
 #'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
 #'  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
 #'  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}

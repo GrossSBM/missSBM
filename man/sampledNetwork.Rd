@@ -3,13 +3,13 @@
 \docType{data}
 \name{sampledNetwork}
 \alias{sampledNetwork}
-\title{An R6 Class to represent a sampler for a SBM}
+\title{An R6 Class to represent sampled network data}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 sampledNetwork
 }
 \description{
-The function \code{\link{simulate}} produces an instance of an object with class \code{SBM_sampler}.
+The function \code{\link{sample}} and \code{\link{prepare_data}} produces an instance of an object with class \code{sampledNetwork}.
 }
 \details{
 All fields of this class are only accessible for reading. This class comes with a basic plot and print methods

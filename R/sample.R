@@ -1,23 +1,26 @@
 #' Sampling of network data
 #'
-#' Samples a matrix (the adjacency matrix of a network), possible generated under a stochastic block model
+#' This function samples observations in an adjacency matrix according to a given sampling design.
+#' The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.
 #'
 #' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
 #' we assume an undirected network with no loop; otherwise the network is assumed directed.
-#' @param sampling The sampling design used to sample the adjacency matrix
+#' @param sampling The sampling design used to sample the adjacency matrix, see details
 #' @param parameters The sampling parameters adapted to each sampling
-#' @param clusters An optional clustering membership vector of the nodes, only necessary for class sampling
+#' @param clusters An optional clustering membership vector of the nodes, only necessary for block samplings
 #' @param covariates A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.
-#' @param similarity An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
+#' @param similarity An optional function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
 #' Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
 #'
 #' @return an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
+#' Can then feed the \code{\link{estimate}} function.
 #' @seealso The class \code{\link{sampledNetwork}}
 #'
-#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings. See \cite{1} for details.
+#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and
+#' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
 #' \itemize{
-#' \item Missing At Random (MAR)
+#' \item Missing at Random (MAR)
 #'   \itemize{
 #'     \item{"dyad": parameter = p \deqn{p = P(Dyad (i,j) is sampled)}}
 #'     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
@@ -74,13 +77,16 @@
 #' @export
 sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity) {
 
-  covar <- format_covariates(covariates, similarity)
-  stopifnot(sampling %in% available_samplings)
-
+  ## general network parameters
   nNodes   <- ncol(adjacencyMatrix)
   directed <- !isSymmetric(adjacencyMatrix)
 
-  ## SAMPLER INSTANTIATION
+  ## prepare the covariates
+  covar <- format_covariates(covariates, similarity)
+  stopifnot(sampling %in% available_samplings)
+  if (!is.null(covar$Array)) stopifnot(sampling %in% available_samplings_covariates)
+
+  ## instantiate the sampler
   mySampler <-
     switch(sampling,
       "dyad"       = simpleDyadSampler$new(

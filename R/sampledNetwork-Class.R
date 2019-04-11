@@ -1,6 +1,6 @@
-#' An R6 Class to represent a sampler for a SBM
+#' An R6 Class to represent sampled network data
 #'
-#' The function \code{\link{simulate}} produces an instance of an object with class \code{SBM_sampler}.
+#' The function \code{\link{sample}} and \code{\link{prepare_data}} produces an instance of an object with class \code{sampledNetwork}.
 #'
 #' All fields of this class are only accessible for reading. This class comes with a basic plot and print methods
 #'
@@ -141,7 +141,7 @@ sampledNetwork$set("public", "show",
 function(model = "Sampled Network\n") {
   cat(model)
   cat("==================================================================\n")
-  cat("Structure for storing a sampled network in missSBM.\n")
+  cat("Structure for storing a sampled network in missSBM\n")
   cat("==================================================================\n")
   cat("* Useful fields \n")
   cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
