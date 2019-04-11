@@ -157,6 +157,60 @@ modbm$ICL[3]*(-2)
 ```
 
 
+COMPARAISON avec GREMLIN en plus et calculs d'ICL
+```{r compare GREMLIN ICL}
+library(GREMLIN)
+donGR = defineNetwork(beligerent_adjacency,"adj",1,1)
+resGR = multipartiteBM(list(donGR))
+resGR$fittedModel[[1]]$ICL * (-2)
+table(resGR$fittedModel[[1]]$paramEstim$Z[[1]])
+table(resGR$fittedModel[[1]]$paramEstim$Z[[1]],apply(modbm$memberships[[3]]$Z,1,which.max))
+table(resGR$fittedModel[[1]]$paramEstim$Z[[1]],collection_sbm_full$bestModel$fittedSBM$memberships)
+
+
+
+Q=3
+pimiss = collection_sbm_full$models[[Q]]$fittedSBM$connectParam
+alphamiss = collection_sbm_full$models[[Q]]$fittedSBM$mixtureParam
+Zmiss = collection_sbm_full$models[[Q]]$fittedSBM$blocks
+
+pibloc = modbm$model_parameters[[Q]]$pi
+alphabloc = colMeans(modbm$memberships[[Q]]$Z)
+Zbloc = modbm$memberships[[Q]]$Z
+
+
+piGR = resGR$fittedModel[[1]]$paramEstim$list_theta[[1]]
+alphaGR = resGR$fittedModel[[1]]$paramEstim$list_pi[[1]]
+ZGR = resGR$fittedModel[[1]]$paramEstim$tau[[1]]
+
+B2 = beligerent_adjacency
+class(B2)
+iclalamano = function(pi,alpha,Z,adj)
+{
+  adj0 = 1-adj
+  diag(adj0) = 0
+  vA = 0
+  for (i in 2:nrow(adj))
+    for (j in 1:(i-1))
+      for (q in 1:ncol(Z))
+        for (l in 1:ncol(Z))
+          vA = vA + Z[i,q]*Z[j,l]*(log(pi[q,l])*adj[i,j]+log(1-pi[q,l])*adj0[i,j])
+  return(vA + sum(Z%*%log(alpha)))
+}
+ICLmissmano = -2*iclalamano(pimiss,alphamiss,Zmiss,B2) + log(nrow(B2)) * (ncol(Zmiss)-1) + log(nrow(B2)*(nrow(B2)-1)/2)* (ncol(Zmiss)+1)*ncol(Zmiss)/2
+ICLmissmano
+
+-2*iclalamano(pibloc,alphabloc,Zbloc,B2) + log(nrow(B2)) * (ncol(Zbloc)-1) + log(nrow(B2)*(nrow(B2)-1)/2)* (ncol(Zbloc)+1)*ncol(Zbloc)/2
+
+-2*iclalamano(piGR,alphaGR,ZGR,B2) + log(nrow(B2)) * (ncol(Zbloc)-1) + log(nrow(B2)*(nrow(B2)-1)/2)* (ncol(Zbloc)+1)*ncol(Zbloc)/2
+
+
+
+```
+
+
+Note that `r ICLmissmano` is different from `r collection_sbm_full$bestModel$vICL`
+
 
 
 ### Taking the covariates into account
