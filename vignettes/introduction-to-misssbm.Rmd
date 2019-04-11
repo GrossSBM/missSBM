@@ -39,7 +39,9 @@ library(missSBM)
 The `war_graphs` dataset comes with the `missSBM` package:
 
 ```{r load data set}
-data("war_graphs")
+#data("war_graphs")
+load("../inst/war.Rdata")
+
 ```
 
 This dataset contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
@@ -48,17 +50,21 @@ These two networs were extracted from [](http://www.correlatesofwar.org/) (see @
 
 ```{r war network plot, fig.height=4, fig.width=8}
 par(mfrow = c(1,2))
-plot(war_graphs$alliance   , main = "Alliance")
-plot(war_graphs$beligerent , main = "Beligerent")
+#plot(war_graphs$alliance   , main = "Alliance")
+#plot(war_graphs$beligerent , main = "Beligerent")
 par(mfrow = c(1,1))
 ```
 
 In the following, we focus on the network `beligerent`. We extract here the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and the country names.
 
 ```{r beligenrent network}
-beligerent_adjacency <- as_adj(war_graphs$beligerent, sparse = FALSE)
-military_power       <- get.vertex.attribute(war_graphs$beligerent)$military_power
-countries <- get.vertex.attribute(war_graphs$beligerent)$military_power
+#beligerent_adjacency <- as_adj(war_graphs$beligerent, sparse = FALSE)
+beligerent_adjacency <- as_adj(Gwar,sparse=F)
+#military_power       <- get.vertex.attribute(war_graphs$beligerent)$military_power
+military_power       <- get.vertex.attribute(Gwar)$mil
+#countries <- get.vertex.attribute(war_graphs$beligerent)$military_power
+countries <- get.vertex.attribute(Gwar)$name
+trade <- Gwar.trade
 ```
 
 ### Generating missing data
@@ -112,7 +118,7 @@ collection_sbm_full <-
   missSBM::estimate(
     sampledNet  = prepare_data(beligerent_adjacency), 
     vBlocks     = vBlocks, "node",
-    clusterInit = "hierarchical"
+    clusterInit = "spectral"
   )
 smooth(collection_sbm_full, "both")
 ```
@@ -138,6 +144,15 @@ table(
   collection_sbm_full$bestModel$fittedSBM$memberships
   )
 ```
+
+```{r blockmodel comparison}
+library(blockmodels)
+modbm <- BM_bernoulli("SBM_sym",beligerent_adjacency,verbosity=0,plotting="")
+modbm$estimate()
+table(apply(modbm$memberships[[3]]$Z,1,which.max),collection_sbm_full$bestModel$fittedSBM$memberships)
+```
+
+
 
 ### Taking the covariates into account
 
