@@ -51,7 +51,7 @@ Collate:
     'simulate.R'
     'utils-pipe.R'
     'utils_initialization.R'
-    'war_graphs.R'
+    'war.R'
 Suggests: 
     aricode,
     blockmodels,

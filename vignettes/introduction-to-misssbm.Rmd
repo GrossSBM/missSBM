@@ -20,7 +20,8 @@ knitr::opts_chunk$set(
   message = FALSE, 
   warning = FALSE,
   fig.width = 5, fig.height = 4)
-set.seed(9876) # set seed for reproducibility
+# set.seed(9876) # set seed for reproducibility
+set.seed(9877) # set seed for reproducibility
 ```
 
 ## Prerequesites
@@ -39,9 +40,7 @@ library(missSBM)
 The `war_graphs` dataset comes with the `missSBM` package:
 
 ```{r load data set}
-#data("war_graphs")
-load("../inst/war.Rdata")
-
+data("war")
 ```
 
 This dataset contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
@@ -50,21 +49,15 @@ These two networs were extracted from [](http://www.correlatesofwar.org/) (see @
 
 ```{r war network plot, fig.height=4, fig.width=8}
 par(mfrow = c(1,2))
-#plot(war_graphs$alliance   , main = "Alliance")
-#plot(war_graphs$beligerent , main = "Beligerent")
+plot(war$alliance   , main = "Alliance")
+plot(war$beligerent , main = "Beligerent")
 par(mfrow = c(1,1))
 ```
 
 In the following, we focus on the network `beligerent`. We extract here the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and the country names.
 
 ```{r beligenrent network}
-#beligerent_adjacency <- as_adj(war_graphs$beligerent, sparse = FALSE)
-beligerent_adjacency <- as_adj(Gwar,sparse=F)
-#military_power       <- get.vertex.attribute(war_graphs$beligerent)$military_power
-military_power       <- get.vertex.attribute(Gwar)$mil
-#countries <- get.vertex.attribute(war_graphs$beligerent)$military_power
-countries <- get.vertex.attribute(Gwar)$name
-trade <- Gwar.trade
+beligerent_adjacency <- as_adj(war$beligerent, sparse = FALSE)
 ```
 
 ### Generating missing data
@@ -117,10 +110,11 @@ We compare with clusterings obtained with the fully observed network.
 collection_sbm_full <- 
   missSBM::estimate(
     sampledNet  = prepare_data(beligerent_adjacency), 
-    vBlocks     = vBlocks, "node",
-    clusterInit = "spectral"
+    vBlocks     = vBlocks, 
+    sampling    = "node",
+    control = list(fixPointIter = 2)
   )
-smooth(collection_sbm_full, "both")
+smooth(collection_sbm_full, "forward", control = list(iterates = 3))
 ```
 
 ```{r}
@@ -147,12 +141,12 @@ table(
 
 ```{r blockmodel comparison}
 library(blockmodels)
-modbm <- BM_bernoulli("SBM_sym",beligerent_adjacency,verbosity=0,plotting="")
+modbm <- BM_bernoulli("SBM_sym", beligerent_adjacency, verbosity=0, plotting="")
 modbm$estimate()
 table(apply(modbm$memberships[[3]]$Z,1,which.max),collection_sbm_full$bestModel$fittedSBM$memberships)
 modbm$model_parameters[[3]]$pi
 collection_sbm_full$bestModel$fittedSBM$connectParam
-collection_sbm_full$bestModel$vICL
+collection_sbm_full$bestModel$fittedSBM$vICL
 modbm$ICL[3]*(-2)
 ```
 
@@ -166,7 +160,7 @@ We now introduce the covariate `military_power` into the analysis. We expect a p
 let us first prepare the data for missSBM inference on the full set of data
 
 ```{r war network with covariates}
-sampleNet_cov <- prepare_data(beligerent_adjacency, list(military_power))
+sampleNet_cov <- prepare_data(beligerent_adjacency, list(war$beligerent$power))
 ```
 
 Then we run the inference on the fully observed network
@@ -179,7 +173,7 @@ smooth(collection_sbm_cov_full)
 We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries.
 
 ```{r war network with covariates sampled, results = 'hide'}
-sampleNet_cov_miss <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = missSBM:::logistic(.95), covariates = list(military_power))
+sampleNet_cov_miss <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = missSBM:::logistic(.95), covariates = list(war$beligerent$power))
 collection_sbm_cov_miss <- estimate(sampleNet_cov_miss, vBlocks = 1:5, sampling = "node")
 smooth(collection_sbm_cov_miss, control = list(iterate = 3))
 ```

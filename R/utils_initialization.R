@@ -60,7 +60,7 @@ init_spectral <- function(X, K) {
       U[is.na(U)] <- 0
 
       ## Applying the K-means in the eigenspace
-      cl <- kmeans(U, K, nstart = 10, iter.max = 50)$cluster
+      cl <- kmeans(U, K, nstart = 30, iter.max = 100)$cluster
       ## handing lonely souls
       cl0[connected] <- cl
       cl0[unconnected] <- which.min(rowsum(D,cl))
