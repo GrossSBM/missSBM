@@ -1,5 +1,5 @@
 #' @importFrom stats binomial glm.fit residuals
-init_clustering <- function(adjacencyMatrix, nBlocks, covarArray = NULL, clusterInit = "hierarchical") {
+init_clustering <- function(adjacencyMatrix, nBlocks, covarArray = NULL, clusterInit = "spectral") {
 
   N <- nrow(adjacencyMatrix)
 

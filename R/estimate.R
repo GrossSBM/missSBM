@@ -104,11 +104,10 @@ estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", co
 #' @seealso \code{\link{estimate}} and \code{\link{sampledNetwork}}.
 #' @importFrom igraph as_adj
 #' @examples
-#' data(war_graphs)
-#' adj_beligerent <- war_graphs$beligerent %>% igraph::as_adj(sparse = FALSE)
+#' data(war)
+#' adj_beligerent <- war$beligerent %>% igraph::as_adj(sparse = FALSE)
 #' sampledNet_war_nocov <- prepare_data(adj_beligerent)
-#' military_power <- igraph::get.vertex.attribute(war_graphs$beligerent)$military_power
-#' sampledNet_war_withcov <- prepare_data(adj_beligerent, list(military_power = military_power))
+#' sampledNet_war_withcov <- prepare_data(adj_beligerent, list(military_power = war$beligerent$power))
 #' @export
 prepare_data <- function(adjacencyMatrix, covariates = NULL, similarity = missSBM:::l1_similarity) {
 

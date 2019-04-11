@@ -35,7 +35,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0)
 
     ## Perform inference with internal classes
-    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling, "hierarchical")
+    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling, "spectral")
     out_missSBM <- missSBM$doVEM(control)
 
     ## Perform inference with the top level function
@@ -47,7 +47,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     )
 
     expect_is(collection, "missSBM_collection")
-    expect_equivalent(collection$models[[1]], missSBM)
+    expect_gte(aricode::ARI(collection$models[[1]]$fittedSBM$memberships, missSBM$fittedSBM$memberships), 1)
 
   }
 
