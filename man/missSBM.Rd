@@ -22,7 +22,7 @@ These function leads to the manipulation of a variety of R object, with their re
 \item{\code{\link{SBM_sampler}}}{an object to define a SBM to sample from}
 \item{\code{\link{SBM_fit}}}{an object to define and store an SBM fit }
 \item{\code{\link{networkSampler}}}{an object to define a network sampling to sample from}
-\item{\code{\link{networkSampling_fit}}}{an object to define and store a network sampling fit}
+\item{\code{\link{networkSampling}}}{an object to define and store a network sampling fit}
 \item{\code{\link{missSBM_fit}}}{an object that put together an SBM fit and and network sampling fit - the main point of the missSBM package !}
 \item{\code{\link{missSBM_collection}}}{an object to store a collection of missSBM_fit, ordered by number of block}
 }

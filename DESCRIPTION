@@ -10,10 +10,10 @@ Authors@R: c(
   )
 Maintainer: Julien Chiquet <julien.chiquet@inra.fr>
 Description: When a network is partially observed (here, missing dyads, that is, entries with 
-    NA in the adjacency matrix rather than 1 or 0), it is possible to account for the underlying process that generates
-    those NAs. missSBM is an R package for adjusting the popular Stochastic Block Models from network data 
-    sampled under various missing data conditions, as decribed in <doi:10.1080/01621459.2018.1562934>
-URL: https://github.com/jchiquet/missSBM (dev version)
+    NAs in the adjacency matrix rather than 1 or 0), it is possible to account for the underlying process
+    that generates those NAs. missSBM adjusts the popular Stochastic Block Model from network data 
+    sampled under various missing data conditions, as described in <doi:10.1080/01621459.2018.1562934>.
+URL: https://jchiquet.github.io/missSBM
 BugReports: https://github.com/jchiquet/missSBM/issues
 License: GPL-3
 Encoding: UTF-8
