@@ -4,7 +4,7 @@
 \alias{estimate}
 \title{Estimation of SBMs with missing data}
 \usage{
-estimate(sampledNet, vBlocks, sampling, clusterInit = "hierarchical",
+estimate(sampledNet, vBlocks, sampling, clusterInit = "spectral",
   control = list())
 }
 \arguments{
@@ -18,7 +18,7 @@ and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
 \item{clusterInit}{Initial method for clustering: either a character in "hierarchical", "spectral"
 or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}
-providing a user-defined clustering}
+providing a user-defined clustering. Default is "spectral".}
 
 \item{control}{a list of parameters controlling the variational EM algorithm. See details.}
 }

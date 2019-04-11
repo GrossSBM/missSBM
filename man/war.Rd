@@ -25,6 +25,7 @@ means that the two countries have had a formal alliance between years 1816 to 20
 data(war)
 class(war$beligerent)
 igraph::gorder(war$alliance)
+igraph::gorder(war$beligerent)
 igraph::edges(war$alliance)
 igraph::get.graph.attribute(war$alliance)
 }

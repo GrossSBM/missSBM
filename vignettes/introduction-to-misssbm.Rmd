@@ -151,16 +151,18 @@ sampleNet_cov <- prepare_data(beligerent_adjacency, list(war$beligerent$power))
 Then we run the inference on the fully observed network 
 
 ```{r war network with covariates full, results = 'hide'} 
-collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = 1:5, sampling = "node") 
+collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = 1:5, sampling = "dyad") 
 smooth(collection_sbm_cov_full) 
-``` 
-
-
-```{r betacov1}
-betacov = collection_sbm_cov_full$bestModel$fittedSBM$covarParam
+betacov <- collection_sbm_cov_full$bestModel$fittedSBM$covarParam
 ```
-The military power seems to be a covariate with little influence since its effect is estimated to
-`r betacov`.
+
+<!-- ```{r} -->
+<!-- cl0 <- missSBM:::init_clustering(sampleNet_cov$adjacencyMatrix, 2, covarArray = sampleNet_cov$covarArray, clusterInit = "spectral") -->
+<!-- fit <- missSBM:::SBM_fit_covariates$new(sampleNet_cov$adjacencyMatrix, cl0, sampleNet_cov$covarArray) -->
+<!-- fit$doVEM() -->
+<!-- ``` -->
+
+The military power seems to be a covariate with little influence since its effect is estimated to `r betacov`.
 
 Other way to take into account the covariate military power
 ```{r war network with covariate 2}
@@ -191,8 +193,6 @@ plot(modcov$ICL)
 modcov$model_parameters[[2]]$beta
 table(apply(modcov$memberships[[2]]$Z,1,which.max),collection_sbm_cov_full2$bestModel$fittedSBM$memberships)
 ```
-
-
 
 We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries. 
 

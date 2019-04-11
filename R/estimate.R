@@ -10,7 +10,7 @@
 #' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
 #' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}
-#'providing a user-defined clustering
+#' providing a user-defined clustering. Default is "spectral".
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
@@ -63,7 +63,7 @@
 #' collection$ICL
 #' @import R6 parallel
 #' @export
-estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", control = list()) {
+estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", control = list()) {
 
   ## Defaut control parameters for VEM, overwritten by user specification
   ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
