@@ -151,71 +151,67 @@ sampleNet_cov <- prepare_data(beligerent_adjacency, list(war$beligerent$power))
 Then we run the inference on the fully observed network 
 
 ```{r war network with covariates full, results = 'hide'} 
-collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = 1:5, sampling = "dyad") 
-smooth(collection_sbm_cov_full) 
-betacov <- collection_sbm_cov_full$bestModel$fittedSBM$covarParam
+vBlocks <- 1:4
+collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "dyad")
+res_unsmoothed <- data.frame(
+  ICL     = collection_sbm_cov_full$ICL,
+  nBlocks = vBlocks, 
+  type    = "raw"
+)
+smooth(collection_sbm_cov_full, "forward", control = list(iterates = 2)) 
+res_smoothed <- data.frame(
+  ICL     = collection_sbm_cov_full$ICL,
+  nBlocks = vBlocks, 
+  type    = "smoothed"
+)
+rbind(res_unsmoothed, res_smoothed) %>% 
+  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
+    geom_line() + theme_bw()
 ```
 
-<!-- ```{r} -->
-<!-- cl0 <- missSBM:::init_clustering(sampleNet_cov$adjacencyMatrix, 2, covarArray = sampleNet_cov$covarArray, clusterInit = "spectral") -->
-<!-- fit <- missSBM:::SBM_fit_covariates$new(sampleNet_cov$adjacencyMatrix, cl0, sampleNet_cov$covarArray) -->
-<!-- fit$doVEM() -->
+The military power seems to be a covariate with great influence since its effect is estimated to `r collection_sbm_cov_full$bestModel$fittedSBM$covarParam`.
+
+<!-- Other way to take into account the covariate military power -->
+<!-- ```{r war network with covariate 2} -->
+<!-- nWar = nrow(beligerent_adjacency) -->
+<!-- matsumpower = matrix(war$beligerent$power,nrow = nWar,ncol = nWar) + matrix(war$beligerent$power,nrow = nWar,ncol = nWar,byrow=T) -->
+<!-- diag(matsumpower) = 0 # diagonal has to be set to 0  -->
+<!-- sampleNet_cov2 <- prepare_data(beligerent_adjacency, list(matsumpower))  -->
 <!-- ``` -->
 
-The military power seems to be a covariate with little influence since its effect is estimated to `r betacov`.
+<!-- ```{r war network with covariates full 2, results = 'hide'}  -->
+<!-- collection_sbm_cov_full2 <- estimate(sampleNet_cov2, vBlocks = 1:5, sampling = "dyad")  -->
+<!-- smooth(collection_sbm_cov_full2)  -->
+<!-- plot(collection_sbm_cov_full2$ICL) -->
+<!-- ```  -->
+<!-- ```{r betacov2} -->
+<!-- betacov2 = collection_sbm_cov_full2$bestModel$fittedSBM$covarParam -->
+<!-- ``` -->
 
-Other way to take into account the covariate military power
-```{r war network with covariate 2}
-nWar = nrow(beligerent_adjacency)
-matsumpower = matrix(war$beligerent$power,nrow = nWar,ncol = nWar) + matrix(war$beligerent$power,nrow = nWar,ncol = nWar,byrow=T)
-diag(matsumpower) = 0 # diagonal has to be set to 0 
-sampleNet_cov2 <- prepare_data(beligerent_adjacency, list(matsumpower)) 
-```
+<!-- ### Sampling network according to covariate effect -->
 
-```{r war network with covariates full 2, results = 'hide'} 
-collection_sbm_cov_full2 <- estimate(sampleNet_cov2, vBlocks = 1:5, sampling = "dyad") 
-smooth(collection_sbm_cov_full2) 
-plot(collection_sbm_cov_full2$ICL)
-``` 
-```{r betacov2}
-betacov2 = collection_sbm_cov_full2$bestModel$fittedSBM$covarParam
-```
-The military power seems to be a covariate with little influence since its effect is estimated to
-`r betacov2`.
+<!-- We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries.  -->
 
+<!-- ```{r war network with covariates sampled, results = 'hide'}  -->
+<!-- sampleNet_cov_miss <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = missSBM:::logistic(.95), covariates = list(war$beligerent$power))  -->
+<!-- collection_sbm_cov_miss <- estimate(sampleNet_cov_miss, vBlocks = 1:5, sampling = "node")  -->
+<!-- smooth(collection_sbm_cov_miss, "foward", control = list(iterate = 2))  -->
+<!-- ```  -->
 
-Comparison with blockmodels
-```{r covblockmodel}
-library(blockmodels)
-modcov = BM_bernoulli_covariates_fast("SBM_sym",beligerent_adjacency,list(matsumpower),verbosity=0,plotting="")
-modcov$estimate()
-plot(modcov$ICL)
-modcov$model_parameters[[2]]$beta
-table(apply(modcov$memberships[[2]]$Z,1,which.max),collection_sbm_cov_full2$bestModel$fittedSBM$memberships)
-```
-
-We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries. 
-
-```{r war network with covariates sampled, results = 'hide'} 
-sampleNet_cov_miss <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = missSBM:::logistic(.95), covariates = list(war$beligerent$power)) 
-collection_sbm_cov_miss <- estimate(sampleNet_cov_miss, vBlocks = 1:5, sampling = "node") 
-smooth(collection_sbm_cov_miss, control = list(iterate = 3)) 
-``` 
-
-```{r comparison war with covariates} 
-res_full <- data.frame( 
-  ICL     = collection_sbm_cov_full$ICL, 
-  nBlocks = vBlocks,  
-  type    = "full" 
-) 
-res_miss <- data.frame( 
-  ICL     = collection_sbm_cov_miss$ICL, 
-  nBlocks = vBlocks,  
-  type    = "miss" 
-) 
-rbind(res_miss, res_full) %>%  
-  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) +  
-    geom_line() + theme_bw() 
-``` 
+<!-- ```{r comparison war with covariates}  -->
+<!-- res_full <- data.frame(  -->
+<!--   ICL     = collection_sbm_cov_full$ICL,  -->
+<!--   nBlocks = vBlocks,   -->
+<!--   type    = "full"  -->
+<!-- )  -->
+<!-- res_miss <- data.frame(  -->
+<!--   ICL     = collection_sbm_cov_miss$ICL,  -->
+<!--   nBlocks = vBlocks,   -->
+<!--   type    = "miss"  -->
+<!-- )  -->
+<!-- rbind(res_miss, res_full) %>%   -->
+<!--   ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) +   -->
+<!--     geom_line() + theme_bw()  -->
+<!-- ```  -->
 
 ## References
