@@ -13,8 +13,8 @@ navbar:
       href: "reference/index.html"
     - text: "Articles"
       menu:
-      - text: "Introduction to missSBM"
-        href: articles/introduction-to-misssbm.html
+      - text: "A case study on the war networks"
+        href: articles/case_study_war_networks.html
     - text: "Changelog"
       href: news/index.html
   right:
