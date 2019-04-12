@@ -3,10 +3,10 @@ context("test-consistency-on-fully-observed-network")
 library(igraph)
 
 test_that("SBM_fit and missSBMfit are coherent", {
-  data("war_graphs")
+  data("war")
 
   ## adjacency matrix without missing values
-  A <- war_graphs$beligerent %>%  as_adj(sparse = FALSE)
+  A <- war$beligerent %>%  as_adj(sparse = FALSE)
 
   ## coherence of sampledNetwork object
   sampledNet <- sampledNetwork$new(A)

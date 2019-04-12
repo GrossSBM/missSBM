@@ -23,7 +23,7 @@ covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x
 covarParam  <- rnorm(M, -1, 1)
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = TRUE)
+control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = TRUE)
 
 ## Consistency
 tol_truth <- 1e-2
@@ -89,7 +89,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth*12)
+  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), tol_truth*10)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
