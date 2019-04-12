@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Inference of an SBM with missing data — estimate • missSBM</title>
+<title>Estimation of SBMs with missing data — estimate • missSBM</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Inference of an SBM with missing data — estimate" />
+<meta property="og:title" content="Estimation of SBMs with missing data — estimate" />
 
-<meta property="og:description" content="Perform variational inference of a Stochastic Block Model from a sampled adjacency matrix" />
+<meta property="og:description" content="Variational inference from sampled network data on a collection of
+Stochastic Block Models indexed by block number." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -89,7 +90,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/introduction-to-misssbm.html">Introduction to missSBM</a>
+      <a href="../articles/case_study_war_networks.html">A case study on the war networks</a>
     </li>
   </ul>
 </li>
@@ -117,18 +118,19 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Inference of an SBM with missing data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/estimate.R'><code>R/estimate.R</code></a></small>
+    <h1>Estimation of SBMs with missing data</h1>
+    
     <div class="hidden name"><code>estimate.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Perform variational inference of a Stochastic Block Model from a sampled adjacency matrix</p>
+    <p>Variational inference from sampled network data on a collection of
+Stochastic Block Models indexed by block number.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>sampledNet</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='st'>"hierarchical"</span>,
+    <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>sampledNet</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='st'>"spectral"</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -136,7 +138,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sampledNet</th>
-      <td><p>An object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code>, typically obtained wthe the function <code><a href='prepare_data.html'>prepare_data</a></code> or <code><a href='sample.html'>sample</a></code>.</p></td>
+      <td><p>An object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code>, typically obtained with
+the function <code><a href='prepare_data.html'>prepare_data</a></code> (real-worl data) or <code><a href='sample.html'>sample</a></code> (simulation).</p></td>
     </tr>
     <tr>
       <th>vBlocks</th>
@@ -144,15 +147,18 @@
     </tr>
     <tr>
       <th>sampling</th>
-      <td><p>The sampling design for missing data modeling : "dyad", "node", "double-standard", "block-dyad", "block-node" ,"degree</p></td>
+      <td><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node")
+and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></td>
     </tr>
     <tr>
       <th>clusterInit</th>
-      <td><p>Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code> providing a user-defined clustering</p></td>
+      <td><p>Initial method for clustering: either a character in "hierarchical", "spectral"
+or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code>
+providing a user-defined clustering. Default is "spectral".</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>a list controlling the variational EM algorithm. See details.</p></td>
+      <td><p>a list of parameters controlling the variational EM algorithm. See details.</p></td>
     </tr>
     </table>
     
@@ -162,12 +168,26 @@
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The list of parameters <code>control</code> controls the optimziation process and the variational EM algorithm, with the following entries</p><ul>
+    <p>The list of parameters <code>control</code> essentially tunes the optimziation process and the
+variational EM algorithm, with the following parameters</p><ul>
 <li><p>"threshold"stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.</p></li>
-<li><p>"maxiter"V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200</p></li>
-<li><p>"fixPointIter"number of fix-point iteration for the Variational E step. Default is 5.</p></li>
+<li><p>"maxIter"V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200</p></li>
+<li><p>"fixPointIter"number of fix-point iterations in the Variational E step. Default is 5.</p></li>
 <li><p>"cores"integer for number of cores used. Default is 1.</p></li>
-<li><p>"trace"integer for verbosity (0, 1, 2). Useless when <code>cores</code> &gt; 1</p></li>
+<li><p>"trace"integer for verbosity (0, 1, 2). Default is 1. Useless when <code>cores</code> &gt; 1</p></li>
+</ul>
+    <p>The differents sampling designs are splitted into two families in which we find dyad-centered and
+node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for complete description.</p><ul>
+<li><p>Missing at Random (MAR)</p><ul>
+<li><p>"dyad": parameter = p $$p = P(Dyad (i,j) is sampled)$$</p></li>
+<li><p>"node": parameter = p and $$p = P(Node i is sampled)$$</p></li>
+</ul></li>
+<li><p>Not Missing At Random (NMAR)</p><ul>
+<li><p>"double-standard": parameter = (p0,p1) and $$p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=$$, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
+<li><p>"block-node": parameter = c(p(1),...,p(Q)) and $$p(q) = P(Node i is sampled | node i is in cluster q)$$</p></li>
+<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and $$p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)$$</p></li>
+<li><p>"degree": parameter = c(a,b) and $$logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))$$</p></li>
+</ul></li>
 </ul>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -200,7 +220,7 @@
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
 #&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107404.94 101010.79  95767.52  95958.78  96138.79</div></pre>
+#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107404.94 101298.73  95767.52  96002.47  96051.46</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -221,7 +241,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Julien Chiquet, Timothée Tabouy.</p>
+  <p>Developed by Julien Chiquet, Pierre Barbillon, Timothée Tabouy.</p>
 </div>
 
 <div class="pkgdown">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>An R6 Class to represent a collection of missSBM_fit — missSBM_collection • missSBM</title>
+<title>An object to represent a collection of missSBM_fit — missSBM_collection • missSBM</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,11 +30,10 @@
 
 
 
-<meta property="og:title" content="An R6 Class to represent a collection of missSBM_fit — missSBM_collection" />
+<meta property="og:title" content="An object to represent a collection of missSBM_fit — missSBM_collection" />
 
-<meta property="og:description" content="The function estimate produces an instance of this class.
-The function smooth (also available as ann R6 method of this class) can be used
-to smooth the ICL on a collection of model, as post-treatment." />
+<meta property="og:description" content="This R6 class stores a collection of missSBM_fit. Comes with basic printing methods an
+field access." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -91,7 +90,7 @@ to smooth the ICL on a collection of model, as post-treatment." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/introduction-to-misssbm.html">Introduction to missSBM</a>
+      <a href="../articles/case_study_war_networks.html">A case study on the war networks</a>
     </li>
   </ul>
 </li>
@@ -119,16 +118,15 @@ to smooth the ICL on a collection of model, as post-treatment." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>An R6 Class to represent a collection of missSBM_fit</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_collection-Class.R'><code>R/missSBM_collection-Class.R</code></a></small>
+    <h1>An object to represent a collection of missSBM_fit</h1>
+    
     <div class="hidden name"><code>missSBM_collection.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The function <code><a href='estimate.html'>estimate</a></code> produces an instance of this class.
-The function <code><a href='smooth.html'>smooth</a></code> (also available as ann R6 method of this class) can be used
-to smooth the ICL on a collection of model, as post-treatment.</p>
+    <p>This R6 class stores a collection of missSBM_fit. Comes with basic printing methods an
+field access.</p>
     
     </div>
 
@@ -143,14 +141,17 @@ to smooth the ICL on a collection of model, as post-treatment.</p>
     
     <dl class='dl-horizontal'>
 <dt><code>models</code></dt><dd><p>a list of models</p></dd>
-    <dt><code>ICL</code></dt><dd><p>the vector of Integrated Classfication Criterion (ICL) associated to the models of the collection: the smaller, the better</p></dd>
+    <dt><code>ICL</code></dt><dd><p>the vector of Integrated Classfication Criterion (ICL) associated to
+the models in the collection (the smaller, the better)</p></dd>
     <dt><code>bestModel</code></dt><dd><p>the best model according to the ICL</p></dd>
     <dt><code>optimizationStatus</code></dt><dd><p>a data.frame summarizing the optimization process for all models</p></dd>
 </dl>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='estimate.html'>estimate</a></code>, <code><a href='smooth.html'>smooth</a></code></p></div>
+    <div class='dont-index'><p>The function <code><a href='estimate.html'>estimate</a></code>, which produces an instance of this class.
+The function <code><a href='smooth.html'>smooth</a></code> can be used to smooth the ICL on a collection of model,
+as post-treatment.</p></div>
     
 
   </div>
@@ -170,7 +171,7 @@ to smooth the ICL on a collection of model, as post-treatment.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Julien Chiquet, Timothée Tabouy.</p>
+  <p>Developed by Julien Chiquet, Pierre Barbillon, Timothée Tabouy.</p>
 </div>
 
 <div class="pkgdown">

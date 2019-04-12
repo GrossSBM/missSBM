@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>An R6 Class to represent a sampler for a SBM — sampledNetwork • missSBM</title>
+<title>An R6 Class to represent sampled network data — sampledNetwork • missSBM</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="An R6 Class to represent a sampler for a SBM — sampledNetwork" />
+<meta property="og:title" content="An R6 Class to represent sampled network data — sampledNetwork" />
 
-<meta property="og:description" content="The function simulate produces an instance of an object with class SBM_sampler." />
+<meta property="og:description" content="The function sample and prepare_data produces an instance of an object with class sampledNetwork." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -89,7 +89,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/introduction-to-misssbm.html">Introduction to missSBM</a>
+      <a href="../articles/case_study_war_networks.html">A case study on the war networks</a>
     </li>
   </ul>
 </li>
@@ -117,14 +117,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>An R6 Class to represent a sampler for a SBM</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/sampledNetwork-Class.R'><code>R/sampledNetwork-Class.R</code></a></small>
+    <h1>An R6 Class to represent sampled network data</h1>
+    
     <div class="hidden name"><code>sampledNetwork.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The function <code><a href='simulate.html'>simulate</a></code> produces an instance of an object with class <code>SBM_sampler</code>.</p>
+    <p>The function <code><a href='sample.html'>sample</a></code> and <code><a href='prepare_data.html'>prepare_data</a></code> produces an instance of an object with class <code>sampledNetwork</code>.</p>
     
     </div>
 
@@ -179,7 +179,7 @@
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>sampled_network</span>)</div><div class='output co'>#&gt; Sampled Network
 #&gt; ==================================================================
-#&gt; Structure for storing a sampled network in missSBM.
+#&gt; Structure for storing a sampled network in missSBM
 #&gt; ==================================================================
 #&gt; * Useful fields 
 #&gt;   $nNodes, $nDyads, $is_directed
@@ -206,7 +206,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Julien Chiquet, Timothée Tabouy.</p>
+  <p>Developed by Julien Chiquet, Pierre Barbillon, Timothée Tabouy.</p>
 </div>
 
 <div class="pkgdown">

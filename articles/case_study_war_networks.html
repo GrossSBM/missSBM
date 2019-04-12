@@ -56,7 +56,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/introduction-to-misssbm.html">Introduction to missSBM</a>
+      <a href="../articles/case_study_war_networks.html">A case study on the war networks</a>
     </li>
   </ul>
 </li>
@@ -86,10 +86,10 @@
       <h1>missSBM: a case study with war networks</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">2019-04-10</h4>
+            <h4 class="date">2019-04-12</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/jchiquet/missSBM/blob/master/vignettes/introduction-to-misssbm.Rmd"><code>vignettes/introduction-to-misssbm.Rmd</code></a></small>
-      <div class="hidden name"><code>introduction-to-misssbm.Rmd</code></div>
+      
+      <div class="hidden name"><code>case_study_war_networks.Rmd</code></div>
 
     </div>
 
@@ -108,25 +108,23 @@
 <h2 class="hasAnchor">
 <a href="#the-war-network" class="anchor"></a>The war network</h2>
 <p>The <code>war_graphs</code> dataset comes with the <code>missSBM</code> package:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"war_graphs"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"war"</span>)</a></code></pre></div>
 <p>This dataset contains a list of two networks (<code>beligerent</code> and <code>alliance</code>) where the nodes are countries; an edge in the network <code>beligerent</code> means that the two countries have been at war at least once between years 1816 to 2007; an edge in network <code>alliance</code> means that the two countries have had a formal alliance between years 1816 to 2012. The network <code>beligerent</code> have less nodes since countries which have not been at war are not considered.</p>
 <p>These two networs were extracted from <a href="http://www.correlatesofwar.org/"></a> (see <span class="citation">Sarkees and Wayman (<a href="#ref-sarkees2010resort">2010</a>)</span> for war data, and <span class="citation">Gibler (<a href="#ref-gibler2008international">2008</a>)</span> for formal alliance).</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(war_graphs<span class="op">$</span>alliance   , <span class="dt">main =</span> <span class="st">"Alliance"</span>)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(war_graphs<span class="op">$</span>beligerent , <span class="dt">main =</span> <span class="st">"Beligerent"</span>)</a></code></pre></div>
-<p><img src="introduction-to-misssbm_files/figure-html/war%20network%20plot-1.png" width="768"></p>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(war<span class="op">$</span>alliance   , <span class="dt">main =</span> <span class="st">"Alliance"</span>)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(war<span class="op">$</span>beligerent , <span class="dt">main =</span> <span class="st">"Beligerent"</span>)</a></code></pre></div>
+<p><img src="case_study_war_networks_files/figure-html/war%20network%20plot-1.png" width="768"></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">1</span>))</a></code></pre></div>
 <p>In the following, we focus on the network <code>beligerent</code>. We extract here the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and the country names.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">beligerent_adjacency &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(war_graphs<span class="op">$</span>beligerent, <span class="dt">sparse =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">military_power       &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/vertex_attr">get.vertex.attribute</a></span>(war_graphs<span class="op">$</span>beligerent)<span class="op">$</span>military_power</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">countries &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/vertex_attr">get.vertex.attribute</a></span>(war_graphs<span class="op">$</span>beligerent)<span class="op">$</span>military_power</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">beligerent_adjacency &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/as_adjacency_matrix">as_adj</a></span>(war<span class="op">$</span>beligerent, <span class="dt">sparse =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <div id="generating-missing-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#generating-missing-data" class="anchor"></a>Generating missing data</h3>
 <p>Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered and collect edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function <code>sample</code> in <strong>missSBM</strong>:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">sampledNet_war &lt;-<span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/sample">sample</a></span>(beligerent_adjacency, <span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">parameters =</span> <span class="fl">.8</span>)</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(sampledNet_war)</a></code></pre></div>
-<p><img src="introduction-to-misssbm_files/figure-html/sampling%20node-1.png" width="480"></p>
+<p><img src="case_study_war_networks_files/figure-html/sampling%20node-1.png" width="480"></p>
 </div>
 <div id="estimation-with-missing-data" class="section level3">
 <h3 class="hasAnchor">
@@ -150,7 +148,7 @@
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(res_unsmoothed, res_smoothed) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb9-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> nBlocks, <span class="dt">y =</span> ICL, <span class="dt">group =</span> type, <span class="dt">color =</span> type)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb9-3" data-line-number="3"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>()</a></code></pre></div>
-<p><img src="introduction-to-misssbm_files/figure-html/smoothing%20effect%20plot-1.png" width="480"></p>
+<p><img src="case_study_war_networks_files/figure-html/smoothing%20effect%20plot-1.png" width="480"></p>
 </div>
 <div id="estimation-on-fully-observed-network" class="section level3">
 <h3 class="hasAnchor">
@@ -159,10 +157,10 @@
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">collection_sbm_full &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="st">  </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/estimate">estimate</a></span>(</a>
 <a class="sourceLine" id="cb10-3" data-line-number="3">    <span class="dt">sampledNet  =</span> <span class="kw"><a href="../reference/prepare_data.html">prepare_data</a></span>(beligerent_adjacency), </a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">    <span class="dt">vBlocks     =</span> vBlocks, <span class="st">"node"</span>,</a>
-<a class="sourceLine" id="cb10-5" data-line-number="5">    <span class="dt">clusterInit =</span> <span class="st">"hierarchical"</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">    <span class="dt">vBlocks     =</span> vBlocks, </a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">    <span class="dt">sampling    =</span> <span class="st">"node"</span></a>
 <a class="sourceLine" id="cb10-6" data-line-number="6">  )</a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_full, <span class="st">"both"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_full, <span class="st">"forward"</span>, <span class="dt">control =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">iterates =</span> <span class="dv">3</span>))</a></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">res_missing &lt;-<span class="st"> </span>res_smoothed</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">res_missing<span class="op">$</span>type &lt;-<span class="st"> "missing"</span></a>
 <a class="sourceLine" id="cb11-3" data-line-number="3">res_full &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
@@ -173,44 +171,78 @@
 <a class="sourceLine" id="cb11-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(res_missing, res_full) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb11-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> nBlocks, <span class="dt">y =</span> ICL, <span class="dt">group =</span> type, <span class="dt">color =</span> type)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb11-10" data-line-number="10"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>()</a></code></pre></div>
-<p><img src="introduction-to-misssbm_files/figure-html/unnamed-chunk-1-1.png" width="480"></p>
+<p><img src="case_study_war_networks_files/figure-html/unnamed-chunk-1-1.png" width="480"></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(</a>
 <a class="sourceLine" id="cb12-2" data-line-number="2">  collection_sbm<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships,</a>
 <a class="sourceLine" id="cb12-3" data-line-number="3">  collection_sbm_full<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>memberships</a>
 <a class="sourceLine" id="cb12-4" data-line-number="4">  )</a></code></pre></div>
 <pre><code>##    
 ##      1  2  3
-##   1  0 73  0
-##   2  0  0  6
-##   3  9  0  4</code></pre>
+##   1 13  3  0
+##   2  1 32 34</code></pre>
 </div>
 <div id="taking-the-covariates-into-account" class="section level3">
 <h3 class="hasAnchor">
 <a href="#taking-the-covariates-into-account" class="anchor"></a>Taking the covariates into account</h3>
 <p>We now introduce the covariate <code>military_power</code> into the analysis. We expect a part of the network to be explained by this covariate.</p>
 <p>let us first prepare the data for missSBM inference on the full set of data</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">sampleNet_cov &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare_data.html">prepare_data</a></span>(beligerent_adjacency, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(military_power))</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">sampleNet_cov &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare_data.html">prepare_data</a></span>(beligerent_adjacency, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(war<span class="op">$</span>beligerent<span class="op">$</span>power)) </a></code></pre></div>
 <p>Then we run the inference on the fully observed network</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">collection_sbm_cov_full &lt;-<span class="st"> </span><span class="kw"><a href="../reference/estimate.html">estimate</a></span>(sampleNet_cov, <span class="dt">vBlocks =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">sampling =</span> <span class="st">"node"</span>)</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_cov_full)</a></code></pre></div>
-<p>We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">sampleNet_cov_miss &lt;-<span class="st"> </span>missSBM<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/missSBM/topics/sample">sample</a></span>(beligerent_adjacency, <span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">parameters =</span> missSBM<span class="op">:::</span><span class="kw">logistic</span>(.<span class="dv">95</span>), <span class="dt">covariates =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(military_power))</a>
-<a class="sourceLine" id="cb16-2" data-line-number="2">collection_sbm_cov_miss &lt;-<span class="st"> </span><span class="kw"><a href="../reference/estimate.html">estimate</a></span>(sampleNet_cov_miss, <span class="dt">vBlocks =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">sampling =</span> <span class="st">"node"</span>)</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_cov_miss, <span class="dt">control =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">iterate =</span> <span class="dv">3</span>))</a></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">res_full &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb17-2" data-line-number="2">  <span class="dt">ICL     =</span> collection_sbm_cov_full<span class="op">$</span>ICL,</a>
-<a class="sourceLine" id="cb17-3" data-line-number="3">  <span class="dt">nBlocks =</span> vBlocks, </a>
-<a class="sourceLine" id="cb17-4" data-line-number="4">  <span class="dt">type    =</span> <span class="st">"full"</span></a>
-<a class="sourceLine" id="cb17-5" data-line-number="5">)</a>
-<a class="sourceLine" id="cb17-6" data-line-number="6">res_miss &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb17-7" data-line-number="7">  <span class="dt">ICL     =</span> collection_sbm_cov_miss<span class="op">$</span>ICL,</a>
-<a class="sourceLine" id="cb17-8" data-line-number="8">  <span class="dt">nBlocks =</span> vBlocks, </a>
-<a class="sourceLine" id="cb17-9" data-line-number="9">  <span class="dt">type    =</span> <span class="st">"miss"</span></a>
-<a class="sourceLine" id="cb17-10" data-line-number="10">)</a>
-<a class="sourceLine" id="cb17-11" data-line-number="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(res_miss, res_full) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb17-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> nBlocks, <span class="dt">y =</span> ICL, <span class="dt">group =</span> type, <span class="dt">color =</span> type)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb17-13" data-line-number="13"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>()</a></code></pre></div>
-<p><img src="introduction-to-misssbm_files/figure-html/comparison%20war%20with%20covariates-1.png" width="480"></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">vBlocks &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">collection_sbm_cov_full &lt;-<span class="st"> </span><span class="kw"><a href="../reference/estimate.html">estimate</a></span>(sampleNet_cov, <span class="dt">vBlocks =</span> vBlocks, <span class="dt">sampling =</span> <span class="st">"dyad"</span>)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">res_unsmoothed &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">  <span class="dt">ICL     =</span> collection_sbm_cov_full<span class="op">$</span>ICL,</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">  <span class="dt">nBlocks =</span> vBlocks, </a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">  <span class="dt">type    =</span> <span class="st">"raw"</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">)</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="kw"><a href="../reference/smooth.html">smooth</a></span>(collection_sbm_cov_full, <span class="st">"forward"</span>, <span class="dt">control =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">iterates =</span> <span class="dv">2</span>)) </a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">res_smoothed &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">  <span class="dt">ICL     =</span> collection_sbm_cov_full<span class="op">$</span>ICL,</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">  <span class="dt">nBlocks =</span> vBlocks, </a>
+<a class="sourceLine" id="cb15-12" data-line-number="12">  <span class="dt">type    =</span> <span class="st">"smoothed"</span></a>
+<a class="sourceLine" id="cb15-13" data-line-number="13">)</a>
+<a class="sourceLine" id="cb15-14" data-line-number="14"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(res_unsmoothed, res_smoothed) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> nBlocks, <span class="dt">y =</span> ICL, <span class="dt">group =</span> type, <span class="dt">color =</span> type)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-16" data-line-number="16"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>()</a></code></pre></div>
+<p><img src="case_study_war_networks_files/figure-html/war%20network%20with%20covariates%20full-1.png" width="480"></p>
+<p>The military power seems to be a covariate with great influence since its effect is estimated to -7.8299151.</p>
+<!-- Other way to take into account the covariate military power -->
+<!-- ```{r war network with covariate 2} -->
+<!-- nWar = nrow(beligerent_adjacency) -->
+<!-- matsumpower = matrix(war$beligerent$power,nrow = nWar,ncol = nWar) + matrix(war$beligerent$power,nrow = nWar,ncol = nWar,byrow=T) -->
+<!-- diag(matsumpower) = 0 # diagonal has to be set to 0  -->
+<!-- sampleNet_cov2 <- prepare_data(beligerent_adjacency, list(matsumpower))  -->
+<!-- ``` -->
+<!-- ```{r war network with covariates full 2, results = 'hide'}  -->
+<!-- collection_sbm_cov_full2 <- estimate(sampleNet_cov2, vBlocks = 1:5, sampling = "dyad")  -->
+<!-- smooth(collection_sbm_cov_full2)  -->
+<!-- plot(collection_sbm_cov_full2$ICL) -->
+<!-- ```  -->
+<!-- ```{r betacov2} -->
+<!-- betacov2 = collection_sbm_cov_full2$bestModel$fittedSBM$covarParam -->
+<!-- ``` -->
+<!-- ### Sampling network according to covariate effect -->
+<!-- We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries.  -->
+<!-- ```{r war network with covariates sampled, results = 'hide'}  -->
+<!-- sampleNet_cov_miss <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = missSBM:::logistic(.95), covariates = list(war$beligerent$power))  -->
+<!-- collection_sbm_cov_miss <- estimate(sampleNet_cov_miss, vBlocks = 1:5, sampling = "node")  -->
+<!-- smooth(collection_sbm_cov_miss, "foward", control = list(iterate = 2))  -->
+<!-- ```  -->
+<!-- ```{r comparison war with covariates}  -->
+<!-- res_full <- data.frame(  -->
+<!--   ICL     = collection_sbm_cov_full$ICL,  -->
+<!--   nBlocks = vBlocks,   -->
+<!--   type    = "full"  -->
+<!-- )  -->
+<!-- res_miss <- data.frame(  -->
+<!--   ICL     = collection_sbm_cov_miss$ICL,  -->
+<!--   nBlocks = vBlocks,   -->
+<!--   type    = "miss"  -->
+<!-- )  -->
+<!-- rbind(res_miss, res_full) %>%   -->
+<!--   ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) +   -->
+<!--     geom_line() + theme_bw()  -->
+<!-- ```  -->
 </div>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -243,7 +275,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Julien Chiquet, Timothée Tabouy.</p>
+  <p>Developed by Julien Chiquet, Pierre Barbillon, Timothée Tabouy.</p>
 </div>
 
 <div class="pkgdown">

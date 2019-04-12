@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="Sampling of network data — sample" />
 
-<meta property="og:description" content="Samples a matrix (the adjacency matrix of a network), possible generated under a stochastic block model" />
+<meta property="og:description" content="This function samples observations in an adjacency matrix according to a given sampling design.
+The final results is an adjacency matrix with the dimension as the input, yet with additional NAs." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -89,7 +90,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/introduction-to-misssbm.html">Introduction to missSBM</a>
+      <a href="../articles/case_study_war_networks.html">A case study on the war networks</a>
     </li>
   </ul>
 </li>
@@ -118,13 +119,14 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sampling of network data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/sample.R'><code>R/sample.R</code></a></small>
+    
     <div class="hidden name"><code>sample.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Samples a matrix (the adjacency matrix of a network), possible generated under a stochastic block model</p>
+    <p>This function samples observations in an adjacency matrix according to a given sampling design.
+The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.</p>
     
     </div>
 
@@ -141,7 +143,7 @@ we assume an undirected network with no loop; otherwise the network is assumed d
     </tr>
     <tr>
       <th>sampling</th>
-      <td><p>The sampling design used to sample the adjacency matrix</p></td>
+      <td><p>The sampling design used to sample the adjacency matrix, see details</p></td>
     </tr>
     <tr>
       <th>parameters</th>
@@ -149,7 +151,7 @@ we assume an undirected network with no loop; otherwise the network is assumed d
     </tr>
     <tr>
       <th>clusters</th>
-      <td><p>An optional clustering membership vector of the nodes, only necessary for class sampling</p></td>
+      <td><p>An optional clustering membership vector of the nodes, only necessary for block samplings</p></td>
     </tr>
     <tr>
       <th>covariates</th>
@@ -158,19 +160,21 @@ must be a size-N vector;  if the covariates are dyad-centred, each entry of <cod
     </tr>
     <tr>
       <th>similarity</th>
-      <td><p>An optional R x R -&gt; R function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
+      <td><p>An optional function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
 Only relevent when the covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code> containing all the useful information about the sampling.</p>
+    <p>an object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code> containing all the useful information about the sampling.
+Can then feed the <code><a href='estimate.html'>estimate</a></code> function.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The differents sampling designs are splitted into two families in which we find dyad-centered and node-centered samplings. See <cite>1</cite> for details.</p><ul>
-<li><p>Missing At Random (MAR)</p><ul>
+    <p>The differents sampling designs are splitted into two families in which we find dyad-centered and
+node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for complete description.</p><ul>
+<li><p>Missing at Random (MAR)</p><ul>
 <li><p>"dyad": parameter = p $$p = P(Dyad (i,j) is sampled)$$</p></li>
 <li><p>"node": parameter = p and $$p = P(Node i is sampled)$$</p></li>
 </ul></li>
@@ -247,7 +251,7 @@ Only relevent when the covariates are node-centered (i.e. <code>covariates</code
 
       <footer>
       <div class="copyright">
-  <p>Developed by Julien Chiquet, Timothée Tabouy.</p>
+  <p>Developed by Julien Chiquet, Pierre Barbillon, Timothée Tabouy.</p>
 </div>
 
 <div class="pkgdown">
