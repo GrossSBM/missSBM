@@ -135,9 +135,9 @@ function(control) {
     if (nlevels(cl_split) - 1 == i) { # when would this happens ?
       candidates <- mclapply(1:i, function(j) {
         cl <- as.numeric(cl_split); J <- which(cl == j)
-        cut <- as.numeric(init_hierarchical(adjacencyMatrix[J, ], 2))
+        cut <- sample.int(2, length(J), replace = TRUE)
         if (length(unique(cut)) > 1) {
-          cut <- as.numeric(init_hierarchical(adjacencyMatrix[J, ], 2))
+
           cl[J][which(cut == 1)] <- j; cl[J][which(cut == 2)] <- i + 1
           model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl)
           model$doVEM(control)
