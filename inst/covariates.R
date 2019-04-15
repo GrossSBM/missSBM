@@ -33,6 +33,12 @@ rbind(res_unsmoothed, res_smoothed) %>%
 collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "node")
 
 
+# other solution
 
-
+sampleNet_cov2 <- prepare_data(beligerent_adjacency, covariates = list(war$beligerent$power),similarity = function(v1,v2) {
+  v1+v2})
+sampleNet_cov2$covarArray
+collection_sbm_cov_full2 <- estimate(sampleNet_cov2, vBlocks = vBlocks, sampling = "node")
+smooth(collection_sbm_cov_full2)
+collection_sbm_cov_full2$bestModel$fittedSBM$covarParam
 
