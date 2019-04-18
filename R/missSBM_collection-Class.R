@@ -130,27 +130,27 @@ function(control) {
   if (trace) cat("   Going forward ")
   for (i in self$vBlocks[-length(self$vBlocks)]) {
     if (trace) cat("+")
-    cl_split <- factor(private$missSBM_fit[[i]]$fittedSBM$memberships)
-    levels(cl_split) <- c(levels(cl_split), as.character(i + 1))
-    if (nlevels(cl_split) - 1 == i) { # when would this happens ?
+    cl0 <- private$missSBM_fit[[i]]$fittedSBM$memberships
+    if (length(unique(cl0)) == i) { # when would this happens ?
       candidates <- mclapply(1:i, function(j) {
-        cl <- as.numeric(cl_split); J <- which(cl == j)
-        cut <- sample.int(2, length(J), replace = TRUE)
-        if (length(unique(cut)) > 1) {
-
-          cl[J][which(cut == 1)] <- j; cl[J][which(cut == 2)] <- i + 1
-          model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl)
-          model$doVEM(control)
-          model
-        } else {
-          private$missSBM_fit[[i + 1]]$clone()
-        }
+        cl <- cl0
+        J  <- which(cl == j)
+        J1 <- base::sample(J, floor(length(J)/2))
+        J2 <- setdiff(J, J1)
+        cl[J1] <- j; cl[J2] <- i + 1
+        model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl)
+        model$doVEM(control)
+        model
       }, mc.cores = control$cores)
 
-      best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-      if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
+      best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
+      if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
         private$missSBM_fit[[i + 1]] <- best_one
       }
+      # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
+      # if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
+      #   private$missSBM_fit[[i + 1]] <- best_one
+      # }
     }
   }
   if (trace) cat("\r                                                                                                    \r")
@@ -177,10 +177,14 @@ function(control) {
         model
       }, mc.cores = control$cores)
 
-      best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-      if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
+      best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
+      if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
         private$missSBM_fit[[i - 1]] <- best_one
       }
+      # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
+      # if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
+      #   private$missSBM_fit[[i - 1]] <- best_one
+      # }
     }
   }
   if (trace) cat("\r                                                                                                    \r")
