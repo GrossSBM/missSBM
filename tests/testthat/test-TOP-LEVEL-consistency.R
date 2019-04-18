@@ -97,7 +97,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     missSBM_out <- missSBM::estimate(
       sampledNet  = prepare_data(refAlgo$sampledNet, refAlgo$covariates),
       vBlocks     = truth$nBlocks,
-      sampling    = ifelse(sampling == "dyad-covariates", "dyad", "node"),
+      sampling    = ifelse(sampling == "dyad-covariates", "covar-dyad", "covar-node"),
       clusterInit = "spectral"
     )
     newAlgo <- missSBM_out$bestModel

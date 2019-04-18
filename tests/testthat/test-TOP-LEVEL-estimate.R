@@ -74,14 +74,17 @@ test_that("missSBM with a collection of models", {
     collection <- missSBM::estimate(
       sampledNet = sampledNet,
       vBlocks    = 1:5,
-      sampling   = "dyad",
-      clusterInit = "hierarchical",
+      sampling   = sampling,
+      clusterInit = "spectral",
       control    = control
     )
 
     expect_is(collection, "missSBM_collection")
+    expect_true(is.data.frame(collection$optimizationStatus))
+
+    expect_true(is.data.frame(collection$optimizationStatus))
     expect_equal(collection$bestModel$fittedSBM$nBlocks, Q)
     expect_true(which.min(collection$ICL) == Q)
-    expect_true(is.data.frame(collection$optimizationStatus))
+
   }
 })

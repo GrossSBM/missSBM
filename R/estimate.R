@@ -10,6 +10,7 @@
 #' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
 #' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}
+#' @param use_covariates logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM pinference? default is TRUE.
 #' providing a user-defined clustering. Default is "spectral".
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
@@ -63,11 +64,13 @@
 #' collection$ICL
 #' @import R6 parallel
 #' @export
-estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", control = list()) {
+estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", use_covariates = TRUE, control = list()) {
 
   ## Defaut control parameters for VEM, overwritten by user specification
   ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
   ctrl[names(control)] <- control
+
+  if (use_covariates & !is.null(sampledNet$covarArray)) stopifnot(sampling %in% available_samplings_covariates)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(

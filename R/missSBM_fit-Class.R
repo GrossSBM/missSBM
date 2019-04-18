@@ -35,24 +35,24 @@ missSBM_fit <-
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
 
-      ## Initialize the sampling fit and the SBM fit
+      ## Initialize the SBM fit
       if (is.null(sampledNet$covarArray)) {
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
-        private$sampling <- switch(netSampling,
-          "dyad"            = dyadSampling_fit$new(private$sampledNet),
-          "node"            = nodeSampling_fit$new(private$sampledNet),
-          "block-node"      = blockSampling_fit$new(private$sampledNet, Z),
-          "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
-          "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, Z),
-          "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam)
-        )
       } else {
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, sampledNet$covarArray)
-        private$sampling <- switch(netSampling,
-          "dyad"            = dyadSampling_fit_covariates$new(private$sampledNet),
-          "node"            = nodeSampling_fit_covariates$new(private$sampledNet)
-        )
       }
+
+      ## Initialize the sampling fit
+      private$sampling <- switch(netSampling,
+        "dyad"            = dyadSampling_fit$new(private$sampledNet),
+        "node"            = nodeSampling_fit$new(private$sampledNet),
+        "covar-dyad"      = covarDyadSampling_fit$new(private$sampledNet),
+        "covar-node"      = covarNodeSampling_fit$new(private$sampledNet),
+        "block-node"      = blockSampling_fit$new(private$sampledNet, Z),
+        "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
+        "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, Z),
+        "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam)
+      )
     }
   ),
   active = list(

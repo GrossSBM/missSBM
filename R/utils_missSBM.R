@@ -1,8 +1,8 @@
 zero <- .Machine$double.eps
 
-available_samplings <- c("dyad", "node", "block-node", "block-dyad", "double-standard", "degree")
+available_samplings <- c("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")
 
-available_samplings_covariates <- c("dyad", "node")
+available_samplings_covariates <- c("dyad", "covar-dyad", "node", "covar-node")
 
 l1_similarity <- function(x, y) {-abs(x - y)}
 

@@ -87,8 +87,8 @@ dyadSampling_fit <-
   )
 )
 
-dyadSampling_fit_covariates <-
-  R6::R6Class(classname = "dyadSampling_fit_covariates",
+covarDyadSampling_fit <-
+  R6::R6Class(classname = "covarDyadSampling_fit",
   inherit = networkSamplingDyads_fit,
   private = list(
     D_obs = NULL, # observed dyads
@@ -138,8 +138,8 @@ nodeSampling_fit <-
   )
 )
 
-nodeSampling_fit_covariates <-
-  R6::R6Class(classname = "nodeSampling_fit_covariates",
+covarNodeSampling_fit <-
+  R6::R6Class(classname = "covarNodeSampling_fit",
   inherit = networkSamplingNodes_fit,
   private = list(
     rho = NULL # vector of predicted probabilities of observation
