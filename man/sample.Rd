@@ -39,6 +39,8 @@ node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete de
   \itemize{
     \item{"dyad": parameter = p \deqn{p = P(Dyad (i,j) is sampled)}}
     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
+    \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
+    \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
   }
 \item Not Missing At Random (NMAR)
   \itemize{

@@ -96,7 +96,7 @@ covarDyadSampling_fit <-
   ),
   public = list(
     initialize = function(sampledNetwork, ...) {
-      super$initialize(sampledNetwork, "dyad")
+      super$initialize(sampledNetwork, "covar-dyad")
       X <- apply(sampledNetwork$covarArray, 3, as.vector)
       y <- 1 * as.vector(!sampledNetwork$NAs)
       glm_out       <- glm.fit(X, y, family = binomial())
@@ -146,7 +146,7 @@ covarNodeSampling_fit <-
   ),
   public = list(
     initialize = function(sampledNetwork, ...) {
-      super$initialize(sampledNetwork, "node")
+      super$initialize(sampledNetwork, "covar-node")
       y <- 1 * (sampledNetwork$observedNodes)
       glm_out     <- glm.fit(sampledNetwork$covarMatrix, y, family = binomial())
       private$psi <- coefficients(glm_out)

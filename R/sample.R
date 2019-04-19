@@ -24,6 +24,8 @@
 #'   \itemize{
 #'     \item{"dyad": parameter = p \deqn{p = P(Dyad (i,j) is sampled)}}
 #'     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
+#'     \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
+#'     \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
 #'   }
 #' \item Not Missing At Random (NMAR)
 #'   \itemize{
@@ -77,21 +79,27 @@
 #' @export
 sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity) {
 
+  ## Sanity check
+  stopifnot(sampling %in% available_samplings)
+
   ## general network parameters
   nNodes   <- ncol(adjacencyMatrix)
   directed <- !isSymmetric(adjacencyMatrix)
 
-  ## prepare the covariates
+  ## Prepare the covariates
   covar <- format_covariates(covariates, similarity)
-  stopifnot(sampling %in% available_samplings)
   if (!is.null(covar$Array)) stopifnot(sampling %in% available_samplings_covariates)
 
   ## instantiate the sampler
   mySampler <-
     switch(sampling,
       "dyad"       = simpleDyadSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covar$Array),
+        parameters = parameters, nNodes = nNodes, directed = directed),
       "node"       = simpleNodeSampler$new(
+        parameters = parameters, nNodes = nNodes, directed = directed),
+      "covar-dyad" = simpleDyadSampler$new(
+        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covar$Array),
+      "covar-node" = simpleNodeSampler$new(
         parameters = parameters, nNodes = nNodes, directed = directed, covarMatrix = covar$Matrix),
       "double-standard" = doubleStandardSampler$new(
         parameters = parameters, adjMatrix = adjacencyMatrix, directed = directed),
