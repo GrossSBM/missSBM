@@ -63,3 +63,11 @@ SBM_fit$set("public", "doVEM",
   }
 )
 
+SBM_fit$set("public", "show",
+function(model = "Fit of a Stochastic Block Model\n") {
+  super$show(model)
+  cat("* Additional fields \n")
+  cat("  $blocks, $memberships, $adjMatrix, $connectProb, $vBound, $vICL, $penalty\n")
+  cat("* S3 methods \n")
+  cat("  plot, print\n")
+})

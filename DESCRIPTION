@@ -26,6 +26,7 @@ Imports:
     ape,
     igraph,
     nloptr,
+    corrplot,
     R6,
     magrittr
 LinkingTo: Rcpp, RcppArmadillo

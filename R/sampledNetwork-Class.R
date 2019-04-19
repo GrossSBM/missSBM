@@ -39,7 +39,7 @@
 #'      )
 #'
 #' print(sampled_network)
-#' plot(sampled_network)
+#' plot(sampled_network, clustering = sbm$memberships)
 #'@export
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
@@ -132,9 +132,21 @@ sampledNetwork <-
   )
 )
 
+#' @importFrom corrplot corrplot
 sampledNetwork$set("public", "plot",
-function(main = paste("Network sampling with sampling rate:", signif(self$samplingRate,3))) {
-  image_NA(self$adjacencyMatrix, main = main)
+function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {
+  if (is.null(clustering)) {
+    adjMatrix <- self$adjacencyMatrix
+  } else {
+    Z <- missSBM:::clustering_indicator(as.factor(clustering))
+    colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
+    colorMat <- Z %*% colors %*% t(Z)
+    colorMap <- colorMat[order(clustering),order(clustering)]
+    adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
+  }
+  corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
+#
+#   image_NA(self$adjacencyMatrix, main = main)
 })
 
 sampledNetwork$set("public", "show",

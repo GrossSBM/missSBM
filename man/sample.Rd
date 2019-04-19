@@ -86,9 +86,10 @@ for (sampling in names(sampling_parameters)) {
      )
 }
 \dontrun{
+## SSOOOO long, but fancy
 par(mfrow = c(2,3))
 for (sampling in names(sampling_parameters)) {
-  plot(sampled_networks[[sampling]] , main = paste(sampling, "sampling"))
+  plot(sampled_networks[[sampling]], clustering = sbm$memberships, main = paste(sampling, "sampling"))
 }
 par(mfrow = c(1,1))
 }

@@ -69,3 +69,20 @@ function(model = "Stochastic Block Model\n") {
 })
 SBM$set("public", "print", function() self$show())
 
+SBM$set("public", "plot",
+  function(type = c("network", "connectivity")) {
+    type <- match.arg(type)
+    if (type == "network") {
+      Z <- missSBM:::clustering_indicator(as.factor(self$memberships))
+      colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
+      colorMat <- Z %*% colors %*% t(Z)
+      colorMap <- colorMat[order(self$memberships),order(self$memberships)]
+      adjMatrix <- self$adjacencyMatrix[order(self$memberships), order(self$memberships)] * colorMap
+      corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", mar = c(0,0,1,0))
+    }
+    if (type == "connectivity") {
+      corrplot(self$connectProb[order(self$memberships), order(self$memberships)],
+               tl.pos = "n", method = "color", is.corr = FALSE, main = "")
+    }
+  }
+)

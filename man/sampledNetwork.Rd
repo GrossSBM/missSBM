@@ -64,6 +64,6 @@ sampled_network <-
      )
 
 print(sampled_network)
-plot(sampled_network)
+plot(sampled_network, clustering = sbm$memberships)
 }
 \keyword{datasets}
