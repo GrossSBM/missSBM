@@ -142,8 +142,8 @@ test_that("Init clustering with covariate is consistent", {
 
   A_full <- sbm$adjacencyMatrix
   psi <- runif(M, -5, 5)
-  A_dyad <- missSBM::sample(A_full, "dyad", psi, covariates = covariates_dyad)$adjacencyMatrix
-  A_node <- missSBM::sample(A_full, "node", psi, covariates = covariates_node)$adjacencyMatrix
+  A_dyad <- missSBM::sample(A_full, "covar-dyad", psi, covariates = covariates_dyad)$adjacencyMatrix
+  A_node <- missSBM::sample(A_full, "covar-node", psi, covariates = covariates_node)$adjacencyMatrix
 
   for (A in list(A_full, A_dyad, A_node)) {
     for (method in c("hierarchical", "spectral", "kmeans")) {

@@ -47,7 +47,7 @@ test_that("Consistency of dyad-centered sampling", {
 
   ## with covariates
   psi <- runif(M, -5, 5)
-  dyad <- missSBM::sample(sbm_cov_dyad$adjacencyMatrix, "dyad", psi, covariates = covariates_dyad)
+  dyad <- missSBM::sample(sbm_cov_dyad$adjacencyMatrix, "covar-dyad", psi, covariates = covariates_dyad)
   expect_is(dyad, "sampledNetwork", "R6")
   expect_equal(dim(dyad$adjacencyMatrix), dim(sbm_cov_dyad$adjacencyMatrix))
 
@@ -74,7 +74,7 @@ test_that("Consistency of node-centered network sampling", {
 
   ## with covariates
   psi <- runif(M, -5, 5)
-  node <- missSBM::sample(sbm_cov_node$adjacencyMatrix, "node", psi, covariates = covariates_node)
+  node <- missSBM::sample(sbm_cov_node$adjacencyMatrix, "covar-node", psi, covariates = covariates_node)
   expect_is(node, "sampledNetwork", "R6")
   expect_equal(dim(node$adjacencyMatrix), dim(sbm_cov_node$adjacencyMatrix))
 
