@@ -138,7 +138,7 @@ test_that("miss SBM with covariates and node sampling works", {
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SBM_fit_covariates")
-  expect_is(missSBM$fittedSampling, "covarNodeSampling_fit")
+  expect_is(missSBM$fittedSampling, "nodeSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
 
   ## Optimization success
@@ -150,7 +150,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), 10 * tol_truth)
+  expect_lt(error(missSBM$fittedSampling$parameters, 0.9), 10 * tol_truth)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
