@@ -37,17 +37,23 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
           ## Bernoulli directed
           tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
         }
-        private$tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
+        temp = t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
+        thr = 1e-4
+        temp[temp<thr] = thr
+        temp[temp>1-thr] = 1-thr
+        temp = temp / matrix(rowSums(temp),nrow(temp),ncol(temp),byrow=F)
+        private$tau = temp
+        #private$tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
       }
     }
   ),
   active = list(
     vExpec = function(value) {
+      prob   <- quad_form(private$pi, t(private$tau))
       factor <- ifelse(private$directed, 1, .5)
-      adjMat <- private$Y ; diag(adjMat) <- 0
-      tmp <- factor * sum( adjMat * private$tau %*% log(private$pi) %*% t(private$tau) +
-                             bar(private$Y)  *  private$tau %*% log(1 - private$pi) %*% t(private$tau))
-      sum(private$tau %*% log(private$alpha)) +  tmp
+      adjMatrix_zeroDiag     <- private$Y ; diag(adjMatrix_zeroDiag) <- 0
+      adjMatrix_zeroDiag_bar <- 1 - private$Y ; diag(adjMatrix_zeroDiag_bar) <- 0
+      sum(private$tau %*% log(private$alpha)) +  factor * sum( adjMatrix_zeroDiag * log(prob) + adjMatrix_zeroDiag_bar *  log(1 - prob))
     }
   )
 )
