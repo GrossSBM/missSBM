@@ -18,8 +18,8 @@ test_that("Parameter estimation in dyad-centered sampling with covariates", {
 
   sampledNet <- missSBM::sample(sbm$adjacencyMatrix, "dyad", covarParam, covariates = covariates)
 
-  fittedSampling <- missSBM:::dyadSampling_fit_covariates$new(sampledNet, sbm$covarArray)
-  expect_is(fittedSampling, "dyadSampling_fit_covariates")
+  fittedSampling <- missSBM:::covarDyadSampling_fit$new(sampledNet, sbm$covarArray)
+  expect_is(fittedSampling, "covarDyadSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
   tolerance <- 1e-2
@@ -41,8 +41,8 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
 
   sampledNet <- missSBM::sample(sbm$adjacencyMatrix, "node", covarParam, covariates = covariates_node)
 
-  fittedSampling <- missSBM:::nodeSampling_fit_covariates$new(sampledNet, simplify2array(covariates_node))
-  expect_is(fittedSampling, "nodeSampling_fit_covariates")
+  fittedSampling <- missSBM:::covarNodeSampling_fit$new(sampledNet, simplify2array(covariates_node))
+  expect_is(fittedSampling, "covarNodeSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
   tolerance <- .2
