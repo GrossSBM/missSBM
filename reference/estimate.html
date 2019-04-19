@@ -131,7 +131,7 @@ Stochastic Block Models indexed by block number.</p>
     </div>
 
     <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>sampledNet</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='st'>"spectral"</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
+  <span class='kw'>use_covariates</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,7 +153,11 @@ and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></
     <tr>
       <th>clusterInit</th>
       <td><p>Initial method for clustering: either a character in "hierarchical", "spectral"
-or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code>
+or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code></p></td>
+    </tr>
+    <tr>
+      <th>use_covariates</th>
+      <td><p>logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM pinference? default is TRUE.
 providing a user-defined clustering. Default is "spectral".</p></td>
     </tr>
     <tr>
@@ -179,8 +183,10 @@ variational EM algorithm, with the following parameters</p><ul>
     <p>The differents sampling designs are splitted into two families in which we find dyad-centered and
 node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for complete description.</p><ul>
 <li><p>Missing at Random (MAR)</p><ul>
-<li><p>"dyad": parameter = p $$p = P(Dyad (i,j) is sampled)$$</p></li>
+<li><p>"dyad": parameter = p and $$p = P(Dyad (i,j) is sampled)$$</p></li>
 <li><p>"node": parameter = p and $$p = P(Node i is sampled)$$</p></li>
+<li><p>"covar-dyad": parameter = beta in R^M and $$P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))$$</p></li>
+<li><p>"covar-node": parameter = nu in R^M and $$P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)$$</p></li>
 </ul></li>
 <li><p>Not Missing At Random (NMAR)</p><ul>
 <li><p>"double-standard": parameter = (p0,p1) and $$p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=$$, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>

@@ -177,6 +177,8 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
 <li><p>Missing at Random (MAR)</p><ul>
 <li><p>"dyad": parameter = p $$p = P(Dyad (i,j) is sampled)$$</p></li>
 <li><p>"node": parameter = p and $$p = P(Node i is sampled)$$</p></li>
+<li><p>"covar-dyad": parameter = beta in R^M and $$P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))$$</p></li>
+<li><p>"covar-node": parameter = nu in R^M and $$P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)$$</p></li>
 </ul></li>
 <li><p>Not Missing At Random (NMAR)</p><ul>
 <li><p>"double-standard": parameter = (p0,p1) and $$p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=$$, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
@@ -225,9 +227,11 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
        <span class='kw'>cluster</span>         <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>memberships</span>
      )
 }</div><span class='co'># NOT RUN {</span>
+<span class='co'>## SSOOOO long, but fancy</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>3</span>))
 <span class='kw'>for</span> (<span class='no'>sampling</span> <span class='kw'>in</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sampling_parameters</span>)) {
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sampled_networks</span><span class='kw'>[[</span><span class='no'>sampling</span>]] , <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste</a></span>(<span class='no'>sampling</span>, <span class='st'>"sampling"</span>))
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sampled_networks</span><span class='kw'>[[</span><span class='no'>sampling</span>]],
+    <span class='kw'>clustering</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>memberships</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste</a></span>(<span class='no'>sampling</span>, <span class='st'>"sampling"</span>))
 }
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>))
 <span class='co'># }</span></pre>
