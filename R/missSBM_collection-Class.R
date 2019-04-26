@@ -143,14 +143,14 @@ function(control) {
         model
       }, mc.cores = control$cores)
 
-      best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
-      if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
-        private$missSBM_fit[[i + 1]] <- best_one
-      }
-      # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-      # if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
+      # best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
+      # if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
       #   private$missSBM_fit[[i + 1]] <- best_one
       # }
+      best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
+      if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
+        private$missSBM_fit[[i + 1]] <- best_one
+      }
     }
   }
   if (trace) cat("\r                                                                                                    \r")
@@ -177,14 +177,14 @@ function(control) {
         model
       }, mc.cores = control$cores)
 
-      best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
-      if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
-        private$missSBM_fit[[i - 1]] <- best_one
-      }
-      # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-      # if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
+      # best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
+      # if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
       #   private$missSBM_fit[[i - 1]] <- best_one
       # }
+      best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
+      if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
+        private$missSBM_fit[[i - 1]] <- best_one
+      }
     }
   }
   if (trace) cat("\r                                                                                                    \r")
