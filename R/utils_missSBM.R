@@ -61,7 +61,7 @@ h <- function(x) {-.5 * (logistic(x) - 0.5) / x}
 
 xlogx <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
 
-check_boundaries <- function(x) {
+check_boundaries <- function(x, zero = .Machine$double.eps) {
   x[is.nan(x)] <- zero
   x[x > 1 - zero] <- 1 - zero
   x[x <     zero] <-     zero
