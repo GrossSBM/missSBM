@@ -37,7 +37,7 @@ missSBM_fit <-
       private$sampledNet <- sampledNet
 
       ## Initialize the SBM fit
-      if (is.null(sampledNet$covarArray) | !useCov) {
+      if (is.null(sampledNet$covarArray) | !use_cov) {
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
       } else {
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, sampledNet$covarArray)
