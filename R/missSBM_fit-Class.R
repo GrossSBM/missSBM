@@ -12,7 +12,8 @@ missSBM_fit <-
     imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
-    optStatus  = NULL # status of the optimization process
+    optStatus  = NULL, # status of the optimization process
+    useCov     = NULL # use or not os covariates for SBM fitting
   ),
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit, use_cov) {
@@ -36,11 +37,14 @@ missSBM_fit <-
       private$sampledNet <- sampledNet
 
       ## Initialize the SBM fit
-      if (is.null(sampledNet$covarArray) | !use_cov) {
+      if (is.null(sampledNet$covarArray) | !useCov) {
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
       } else {
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, sampledNet$covarArray)
       }
+
+      ## Covariates in SBM or not
+      private$useCov <- use_cov
 
       ## Initialize the sampling fit
       private$sampling <- switch(netSampling,
@@ -58,6 +62,7 @@ missSBM_fit <-
   active = list(
     fittedSBM = function(value) {private$SBM},
     fittedSampling = function(value) {private$sampling}  ,
+    useCovariates  = function(value) {private$useCov}   ,
     sampledNetwork = function(value) {private$sampledNet},
     imputedNetwork = function(value) {private$imputedNet},
     monitoring     = function(value) {private$optStatus},

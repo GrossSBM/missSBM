@@ -118,6 +118,7 @@ function(control) {
   trace <- control$trace > 0; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
+  use_cov     <- private$missSBM_fit[[1]]$useCovariates
   adjacencyMatrix <- sampledNet$adjacencyMatrix
   if (!is.null(sampledNet$covarArray)) {
     y <- as.vector(adjacencyMatrix)
@@ -162,6 +163,7 @@ function(control) {
   trace <- control$trace > 0; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
+  use_cov     <- private$missSBM_fit[[1]]$useCovariates
 
   if (trace) cat("   Going backward ")
   for (i in rev(self$vBlocks[-1])) {
