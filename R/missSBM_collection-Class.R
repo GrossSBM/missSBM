@@ -36,7 +36,7 @@ missSBM_collection <-
 )
 
 missSBM_collection$set("public", "initialize",
-function(sampledNet, vBlocks, sampling, clusterInit, cores, trace) {
+function(sampledNet, vBlocks, sampling, clusterInit, cores, trace, use_cov) {
 
   if (trace) cat("\n")
   if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
@@ -47,7 +47,7 @@ function(sampledNet, vBlocks, sampling, clusterInit, cores, trace) {
   private$missSBM_fit <- mcmapply(
     function(nBlock, cl0) {
       if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-      missSBM_fit$new(sampledNet, nBlock, sampling, cl0)
+      missSBM_fit$new(sampledNet, nBlock, sampling, cl0, use_cov)
     }, nBlock = vBlocks, cl0 = clusterInit, mc.cores = cores
   )
 })
@@ -138,7 +138,7 @@ function(control) {
         J1 <- base::sample(J, floor(length(J)/2))
         J2 <- setdiff(J, J1)
         cl[J1] <- j; cl[J2] <- i + 1
-        model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl)
+        model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, use_cov)
         model$doVEM(control)
         model
       }, mc.cores = control$cores)
@@ -172,7 +172,7 @@ function(control) {
         cl_fusion <- cl0
         levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
         levels(cl_fusion) <- as.character(1:(i - 1))
-        model <- missSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion)
+        model <- missSBM_fit$new(sampledNet, i - 1, sampling, cl_fusion, use_cov)
         model$doVEM(control)
         model
       }, mc.cores = control$cores)

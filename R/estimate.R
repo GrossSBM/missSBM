@@ -84,7 +84,8 @@ estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", us
       sampling    = sampling,
       clusterInit = clusterInit,
       cores       = ctrl$cores,
-      trace       = (ctrl$trace > 0)
+      trace       = (ctrl$trace > 0),
+      use_cov     = use_covariates
   )
 
   ## Launch estimation of each missSBM_fit
