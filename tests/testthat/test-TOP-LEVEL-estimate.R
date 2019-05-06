@@ -35,7 +35,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0)
 
     ## Perform inference with internal classes
-    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling, "spectral")
+    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling, "spectral", TRUE)
     out_missSBM <- missSBM$doVEM(control)
 
     ## Perform inference with the top level function
@@ -72,11 +72,12 @@ test_that("missSBM with a collection of models", {
 
     ## Perform inference with the top level function
     collection <- missSBM::estimate(
-      sampledNet = sampledNet,
-      vBlocks    = 1:5,
-      sampling   = sampling,
+      sampledNet  = sampledNet,
+      vBlocks     = 1:5,
+      sampling    = sampling,
       clusterInit = "spectral",
-      control    = control
+      control     = control,
+      useCovariates = TRUE
     )
 
     expect_is(collection, "missSBM_collection")

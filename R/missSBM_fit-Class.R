@@ -16,7 +16,7 @@ missSBM_fit <-
     useCov     = NULL # use or not os covariates for SBM fitting
   ),
   public = list(
-    initialize = function(sampledNet, nBlocks, netSampling, clusterInit, use_cov) {
+    initialize = function(sampledNet, nBlocks, netSampling, clusterInit, useCov) {
 
       ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
@@ -37,14 +37,14 @@ missSBM_fit <-
       private$sampledNet <- sampledNet
 
       ## Initialize the SBM fit
-      if (is.null(sampledNet$covarArray) | !use_cov) {
+      if (is.null(sampledNet$covarArray) | !useCov) {
         private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
       } else {
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, sampledNet$covarArray)
       }
 
       ## Covariates in SBM or not
-      private$useCov <- use_cov
+      private$useCov <- useCov
 
       ## Initialize the sampling fit
       private$sampling <- switch(netSampling,

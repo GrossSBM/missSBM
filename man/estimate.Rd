@@ -5,7 +5,7 @@
 \title{Estimation of SBMs with missing data}
 \usage{
 estimate(sampledNet, vBlocks, sampling, clusterInit = "spectral",
-  use_covariates = TRUE, control = list())
+  useCovariates = TRUE, control = list())
 }
 \arguments{
 \item{sampledNet}{An object with class \code{\link{sampledNetwork}}, typically obtained with
@@ -17,10 +17,10 @@ the function \code{\link{prepare_data}} (real-worl data) or \code{\link{sample}}
 and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
 \item{clusterInit}{Initial method for clustering: either a character in "hierarchical", "spectral"
-or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}}
-
-\item{use_covariates}{logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM pinference? default is TRUE.
+or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
 providing a user-defined clustering. Default is "spectral".}
+
+\item{useCovariates}{logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM inference? default is TRUE.}
 
 \item{control}{a list of parameters controlling the variational EM algorithm. See details.}
 }

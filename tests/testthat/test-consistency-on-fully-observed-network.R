@@ -29,7 +29,7 @@ test_that("SBM_fit and missSBMfit are coherent", {
   my_SBM$vICL
 
   ## using missSBM_fit class
-  my_missSBM <- missSBM:::missSBM_fit$new(sampledNet = sampledNet, Q, netSampling = "node", clusterInit = cl0)
+  my_missSBM <- missSBM:::missSBM_fit$new(sampledNet = sampledNet, Q, netSampling = "node", clusterInit = cl0, useCov = TRUE)
   my_missSBM$doVEM(control)
   my_missSBM$fittedSBM$vICL
 
@@ -41,7 +41,8 @@ test_that("SBM_fit and missSBMfit are coherent", {
       sampling    = "node",
       clusterInit = cl0,
       cores       = 1,
-      trace       = TRUE
+      trace       = TRUE,
+      useCov      = TRUE
   )
   my_collection$estimate(control)
 

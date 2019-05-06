@@ -21,7 +21,7 @@ test_that("missSBMcollection works", {
     sampledNet  = sampledNet,
     vBlocks     = 1:5,
     sampling    = "dyad",
-    clusterInit = 'hierarchical', 1, TRUE)
+    clusterInit = 'hierarchical', 1, TRUE, TRUE)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)
@@ -49,7 +49,7 @@ test_that("More smoothing tests", {
     sampledNet  = sampledNet,
     vBlocks     = 1:5,
     sampling    = "dyad",
-    clusterInit = 'hierarchical', 1, TRUE)
+    clusterInit = 'hierarchical', 1, TRUE, TRUE)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)

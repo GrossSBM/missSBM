@@ -38,7 +38,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     sampledNet <- missSBM::sample(sbm$adjacencyMatrix, sampling$name, sampling$psi, sbm$memberships)
 
     ## Perform inference
-    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling$name, "hierarchical")
+    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling$name, "hierarchical", FALSE)
     out <- missSBM$doVEM(control)
 
     ## Sanity check
