@@ -88,7 +88,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth * 2)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
@@ -121,7 +121,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), 10 * tol_truth)
+  expect_lt(error(missSBM$fittedSampling$parameters, sbm$covarParam), 12 * tol_truth)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
