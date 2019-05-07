@@ -10,7 +10,7 @@
 #' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
 #' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
-#' providing a user-defined clustering. Default is "spectral".
+#' providing a user-defined clustering. Default is "hierarchical".
 #' @param useCovariates logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM inference? default is TRUE.
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
@@ -66,7 +66,7 @@
 #' collection$ICL
 #' @import R6 parallel
 #' @export
-estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", useCovariates = TRUE, control = list()) {
+estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", useCovariates = TRUE, control = list()) {
 
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
@@ -77,9 +77,9 @@ estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", us
   ## Defaut control parameters for VEM, overwritten by user specification
   if (useCovariates) {
     stopifnot(sampling %in% available_samplings_covariates)
-    ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 2, trace = 1, cores = 1)
+    ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 3, trace = 1, cores = 1)
   } else {
-    ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
+    ctrl <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 5, trace = 1, cores = 1)
   }
   ctrl[names(control)] <- control
 

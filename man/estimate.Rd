@@ -4,7 +4,7 @@
 \alias{estimate}
 \title{Estimation of SBMs with missing data}
 \usage{
-estimate(sampledNet, vBlocks, sampling, clusterInit = "spectral",
+estimate(sampledNet, vBlocks, sampling, clusterInit = "hierarchical",
   useCovariates = TRUE, control = list())
 }
 \arguments{
@@ -18,7 +18,7 @@ and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
 \item{clusterInit}{Initial method for clustering: either a character in "hierarchical", "spectral"
 or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
-providing a user-defined clustering. Default is "spectral".}
+providing a user-defined clustering. Default is "hierarchical".}
 
 \item{useCovariates}{logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM inference? default is TRUE.}
 
