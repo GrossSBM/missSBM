@@ -12,6 +12,7 @@
 #' must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.
 #' @param similarity An optional function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
 #' Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
+#' @param intercept An optional intercept term to be added in case of the presence of covariates. Default is 0.
 #'
 #' @return an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
 #' Can then feed the \code{\link{estimate}} function.
@@ -79,7 +80,7 @@
 #' par(mfrow = c(1,1))
 #' }
 #' @export
-sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity) {
+sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity, intercept = 0) {
 
   ## Sanity check
   stopifnot(sampling %in% available_samplings)
@@ -100,9 +101,9 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
       "node"       = simpleNodeSampler$new(
         parameters = parameters, nNodes = nNodes, directed = directed),
       "covar-dyad" = simpleDyadSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covar$Array),
+        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covar$Array, intercept = intercept),
       "covar-node" = simpleNodeSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, covarMatrix = covar$Matrix),
+        parameters = parameters, nNodes = nNodes, directed = directed, covarMatrix = covar$Matrix, intercept = intercept),
       "double-standard" = doubleStandardSampler$new(
         parameters = parameters, adjMatrix = adjacencyMatrix, directed = directed),
       "block-dyad" = blockDyadSampler$new(

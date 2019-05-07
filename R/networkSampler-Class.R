@@ -89,14 +89,14 @@ simpleDyadSampler <-
 R6::R6Class(classname = "simpleDyadSampler",
   inherit = dyadSampler,
   public = list(
-    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarArray = NULL) {
+    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarArray = NULL, intercept = 0) {
       super$initialize("dyad", parameters, nNodes, directed)
       if (is.null(covarArray)) {
         stopifnot(length(parameters) == 1, all(parameters >= 0), all(parameters <= 1))
         sampling_prob <- rep(parameters, length(private$dyads))
       } else {
         stopifnot(length(parameters) == dim(covarArray)[3])
-        sampling_prob <- logistic(roundProduct(covarArray, parameters))[private$dyads]
+        sampling_prob <- logistic(intercept + roundProduct(covarArray, parameters))[private$dyads]
       }
       private$rho <- sampling_prob
     }
@@ -160,14 +160,14 @@ simpleNodeSampler <-
 R6::R6Class(classname = "simpleNodeSampler",
   inherit = nodeSampler,
   public = list(
-    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarMatrix = NULL) {
+    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarMatrix = NULL, intercept = 0) {
       ## w/o covariates
       if (is.null(covarMatrix)) {
         stopifnot(length(parameters) == 1, all(parameters >= 0), all(parameters <= 1))
         sampling_prob <- rep(parameters, nNodes)
       } else {
         stopifnot(length(parameters) == ncol(covarMatrix))
-        sampling_prob <- logistic(covarMatrix %*% parameters)
+        sampling_prob <- logistic(intercept + covarMatrix %*% parameters)
       }
       super$initialize("node", parameters, nNodes, directed)
       private$rho <- sampling_prob

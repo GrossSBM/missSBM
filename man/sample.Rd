@@ -5,7 +5,7 @@
 \title{Sampling of network data}
 \usage{
 sample(adjacencyMatrix, sampling, parameters, clusters = NULL,
-  covariates = NULL, similarity = l1_similarity)
+  covariates = NULL, similarity = l1_similarity, intercept = 0)
 }
 \arguments{
 \item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
@@ -22,6 +22,8 @@ must be a size-N vector;  if the covariates are dyad-centred, each entry of \cod
 
 \item{similarity}{An optional function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
 Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).}
+
+\item{intercept}{An optional intercept term to be added in case of the presence of covariates. Default is 0.}
 }
 \value{
 an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
