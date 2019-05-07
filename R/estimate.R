@@ -71,15 +71,17 @@ estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "spectral", us
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
 
+  ## If no covariates, you don't have to use them
+  if (is.null(sampledNet$covarArray)) useCovariates <- FALSE
+
   ## Defaut control parameters for VEM, overwritten by user specification
-  if (useCovariates & !is.null(sampledNet$covarArray)) {
+  if (useCovariates) {
     stopifnot(sampling %in% available_samplings_covariates)
     ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 2, trace = 1, cores = 1)
   } else {
     ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
   }
   ctrl[names(control)] <- control
-
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(

@@ -148,9 +148,7 @@ function(control) {
       if (is.na(private$missSBM_fit[[i + 1]]$vICL)) {
         private$missSBM_fit[[i + 1]] <- best_one
       } else if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
-        if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
         private$missSBM_fit[[i + 1]] <- best_one
-        }
       }
       # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
       # if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
@@ -184,12 +182,10 @@ function(control) {
       }, mc.cores = control$cores)
 
       best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
-      if (is.na(private$missSBM_fit[[i + 1]]$vICL)) {
-        private$missSBM_fit[[i + 1]] <- best_one
-      } else if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
-        if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
-        private$missSBM_fit[[i + 1]] <- best_one
-        }
+      if (is.na(private$missSBM_fit[[i - 1]]$vICL)) {
+        private$missSBM_fit[[i - 1]] <- best_one
+      } else if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
+        private$missSBM_fit[[i - 1]] <- best_one
       }
       # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
       # if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
