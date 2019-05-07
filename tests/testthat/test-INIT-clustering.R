@@ -111,7 +111,7 @@ test_that("Clustering initializations are relevant", {
           clusterInit = method
         )
 
-      relevance <- .6
+      relevance <- .5
       expect_gt(ARI(cl, sbm$memberships), relevance)
 
     }

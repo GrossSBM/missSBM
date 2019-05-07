@@ -30,7 +30,7 @@ init_clustering <- function(adjacencyMatrix, nBlocks, covarArray = NULL, cluster
   clusterInit
 }
 
-#' @import blockmodels
+#' @importFrom stats sd
 init_spectral <- function(X, K) {
 
   ## basic handling of missing values
@@ -46,33 +46,16 @@ init_spectral <- function(X, K) {
     } else {
       X <- X[connected,connected]
 
-      # W <- 1/(1+exp(-W/sd(W)))
-      # D <- diag(1/sqrt(rowSums(W)))
-      # L <- D %*% W %*% D
-      # precomputed$eigen <<- eigen(L, symmetric=TRUE)
-
-      # t <- sapply(1:length(connected), function(i) mean(1*(!is.na(X[i,]))))
       D <- rowSums(X, na.rm = TRUE)
       A <- X; A[is.na(A)] <- mean(A, na.rm = TRUE)
-      A <-1/(1+exp(-A/sd(A)))
-
-      # L <- diag(rep(1,length(t))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
-      # E <- order(-abs(eigen(L)$values))
+      A <- 1/(1 + exp(-A/sd(A)))
 
       L <- diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
       U <- eigen(L, symmetric = TRUE)$vectors[,1:K]
 
-      ## Absolute eigenvalue in order
-
-      ## Go into eigenspace
-      # U <- eigen(L)$vectors[,E]
-      # U <- U[,c((ncol(U) - K + 1):ncol(U))]
-      # U <- U / rowSums(U^2)^(1/2)
-      # U[is.na(U)] <- 0
-
       ## Applying the K-means in the eigenspace
-      # cl <- kmeans(U, K, nstart = 30, iter.max = 100)$cluster
-      cl <- as.integer(blockmodels:::blockmodelskmeans(U, K))
+      cl <- as.integer(kmeans(U, K, iter.max = 100, nstart = 30)$cl)
+
       ## handing lonely souls
       cl0[connected] <- cl
       cl0[unconnected] <- which.min(rowsum(D,cl))
@@ -87,10 +70,9 @@ init_spectral <- function(X, K) {
 #' @importFrom stats as.dist cutree dist hclust
 init_hierarchical <- function(X, K) {
   if (K > 1) {
-    D  <- as.matrix(dist(X, method = "manhattan"))
-##    D[which(X == 1)] <- D[which(X == 1)] - 2
+    D <- as.matrix(dist(X, method = "manhattan"))
     D <- as.dist(ape::additive(D))
-    cl0 <- cutree(hclust(D, method = "ward.D"), K)
+    cl0 <- cutree(hclust(D, method = "ward.D2"), K)
   } else {
     cl0 <- rep(1L,nrow(X))
   }
@@ -102,7 +84,7 @@ init_kmeans <- function(X, K) {
   if (K > 1) {
     D  <- as.matrix(dist(X, method = "euclidean"))
     # D[which(X == 1)] <- D[which(X == 1)] - 2
-    cl0 <- kmeans(ape::additive(D), K, nstart = 10, iter.max = 50)$cl
+    cl0 <- as.integer(blockmodels:::blockmodelskmeans(ape::additive(D), K))
   } else {
     cl0 <- rep(1L, nrow(X))
   }
