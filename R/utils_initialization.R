@@ -30,6 +30,7 @@ init_clustering <- function(adjacencyMatrix, nBlocks, covarArray = NULL, cluster
   clusterInit
 }
 
+#' @import blockmodels
 init_spectral <- function(X, K) {
 
   ## basic handling of missing values
@@ -44,23 +45,34 @@ init_spectral <- function(X, K) {
       cl0 <- as.integer(base::sample(1:K, n, replace = TRUE))
     } else {
       X <- X[connected,connected]
-      ## Normalized Laplacian
-      t <- sapply(1:length(connected), function(i) mean(1*(!is.na(X[i,]))))
-      D <- colSums(X, na.rm = TRUE)/t
+
+      # W <- 1/(1+exp(-W/sd(W)))
+      # D <- diag(1/sqrt(rowSums(W)))
+      # L <- D %*% W %*% D
+      # precomputed$eigen <<- eigen(L, symmetric=TRUE)
+
+      # t <- sapply(1:length(connected), function(i) mean(1*(!is.na(X[i,]))))
+      D <- rowSums(X, na.rm = TRUE)
       A <- X; A[is.na(A)] <- mean(A, na.rm = TRUE)
-      # A <- A + (1/4)*mean(rowSums(A))/nrow(A)*matrix(1, nrow(A), nrow(A))
-      L <- diag(rep(1,length(t))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      A <-1/(1+exp(-A/sd(A)))
+
+      # L <- diag(rep(1,length(t))) - diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      # E <- order(-abs(eigen(L)$values))
+
+      L <- diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      U <- eigen(L, symmetric = TRUE)$vectors[,1:K]
+
       ## Absolute eigenvalue in order
-      E <- order(-abs(eigen(L)$values))
 
       ## Go into eigenspace
-      U <- eigen(L)$vectors[,E]
-      U <- U[,c((ncol(U) - K + 1):ncol(U))]
-      U <- U / rowSums(U^2)^(1/2)
-      U[is.na(U)] <- 0
+      # U <- eigen(L)$vectors[,E]
+      # U <- U[,c((ncol(U) - K + 1):ncol(U))]
+      # U <- U / rowSums(U^2)^(1/2)
+      # U[is.na(U)] <- 0
 
       ## Applying the K-means in the eigenspace
-      cl <- kmeans(U, K, nstart = 30, iter.max = 100)$cluster
+      # cl <- kmeans(U, K, nstart = 30, iter.max = 100)$cluster
+      cl <- as.integer(blockmodels:::blockmodelskmeans(U, K))
       ## handing lonely souls
       cl0[connected] <- cl
       cl0[unconnected] <- which.min(rowsum(D,cl))
