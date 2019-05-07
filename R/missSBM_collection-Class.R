@@ -104,7 +104,7 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 1, cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
 
   ## Run the smoothing
@@ -136,14 +136,17 @@ function(control) {
       candidates <- mclapply(1:i, function(j) {
         cl <- cl0
         J  <- which(cl == j)
-        J1 <- base::sample(J, floor(length(J)/2))
-        J2 <- setdiff(J, J1)
-        cl[J1] <- j; cl[J2] <- i + 1
-        model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, useCov)
-        model$doVEM(control)
+        if (length(J) > 1) {
+          J1 <- base::sample(J, floor(length(J)/2))
+          J2 <- setdiff(J, J1)
+          cl[J1] <- j; cl[J2] <- i + 1
+          model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, useCov)
+          model$doVEM(control)
+        } else {
+          model <- private$missSBM_fit[[i + 1]]$clone()
+        }
         model
       }, mc.cores = control$cores)
-
       best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
       if (is.na(private$missSBM_fit[[i + 1]]$vICL)) {
         private$missSBM_fit[[i + 1]] <- best_one
