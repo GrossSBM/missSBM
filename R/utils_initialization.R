@@ -84,7 +84,7 @@ init_kmeans <- function(X, K) {
   if (K > 1) {
     D  <- as.matrix(dist(X, method = "euclidean"))
     # D[which(X == 1)] <- D[which(X == 1)] - 2
-    cl0 <- as.integer(blockmodels:::blockmodelskmeans(ape::additive(D), K))
+    cl0 <- as.integer(kmeans(ape::additive(D), K)$cl)
   } else {
     cl0 <- rep(1L, nrow(X))
   }
