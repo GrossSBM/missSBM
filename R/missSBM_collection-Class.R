@@ -104,7 +104,7 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 2, cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 1, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
 
   ## Run the smoothing
@@ -150,8 +150,11 @@ function(control) {
       } else if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
         private$missSBM_fit[[i + 1]] <- best_one
       }
+
       # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-      # if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
+      # if (is.na(private$missSBM_fit[[i + 1]]$vBound)) {
+      #   private$missSBM_fit[[i + 1]] <- best_one
+      # } else if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
       #   private$missSBM_fit[[i + 1]] <- best_one
       # }
     }
@@ -187,8 +190,11 @@ function(control) {
       } else if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
         private$missSBM_fit[[i - 1]] <- best_one
       }
+
       # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-      # if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
+      # if (is.na(private$missSBM_fit[[i - 1]]$vBound)) {
+      #   private$missSBM_fit[[i - 1]] <- best_one
+      # } else if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
       #   private$missSBM_fit[[i - 1]] <- best_one
       # }
     }
