@@ -77,9 +77,9 @@ estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical"
   ## Defaut control parameters for VEM, overwritten by user specification
   if (useCovariates) {
     stopifnot(sampling %in% available_samplings_covariates)
-    ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 3, trace = 1, cores = 1)
+    ctrl <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 3, trace = 1, cores = 1)
   } else {
-    ctrl <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 5, trace = 1, cores = 1)
+    ctrl <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1, cores = 1)
   }
   ctrl[names(control)] <- control
 

@@ -54,7 +54,7 @@ init_spectral <- function(X, K) {
       U <- eigen(L, symmetric = TRUE)$vectors[,1:K]
 
       ## Applying the K-means in the eigenspace
-      cl <- as.integer(kmeans(U, K, iter.max = 100, nstart = 30)$cl)
+      cl <- as.integer(kmeans(U, K, iter.max = 100, nstart = 100)$cl)
 
       ## handing lonely souls
       cl0[connected] <- cl
@@ -84,7 +84,7 @@ init_kmeans <- function(X, K) {
   if (K > 1) {
     D  <- as.matrix(dist(X, method = "euclidean"))
     # D[which(X == 1)] <- D[which(X == 1)] - 2
-    cl0 <- as.integer(kmeans(ape::additive(D), K)$cl)
+    cl0 <- as.integer(kmeans(ape::additive(D), K, nstart = 50, iter.max = 100)$cl)
   } else {
     cl0 <- rep(1L, nrow(X))
   }
