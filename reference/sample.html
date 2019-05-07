@@ -131,7 +131,7 @@ The final results is an adjacency matrix with the dimension as the input, yet wi
     </div>
 
     <pre class="usage"><span class='fu'>sample</span>(<span class='no'>adjacencyMatrix</span>, <span class='no'>sampling</span>, <span class='no'>parameters</span>, <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>similarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>)</pre>
+  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>similarity</span> <span class='kw'>=</span> <span class='no'>l1_similarity</span>, <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +162,10 @@ must be a size-N vector;  if the covariates are dyad-centred, each entry of <cod
       <th>similarity</th>
       <td><p>An optional function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
 Only relevent when the covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></td>
+    </tr>
+    <tr>
+      <th>intercept</th>
+      <td><p>An optional intercept term to be added in case of the presence of covariates. Default is 0.</p></td>
     </tr>
     </table>
     
