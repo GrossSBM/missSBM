@@ -130,8 +130,8 @@ Stochastic Block Models indexed by block number.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>sampledNet</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='st'>"spectral"</span>,
-  <span class='kw'>use_covariates</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
+    <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>sampledNet</span>, <span class='no'>vBlocks</span>, <span class='no'>sampling</span>, <span class='kw'>clusterInit</span> <span class='kw'>=</span> <span class='st'>"hierarchical"</span>,
+  <span class='kw'>useCovariates</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,12 +153,12 @@ and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></
     <tr>
       <th>clusterInit</th>
       <td><p>Initial method for clustering: either a character in "hierarchical", "spectral"
-or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code></p></td>
+or "kmeans", or a list with <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(adjacencyMatrix)</a></code>,
+providing a user-defined clustering. Default is "hierarchical".</p></td>
     </tr>
     <tr>
-      <th>use_covariates</th>
-      <td><p>logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM pinference? default is TRUE.
-providing a user-defined clustering. Default is "spectral".</p></td>
+      <th>useCovariates</th>
+      <td><p>logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM inference? default is TRUE.</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -226,7 +226,7 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
 #&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107404.94 101298.73  95767.52  96002.47  96051.46</div></pre>
+#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='no'>collection</span>$<span class='no'>ICL</span></div><div class='output co'>#&gt; [1] 107382.43 101004.08  95759.85  95941.54  96135.35</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
