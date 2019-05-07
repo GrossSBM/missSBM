@@ -104,7 +104,7 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 1, cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 1, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
 
   ## Run the smoothing

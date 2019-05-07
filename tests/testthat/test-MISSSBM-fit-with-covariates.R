@@ -6,7 +6,7 @@ source("utils_test.R")
 ## ========================================================================
 ## A SBM model with covariates
 
-set.seed(787)
+set.seed(1827)
 N <- 200
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
@@ -23,7 +23,7 @@ covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x
 covarParam  <- rnorm(M, -1, 1)
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = TRUE)
+control <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 2, trace = TRUE)
 
 ## Consistency
 tol_truth <- 1e-2
@@ -58,7 +58,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*2)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
