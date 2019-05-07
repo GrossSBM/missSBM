@@ -23,7 +23,6 @@ Depends: R (>= 3.4.0)
 Imports: 
     Rcpp,
     methods,
-    blockmodels,
     ape,
     igraph,
     nloptr,
