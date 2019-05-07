@@ -6,7 +6,7 @@ init_clustering <- function(adjacencyMatrix, nBlocks, covarArray = NULL, cluster
   if (nBlocks > 1) {
     if (!is.null(covarArray)) {
       y <- as.vector(adjacencyMatrix)
-      X <- apply(covarArray, 3, as.vector)
+      X <- cbind(1, apply(covarArray, 3, as.vector))
       adjacencyMatrix <- matrix(NA, N, N)
       NAs <- is.na(y)
       adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
