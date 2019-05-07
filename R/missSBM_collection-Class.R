@@ -104,7 +104,7 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-4, maxIter = 100, fixPointIter = 5, cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 2, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
 
   ## Run the smoothing
@@ -118,7 +118,7 @@ function(control) {
   trace <- control$trace > 0; control$trace <- FALSE
   sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
   sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-  use_cov     <- private$missSBM_fit[[1]]$useCovariates
+  useCov      <- private$missSBM_fit[[1]]$useCovariates
   adjacencyMatrix <- sampledNet$adjacencyMatrix
   if (!is.null(sampledNet$covarArray)) {
     y <- as.vector(adjacencyMatrix)
@@ -132,14 +132,14 @@ function(control) {
   for (i in self$vBlocks[-length(self$vBlocks)]) {
     if (trace) cat("+")
     cl0 <- private$missSBM_fit[[i]]$fittedSBM$memberships
-    if (length(unique(cl0)) == i) { # when would this happens ?
+    if (length(unique(cl0)) == i) { # when would this not happens ?
       candidates <- mclapply(1:i, function(j) {
         cl <- cl0
         J  <- which(cl == j)
         J1 <- base::sample(J, floor(length(J)/2))
         J2 <- setdiff(J, J1)
         cl[J1] <- j; cl[J2] <- i + 1
-        model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, use_cov)
+        model <- missSBM_fit$new(sampledNet, i + 1, sampling, cl, useCov)
         model$doVEM(control)
         model
       }, mc.cores = control$cores)
