@@ -1,7 +1,7 @@
 ---
 title: "missSBM: a case study with war networks"
 author: "missSBM team"
-date: "`r Sys.Date()`"
+date: "Last update: `r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -25,7 +25,7 @@ set.seed(9877) # set seed for reproducibility
 
 ## Prerequesites
 
-On top of **missSBM**, our analysis will rely on the **igraph** package for network data manipulation and **ggplot2** and **magrittr** for representation.
+On top of **missSBM**, our analysis will rely on the **igraph** package for network data manipulation, and **ggplot2** and **magrittr** for representation.
 
 ```{r package requirement, message=FALSE}
 library(igraph)
@@ -36,13 +36,13 @@ library(missSBM)
 
 ## The war network
 
-The `war_graphs` dataset comes with the `missSBM` package:
+The `war` data set comes with the `missSBM` package:
 
 ```{r load data set}
 data("war")
 ```
 
-This dataset contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
+This data set contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 and 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
 
 These two networs were extracted from [http://www.correlatesofwar.org/](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance). In the following, we focus on the network `war$beligerent`, which is provided as an igraph object:
 
@@ -54,11 +54,12 @@ plot(war$beligerent,
      vertex.label.cex=.6, edge.color="gray70", edge.width = 2)
 ```
 
-To pursue our analysis, we extract the adjacency matrix of the network and a covariate on the vertices describing the military power of each country.
+To pursue our analysis, we extract the adjacency matrix of the network,a covariate on the vertices describing the military power of each country, and a covariate on the dyads describing the intensity of trade between two countries.
 
 ```{r beligenrent network}
 beligerent_adjacency <- as_adj(war$beligerent, sparse = FALSE)
 beligerent_power     <- war$beligerent$power
+beligerent_trade     <- war$beligerent$trade
 ```
 
 ### Generating missing data
@@ -84,6 +85,8 @@ res_unsmoothed <- data.frame(
 )
 ```
 
+### Smoothing
+
 The `smooth` function allows the user to produce a smoothed version of the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will faciliate the choice of the number of group.
 
 ```{r smoothed node, results='hide'}
@@ -97,7 +100,7 @@ res_smoothed <- data.frame(
 
 Let us now check that the smoothing did its job correctly:
 
-```{r smoothing effect plot}
+```{r smoothing effect plot, fig.width = 7, fig.height = 5}
 rbind(res_unsmoothed, res_smoothed) %>% 
   ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
     geom_line() + theme_bw()
@@ -106,9 +109,7 @@ rbind(res_unsmoothed, res_smoothed) %>%
 
 ### Estimation on fully observed network
 
-We would like to compare out results with the clustering obtained on the fully observed network.
-
-So we first adjust a collection of SBM on the original adjacency matrix:
+We would like to compare our results with the clustering obtained on the fully observed network. To this end, we adjust - and smooth - a collection of SBM on the original adjacency matrix:
 
 ```{r inference full, results='hide'}
 collection_sbm_full <- 
@@ -120,7 +121,7 @@ collection_sbm_full <-
 smooth(collection_sbm_full, "forward", control = list(iterates = 3))
 ```
 
-As expected, the ICL on the fully observed network is better. But more interestingly, the number of group selected may differ in the the presence of missing data.
+As expected, the ICL on the fully observed network is better. But more interestingly, the number of groups selected may differ in the the presence of missing data.
 
 ```{r plot comparison full}
 res_missing <- res_smoothed
@@ -146,6 +147,8 @@ table(
   )
 ```
 
+The model finally fitted on the nbetwork data can be represented thanks to a plot method applying on objects with class `SBM`:
+
 ```{r plot, fig.width=7, fig.height=7}
 par(mfrow = c(2,2))
 plot(collection_sbm$bestModel$fittedSBM, type = "network")
@@ -157,19 +160,19 @@ plot(collection_sbm_full$bestModel$fittedSBM, type = "connectivity")
 
 ### Taking covariates into account
 
-We now show how to introduce covariates in the model.
+This part shows how to account for covariates in the model.
 
-### Military power
+#### Military power
 
 We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate.  
 
 Let us first prepare the data for missSBM inference on the full set of data. When preparing the data the covariate should be provided in a list as a vector:
 
-```{r war network with covariates} 
+```{r war network with power} 
 sampleNet_cov <- prepare_data(beligerent_adjacency, list(beligerent_power)) 
 ``` 
 
-Then we run the inference on the fully observed network 
+Then we run the inference on the fully observed network^[Note that smoothing is not performed to alleviate computational time.]: 
 
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:4
@@ -178,9 +181,7 @@ collection_sbm_power_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling
 
 The option `useCovariates = TRUE` specifies that the covariate(s) should be used in the SBM i.e. the  distribution of edges depend on the covariate(s). 
 
-The covariate provided as a vector is transferred on edge through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`.
-
-Note that smoothing is not performed to alleviate computational time.
+The covariate provided as a vector is transferred on edges through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`. 
 
 The estimated effect of the covariate is obtained trhough:
 ```{r power_effect}
@@ -194,9 +195,9 @@ parameters_sample <- 600
 sampleNet_power_miss <- missSBM::sample(
    beligerent_adjacency,
    sampling = "covar-node",
-   parameters = parameters_sample, covariates = list(war$beligerent$power), intercept = -2
+   parameters = parameters_sample, covariates = list(beligerent_power), intercept = -2
   )
-boxplot(1/(1 + exp(-cbind(1,war$beligerent$power) %*% c(-2, parameters_sample))) ~ sampleNet_power_miss$observedNodes, ylab="mil power",xlab = "observed node")
+boxplot(1/(1 + exp(-cbind(1,beligerent_power) %*% c(-2, parameters_sample))) ~ sampleNet_power_miss$observedNodes, ylab="mil power",xlab = "observed node")
 plot(sampleNet_power_miss)
 ```
 
@@ -221,10 +222,10 @@ collection_sbm_power_miss$bestModel$fittedSBM$covarParam
 Another covariate is the average trade exchange between the states. This covariate is related to pairs of states hence to the dyads. We first build a matrix of dissimilarity according to these covariate:
 
 ```{r trade}
-trade <- war$beligerent$trade 
+trade <- beligerent_trade 
 trade[is.na(trade)] <- 0
 trade <- trade + t(trade)
-trade <- log(trade+1)
+trade <- log(trade + 1)
 diag(trade) = 0
 ```
 
