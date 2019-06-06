@@ -4,8 +4,8 @@ source("utils_test.R")
 
 set.seed(178303)
 ### SBM model
-N <- 400
-Q <- 5
+N <- 100
+Q <- 3
 alpha <- rep(1, Q)/Q       # mixture parameter
 pi <- diag(.45, Q, Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
@@ -14,10 +14,10 @@ sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli no
 Z0  <- missSBM:::clustering_indicator(sbm$memberships)
 
 samplings <- list(
-  list(name = "dyad", psi = 0.3, class = "dyadSampling_fit", k = log(N * (N-1)/2)),
-  list(name = "node", psi = 0.2, class = "nodeSampling_fit", k = log(N)),
+  list(name = "dyad", psi = 0.5, class = "dyadSampling_fit", k = log(N * (N-1)/2)),
+  list(name = "node", psi = 0.5, class = "nodeSampling_fit", k = log(N)),
   list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit", k = log(N * (N-1)/2)),
-  list(name = "block-node", psi = c(.1, .3, .2, .5, .7), class = "blockSampling_fit", k = log(N)),
+  list(name = "block-node", psi = c(.3, .5, .7), class = "blockSampling_fit", k = log(N)),
   list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
 )
 

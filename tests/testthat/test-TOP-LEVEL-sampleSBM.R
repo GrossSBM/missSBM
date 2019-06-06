@@ -2,7 +2,7 @@ context("testing network samplers (top-level function missSBM::sample)")
 
 set.seed(178303)
 ### A SBM model : ###
-N <- 500
+N <- 100
 Q <- 3
 alpha <- rep(1, Q)/Q                     # mixture parameter
 pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
@@ -13,7 +13,7 @@ directed <- FALSE
 sbm <- missSBM::simulate(N, alpha, pi, directed)
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
-M <- 10
+M <- 2
 covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
 covarMatrix <- simplify2array(covariates_node)
 covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
@@ -40,7 +40,7 @@ test_that("Consistency of dyad-centered sampling", {
 
   # With dyad sampling, psi is the probability of sampling a dyad
   # The samplign rate is very well controlled
-  for (psi in c(.05, .1, .25, .5)) {
+  for (psi in c(.1, .25, .4)) {
     dyad <- missSBM::sample(sbm$adjacencyMatrix, "dyad", psi)
     expect_lt(abs(dyad$samplingRate - psi), psi/10)
   }

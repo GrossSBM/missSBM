@@ -7,15 +7,15 @@ source("utils_test.R")
 ## A SBM model with covariates
 
 set.seed(1827)
-N <- 200
-Q <- 3
+N <- 100
+Q <- 2
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
 gamma <- missSBM:::logit(pi)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
-M <- 2
+M <- 1
 covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
 covarMatrix <- simplify2array(covariates_node)
 covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
@@ -58,7 +58,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*2)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*3)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)

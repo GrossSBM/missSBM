@@ -4,7 +4,7 @@ source("utils_test.R")
 
 set.seed(178303)
 ### A SBM model : ###
-N <- 500
+N <- 200
 Q <- 3
 alpha <- rep(1, Q)/Q        # mixture parameter
 pi <- diag(.45, Q, Q) + .05 # connectivity matrix

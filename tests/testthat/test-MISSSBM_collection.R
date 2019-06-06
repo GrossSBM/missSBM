@@ -2,7 +2,7 @@ context("test-misssbm_collection")
 
 set.seed(1890718)
 ### A SBM model : ###
-N <- 300
+N <- 100
 Q <- 3
 alpha <- rep(1, Q)/Q       # mixture parameter
 pi <- diag(.45, Q, Q) + .05   # connectivity matrix
@@ -19,7 +19,7 @@ test_that("missSBMcollection works", {
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
     sampledNet  = sampledNet,
-    vBlocks     = 1:5,
+    vBlocks     = 1:4,
     sampling    = "dyad",
     clusterInit = 'hierarchical', 1, TRUE, TRUE)
 
@@ -47,7 +47,7 @@ test_that("More smoothing tests", {
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
     sampledNet  = sampledNet,
-    vBlocks     = 1:5,
+    vBlocks     = 1:4,
     sampling    = "dyad",
     clusterInit = 'hierarchical', 1, TRUE, TRUE)
 

@@ -4,7 +4,7 @@ library(aricode)
 
 set.seed(1890719)
 ### A SBM model : ###
-N <- 300
+N <- 80
 Q <- 3
 alpha <- rep(1, Q)/Q       # mixture parameter
 pi <- diag(.45, Q, Q) + .05   # connectivity matrix
@@ -17,8 +17,8 @@ A <- mySBM$adjacencyMatrix # the adjacency matrix
 test_that("missSBM and class missSBM-fit are coherent", {
 
   l_psi <- list(
-    "dyad" = c(.3),
-    "node" = c(.3),
+    "dyad" = c(.6),
+    "node" = c(.6),
     "double-standard" = c(0.4, 0.8),
     "block-node" = c(.3, .8, .5),
     "block-dyad" = mySBM$connectParam,

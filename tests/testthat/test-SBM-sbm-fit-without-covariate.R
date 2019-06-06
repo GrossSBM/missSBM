@@ -5,8 +5,8 @@ library(blockmodels)
 
 set.seed(178303)
 ### A SBM model : ###
-N <- 400
-Q <- 5
+N <- 100
+Q <- 3
 alpha <- rep(1, Q)/Q                     # mixture parameter
 pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
 directed <- FALSE
@@ -36,7 +36,7 @@ test_that("Creation of a SBM_fit_nocovariate", {
 
 test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block is given", {
 
-  tol <- 1e-3
+  tol <- 2e-3
 
   ## testing all initialization
   mySBM_fit_hier <- missSBM:::SBM_fit_nocovariate$new(A, cl_hier)
@@ -76,10 +76,10 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
 
 test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nBlocks", {
 
-  BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 8, explore_max = 8, plotting = "", ncores = 1)
+  BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 5, explore_max = 5, plotting = "", ncores = 1)
   BM$estimate()
 
-  vBlocks <- 1:8
+  vBlocks <- 1:5
   models <- lapply(vBlocks, function(nBlocks) {
     cl0 <- missSBM:::init_clustering(mySBM$adjacencyMatrix, nBlocks, NULL, "hierarchical")
     myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
@@ -92,6 +92,6 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for
 
   expect_equal(which.min(vICLs), which.max(BM$ICL))
 
-  expect_lt(sum((-.5 * vICLs - BM$ICL)/BM$ICL^2), 1e-6)
+  expect_lt(sum((-.5 * vICLs - BM$ICL)/BM$ICL^2), 5e-6)
 })
 

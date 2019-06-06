@@ -5,8 +5,8 @@ source("utils_test.R")
 
 set.seed(1890718)
 ### A SBM model : ###
-N <- 400
-Q <- 5
+N <- 200
+Q <- 3
 alpha <- rep(1, Q)/Q       # mixture parameter
 pi <- diag(.45, Q, Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
@@ -15,10 +15,10 @@ directed <- FALSE         # if the network is directed or not
 sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
 
 samplings <- list(
-  list(name = "dyad", psi = 0.3, class = "dyadSampling_fit"),
-  list(name = "node", psi = 0.2, class = "nodeSampling_fit"),
+  list(name = "dyad", psi = 0.5, class = "dyadSampling_fit"),
+  list(name = "node", psi = 0.5, class = "nodeSampling_fit"),
   list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit"),
-  list(name = "block-node", psi = c(.1, .3, .2, .5, .7), class = "blockSampling_fit")
+  list(name = "block-node", psi = c(.3, .5, .7), class = "blockSampling_fit")
 )
 
 ## control parameter for the VEM

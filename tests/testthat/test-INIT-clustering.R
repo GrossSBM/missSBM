@@ -3,8 +3,8 @@ context("test clustering function used in initialization")
 library(aricode)
 ### A SBM model used for all tests
 set.seed(178303)
-N <- 400
-Q <- 5
+N <- 50
+Q <- 3
 alpha <- rep(1, Q)/Q       # mixture parameter
 pi <- diag(.45, Q, Q) + .05   # connectivity matrix
 directed <- FALSE         # if the network is directed or not
@@ -15,11 +15,11 @@ sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of a Bernoulli non
 A_full <- sbm$adjacencyMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)
-psi <- 0.3
+psi <- 0.8
 sampledNet <- missSBM::sample(A_full, "dyad", psi)
 A_dyad <- sampledNet$adjacencyMatrix
 
-psi <- 0.3
+psi <- 0.8
 sampledNet <- missSBM::sample(A_full, "node", psi)
 A_node <- sampledNet$adjacencyMatrix
 
@@ -123,15 +123,15 @@ test_that("Clustering initializations are relevant", {
 ## A SBM model with covariates
 
 set.seed(178303)
-N <- 300
-Q <- 3
+N <- 40
+Q <- 2
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
 gamma <- missSBM:::logit(pi)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
-M <- 2
+M <- 1
 covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
 covariates_dyad <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, -1, 1)

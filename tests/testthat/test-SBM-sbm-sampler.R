@@ -5,8 +5,8 @@ test_that("SBM sampler without covariates", {
 
   set.seed(178303)
   ### A SBM model : ###
-  N <- 400
-  Q <- 5
+  N <- 100
+  Q <- 3
   alpha <- rep(1,Q)/Q                     # mixture parameter
   pi <- diag(.45,Q) + .05                 # connectivity matrix
   directed <- FALSE
@@ -36,7 +36,7 @@ test_that("SBM sampler with covariates", {
 
   set.seed(178303)
   ### A SBM model : ###
-  N <- 300
+  N <- 100
   Q <- 3
   alpha <- rep(1,Q)/Q                     # mixture parameter
   pi <- diag(.45,Q) + .05                 # connectivity matrix
@@ -44,7 +44,7 @@ test_that("SBM sampler with covariates", {
   directed <- FALSE
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
-  M <- 4
+  M <- 2
   covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
   covarParam  <- rnorm(M,0,1)
   covarArray <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)

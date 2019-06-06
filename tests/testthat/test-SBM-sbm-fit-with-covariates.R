@@ -7,7 +7,7 @@ source("utils_test.R")
 ## A SBM model with covariates
 
 set.seed(178303)
-N <- 300
+N <- 100
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45,Q) + .05                 # connectivity matrix
@@ -15,7 +15,7 @@ gamma <- missSBM:::logit(pi)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
-M <- 2
+M <- 1
 covariates <- replicate(M, matrix(rnorm(N*N,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, 0, 1)
 sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
@@ -92,7 +92,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   gamma <- missSBM:::logit(pi)
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
-  M <- 2
+  M <- 1
   covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
   covarMatrix <- simplify2array(covariates_node)
   covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
@@ -101,10 +101,10 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
 
   ## Formatting covariates for blockmodels
-  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjacencyMatrix, covariates_dyad, verbosity = 0, explore_min = 4, explore_max = 4, plotting = "", ncores = 1)
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjacencyMatrix, covariates_dyad, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
   BM$estimate()
 
-  vBlocks <- 1:4
+  vBlocks <- 1:3
   models <- lapply(vBlocks, function(nBlocks) {
     cl0 <- missSBM:::init_clustering(sbm$adjacencyMatrix, nBlocks, sbm$covarArray, "hierarchical")
     myFit <- missSBM:::SBM_fit_covariates$new(sbm$adjacencyMatrix, cl0, sbm$covarArray)
