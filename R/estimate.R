@@ -4,7 +4,7 @@
 #' Stochastic Block Models indexed by block number.
 #'
 #' @param sampledNet An object with class \code{\link{sampledNetwork}}, typically obtained with
-#' the function \code{\link{prepare_data}} (real-worl data) or \code{\link{sample}} (simulation).
+#' the function \code{\link{prepare_data}} (real-word data) or \code{\link{sample}} (simulation).
 #' @param vBlocks The vector of number of blocks considered in the collection
 #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node")
 #' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
@@ -15,7 +15,7 @@
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
-#' @details The list of parameters \code{control} essentially tunes the optimziation process and the
+#' @details The list of parameters \code{control} essentially tunes the optimization process and the
 #' variational EM algorithm, with the following parameters
 #'  \itemize{
 #'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
