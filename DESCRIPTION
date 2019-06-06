@@ -55,6 +55,7 @@ Collate:
     'utils_initialization.R'
     'war.R'
 Suggests: 
+    aricode,
     blockmodels,
     testthat,
     covr,
