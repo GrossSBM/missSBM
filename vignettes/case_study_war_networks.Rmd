@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
   message = FALSE, 
   warning = FALSE,
   fig.width = 5, fig.height = 4)
-# set.seed(9876) # set seed for reproducibility
 set.seed(9877) # set seed for reproducibility
 ```
 
@@ -156,11 +155,15 @@ plot(collection_sbm_full$bestModel$fittedSBM, type = "connectivity")
 ```
 
 
-### Taking the covariates into account
+### Taking covariates into account
 
-We now show how to introduce a covariate in the model. We consider a covariate reflecting the military power of the country repsented by the node. We typically expect  a part of the network to be explained by this covariate.  
+We now show how to introduce covariates in the model.
 
-Let us first prepare the data for missSBM inference on the full set of data 
+### Military power
+
+We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate.  
+
+Let us first prepare the data for missSBM inference on the full set of data. When preparing the data the covariate should be provided in a list as a vector:
 
 ```{r war network with covariates} 
 sampleNet_cov <- prepare_data(beligerent_adjacency, list(beligerent_power)) 
@@ -170,66 +173,76 @@ Then we run the inference on the fully observed network
 
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:4
-collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "dyad")
-res_unsmoothed <- data.frame(
-  ICL     = collection_sbm_cov_full$ICL,
-  nBlocks = vBlocks, 
-  type    = "raw"
-)
-smooth(collection_sbm_cov_full, "forward", control = list(iterates = 2)) 
-res_smoothed <- data.frame(
-  ICL     = collection_sbm_cov_full$ICL,
-  nBlocks = vBlocks, 
-  type    = "smoothed"
-)
-rbind(res_unsmoothed, res_smoothed) %>% 
-  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
-    geom_line() + theme_bw()
+collection_sbm_power_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "node", useCovariates = TRUE)
 ```
 
-The military power seems to be a covariate with great influence since its effect is estimated to `r collection_sbm_cov_full$bestModel$fittedSBM$covarParam`.
+The option `useCovariates = TRUE` specifies that the covariate(s) should be used in the SBM i.e. the  distribution of edges depend on the covariate(s). 
 
-<!-- Other way to take into account the covariate military power -->
-<!-- ```{r war network with covariate 2} -->
-<!-- nWar = nrow(beligerent_adjacency) -->
-<!-- matsumpower = matrix(war$beligerent$power,nrow = nWar,ncol = nWar) + matrix(war$beligerent$power,nrow = nWar,ncol = nWar,byrow=T) -->
-<!-- diag(matsumpower) = 0 # diagonal has to be set to 0  -->
-<!-- sampleNet_cov2 <- prepare_data(beligerent_adjacency, list(matsumpower))  -->
-<!-- ``` -->
+The covariate provided as a vector is transferred on edge through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`.
 
-<!-- ```{r war network with covariates full 2, results = 'hide'}  -->
-<!-- collection_sbm_cov_full2 <- estimate(sampleNet_cov2, vBlocks = 1:5, sampling = "dyad")  -->
-<!-- smooth(collection_sbm_cov_full2)  -->
-<!-- plot(collection_sbm_cov_full2$ICL) -->
-<!-- ```  -->
-<!-- ```{r betacov2} -->
-<!-- betacov2 = collection_sbm_cov_full2$bestModel$fittedSBM$covarParam -->
-<!-- ``` -->
+Note that smoothing is not performed to alleviate computational time.
 
-<!-- ### Sampling network according to covariate effect -->
+The estimated effect of the covariate is obtained trhough:
+```{r power_effect}
+collection_sbm_power_full$bestModel$fittedSBM$covarParam
+```
 
-<!-- We then sampled some observation according to the covariates and try to estimate the SBM with these missing entries.  -->
+The covariate could be responsible for the sampling. The state with bigger military power are more likely to be full observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.
+```{r power_sampling}
+nWar <- nrow(beligerent_adjacency)
+parameters_sample <- 600
+sampleNet_power_miss <- missSBM::sample(
+   beligerent_adjacency,
+   sampling = "covar-node",
+   parameters = parameters_sample, covariates = list(war$beligerent$power), intercept = -2
+  )
+boxplot(1/(1 + exp(-cbind(1,war$beligerent$power) %*% c(-2, parameters_sample))) ~ sampleNet_power_miss$observedNodes, ylab="mil power",xlab = "observed node")
+plot(sampleNet_power_miss)
+```
 
-<!-- ```{r war network with covariates sampled, results = 'hide'}  -->
-<!-- sampleNet_cov_miss <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = missSBM:::logistic(.95), covariates = list(war$beligerent$power))  -->
-<!-- collection_sbm_cov_miss <- estimate(sampleNet_cov_miss, vBlocks = 1:5, sampling = "node")  -->
-<!-- smooth(collection_sbm_cov_miss, "foward", control = list(iterate = 2))  -->
-<!-- ```  -->
+Then, we can estimate the model by setting the sampling to be `covar-node`. We can still choose whether to consider or not the covariate in the SBM.
+```{r fit power missing}
+collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node", useCovariates = TRUE)
+```
 
-<!-- ```{r comparison war with covariates}  -->
-<!-- res_full <- data.frame(  -->
-<!--   ICL     = collection_sbm_cov_full$ICL,  -->
-<!--   nBlocks = vBlocks,   -->
-<!--   type    = "full"  -->
-<!-- )  -->
-<!-- res_miss <- data.frame(  -->
-<!--   ICL     = collection_sbm_cov_miss$ICL,  -->
-<!--   nBlocks = vBlocks,   -->
-<!--   type    = "miss"  -->
-<!-- )  -->
-<!-- rbind(res_miss, res_full) %>%   -->
-<!--   ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) +   -->
-<!--     geom_line() + theme_bw()  -->
-<!-- ```  -->
+Then we can access the estimated sampling parameters:
+```{r estimated parameters sample}
+collection_sbm_power_miss$bestModel$fittedSampling$parameters
+```
+
+and the parameters in the SBM associated with the covariate:
+
+```{r estimated parameters SBM}
+collection_sbm_power_miss$bestModel$fittedSBM$covarParam
+```
+
+#### Trade data
+
+Another covariate is the average trade exchange between the states. This covariate is related to pairs of states hence to the dyads. We first build a matrix of dissimilarity according to these covariate:
+
+```{r trade}
+trade <- war$beligerent$trade 
+trade[is.na(trade)] <- 0
+trade <- trade + t(trade)
+trade <- log(trade+1)
+diag(trade) = 0
+```
+
+We then conduct a similar analysis than with the power to see how it can be accounted for in the SBM.
+
+We first sample according to it:
+```{r samptrade}
+parameters_sample <- 1
+sampleNet_trade_miss <- missSBM::sample(beligerent_adjacency, sampling = "covar-dyad", parameters = parameters_sample, covariates = list(trade), intercept = -2)
+plot(sampleNet_trade_miss)
+```
+
+We then perform estimation on the missing data drawn according to the trade covariate.
+
+```{r estimate trade}
+collection_sbm_trade_miss <- estimate(sampleNet_trade_miss ,vBlocks = vBlocks, sampling = "covar-dyad", useCovariates  = TRUE)
+collection_sbm_trade_miss$bestModel$fittedSampling$parameters
+collection_sbm_trade_miss$bestModel$fittedSBM$covarParam
+```
 
 ## References
