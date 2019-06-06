@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
-    toc_depth: 4
+    toc_depth: 3
 bibliography: missSBMreferences.bib
 link-citations: yes
 vignette: >
@@ -45,19 +45,21 @@ data("war")
 
 This dataset contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 to 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
 
-These two networs were extracted from [](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance).
+These two networs were extracted from [http://www.correlatesofwar.org/](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance). In the following, we focus on the network `war$beligerent`, which is provided as an igraph object:
 
-```{r war network plot, fig.height=4, fig.width=8}
-par(mfrow = c(1,2))
-plot(war$alliance   , main = "Alliance")
-plot(war$beligerent , main = "Beligerent")
-par(mfrow = c(1,1))
+```{r war network plot, fig.width=7,  fig.height=7}
+par(mar = c(0,0,0,0))
+plot(war$beligerent, 
+     vertex.shape="none", vertex.label=V(war$beligerent)$name,
+     vertex.label.color = "steel blue", vertex.label.font=1.5,
+     vertex.label.cex=.6, edge.color="gray70", edge.width = 2)
 ```
 
-In the following, we focus on the network `beligerent`. We extract here the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and the country names.
+To pursue our analysis, we extract the adjacency matrix of the network and a covariate on the vertices describing the military power of each country.
 
 ```{r beligenrent network}
 beligerent_adjacency <- as_adj(war$beligerent, sparse = FALSE)
+beligerent_power     <- war$beligerent$power
 ```
 
 ### Generating missing data
@@ -102,9 +104,12 @@ rbind(res_unsmoothed, res_smoothed) %>%
     geom_line() + theme_bw()
 ```
 
+
 ### Estimation on fully observed network
 
-We compare with clusterings obtained with the fully observed network.
+We would like to compare out results with the clustering obtained on the fully observed network.
+
+So we first adjust a collection of SBM on the original adjacency matrix:
 
 ```{r inference full, results='hide'}
 collection_sbm_full <- 
@@ -116,7 +121,9 @@ collection_sbm_full <-
 smooth(collection_sbm_full, "forward", control = list(iterates = 3))
 ```
 
-```{r}
+As expected, the ICL on the fully observed network is better. But more interestingly, the number of group selected may differ in the the presence of missing data.
+
+```{r plot comparison full}
 res_missing <- res_smoothed
 res_missing$type <- "missing"
 res_full <- data.frame(
@@ -130,6 +137,8 @@ rbind(res_missing, res_full) %>%
 
 ```
 
+Indeed, two classes found on the fully observed network fuse in the SBM fitted on the partially observed network.
+
 
 ```{r clustering comparison}
 table(
@@ -138,14 +147,23 @@ table(
   )
 ```
 
+```{r plot, fig.width=7, fig.height=7}
+par(mfrow = c(2,2))
+plot(collection_sbm$bestModel$fittedSBM, type = "network")
+plot(collection_sbm$bestModel$fittedSBM, type = "connectivity")
+plot(collection_sbm_full$bestModel$fittedSBM, type = "network")
+plot(collection_sbm_full$bestModel$fittedSBM, type = "connectivity")
+```
+
+
 ### Taking the covariates into account
 
-We now introduce the covariate `military_power` into the analysis. We expect a part of the network to be explained by this covariate.  
+We now show how to introduce a covariate in the model. We consider a covariate reflecting the military power of the country repsented by the node. We typically expect  a part of the network to be explained by this covariate.  
 
-let us first prepare the data for missSBM inference on the full set of data 
+Let us first prepare the data for missSBM inference on the full set of data 
 
 ```{r war network with covariates} 
-sampleNet_cov <- prepare_data(beligerent_adjacency, list(war$beligerent$power)) 
+sampleNet_cov <- prepare_data(beligerent_adjacency, list(beligerent_power)) 
 ``` 
 
 Then we run the inference on the fully observed network 
