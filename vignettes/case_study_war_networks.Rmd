@@ -42,9 +42,11 @@ The `war` data set comes with the `missSBM` package:
 data("war")
 ```
 
-This data set contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 and 2012.  The network `beligerent` have less nodes since countries which have not been at war are not considered.
+This data set contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 and 2012.  The network `beligerent` have less nodes since countries which have not been at war at all are not considered.
 
-These two networs were extracted from [http://www.correlatesofwar.org/](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance). In the following, we focus on the network `war$beligerent`, which is provided as an igraph object:
+These two networks were extracted from [http://www.correlatesofwar.org/](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance). Version 4.0 was used for war data and version 4.1 for formal alliance. 
+On the top of the two networks, two covariates were considered. One covariate is concerned with military power of the states (see @singer1972capability, version 5.0 was used) and the other is concerned with trade exchanges between country (see @barbieri2012correlates and @barbieri2009trading, version 4.0 was used).
+In the following, we focus on the network `war$beligerent`, which is provided as an igraph object:
 
 ```{r war network plot, fig.width=7,  fig.height=7}
 par(mar = c(0,0,0,0))
@@ -54,7 +56,7 @@ plot(war$beligerent,
      vertex.label.cex=.6, edge.color="gray70", edge.width = 2)
 ```
 
-To pursue our analysis, we extract the adjacency matrix of the network,a covariate on the vertices describing the military power of each country, and a covariate on the dyads describing the intensity of trade between two countries.
+To pursue our analysis, we extract the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and a covariate on the dyads describing the intensity of trade between two countries.
 
 ```{r beligenrent network}
 beligerent_adjacency <- as_adj(war$beligerent, sparse = FALSE)
@@ -64,7 +66,8 @@ beligerent_trade     <- war$beligerent$trade
 
 ### Generating missing data
 
-Some data may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. More precisely, we can assume that the sampling is node-centered and collect edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `sample` in **missSBM**:
+Even though the dataset was complete, we can assume that some data may be missing for the sake of illustration.  
+More specifically, the data collection may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. Thus, the sampling is node-centered and collects edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `sample` in **missSBM**:
 
 ```{r sampling node}
 sampledNet_war <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = .8)
@@ -87,7 +90,7 @@ res_unsmoothed <- data.frame(
 
 ### Smoothing
 
-The `smooth` function allows the user to produce a smoothed version of the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will faciliate the choice of the number of group.
+The `smooth` function allows the user to produce a smoothed version of the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust.
 
 ```{r smoothed node, results='hide'}
 smooth(collection_sbm, "both")
@@ -147,7 +150,7 @@ table(
   )
 ```
 
-The model finally fitted on the nbetwork data can be represented thanks to a plot method applying on objects with class `SBM`:
+The model finally fitted on the network data can be represented thanks to a plot method applying on objects with class `SBM`:
 
 ```{r plot, fig.width=7, fig.height=7}
 par(mfrow = c(2,2))
@@ -179,7 +182,7 @@ vBlocks <- 1:4
 collection_sbm_power_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "node", useCovariates = TRUE)
 ```
 
-The option `useCovariates = TRUE` specifies that the covariate(s) should be used in the SBM i.e. the  distribution of edges depend on the covariate(s). 
+The option `useCovariates = TRUE` specifies that the covariate(s) should be used in the SBM i.e. the  distribution of edges depends on the covariate(s). 
 
 The covariate provided as a vector is transferred on edges through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`. 
 
@@ -188,7 +191,7 @@ The estimated effect of the covariate is obtained trhough:
 collection_sbm_power_full$bestModel$fittedSBM$covarParam
 ```
 
-The covariate could be responsible for the sampling. The state with bigger military power are more likely to be full observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.
+The covariate could be responsible for the sampling. The state with bigger military power are more likely to be fully observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.
 ```{r power_sampling}
 nWar <- nrow(beligerent_adjacency)
 parameters_sample <- 600
@@ -219,7 +222,7 @@ collection_sbm_power_miss$bestModel$fittedSBM$covarParam
 
 #### Trade data
 
-Another covariate is the average trade exchange between the states. This covariate is related to pairs of states hence to the dyads. We first build a matrix of dissimilarity according to these covariate:
+Another covariate is the average trade exchange between the states. This covariate is related to pairs of states hence to the dyads. We first build a matrix of dissimilarity according to this covariate:
 
 ```{r trade}
 trade <- beligerent_trade 
@@ -229,7 +232,7 @@ trade <- log(trade + 1)
 diag(trade) = 0
 ```
 
-We then conduct a similar analysis than with the power to see how it can be accounted for in the SBM.
+We then conduct a similar analysis as with the power to see how it can be accounted for in the SBM.
 
 We first sample according to it:
 ```{r samptrade}
@@ -238,6 +241,7 @@ sampleNet_trade_miss <- missSBM::sample(beligerent_adjacency, sampling = "covar-
 plot(sampleNet_trade_miss)
 ```
 
+The choice of the sampling parameters leads to more likely observe dyads with important trade exchange.
 We then perform estimation on the missing data drawn according to the trade covariate.
 
 ```{r estimate trade}
