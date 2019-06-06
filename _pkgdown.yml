@@ -19,6 +19,7 @@ navbar:
       href: news/index.html
   right:
     - icon: fa-github
+    - text: github
       href: https://github.com/jchiquet/missSBM
 
 reference:
@@ -36,15 +37,12 @@ reference:
     Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.
   contents:
     - '`missSBM_collection`'
-    - '`missingSBM_fit`'
-    - '`SBM_fit`'
     - '`SBM_sampler`'
     - '`sampledNetwork`'
-    - '`networkSampler`'
-    - '`networkSampling`'
 - title: Data sets
   desc: ~
   contents:
-    - '`war_graphs`'
+    - '`war`'
     - '`frenchblog2007`'
     - '`er_network`'
+
