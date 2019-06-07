@@ -1,19 +1,11 @@
-Package: missSSBM
-=================
+# missSSBM 0.2.0 [2019-06-06]
 
-Version: 0.2.0 [2019-06-06]
+## significant changes:
+  - decent vignette
+  - faster tests
+  - many bugs corrected
 
-SIGNIFICANT CHANGES:
+# missSSBM 0.1.0-9000 [2019-02-26]
 
- * decent vignette
- * faster tests
- * many bugs corrected
-
-Version: 0.1.0-9000 [2019-02-26]
-
- * adding unit test
-
-SOFTWARE QUALITY:
-
-* adding unit test
+* first version recorded in the NEWS
 
