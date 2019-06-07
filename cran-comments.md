@@ -15,6 +15,9 @@ Added 'cran-comments' to the Rbuildignore file
 
 ## R CMD check results
 
+── R CMD check results ────────────────────────────────────── missSBM 0.2.0 ────
+Duration: 1m 29.2s
+
 Duration: 1m 26.9s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
