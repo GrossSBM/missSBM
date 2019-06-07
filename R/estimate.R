@@ -11,7 +11,7 @@
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
 #' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
 #' providing a user-defined clustering. Default is "hierarchical".
-#' @param useCovariates logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM inference? default is TRUE.
+#' @param useCovariates logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
@@ -25,7 +25,7 @@
 #'  \item{"trace"}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 #' }
 #'
-#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and
+#' @details The different sampling designs are split into two families in which we find dyad-centered and
 #' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
 #' \itemize{
 #' \item Missing at Random (MAR)

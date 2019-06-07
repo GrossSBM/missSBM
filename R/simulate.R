@@ -1,6 +1,6 @@
 #' Simulation of an SBM
 #'
-#' Generates a realization (blocks and adjancency matrix) of a Stochastic Block model
+#' Generates a realization (blocks and adjacency matrix) of a Stochastic Block model
 #'
 #' @param nNodes The number of nodes
 #' @param mixtureParam The mixture parameters

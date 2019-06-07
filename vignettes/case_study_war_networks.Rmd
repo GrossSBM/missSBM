@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 set.seed(9877) # set seed for reproducibility
 ```
 
-## Prerequesites
+## Prerequisites
 
 On top of **missSBM**, our analysis will rely on the **igraph** package for network data manipulation, and **ggplot2** and **magrittr** for representation.
 
@@ -186,7 +186,7 @@ The option `useCovariates = TRUE` specifies that the covariate(s) should be used
 
 The covariate provided as a vector is transferred on edges through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`. 
 
-The estimated effect of the covariate is obtained trhough:
+The estimated effect of the covariate is obtained through
 ```{r power_effect}
 collection_sbm_power_full$bestModel$fittedSBM$covarParam
 ```

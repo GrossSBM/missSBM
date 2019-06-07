@@ -10,7 +10,7 @@ smooth(Robject, type = c("forward", "backward", "both"),
 \arguments{
 \item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}}
 
-\item{type}{character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".}
+\item{type}{character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "forward".}
 
 \item{control}{a list controlling the variational EM algorithm. See details.}
 }
@@ -23,11 +23,11 @@ of SBM ordered by number of block. The goal is to find better initialization. Th
 in a "smoothing" of the ICL, that should be close to concave.
 }
 \details{
-The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
+The list of parameters \code{control} controls the optimization process and the variational EM algorithm, with the following entries
  \itemize{
  \item{"iterates"}{integer for the number of iteration of smoothing. Default is 1.}
  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
- \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+ \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
  \item{"cores"}{integer for number of cores used. Default is 1.}
  \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}

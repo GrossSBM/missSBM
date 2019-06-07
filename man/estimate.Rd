@@ -20,7 +20,7 @@ and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
 providing a user-defined clustering. Default is "hierarchical".}
 
-\item{useCovariates}{logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{useCovariates}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 
 \item{control}{a list of parameters controlling the variational EM algorithm. See details.}
 }
@@ -42,7 +42,7 @@ variational EM algorithm, with the following parameters
  \item{"trace"}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 }
 
-The differents sampling designs are splitted into two families in which we find dyad-centered and
+The different sampling designs are split into two families in which we find dyad-centered and
 node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
 \itemize{
 \item Missing at Random (MAR)

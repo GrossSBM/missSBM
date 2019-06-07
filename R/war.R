@@ -7,7 +7,7 @@
 #'  The network `beligerent` have less nodes since countries which have not been at
 #'  war are not considered.
 #' @format A list with 2 two igraph objects, \code{alliance} and \code{beligerent}.
-#' Each graph have three attributes: 'name' (the country name), 'power' (a score related to military power: the higer, the better) and
+#' Each graph have three attributes: 'name' (the country name), 'power' (a score related to military power: the higher, the better) and
 #' 'trade' (a score related to the trade effort between pairs of countries).
 #'
 #' @references Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.
@@ -19,6 +19,6 @@
 #' igraph::gorder(war$beligerent)
 #' igraph::edges(war$alliance)
 #' igraph::get.graph.attribute(war$alliance)
-#' @source networs were extracted from <http://www.correlatesofwar.org/>
+#' @source networks were extracted from <http://www.correlatesofwar.org/>
 "war"
 

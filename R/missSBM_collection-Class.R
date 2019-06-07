@@ -4,7 +4,7 @@
 #' field access.
 #'
 #' @field models a list of models
-#' @field ICL the vector of Integrated Classfication Criterion (ICL) associated to
+#' @field ICL the vector of Integrated Classification Criterion (ICL) associated to
 #' the models in the collection (the smaller, the better)
 #' @field bestModel the best model according to the ICL
 #' @field optimizationStatus a data.frame summarizing the optimization process for all models
@@ -85,14 +85,14 @@ function(type, control) {
 #' in a "smoothing" of the ICL, that should be close to concave.
 #'
 #' @param Robject an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}
-#' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".
+#' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "forward".
 #' @param control a list controlling the variational EM algorithm. See details.
 #'
-#' @details The list of parameters \code{control} controls the optimziation process and the variational EM algorithm, with the following entries
+#' @details The list of parameters \code{control} controls the optimization process and the variational EM algorithm, with the following entries
 #'  \itemize{
 #'  \item{"iterates"}{integer for the number of iteration of smoothing. Default is 1.}
 #'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
-#'  \item{"maxiter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+#'  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
 #'  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
 #'  \item{"cores"}{integer for number of cores used. Default is 1.}
 #'  \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}

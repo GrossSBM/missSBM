@@ -24,7 +24,7 @@ simulate(nNodes, mixtureParam, connectParam, directed = FALSE,
 an object with class \code{SBM_sampler}
 }
 \description{
-Generates a realization (blocks and adjancency matrix) of a Stochastic Block model
+Generates a realization (blocks and adjacency matrix) of a Stochastic Block model
 }
 \examples{
 ## SBM parameters

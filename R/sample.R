@@ -11,14 +11,14 @@
 #' @param covariates A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.
 #' @param similarity An optional function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
-#' Only relevent when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
+#' Only relevant when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
 #' @param intercept An optional intercept term to be added in case of the presence of covariates. Default is 0.
 #'
 #' @return an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
 #' Can then feed the \code{\link{estimate}} function.
 #' @seealso The class \code{\link{sampledNetwork}}
 #'
-#' @details The differents sampling designs are splitted into two families in which we find dyad-centered and
+#' @details The different sampling designs are split into two families in which we find dyad-centered and
 #' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
 #' \itemize{
 #' \item Missing at Random (MAR)

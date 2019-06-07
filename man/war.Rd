@@ -5,10 +5,10 @@
 \alias{war}
 \title{War data set}
 \format{A list with 2 two igraph objects, \code{alliance} and \code{beligerent}.
-Each graph have three attributes: 'name' (the country name), 'power' (a score related to military power: the higer, the better) and
+Each graph have three attributes: 'name' (the country name), 'power' (a score related to military power: the higher, the better) and
 'trade' (a score related to the trade effort between pairs of countries).}
 \source{
-networs were extracted from <http://www.correlatesofwar.org/>
+networks were extracted from <http://www.correlatesofwar.org/>
 }
 \usage{
 war

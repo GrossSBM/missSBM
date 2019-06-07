@@ -17,7 +17,7 @@ field access.
 \describe{
 \item{\code{models}}{a list of models}
 
-\item{\code{ICL}}{the vector of Integrated Classfication Criterion (ICL) associated to
+\item{\code{ICL}}{the vector of Integrated Classification Criterion (ICL) associated to
 the models in the collection (the smaller, the better)}
 
 \item{\code{bestModel}}{the best model according to the ICL}

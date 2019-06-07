@@ -12,7 +12,7 @@
 er_network
 }
 \description{
-A dataset containing the weigthed PPI network centred around the ESR1 (ER) protein
+A dataset containing the weighted PPI network centred around the ESR1 (ER) protein
 }
 \examples{
 data("er_network")
