@@ -1,7 +1,10 @@
 
 ## Resubmission
 
-Added 'cran-comments' to the Rbuildignore file
+- fixed title case in title field of the DESCRIPTION file
+- fixed single quote software names in the DESCRIPTION field
+- replaced 'dyad' by 'node pair' to avoid ambiguity
+- Added 'cran-comments' to the Rbuildignore file
 
 ## Tested environments
 
