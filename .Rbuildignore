@@ -13,3 +13,5 @@
 ^vignettes/*_cache$
 ^vignettes/cache$
 ^CRAN-RELEASE$
+^cran-comments\.md$
+

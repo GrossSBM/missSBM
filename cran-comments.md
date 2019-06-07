@@ -1,4 +1,8 @@
 
+## Resubmission
+
+Added 'cran-comments' to the Rbuildignore file
+
 ## Tested environments
 
 - Debian Linux, R-devel, GCC (R-HUB)
