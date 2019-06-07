@@ -87,7 +87,7 @@ for (sampling in names(sampling_parameters)) {
        cluster         = sbm$memberships
      )
 }
-\dontrun{
+\donttest{
 ## SSOOOO long, but fancy
 old_par <- par(mfrow = c(2,3))
 for (sampling in names(sampling_parameters)) {

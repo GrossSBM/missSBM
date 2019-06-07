@@ -3,7 +3,7 @@
 
 - fixing reference to authors (year) <doi:>
 - fixing capitalization in the Description field
-- removing '\dontrun' when appropriate
+- removing '\dontrun' in examples
 - reseting changed options at the end of examples
 
 ## Resubmission
