@@ -12,3 +12,4 @@
 ^inst/tests_against_timCode
 ^vignettes/*_cache$
 ^vignettes/cache$
+^CRAN-RELEASE$
