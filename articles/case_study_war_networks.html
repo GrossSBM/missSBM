@@ -98,9 +98,9 @@
 
     
     
-<div id="prerequesites" class="section level2">
+<div id="prerequisites" class="section level2">
 <h2 class="hasAnchor">
-<a href="#prerequesites" class="anchor"></a>Prerequesites</h2>
+<a href="#prerequisites" class="anchor"></a>Prerequisites</h2>
 <p>On top of <strong>missSBM</strong>, our analysis will rely on the <strong>igraph</strong> package for network data manipulation, and <strong>ggplot2</strong> and <strong>magrittr</strong> for representation.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(igraph)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
@@ -217,7 +217,7 @@ More specifically, the data collection may be missing for some countries in the 
 <a class="sourceLine" id="cb15-2" data-line-number="2">collection_sbm_power_full &lt;-<span class="st"> </span><span class="kw"><a href="../reference/estimate.html">estimate</a></span>(sampleNet_cov, <span class="dt">vBlocks =</span> vBlocks, <span class="dt">sampling =</span> <span class="st">"node"</span>, <span class="dt">useCovariates =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>The option <code>useCovariates = TRUE</code> specifies that the covariate(s) should be used in the SBM i.e. the distribution of edges depends on the covariate(s).</p>
 <p>The covariate provided as a vector is transferred on edges through an <span class="math inline">\(\ell_1\)</span> similarity: for edge <span class="math inline">\((i,j)\)</span> the associated covariate is defined by <span class="math inline">\(|x_i-x_j|\)</span> where <span class="math inline">\(x_i\)</span> denotes the covariate for node <span class="math inline">\(i\)</span>. Another similarity measure could be provided via the option <code>similarity</code>.</p>
-<p>The estimated effect of the covariate is obtained trhough:</p>
+<p>The estimated effect of the covariate is obtained through</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">collection_sbm_power_full<span class="op">$</span>bestModel<span class="op">$</span>fittedSBM<span class="op">$</span>covarParam</a></code></pre></div>
 <pre><code>## [1] -0.2138825</code></pre>
 <p>The covariate could be responsible for the sampling. The state with bigger military power are more likely to be fully observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.</p>
@@ -327,7 +327,7 @@ More specifically, the data collection may be missing for some countries in the 
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#prerequesites">Prerequesites</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
       <li><a href="#the-war-network">The war network</a></li>
       <li><a href="#references">References</a></li>
       </ul>

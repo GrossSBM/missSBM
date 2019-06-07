@@ -161,7 +161,7 @@ providing a user-defined clustering. Default is "hierarchical".</p></td>
     </tr>
     <tr>
       <th>useCovariates</th>
-      <td><p>logicial. If covariates are present in sampledNet, should they be used for the infernece or of the network sampling design, or just for the SBM inference? default is TRUE.</p></td>
+      <td><p>logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -183,7 +183,7 @@ variational EM algorithm, with the following parameters</p><ul>
 <li><p>"cores"integer for number of cores used. Default is 1.</p></li>
 <li><p>"trace"integer for verbosity (0, 1, 2). Default is 1. Useless when <code>cores</code> &gt; 1</p></li>
 </ul>
-    <p>The differents sampling designs are splitted into two families in which we find dyad-centered and
+    <p>The different sampling designs are split into two families in which we find dyad-centered and
 node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for complete description.</p><ul>
 <li><p>Missing at Random (MAR)</p><ul>
 <li><p>"dyad": parameter = p and $$p = P(Dyad (i,j) is sampled)$$</p></li>

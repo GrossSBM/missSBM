@@ -147,7 +147,7 @@ in a "smoothing" of the ICL, that should be close to concave.</p>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "foward".</p></td>
+      <td><p>character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "forward".</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -161,10 +161,10 @@ in a "smoothing" of the ICL, that should be close to concave.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The list of parameters <code>control</code> controls the optimziation process and the variational EM algorithm, with the following entries</p><ul>
+    <p>The list of parameters <code>control</code> controls the optimization process and the variational EM algorithm, with the following entries</p><ul>
 <li><p>"iterates"integer for the number of iteration of smoothing. Default is 1.</p></li>
 <li><p>"threshold"stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.</p></li>
-<li><p>"maxiter"V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200</p></li>
+<li><p>"maxIter"V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200</p></li>
 <li><p>"fixPointIter"number of fix-point iteration for the Variational E step. Default is 5.</p></li>
 <li><p>"cores"integer for number of cores used. Default is 1.</p></li>
 <li><p>"trace"integer for verbosity. Useless when <code>cores</code> &gt; 1</p></li>
