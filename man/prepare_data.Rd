@@ -14,13 +14,13 @@ prepare_data(adjacencyMatrix, covariates = NULL,
 must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.}
 
 \item{similarity}{An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
-Only relevent when the \code{covariates} is a list of size-N vectors.}
+Only relevant when the \code{covariates} is a list of size-N vectors.}
 }
 \value{
 Returns an R6 object with class \code{\link{sampledNetwork}}.
 }
 \description{
-This function put together the adjacency matrix of a network and an optional list of covariates
+This function puts together the adjacency matrix of a network and an optional list of covariates
 into a single \code{\link{sampledNetwork}} object, ready to use for inference with the \code{\link{estimate}}
 function of the missSBM package.
 }

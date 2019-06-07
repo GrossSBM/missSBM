@@ -9,7 +9,7 @@ estimate(sampledNet, vBlocks, sampling, clusterInit = "hierarchical",
 }
 \arguments{
 \item{sampledNet}{An object with class \code{\link{sampledNetwork}}, typically obtained with
-the function \code{\link{prepare_data}} (real-worl data) or \code{\link{sample}} (simulation).}
+the function \code{\link{prepare_data}} (real-word data) or \code{\link{sample}} (simulation).}
 
 \item{vBlocks}{The vector of number of blocks considered in the collection}
 
@@ -32,7 +32,7 @@ Variational inference from sampled network data on a collection of
 Stochastic Block Models indexed by block number.
 }
 \details{
-The list of parameters \code{control} essentially tunes the optimziation process and the
+The list of parameters \code{control} essentially tunes the optimization process and the
 variational EM algorithm, with the following parameters
  \itemize{
  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
