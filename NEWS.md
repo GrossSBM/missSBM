@@ -7,5 +7,5 @@
 
 # missSSBM 0.1.0-9000 [2019-02-26]
 
-* first version recorded in the NEWS
+* Added a `NEWS.md` file to track changes to the package.
 
