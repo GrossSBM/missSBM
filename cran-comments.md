@@ -1,4 +1,11 @@
 
+## Resubmission 2
+
+- fixing reference to authors (year) <doi:>
+- fixing capitalization in the Description field
+- removing '\dontrun' when appropriate
+- reseting changed options at the end of examples
+
 ## Resubmission
 
 - fixed title case in title field of the DESCRIPTION file

@@ -72,12 +72,12 @@
 #' }
 #' \dontrun{
 #' ## SSOOOO long, but fancy
-#' par(mfrow = c(2,3))
+#' old_par <- par(mfrow = c(2,3))
 #' for (sampling in names(sampling_parameters)) {
 #'   plot(sampled_networks[[sampling]],
 #'     clustering = sbm$memberships, main = paste(sampling, "sampling"))
 #' }
-#' par(mfrow = c(1,1))
+#' par(old_par)
 #' }
 #' @export
 sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity, intercept = 0) {

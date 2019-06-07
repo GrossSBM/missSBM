@@ -28,11 +28,10 @@
 #' ## draw a SBM model with node-centred covariates
 #' sbm_cov <- missSBM::simulate(N, alpha, gamma, directed, X, eta)
 #'
-#' \dontrun{
-#' par(mfrow = c(1,2))
+#' old_param <- par(mfrow = c(1,2))
 #' plot(sbm)
 #' plot(sbm_cov)
-#' }
+#' par(old_param)
 #'
 #' @export
 simulate <- function(nNodes, mixtureParam, connectParam, directed = FALSE, covariates = NULL, covarParam = NULL) {

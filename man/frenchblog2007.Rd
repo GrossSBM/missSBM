@@ -20,11 +20,9 @@ the "Observatoire Presidentielle" project. Originally part of the 'mixer' packag
 \examples{
 data(frenchblog2007)
 igraph::V(frenchblog2007)$party
-\dontrun{
-igraph::plot(frenchblog2007,
+igraph::plot.igraph(frenchblog2007,
   vertex.color = factor(igraph::V(frenchblog2007)$party),
   vertex.label = NA
  )
-}
 }
 \keyword{datasets}
