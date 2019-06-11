@@ -7,6 +7,7 @@ status](https://travis-ci.org/jchiquet/missSBM.svg?branch=master)](https://travi
 status](https://ci.appveyor.com/api/projects/status/github/jchiquet/missSBM?branch=master&svg=true)](https://ci.appveyor.com/project/jchiquet/missSBM)
 [![Coverage
 status](https://codecov.io/gh/jchiquet/missSBM/branch/master/graph/badge.svg)](https://codecov.io/github/jchiquet/missSBM?branch=master)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/missSBM)](https://cran.r-project.org/package=missSBM)
 
 > When a network is partially observed (here, NAs in the adjacency
 > matrix rather than 1 or 0 due to missing information between node
@@ -17,6 +18,14 @@ status](https://codecov.io/gh/jchiquet/missSBM/branch/master/graph/badge.svg)](h
 > [10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934).
 
 ## Installation
+
+The Last CRAN version is available via
+
+``` r
+install.packages("missSBM")
+```
+
+The development version is available via
 
 ``` r
 devtools::install_github("jchiquet/missSBM")
