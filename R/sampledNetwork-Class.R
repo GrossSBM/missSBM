@@ -161,3 +161,26 @@ function(model = "Sampled Network\n") {
   cat("* Useful method: plot() \n")
 })
 sampledNetwork$set("public", "print", function() self$show())
+
+
+## PUBLIC S3 METHODS FOR sampledNetwork
+## =========================================================================================
+
+## Auxiliary functions to check the given class of an objet
+is_sampledNetwork <- function(Robject) {inherits(Robject, "sampledNetwork")}
+
+sampledNetwork$set("public", "summary",
+  function() {
+  cat("Sampled Network with", self$nNodes, "nodes and sampling rate equal to", round(self$samplingRate,3),"\n")
+  cat(" - ",length(self$observedDyads)," observed dyads (",
+      sum(self$adjacencyMatrix[self$observedDyads] != 0), " links and ",
+      sum(self$adjacencyMatrix[self$observedDyads] == 0), " no-links)\n",
+      " - ", length(sampled_network$missingDyads)              , " missing dyads\n", sep = "")
+  }
+)
+
+#' @export
+summary.sampledNetwork <- function(object, ...) {
+  stopifnot(is_sampledNetwork(object))
+  object$summary()
+}
