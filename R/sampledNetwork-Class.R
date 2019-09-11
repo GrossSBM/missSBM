@@ -2,7 +2,7 @@
 #'
 #' The function \code{\link{sample}} and \code{\link{prepare_data}} produces an instance of an object with class \code{sampledNetwork}.
 #'
-#' All fields of this class are only accessible for reading. This class comes with a basic plot and print methods
+#' All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
 #'
 #' @field samplingRate percentage of observed dyads
 #' @field nNodes number of nodes
@@ -158,7 +158,7 @@ function(model = "Sampled Network\n") {
   cat("* Useful fields \n")
   cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
       "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
-  cat("* Useful method: plot() \n")
+  cat("* Useful method: plot(), summary() , print()  \n")
 })
 sampledNetwork$set("public", "print", function() self$show())
 
