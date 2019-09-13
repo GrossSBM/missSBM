@@ -81,6 +81,7 @@ sampledNet <- missSBM::sample(sbm$adjacencyMatrix, sampling, samplingParameters)
 vBlocks <- 1:5 # number of classes
 collection <- missSBM::estimate(sampledNet, vBlocks, sampling)
 collection$ICL
+coef(collection$bestModel$fittedSBM, "connectivity")
 }
 \seealso{
 \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.

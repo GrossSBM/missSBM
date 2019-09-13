@@ -67,7 +67,7 @@ function(model = "Stochastic Block Model\n") {
   cat("* Useful fields \n")
   cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam\n", "$covarParam, $covarArray \n")
 })
-SBM$set("public", "print", function() self$show())
+SBM$set("public", "print"  , function() self$show())
 
 SBM$set("public", "plot",
   function(type = c("network", "connectivity")) {
@@ -86,3 +86,23 @@ SBM$set("public", "plot",
     }
   }
 )
+
+## PUBLIC S3 METHODS FOR SBM
+## =========================================================================================
+
+## Auxiliary functions to check the given class of an objet
+isSBM <- function(Robject) {inherits(Robject, "SBM")}
+
+#' @export
+coef.SBM <- function(object, type = c("mixture", "connectivity", "covariates"), ...) {
+  stopifnot(isSBM(object))
+  switch(match.arg(type),
+         mixture      = object$mixtureParam,
+         connectivity = object$connectParam,
+         covariates   = object$covarParam)
+}
+
+#' @export
+summary.SBM <- function(object, ...) {
+  object$show()
+}

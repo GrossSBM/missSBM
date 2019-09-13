@@ -63,6 +63,7 @@ sampled_network <-
        parameters      = c(0.4, 0.8)
      )
 
+summary(sampled_network)
 print(sampled_network)
 plot(sampled_network, clustering = sbm$memberships)
 }

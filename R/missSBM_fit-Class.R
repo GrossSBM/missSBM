@@ -141,3 +141,4 @@ function() {
   cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
 })
 missSBM_fit$set("public", "print", function() self$show())
+

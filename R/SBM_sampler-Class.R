@@ -42,6 +42,9 @@
 #' sbm_s$rBlocks() # draw some blocks
 #' sbm_s$rAdjMatrix() # draw some edges
 #'
+#' coef(sbm_s, "mixture")
+#' coef(sbm_s, "connectivity")
+#' summary(sbm_s)
 #' @seealso The function \code{\link{simulate}}.
 #' @export
 SBM_sampler <-
@@ -93,7 +96,7 @@ function(model = "Sampler for Stochastic Block Model\n") {
   cat("* Additional fields \n")
   cat("  $blocks, $memberships, $adjMatrix, $connectProb\n")
   cat("* S3 methods \n")
-  cat("  plot, print\n")
+  cat("  plot, print, summary, coef\n")
 })
 
 SBM_sampler$set("public", "print", function() self$show())

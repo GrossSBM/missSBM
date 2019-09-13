@@ -63,6 +63,9 @@ sbm_s <- SBM_sampler$new(directed, N, alpha, pi)
 sbm_s$rBlocks() # draw some blocks
 sbm_s$rAdjMatrix() # draw some edges
 
+coef(sbm_s, "mixture")
+coef(sbm_s, "connectivity")
+summary(sbm_s)
 }
 \seealso{
 The function \code{\link{simulate}}.
