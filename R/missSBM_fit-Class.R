@@ -13,7 +13,7 @@ missSBM_fit <-
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
     optStatus  = NULL, # status of the optimization process
-    useCov     = NULL # use or not os covariates for SBM fitting
+    useCov     = NULL  # use or not os covariates for SBM fitting
   ),
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit, useCov) {
@@ -133,12 +133,62 @@ function() {
   cat("==================================================================\n")
   cat("Structure for storing a SBM fitted under missing data condition   \n")
   cat("==================================================================\n")
-  cat("* Useful fields (most are special object themselves)              \n")
-  cat("  $fittedSBM (the adjusted stochastic block model)                 \n")
+  cat("* Useful fields (most are special object themselves with methods) \n")
+  cat("  $fittedSBM (the adjusted stochastic block model)                \n")
   cat("  $fittedSampling (the estimated sampling process)                \n")
   cat("  $sampledNetwork (the sampled network data)                      \n")
   cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
   cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
+  cat("* Useful methods                                                  \n")
+  cat("  $plot, $coef, $fitted, $predict, $print                         \n")
 })
 missSBM_fit$set("public", "print", function() self$show())
 
+## PUBLIC S3 METHODS FOR missSBMfit
+## =========================================================================================
+
+## Auxiliary functions to check the given class of an objet
+is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
+
+#' @export
+fitted.missSBM_fit <- function(object, ...) {
+  stopifnot(is_missSBMfit(object))
+  fitted(object$fittedSBM)
+}
+
+#' @export
+predict.missSBM_fit <- function(object, ...) {
+  stopifnot(is_missSBMfit(object))
+  object$imputedNetwork
+}
+
+#' @export
+summary.missSBM_fit <- function(object, ...) {
+  stopifnot(is_missSBMfit(object))
+  object$show()
+}
+
+#' @export
+#' @import ggplot2
+plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampledNetwork", "monitoring"), ...) {
+  stopifnot(is_missSBMfit(x))
+  type <- match.arg(type)
+  if (type == "network")
+    x$fittedSBM$plot("network")
+  if (type == "connectivity")
+    x$fittedSBM$plot("connectivity")
+  if (type == "sampledNetwork")
+    x$sampledNetwork$plot(x$fittedSBM$memberships)
+  if (type == "monitoring")
+    ggplot(x$monitoring, aes_string(x = 'iteration', y = 'objective')) + geom_line() + theme_bw()
+}
+
+#' @export
+coef.missSBM_fit <- function(object, type = c("mixture", "connectivity", "covariates", "sampling"), ...) {
+  stopifnot(is_missSBMfit(object))
+  switch(match.arg(type),
+         mixture      = object$fittedSBM$mixtureParam,
+         connectivity = object$fittedSBM$connectParam,
+         covariates   = object$fittedSBM$covarParam,
+         sampling     = object$fittedSampling$parameters)
+}

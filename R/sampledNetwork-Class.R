@@ -146,8 +146,6 @@ function(clustering = NULL, main = paste("Network with sampling rate:", signif(s
     adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
   }
   corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
-#
-#   image_NA(self$adjacencyMatrix, main = main)
 })
 
 sampledNetwork$set("public", "show",
@@ -170,18 +168,12 @@ sampledNetwork$set("public", "print", function() self$show())
 ## Auxiliary functions to check the given class of an objet
 is_sampledNetwork <- function(Robject) {inherits(Robject, "sampledNetwork")}
 
-sampledNetwork$set("public", "summary",
-  function() {
-  cat("Sampled Network with", self$nNodes, "nodes and sampling rate equal to", round(self$samplingRate,3),"\n")
-  cat(" - ",length(self$observedDyads)," observed dyads (",
-      sum(self$adjacencyMatrix[self$observedDyads] != 0), " links and ",
-      sum(self$adjacencyMatrix[self$observedDyads] == 0), " no-links)\n",
-      " - ", length(sampled_network$missingDyads)              , " missing dyads\n", sep = "")
-  }
-)
-
 #' @export
 summary.sampledNetwork <- function(object, ...) {
   stopifnot(is_sampledNetwork(object))
-  object$summary()
+  cat("Sampled Network with", object$nNodes, "nodes and sampling rate equal to", round(object$samplingRate,3),"\n")
+  cat(" - ",length(object$observedDyads)," observed dyads (",
+      sum(object$adjacencyMatrix[object$observedDyads] != 0), " links and ",
+      sum(object$adjacencyMatrix[object$observedDyads] == 0), " no-links)\n",
+      " - ", length(object$missingDyads)              , " missing dyads\n", sep = "")
 }

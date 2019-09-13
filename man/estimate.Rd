@@ -82,6 +82,13 @@ vBlocks <- 1:5 # number of classes
 collection <- missSBM::estimate(sampledNet, vBlocks, sampling)
 collection$ICL
 coef(collection$bestModel$fittedSBM, "connectivity")
+
+myModel <- collection$bestModel
+plot(myModel, "monitoring")
+coef(myModel, "sampling")
+coef(myModel, "connectivity")
+head(predict(myModel))
+head(fitted(myModel))
 }
 \seealso{
 \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.

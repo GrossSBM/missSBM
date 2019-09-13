@@ -74,7 +74,7 @@ SBM$set("public", "plot",
     type <- match.arg(type)
     if (type == "network") {
       Z <- missSBM:::clustering_indicator(as.factor(self$memberships))
-      colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
+      colors <- matrix(-ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
       colorMat <- Z %*% colors %*% t(Z)
       colorMap <- colorMat[order(self$memberships),order(self$memberships)]
       adjMatrix <- self$adjacencyMatrix[order(self$memberships), order(self$memberships)] * colorMap
@@ -91,18 +91,26 @@ SBM$set("public", "plot",
 ## =========================================================================================
 
 ## Auxiliary functions to check the given class of an objet
-isSBM <- function(Robject) {inherits(Robject, "SBM")}
+is_SBM <- function(Robject) {inherits(Robject, "SBM")}
 
 #' @export
 coef.SBM <- function(object, type = c("mixture", "connectivity", "covariates"), ...) {
-  stopifnot(isSBM(object))
+  stopifnot(is_SBM(object))
   switch(match.arg(type),
          mixture      = object$mixtureParam,
          connectivity = object$connectParam,
          covariates   = object$covarParam)
 }
 
+#' @importFrom stats fitted
+#' @export
+fitted.SBM <- function(object, ...) {
+  stopifnot(is_SBM(object))
+  object$connectProb
+}
+
 #' @export
 summary.SBM <- function(object, ...) {
+  stopifnot(is_SBM(object))
   object$show()
 }
