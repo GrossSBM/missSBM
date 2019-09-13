@@ -1,7 +1,7 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 0.2.0-9000
+Version: 0.2.1
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inra.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
@@ -27,6 +27,7 @@ Imports:
     ape,
     igraph,
     nloptr,
+    ggplot2,
     corrplot,
     R6,
     magrittr
@@ -62,5 +63,4 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
-    ggplot2
 VignetteBuilder: knitr

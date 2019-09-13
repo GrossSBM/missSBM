@@ -1,3 +1,12 @@
+# missSBM 0.2.1 [2019-09-12]
+ 
+  - added S3 methods for missSBM_fit, SBM and sampledNetwork  
+
+## significant changes:
+  - decent vignette
+  - faster tests
+  - many bugs corrected
+
 # missSBM 0.2.0 [2019-06-06]
 
 ## significant changes:
