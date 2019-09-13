@@ -8,21 +8,25 @@
 
 <title>Adjusting Stochastic Block Models under various missing data conditions — missSBM • missSBM</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,16 +34,18 @@
 
 
 
-<meta property="og:title" content="Adjusting Stochastic Block Models under various missing data conditions — missSBM" />
 
+<meta property="og:title" content="Adjusting Stochastic Block Models under various missing data conditions — missSBM" />
 <meta property="og:description" content="The missSBM package provides five functions:
 simulatea function to define and draw network data according to a stochastic block model
 samplea function to sample an existing network according to a variety of sampling designs
 estimatea function to perform inference of SBM from network data with missing entries under various sampling designs.
 prepare_dataa function to format real-world network data (adjacency matrix and covariates) to perform the estimation under missing data condition
 smootha function to smooth an existing collection of SBM estimation, to avoid being trapped in local maxima.
+
 " />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -51,6 +57,7 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -69,7 +76,7 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -103,7 +110,6 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a>
@@ -121,6 +127,7 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -132,7 +139,6 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
     </div>
 
     <div class="ref-description">
-    
     <p>The missSBM package provides five functions:</p><ul>
 <li><p><code><a href='simulate.html'>simulate</a></code>a function to define and draw network data according to a stochastic block model</p></li>
 <li><p><code><a href='sample.html'>sample</a></code>a function to sample an existing network according to a variety of sampling designs</p></li>
@@ -140,10 +146,11 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
 <li><p><code>prepare_data</code>a function to format real-world network data (adjacency matrix and covariates) to perform the estimation under missing data condition</p></li>
 <li><p><code><a href='smooth.html'>smooth</a></code>a function to smooth an existing collection of SBM estimation, to avoid being trapped in local maxima.</p></li>
 </ul>
-    
+
     </div>
 
-        
+
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>These function leads to the manipulation of a variety of R object, with their respective fields and methods. They are all automatically generated by the top-level functions itemized above, so that the user should generally to use their constructor or internal methods directly. The user should only have a basic understanding of the fields of each object to manipulate the output in R. The main objects are the following:</p><ul>
@@ -155,26 +162,24 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
 <li><p><code><a href='missSBM_fit.html'>missSBM_fit</a></code>an object that put together an SBM fit and and network sampling fit - the main point of the missSBM package !</p></li>
 <li><p><code><a href='missSBM_collection.html'>missSBM_collection</a></code>an object to store a collection of missSBM_fit, ordered by number of block</p></li>
 </ul>
-    
+
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Timothée Tabouy, Pierre Barbillon &amp; Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, &lt;doi:10.1080/01621459.2018.1562934&gt;</p>
-    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
       <li><a href="#details">Details</a></li>
-
       <li><a href="#references">References</a></li>
-          </ul>
+    </ul>
 
     <h2>Author</h2>
     <p>Timothée Tabouy, Pierre Barbillon, Julien Chiquet</p>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -182,13 +187,16 @@ smootha function to smooth an existing collection of SBM estimation, to avoid be
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
