@@ -40,9 +40,11 @@ X <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE
 
 ## draw a SBM without covariates
 sbm <- missSBM::simulate(N, alpha, pi, directed)
+coef(sbm, "connectivity")
 
 ## draw a SBM model with node-centred covariates
 sbm_cov <- missSBM::simulate(N, alpha, gamma, directed, X, eta)
+coef(sbm_cov, "covariates")
 
 old_param <- par(mfrow = c(1,2))
 plot(sbm)

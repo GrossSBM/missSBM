@@ -2,7 +2,7 @@
 #'
 #' The function \code{\link{sample}} and \code{\link{prepare_data}} produces an instance of an object with class \code{sampledNetwork}.
 #'
-#' All fields of this class are only accessible for reading. This class comes with a basic plot and print methods
+#' All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
 #'
 #' @field samplingRate percentage of observed dyads
 #' @field nNodes number of nodes
@@ -38,6 +38,7 @@
 #'        parameters      = c(0.4, 0.8)
 #'      )
 #'
+#' summary(sampled_network)
 #' print(sampled_network)
 #' plot(sampled_network, clustering = sbm$memberships)
 #'@export
@@ -145,8 +146,6 @@ function(clustering = NULL, main = paste("Network with sampling rate:", signif(s
     adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
   }
   corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
-#
-#   image_NA(self$adjacencyMatrix, main = main)
 })
 
 sampledNetwork$set("public", "show",
@@ -158,6 +157,23 @@ function(model = "Sampled Network\n") {
   cat("* Useful fields \n")
   cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
       "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
-  cat("* Useful method: plot() \n")
+  cat("* Useful method: plot(), summary() , print()  \n")
 })
 sampledNetwork$set("public", "print", function() self$show())
+
+
+## PUBLIC S3 METHODS FOR sampledNetwork
+## =========================================================================================
+
+## Auxiliary functions to check the given class of an objet
+is_sampledNetwork <- function(Robject) {inherits(Robject, "sampledNetwork")}
+
+#' @export
+summary.sampledNetwork <- function(object, ...) {
+  stopifnot(is_sampledNetwork(object))
+  cat("Sampled Network with", object$nNodes, "nodes and sampling rate equal to", round(object$samplingRate,3),"\n")
+  cat(" - ",length(object$observedDyads)," observed dyads (",
+      sum(object$adjacencyMatrix[object$observedDyads] != 0), " links and ",
+      sum(object$adjacencyMatrix[object$observedDyads] == 0), " no-links)\n",
+      " - ", length(object$missingDyads)              , " missing dyads\n", sep = "")
+}

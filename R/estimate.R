@@ -64,6 +64,14 @@
 #' vBlocks <- 1:5 # number of classes
 #' collection <- missSBM::estimate(sampledNet, vBlocks, sampling)
 #' collection$ICL
+#' coef(collection$bestModel$fittedSBM, "connectivity")
+#'
+#' myModel <- collection$bestModel
+#' plot(myModel, "monitoring")
+#' coef(myModel, "sampling")
+#' coef(myModel, "connectivity")
+#' head(predict(myModel))
+#' head(fitted(myModel))
 #' @import R6 parallel
 #' @export
 estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", useCovariates = TRUE, control = list()) {

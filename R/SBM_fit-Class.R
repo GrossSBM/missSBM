@@ -69,5 +69,5 @@ function(model = "Fit of a Stochastic Block Model\n") {
   cat("* Additional fields \n")
   cat("  $blocks, $memberships, $adjMatrix, $connectProb, $vBound, $vICL, $penalty\n")
   cat("* S3 methods \n")
-  cat("  plot, print\n")
+  cat("  plot, print, summary, coef, fitted \n")
 })
