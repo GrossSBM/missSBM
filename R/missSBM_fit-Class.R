@@ -139,8 +139,8 @@ function() {
   cat("  $sampledNetwork (the sampled network data)                      \n")
   cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
   cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
-  cat("* Useful methods                                                  \n")
-  cat("  $plot, $coef, $fitted, $predict, $print                         \n")
+  cat("* S3 methods                                                      \n")
+  cat("  plot, coef, fitted, predict, print                              \n")
 })
 missSBM_fit$set("public", "print", function() self$show())
 
