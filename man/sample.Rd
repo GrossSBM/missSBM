@@ -4,8 +4,15 @@
 \alias{sample}
 \title{Sampling of network data}
 \usage{
-sample(adjacencyMatrix, sampling, parameters, clusters = NULL,
-  covariates = NULL, similarity = l1_similarity, intercept = 0)
+sample(
+  adjacencyMatrix,
+  sampling,
+  parameters,
+  clusters = NULL,
+  covariates = NULL,
+  similarity = l1_similarity,
+  intercept = 0
+)
 }
 \arguments{
 \item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,

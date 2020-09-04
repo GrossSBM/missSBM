@@ -4,8 +4,7 @@
 \alias{smooth}
 \title{Smooth the path ICL in a collection of missSBM_fit models}
 \usage{
-smooth(Robject, type = c("forward", "backward", "both"),
-  control = list())
+smooth(Robject, type = c("forward", "backward", "both"), control = list())
 }
 \arguments{
 \item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}}

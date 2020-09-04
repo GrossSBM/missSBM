@@ -4,7 +4,9 @@
 \name{er_network}
 \alias{er_network}
 \title{ER ego centred network}
-\format{A sparse symmetric matrix with 741 rows and 741 columns \code{ESR1}}
+\format{
+A sparse symmetric matrix with 741 rows and 741 columns \code{ESR1}
+}
 \source{
 \url{https://string-db.org/}
 }

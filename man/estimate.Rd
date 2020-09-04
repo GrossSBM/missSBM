@@ -4,8 +4,14 @@
 \alias{estimate}
 \title{Estimation of SBMs with missing data}
 \usage{
-estimate(sampledNet, vBlocks, sampling, clusterInit = "hierarchical",
-  useCovariates = TRUE, control = list())
+estimate(
+  sampledNet,
+  vBlocks,
+  sampling,
+  clusterInit = "hierarchical",
+  useCovariates = TRUE,
+  control = list()
+)
 }
 \arguments{
 \item{sampledNet}{An object with class \code{\link{sampledNetwork}}, typically obtained with

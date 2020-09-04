@@ -4,8 +4,14 @@
 \alias{simulate}
 \title{Simulation of an SBM}
 \usage{
-simulate(nNodes, mixtureParam, connectParam, directed = FALSE,
-  covariates = NULL, covarParam = NULL)
+simulate(
+  nNodes,
+  mixtureParam,
+  connectParam,
+  directed = FALSE,
+  covariates = NULL,
+  covarParam = NULL
+)
 }
 \arguments{
 \item{nNodes}{The number of nodes}

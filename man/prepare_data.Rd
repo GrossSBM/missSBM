@@ -4,8 +4,11 @@
 \alias{prepare_data}
 \title{Prepare network data for estimation with missing data}
 \usage{
-prepare_data(adjacencyMatrix, covariates = NULL,
-  similarity = missSBM:::l1_similarity)
+prepare_data(
+  adjacencyMatrix,
+  covariates = NULL,
+  similarity = missSBM:::l1_similarity
+)
 }
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network (NAs allowed)}

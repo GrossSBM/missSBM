@@ -4,8 +4,10 @@
 \name{frenchblog2007}
 \alias{frenchblog2007}
 \title{Political Blogosphere network prior to 2007 French presidential election}
-\format{An igraph object with 196 nodes. The vertex attribute "party" provides a possible
-clustering of the nodes.}
+\format{
+An igraph object with 196 nodes. The vertex attribute "party" provides a possible
+clustering of the nodes.
+}
 \source{
 \url{https://www.linkfluence.com/}
 }

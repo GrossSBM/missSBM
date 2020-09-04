@@ -3,7 +3,6 @@
 \docType{package}
 \name{missSBM}
 \alias{missSBM}
-\alias{missSBM-package}
 \title{Adjusting Stochastic Block Models under various missing data conditions}
 \description{
 The missSBM package provides five functions:
