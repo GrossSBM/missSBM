@@ -1,13 +1,14 @@
 
 # missSBM: Handling missing data in Stochastic Block Models
 
-[![Travis build
-status](https://travis-ci.org/jchiquet/missSBM.svg?branch=master)](https://travis-ci.org/jchiquet/missSBM)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/jchiquet/missSBM?branch=master&svg=true)](https://ci.appveyor.com/project/jchiquet/missSBM)
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/jchiquet/missSBM/workflows/R-CMD-check/badge.svg)](https://github.com/jchiquet/missSBM/actions)
 [![Coverage
 status](https://codecov.io/gh/jchiquet/missSBM/branch/master/graph/badge.svg)](https://codecov.io/github/jchiquet/missSBM?branch=master)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/missSBM)](https://cran.r-project.org/package=missSBM)
+<!-- badges: end -->
 
 > When a network is partially observed (here, NAs in the adjacency
 > matrix rather than 1 or 0 due to missing information between node
