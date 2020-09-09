@@ -11,6 +11,15 @@ Virtual class used to define a family of networkSamplingDyads_fit
 \section{Super class}{
 \code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{networkSamplingDyads_fit}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{penalty}}{double, value of the penalty term in vICL}
+
+\item{\code{log_lambda}}{double, term for adjusting the imputation stepn which depends on the type of sampling}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -24,7 +33,6 @@ Virtual class used to define a family of networkSamplingDyads_fit
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -32,15 +40,26 @@ Virtual class used to define a family of networkSamplingDyads_fit
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+constructor for networkSampling_fit
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{networkSamplingDyads_fit$new(sampledNetwork, name)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sampledNetwork}}{a object with class sampledNetwork representing the observed data with possibly missing entries}
+
+\item{\code{name}}{a character for the name of sampling to fit on the sampledNetwork}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-show"></a>}}
 \if{latex}{\out{\hypertarget{method-show}{}}}
 \subsection{Method \code{show()}}{
+show method
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{networkSamplingDyads_fit$show()}\if{html}{\out{</div>}}
 }
@@ -50,19 +69,35 @@ Virtual class used to define a family of networkSamplingDyads_fit
 \if{html}{\out{<a id="method-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-update_parameters}{}}}
 \subsection{Method \code{update_parameters()}}{
+a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{networkSamplingDyads_fit$update_parameters(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{use for compatibility}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-update_imputation"></a>}}
 \if{latex}{\out{\hypertarget{method-update_imputation}{}}}
 \subsection{Method \code{update_imputation()}}{
+a method to update the imputation of the missing entries.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{networkSamplingDyads_fit$update_imputation(PI)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{PI}}{the matrix of inter/intra class probability of connection}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

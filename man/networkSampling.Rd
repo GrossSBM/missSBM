@@ -4,16 +4,33 @@
 \alias{networkSampling}
 \title{Definition of R6 Class 'networkSampling'}
 \description{
+Definition of R6 Class 'networkSampling'
+
+Definition of R6 Class 'networkSampling'
+}
+\details{
 this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
 It is used to define a sampling model for a network.
 It has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{type}}{a character for the type of sampling}
+
+\item{\code{prob}}{a double representing the overall sampling rate}
+
+\item{\code{parameters}}{the vector of parameters associated with the sampling at play}
+
+\item{\code{df}}{the number of entries in the vector of parameters}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{networkSampling$new()}}
 \item \href{#method-show}{\code{networkSampling$show()}}
-\item \href{#method-print}{\code{networkSampling$print()}}
 \item \href{#method-clone}{\code{networkSampling$clone()}}
 }
 }
@@ -21,30 +38,39 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+constructor for networkSampling
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{networkSampling$new(type = NA, parameters = NA)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")}
+
+\item{\code{parameters}}{the vector of parameters associated to the sampling at play}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-show"></a>}}
 \if{latex}{\out{\hypertarget{method-show}{}}}
 \subsection{Method \code{show()}}{
+show method
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{networkSampling$show(
-  model = paste0(private$name, "-model for network sampling\\n")
+  type = paste0(private$name, "-model for network sampling\\n")
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{character used to specify the type of sampling}
 }
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
-\subsection{Method \code{print()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSampling$print()}\if{html}{\out{</div>}}
+\if{html}{\out{</div>}}
 }
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

@@ -4,9 +4,13 @@
 \alias{sampledNetwork}
 \title{An R6 Class to represent sampled network data}
 \description{
-The function \code{\link{sample}} and \code{\link{prepare_data}} produces an instance of an object with class \code{sampledNetwork}.
+An R6 Class to represent sampled network data
+
+An R6 Class to represent sampled network data
 }
 \details{
+The function \code{\link{sample}} and \code{\link{prepare_data}} produces an instance of an object with class \code{sampledNetwork}.
+
 All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
 }
 \examples{
@@ -35,21 +39,21 @@ plot(sampled_network, clustering = sbm$memberships)
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{samplingRate}}{percentage of observed dyads}
+\item{\code{samplingRate}}{The percentage of observed dyads}
 
-\item{\code{nNodes}}{number of nodes}
+\item{\code{nNodes}}{The number of nodes}
 
-\item{\code{nDyads}}{number of dyads}
+\item{\code{nDyads}}{The number of dyads}
 
-\item{\code{is_directed}}{direction}
+\item{\code{is_directed}}{logical indicating if the network is directed or not}
 
-\item{\code{adjacencyMatrix}}{adjacency matrix (with NA)}
+\item{\code{adjacencyMatrix}}{The adjacency matrix of the network}
 
-\item{\code{covarMatrix}}{the matrix of covariates (if applicable)}
+\item{\code{covarArray}}{the array of covariates}
 
-\item{\code{covarArray}}{the array of covariates (if applicable)}
+\item{\code{covarMatrix}}{the matrix of covariates}
 
-\item{\code{dyads}}{list of potential dyads in the network}
+\item{\code{dyads}}{a list of potential dyads in the network}
 
 \item{\code{missingDyads}}{array indices of missing dyads}
 
@@ -57,7 +61,7 @@ plot(sampled_network, clustering = sbm$memberships)
 
 \item{\code{samplingMatrix}}{matrix of observed and non-observed edges}
 
-\item{\code{observedNodes}}{vector of observed and non-observed nodes}
+\item{\code{observedNodes}}{a vector of observed and non-observed nodes}
 
 \item{\code{NAs}}{boolean for NA entries in the adjacencyMatrix}
 }
@@ -69,7 +73,6 @@ plot(sampled_network, clustering = sbm$memberships)
 \item \href{#method-new}{\code{sampledNetwork$new()}}
 \item \href{#method-plot}{\code{sampledNetwork$plot()}}
 \item \href{#method-show}{\code{sampledNetwork$show()}}
-\item \href{#method-print}{\code{sampledNetwork$print()}}
 \item \href{#method-clone}{\code{sampledNetwork$clone()}}
 }
 }
@@ -77,15 +80,28 @@ plot(sampled_network, clustering = sbm$memberships)
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+constructor
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$new(adjacencyMatrix, covarMatrix = NULL, covarArray = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{adjacencyMatrix}}{The adjacency matrix of the network}
+
+\item{\code{covarMatrix}}{the matrix of covariates (default is \code{NULL}).}
+
+\item{\code{covarArray}}{the array of covariates  (default is \code{NULL}).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-plot}{}}}
 \subsection{Method \code{plot()}}{
+plot method for sampledNetwork
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$plot(
   clustering = NULL,
@@ -93,22 +109,23 @@ plot(sampled_network, clustering = sbm$memberships)
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{clustering}}{an optional vector of clutering memberships, default to \code{NULL}.}
+
+\item{\code{main}}{a character for the title of the plot}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-show"></a>}}
 \if{latex}{\out{\hypertarget{method-show}{}}}
 \subsection{Method \code{show()}}{
+show method
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$show(model = "Sampled Network\\n")}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
-\subsection{Method \code{print()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$print()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$show()}\if{html}{\out{</div>}}
 }
 
 }

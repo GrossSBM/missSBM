@@ -4,6 +4,9 @@
 SBM <- # this virtual class is the mother of all subtypes of SBM (either sample or fit)
 R6::R6Class(classname = "SBM",
   ## fields for internal use (refering to mathematical notations)
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## PRIVATE MEMBERS
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   private = list(
     directed = NULL, # directed or undirected network
     N        = NULL, # number of nodes

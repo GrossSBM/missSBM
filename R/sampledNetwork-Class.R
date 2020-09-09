@@ -4,20 +4,6 @@
 #'
 #' All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
 #'
-#' @field samplingRate percentage of observed dyads
-#' @field nNodes number of nodes
-#' @field nDyads number of dyads
-#' @field is_directed direction
-#' @field adjacencyMatrix adjacency matrix (with NA)
-#' @field covarMatrix the matrix of covariates (if applicable)
-#' @field covarArray the array of covariates (if applicable)
-#' @field dyads list of potential dyads in the network
-#' @field missingDyads array indices of missing dyads
-#' @field observedDyads array indices of observed dyads
-#' @field samplingMatrix matrix of observed and non-observed edges
-#' @field observedNodes vector of observed and non-observed nodes
-#' @field NAs boolean for NA entries in the adjacencyMatrix
-#'
 #' @importFrom R6 R6Class
 #' @examples
 #' ## SBM parameters
@@ -45,6 +31,9 @@
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## PRIVATE MEMBERS
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   private = list(
     Y        = NULL, # adjacency matrix
     X        = NULL, # the covariates matrix
@@ -57,39 +46,47 @@ sampledNetwork <-
     R        = NULL, # matrix of observed and non-observed edges
     S        = NULL  # vector of observed and non-observed nodes
   ),
-  ## Basically getters and setters for private fields
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## ACTIVE BINDING
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
-    ## percentage of observed dyads
+    #' @field samplingRate The percentage of observed dyads
     samplingRate = function(value) {length(private$D_obs)/self$nDyads},
-    # number of nodes
+    #' @field nNodes The number of nodes
     nNodes = function(value) {ncol(private$Y)},
-    # number of dyads
+    #' @field nDyads The number of dyads
     nDyads = function(value) {
       ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)
     },
-    # direction
+    #' @field is_directed logical indicating if the network is directed or not
     is_directed = function(value) {private$directed},
-    # adjacency matrix
+    #' @field adjacencyMatrix  The adjacency matrix of the network
     adjacencyMatrix = function(value) {private$Y},
-    # covariates array
+    #' @field covarArray the array of covariates
     covarArray = function(value) {private$phi},
-    # covariates matrix
+    #' @field covarMatrix the matrix of covariates
     covarMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
-    # list of potential dyads in the network
+    #' @field dyads a list of potential dyads in the network
     dyads           = function(value) {private$D},
-    # array indices of missing dyads
+    #' @field missingDyads array indices of missing dyads
     missingDyads    = function(value) {private$D_miss},
-    # array indices of observed dyads
+    #' @field observedDyads array indices of observed dyads
     observedDyads   = function(value) {private$D_obs},
-    # matrix of observed and non-observed edges
+    #' @field samplingMatrix matrix of observed and non-observed edges
     samplingMatrix  = function(value) {private$R},
-    # vector of observed and non-observed nodes
+    #' @field observedNodes a vector of observed and non-observed nodes
     observedNodes   = function(value) {private$S},
-    # boolean for NA entries in the adjacencyMatrix
+    #' @field NAs boolean for NA entries in the adjacencyMatrix
     NAs             = function(value) {private$nas}
   ),
-  ## Constructor
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## PUBLIC MEMBERS
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   public = list(
+    #' @description constructor
+    #' @param adjacencyMatrix The adjacency matrix of the network
+    #' @param covarMatrix the matrix of covariates (default is \code{NULL}).
+    #' @param covarArray the array of covariates  (default is \code{NULL}).
     initialize = function(adjacencyMatrix, covarMatrix = NULL, covarArray = NULL) {
 
       ## adjacency matrix
@@ -129,37 +126,37 @@ sampledNetwork <-
       R[private$D_obs] <- 1
       if (!private$directed)  R <- t(R) | R
       private$R <- R
+    },
+    #' @description plot method for sampledNetwork
+    #' @param clustering an optional vector of clutering memberships, default to \code{NULL}.
+    #' @param main a character for the title of the plot
+    #' @importFrom corrplot corrplot
+    plot = function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {
+      if (is.null(clustering)) {
+        adjMatrix <- self$adjacencyMatrix
+      } else {
+        Z <- missSBM:::clustering_indicator(as.factor(clustering))
+        colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
+        colorMat <- Z %*% colors %*% t(Z)
+        colorMap <- colorMat[order(clustering),order(clustering)]
+        adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
+      }
+      corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
+    },
+    #' @description show method
+    show = function() {
+      cat("Sampled Network\n")
+      cat("==================================================================\n")
+      cat("Structure for storing a sampled network in missSBM\n")
+      cat("==================================================================\n")
+      cat("* Useful fields \n")
+      cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
+          "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
+      cat("* Useful method: plot(), summary() , print()  \n")
     }
   )
 )
 
-#' @importFrom corrplot corrplot
-sampledNetwork$set("public", "plot",
-function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {
-  if (is.null(clustering)) {
-    adjMatrix <- self$adjacencyMatrix
-  } else {
-    Z <- missSBM:::clustering_indicator(as.factor(clustering))
-    colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
-    colorMat <- Z %*% colors %*% t(Z)
-    colorMap <- colorMat[order(clustering),order(clustering)]
-    adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
-  }
-  corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
-})
-
-sampledNetwork$set("public", "show",
-function(model = "Sampled Network\n") {
-  cat(model)
-  cat("==================================================================\n")
-  cat("Structure for storing a sampled network in missSBM\n")
-  cat("==================================================================\n")
-  cat("* Useful fields \n")
-  cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
-      "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
-  cat("* Useful method: plot(), summary() , print()  \n")
-})
-sampledNetwork$set("public", "print", function() self$show())
 
 
 ## PUBLIC S3 METHODS FOR sampledNetwork

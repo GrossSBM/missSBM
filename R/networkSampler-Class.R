@@ -17,11 +17,17 @@ networkSampler <-
     R        = NULL  # the sampling matrix, indicating observed dyads
   ),
   public = list(
+    #' @description constructor for networkSampling
+    #' @param type character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param nNodes number of nodes in the network
+    #' @param directed logical, directed network of not
     initialize = function(type=NA, parameters=NA, nNodes=NA, directed=FALSE) {
       super$initialize(type, parameters)
       private$N <- nNodes
       private$directed <- directed
     },
+    #' @description a method for drawing a sampling matrix according to the current sampling design
     rSamplingMatrix = function() {
       D_obs <- private$rObservedDyads()
       R <- matrix(0, private$N, private$N)
@@ -31,6 +37,7 @@ networkSampler <-
     }
   ),
   active = list(
+    #' @field samplingMatrix a matrix of booleans indicating sampled entries
     samplingMatrix = function(value) {private$R}
   )
 )
@@ -43,6 +50,11 @@ dyadSampler <-
 R6::R6Class(classname = "dyadSampler",
   inherit = networkSampler,
   public = list(
+    #' @description constructor for networkSampling
+    #' @param type character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param nNodes number of nodes in the network
+    #' @param directed logical, directed network of not
     initialize = function(type = NA, parameters = NA, nNodes = NA, directed = FALSE) {
       super$initialize(type, parameters, nNodes, directed)
       tmp_mat <- matrix(NA, private$N, private$N)
@@ -82,13 +94,18 @@ R6::R6Class(classname = "nodeSampler",
 ## ================================================================================
 ## DYAD-CENTERED SAMPLINGS
 ##
-## - DYAD (MAR)
-## - DOUBLE-STANDARD (NMAR)
-## - BLOCK-DYAD (NMAR)
+
+#' Class for defining a simple dyad sampler
 simpleDyadSampler <-
 R6::R6Class(classname = "simpleDyadSampler",
   inherit = dyadSampler,
   public = list(
+    #' @description constructor for networkSampling
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param nNodes number of nodes in the network
+    #' @param directed logical, directed network of not
+    #' @param covarArray an array of covariates used
+    #' @param intercept double, intercept term used to compute the probability of sampling in the presence of covariates. Default 0.
     initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarArray = NULL, intercept = 0) {
       super$initialize("dyad", parameters, nNodes, directed)
       if (is.null(covarArray)) {
@@ -103,10 +120,15 @@ R6::R6Class(classname = "simpleDyadSampler",
   )
 )
 
+#' Class for defining a double-standard sampler
 doubleStandardSampler <-
 R6::R6Class(classname = "doubleStandardSampler",
   inherit = dyadSampler,
   public = list(
+    #' @description constructor for networkSampling
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param adjMatrix matrix of adjacency
+    #' @param directed logical, directed network of not
     initialize = function(parameters = NA, adjMatrix = NA, directed = FALSE) {
       stopifnot(length(parameters) == 2, all(parameters >= 0), all(parameters <= 1))
       super$initialize("double-standard", parameters, ncol(adjMatrix), directed)
@@ -125,11 +147,17 @@ R6::R6Class(classname = "doubleStandardSampler",
   )
 )
 
+#' Class for defining a block dyad sampler
 blockDyadSampler <-
 R6::R6Class(classname = "blockDyadSampler",
   inherit = dyadSampler,
   private = list(Q = NULL),
   public = list(
+    #' @description constructor for networkSampling
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param nNodes number of nodes in the network
+    #' @param directed logical, directed network of not
+    #' @param clusters a vector of class memberships
     initialize = function(parameters = NA, nNodes = NA, directed = FALSE, clusters = NA) {
       Q <- length(unique(clusters))
       stopifnot(
@@ -146,6 +174,7 @@ R6::R6Class(classname = "blockDyadSampler",
     }
   ),
   active = list(
+    #' @field df the number of parameters of this sampling
     df = function(value) {ifelse(private$directed, private$Q^2, private$Q * (private$Q + 1) / 2) }
   )
 )
@@ -156,10 +185,17 @@ R6::R6Class(classname = "blockDyadSampler",
 ## - BLOCK-NODE (NMAR)
 ## - DEGREE (NMAR)
 
+#' Class for defining a simple node sampler
 simpleNodeSampler <-
 R6::R6Class(classname = "simpleNodeSampler",
   inherit = nodeSampler,
   public = list(
+    #' @description constructor for networkSampling
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param nNodes number of nodes in the network
+    #' @param directed logical, directed network of not
+    #' @param covarMatrix a matrix of covariates used
+    #' @param intercept double, intercept term used to compute the probability of sampling in the presence of covariates. Default 0.
     initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarMatrix = NULL, intercept = 0) {
       ## w/o covariates
       if (is.null(covarMatrix)) {
@@ -175,10 +211,16 @@ R6::R6Class(classname = "simpleNodeSampler",
   )
 )
 
+#' Class for defining a block node sampler
 blockNodeSampler <-
 R6::R6Class(classname = "blockNodeSampler",
   inherit = nodeSampler,
   public = list(
+    #' @description constructor for networkSampling
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param nNodes number of nodes in the network
+    #' @param directed logical, directed network of not
+    #' @param clusters a vector of class memberships
     initialize = function(parameters = NA, nNodes = NA, directed = FALSE, clusters = NA) {
       stopifnot(all(parameters >= 0), all(parameters <= 1))
       stopifnot(length(clusters) == nNodes, length(parameters) == length(unique(clusters)))
@@ -188,10 +230,15 @@ R6::R6Class(classname = "blockNodeSampler",
   )
 )
 
+#' Class for defining a degree sampler
 degreeSampler <-
 R6::R6Class(classname = "degreeSampler",
   inherit = nodeSampler,
   public = list(
+    #' @description constructor for networkSampling
+    #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param degrees vector of nodes' degrees
+    #' @param directed logical, directed network of not
     initialize = function(parameters = NA, degrees = NA, directed = FALSE) {
       stopifnot(length(parameters) == 2)
       super$initialize("degree", parameters, length(degrees), directed)
