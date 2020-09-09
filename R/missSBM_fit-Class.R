@@ -7,6 +7,10 @@
 #' @export
 missSBM_fit <-
   R6::R6Class(classname = "missSBM_fit",
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## PRIVATE MEMBERS
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## fields for internal use (referring to mathematical notations)
   private = list(
     sampledNet = NULL, # network data with convenient encoding (object of class 'sampledNetwork')
     imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
@@ -15,6 +19,9 @@ missSBM_fit <-
     optStatus  = NULL, # status of the optimization process
     useCov     = NULL  # use or not os covariates for SBM fitting
   ),
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## PUBLIC MEMBERS
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   public = list(
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit, useCov) {
 
