@@ -4,6 +4,11 @@
 \alias{missSBM_collection}
 \title{An object to represent a collection of missSBM_fit}
 \description{
+An object to represent a collection of missSBM_fit
+
+An object to represent a collection of missSBM_fit
+}
+\details{
 This R6 class stores a collection of missSBM_fit. Comes with basic printing methods an
 field access.
 }
@@ -17,10 +22,11 @@ as post-treatment.
 \describe{
 \item{\code{models}}{a list of models}
 
-\item{\code{ICL}}{the vector of Integrated Classification Criterion (ICL) associated to
-the models in the collection (the smaller, the better)}
+\item{\code{ICL}}{the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)}
 
 \item{\code{bestModel}}{the best model according to the ICL}
+
+\item{\code{vBlocks}}{a vector with the number of blocks}
 
 \item{\code{optimizationStatus}}{a data.frame summarizing the optimization process for all models}
 }
@@ -32,8 +38,9 @@ the models in the collection (the smaller, the better)}
 \item \href{#method-new}{\code{missSBM_collection$new()}}
 \item \href{#method-estimate}{\code{missSBM_collection$estimate()}}
 \item \href{#method-smooth}{\code{missSBM_collection$smooth()}}
+\item \href{#method-smoothing_forward}{\code{missSBM_collection$smoothing_forward()}}
+\item \href{#method-smoothing_backward}{\code{missSBM_collection$smoothing_backward()}}
 \item \href{#method-show}{\code{missSBM_collection$show()}}
-\item \href{#method-print}{\code{missSBM_collection$print()}}
 \item \href{#method-clone}{\code{missSBM_collection$clone()}}
 }
 }
@@ -41,6 +48,7 @@ the models in the collection (the smaller, the better)}
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+constructor for networkSampling
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$new(
   sampledNet,
@@ -53,40 +61,103 @@ the models in the collection (the smaller, the better)}
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sampledNet}}{An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
+
+\item{\code{vBlocks}}{vector of integer with the number of blocks in the succesively fitted models}
+
+\item{\code{sampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
+
+\item{\code{clusterInit}}{Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".}
+
+\item{\code{cores}}{integer for number of cores used. Default is 1.}
+
+\item{\code{trace}}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
+
+\item{\code{useCov}}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-estimate"></a>}}
 \if{latex}{\out{\hypertarget{method-estimate}{}}}
 \subsection{Method \code{estimate()}}{
+method to launch the estimation of the collection of models
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$estimate(control)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-smooth"></a>}}
 \if{latex}{\out{\hypertarget{method-smooth}{}}}
 \subsection{Method \code{smooth()}}{
+method for performing smoothing of the ICL
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smooth(type, control)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{character, the type of smoothing: forward, backward, both}
+
+\item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function [`smooth`]}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-smoothing_forward"></a>}}
+\if{latex}{\out{\hypertarget{method-smoothing_forward}{}}}
+\subsection{Method \code{smoothing_forward()}}{
+method for performing forward smoothing of the ICL
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smoothing_forward(control)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-smoothing_backward"></a>}}
+\if{latex}{\out{\hypertarget{method-smoothing_backward}{}}}
+\subsection{Method \code{smoothing_backward()}}{
+method for performing backward smoothing of the ICL
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smoothing_backward(control)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-show"></a>}}
 \if{latex}{\out{\hypertarget{method-show}{}}}
 \subsection{Method \code{show()}}{
+show method for missSBM_collection
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$show()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
-\subsection{Method \code{print()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$print()}\if{html}{\out{</div>}}
 }
 
 }

@@ -4,7 +4,39 @@
 \alias{missSBM_fit}
 \title{R6 Class definition of an SBM-fit}
 \description{
+R6 Class definition of an SBM-fit
+
+R6 Class definition of an SBM-fit
+}
+\details{
 This class is designed to adjust a Stochastic Block Model on a network with missing entries.
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{fittedSBM}}{the fitted SBM, inheriting from class [`SBM_fit`]}
+
+\item{\code{fittedSampling}}{the fitted sampling, inheriting from class [`networkSampling_fit`]}
+
+\item{\code{useCovariates}}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+
+\item{\code{sampledNetwork}}{The original network data used for the fit, with class [`sampledNetwork`]}
+
+\item{\code{imputedNetwork}}{The network data with NAs values imputed with the model.}
+
+\item{\code{monitoring}}{a list carrying information about the optimization process}
+
+\item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
+
+\item{\code{vBound}}{double: approximation of the log-likelihood (variational lower bound) reached}
+
+\item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
+
+\item{\code{penalty}}{double, value of the penalty term in vICL}
+
+\item{\code{vICL}}{double: value of the integrated classification log-likelihood}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -12,7 +44,6 @@ This class is designed to adjust a Stochastic Block Model on a network with miss
 \item \href{#method-new}{\code{missSBM_fit$new()}}
 \item \href{#method-doVEM}{\code{missSBM_fit$doVEM()}}
 \item \href{#method-show}{\code{missSBM_fit$show()}}
-\item \href{#method-print}{\code{missSBM_fit$print()}}
 \item \href{#method-clone}{\code{missSBM_fit$clone()}}
 }
 }
@@ -20,35 +51,51 @@ This class is designed to adjust a Stochastic Block Model on a network with miss
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+constructor for networkSampling
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(sampledNet, nBlocks, netSampling, clusterInit, useCov)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sampledNet}}{An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
+
+\item{\code{nBlocks}}{integer, the number of blocks in the SBM}
+
+\item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
+
+\item{\code{clusterInit}}{Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".}
+
+\item{\code{useCov}}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-doVEM"></a>}}
 \if{latex}{\out{\hypertarget{method-doVEM}{}}}
 \subsection{Method \code{doVEM()}}{
+a method to perform inference of the current missSBM fit with variational EM
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$doVEM(control)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-show"></a>}}
 \if{latex}{\out{\hypertarget{method-show}{}}}
 \subsection{Method \code{show()}}{
+show method for missSBM_fit
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$show()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
-\subsection{Method \code{print()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$print()}\if{html}{\out{</div>}}
 }
 
 }

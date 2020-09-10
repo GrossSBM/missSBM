@@ -23,6 +23,12 @@ missSBM_fit <-
   ## PUBLIC MEMBERS
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   public = list(
+    #' @description constructor for networkSampling
+    #' @param sampledNet An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).
+    #' @param nBlocks integer, the number of blocks in the SBM
+    #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
+    #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".
+    #' @param useCov logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit, useCov) {
 
       ## Basic sanity checks
@@ -64,92 +70,104 @@ missSBM_fit <-
         "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, Z),
         "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam)
       )
+    },
+    #' @description a method to perform inference of the current missSBM fit with variational EM
+    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    doVEM = function(control) {
+
+      ## Initialization of quantities that monitor convergence
+      delta     <- vector("numeric", control$maxIter)
+      objective <- vector("numeric", control$maxIter)
+      i <- 0; cond <- FALSE
+      ## Starting the Variational EM algorithm
+      if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
+      if (control$trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM.\n", sep = "")
+      if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
+
+      while (!cond) {
+        i <- i + 1
+        if (control$trace) cat(" iteration #:", i, "\r")
+        pi_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
+
+        ## ______________________________________________________
+        ## Variational E-Step
+        #
+        for (k in seq.int(control$fixPointIter)) {
+          # update the variational parameters for missing entries (a.k.a nu)
+          nu <- private$sampling$update_imputation(private$SBM$connectProb)
+          private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
+          # update the variational parameters for block memberships (a.k.a tau)
+          private$SBM$adjacencyMatrix <- private$imputedNet
+          private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
+        }
+
+        ## ______________________________________________________
+        ## M-step
+        #
+        # update the parameters of the SBM (a.k.a alpha and pi)
+        private$SBM$update_parameters()
+        # update the parameters of network sampling process (a.k.a psi)
+        private$sampling$update_parameters(private$imputedNet, private$SBM$blocks)
+
+        ## Check convergence
+        delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
+        cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
+        objective[i] <- self$vBound
+
+      }
+      if (control$trace) cat("\n")
+      private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
+      invisible(private$optStatus)
+    },
+    #' @description show method for missSBM_fit
+    show = function() {
+      cat("missSBM-fit\n")
+      cat("==================================================================\n")
+      cat("Structure for storing a SBM fitted under missing data condition   \n")
+      cat("==================================================================\n")
+      cat("* Useful fields (most are special object themselves with methods) \n")
+      cat("  $fittedSBM (the adjusted stochastic block model)                \n")
+      cat("  $fittedSampling (the estimated sampling process)                \n")
+      cat("  $sampledNetwork (the sampled network data)                      \n")
+      cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
+      cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
+      cat("* S3 methods                                                      \n")
+      cat("  plot, coef, fitted, predict, print                              \n")
     }
+
   ),
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## ACTIVE BINDING
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
+    #' @field fittedSBM the fitted SBM, inheriting from class [`SBM_fit`]
     fittedSBM = function(value) {private$SBM},
+    #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling_fit`]
     fittedSampling = function(value) {private$sampling}  ,
+    #' @field useCovariates logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
     useCovariates  = function(value) {private$useCov}   ,
+    #' @field sampledNetwork The original network data used for the fit, with class [`sampledNetwork`]
     sampledNetwork = function(value) {private$sampledNet},
+    #' @field imputedNetwork The network data with NAs values imputed with the model.
     imputedNetwork = function(value) {private$imputedNet},
+    #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
+    #' @field entropyImputed the entropy of the distribution of the imputed dyads
     entropyImputed = function(value) {
       nu <- private$imputedNet[private$sampledNet$missingDyads]
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
       res
     },
+    #' @field vBound double: approximation of the log-likelihood (variational lower bound) reached
     vBound  = function(value) {private$SBM$vBound + self$entropyImputed + private$sampling$vExpec},
+    #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {private$SBM$vExpec + private$sampling$vExpec},
+    #' @field penalty double, value of the penalty term in vICL
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
+    #' @field vICL double: value of the integrated classification log-likelihood
     vICL    = function(value) {-2 * self$vExpec + self$penalty}
   )
 )
-
-missSBM_fit$set("public", "doVEM",
-  function(control) {
-
-    ## Initialization of quantities that monitor convergence
-    delta     <- vector("numeric", control$maxIter)
-    objective <- vector("numeric", control$maxIter)
-    i <- 0; cond <- FALSE
-    ## Starting the Variational EM algorithm
-    if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-    if (control$trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM.\n", sep = "")
-    if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
-
-    while (!cond) {
-      i <- i + 1
-      if (control$trace) cat(" iteration #:", i, "\r")
-      pi_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
-
-      ## ______________________________________________________
-      ## Variational E-Step
-      #
-      for (k in seq.int(control$fixPointIter)) {
-        # update the variational parameters for missing entries (a.k.a nu)
-        nu <- private$sampling$update_imputation(private$SBM$connectProb)
-        private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
-        # update the variational parameters for block memberships (a.k.a tau)
-        private$SBM$adjacencyMatrix <- private$imputedNet
-        private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
-      }
-
-      ## ______________________________________________________
-      ## M-step
-      #
-      # update the parameters of the SBM (a.k.a alpha and pi)
-      private$SBM$update_parameters()
-      # update the parameters of network sampling process (a.k.a psi)
-      private$sampling$update_parameters(private$imputedNet, private$SBM$blocks)
-
-      ## Check convergence
-      delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
-      cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
-      objective[i] <- self$vBound
-
-    }
-    if (control$trace) cat("\n")
-    private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
-    invisible(private$optStatus)
-  }
-)
-
-missSBM_fit$set("public", "show",
-function() {
-  cat("missSBM-fit\n")
-  cat("==================================================================\n")
-  cat("Structure for storing a SBM fitted under missing data condition   \n")
-  cat("==================================================================\n")
-  cat("* Useful fields (most are special object themselves with methods) \n")
-  cat("  $fittedSBM (the adjusted stochastic block model)                \n")
-  cat("  $fittedSampling (the estimated sampling process)                \n")
-  cat("  $sampledNetwork (the sampled network data)                      \n")
-  cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
-  cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
-  cat("* S3 methods                                                      \n")
-  cat("  plot, coef, fitted, predict, print                              \n")
-})
-missSBM_fit$set("public", "print", function() self$show())
 
 ## PUBLIC S3 METHODS FOR missSBMfit
 ## =========================================================================================
