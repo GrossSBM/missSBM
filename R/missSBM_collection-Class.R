@@ -14,60 +14,8 @@ missSBM_collection <-
   ## PRIVATE MEMBERS
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## fields for internal use (referring to mathematical notations)
-  private = list(missSBM_fit = NULL), # a list of models
-  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  ## PUBLIC MEMBERS
-  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  public = list(
-    #' @description constructor for networkSampling
-    #' @param sampledNet An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).
-    #' @param vBlocks vector of integer with the number of blocks in the successively fitted models
-    #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
-    #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".
-    #' @param cores integer for number of cores used. Default is 1.
-    #' @param trace integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1
-    #' @param useCov logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    initialize = function(sampledNet, vBlocks, sampling, clusterInit, cores, trace, useCov) {
-
-      if (trace) cat("\n")
-      if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-      if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
-      if (trace) cat("\n")
-      if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
-
-      private$missSBM_fit <- mcmapply(
-        function(nBlock, cl0) {
-          if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-          missSBM_fit$new(sampledNet, nBlock, sampling, cl0, useCov)
-        }, nBlock = vBlocks, cl0 = clusterInit, mc.cores = cores
-      )
-    },
-    #' @description method to launch the estimation of the collection of models
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
-    estimate = function(control) {
-      trace_main <- control$trace > 0
-      control$trace <- ifelse (control$trace > 1, TRUE, FALSE)
-      if (trace_main) cat("\n")
-      invisible(
-        mclapply(private$missSBM_fit, function(model) {
-          if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
-            model$doVEM(control)
-          }, mc.cores = control$cores
-        )
-      )
-      invisible(self)
-    },
-    #' @description method for performing smoothing of the ICL
-    #' @param type character, the type of smoothing: forward, backward, both
-    #' @param control a list of parameters controlling the smoothing. See details of regular function [`smooth`]
-    smooth = function(type, control) {
-      if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
-      if (control$trace) cat("\n Smoothing ICL\n")
-      for (i in 1:control$iterates) {
-        if (type %in% c('forward' , 'both')) private$smoothing_forward(control)
-        if (type %in% c('backward', 'both')) private$smoothing_backward(control)
-      }
-    },
+  private = list(
+    missSBM_fit = NULL, # a list of models
     #' @description method for performing forward smoothing of the ICL
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
     smoothing_forward = function(control) {
@@ -159,6 +107,60 @@ missSBM_collection <-
         }
       }
       if (trace) cat("\r                                                                                                    \r")
+    }
+  ),
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## PUBLIC MEMBERS
+  ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  public = list(
+    #' @description constructor for networkSampling
+    #' @param sampledNet An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).
+    #' @param vBlocks vector of integer with the number of blocks in the successively fitted models
+    #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
+    #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".
+    #' @param cores integer for number of cores used. Default is 1.
+    #' @param trace integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1
+    #' @param useCov logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
+    initialize = function(sampledNet, vBlocks, sampling, clusterInit, cores, trace, useCov) {
+
+      if (trace) cat("\n")
+      if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
+      if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
+      if (trace) cat("\n")
+      if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
+
+      private$missSBM_fit <- mcmapply(
+        function(nBlock, cl0) {
+          if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
+          missSBM_fit$new(sampledNet, nBlock, sampling, cl0, useCov)
+        }, nBlock = vBlocks, cl0 = clusterInit, mc.cores = cores
+      )
+    },
+    #' @description method to launch the estimation of the collection of models
+    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    estimate = function(control) {
+      trace_main <- control$trace > 0
+      control$trace <- ifelse (control$trace > 1, TRUE, FALSE)
+      if (trace_main) cat("\n")
+      invisible(
+        mclapply(private$missSBM_fit, function(model) {
+          if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
+            model$doVEM(control)
+          }, mc.cores = control$cores
+        )
+      )
+      invisible(self)
+    },
+    #' @description method for performing smoothing of the ICL
+    #' @param type character, the type of smoothing: forward, backward, both
+    #' @param control a list of parameters controlling the smoothing. See details of regular function [`smooth`]
+    smooth = function(type, control) {
+      if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
+      if (control$trace) cat("\n Smoothing ICL\n")
+      for (i in 1:control$iterates) {
+        if (type %in% c('forward' , 'both')) private$smoothing_forward(control)
+        if (type %in% c('backward', 'both')) private$smoothing_backward(control)
+      }
     },
     #' @description show method for missSBM_collection
     show = function() {
