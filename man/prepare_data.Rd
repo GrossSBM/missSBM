@@ -29,9 +29,10 @@ function of the missSBM package.
 }
 \examples{
 data(war)
-adj_beligerent <- war$beligerent \%>\% igraph::as_adj(sparse = FALSE)
-sampledNet_war_nocov <- prepare_data(adj_beligerent)
-sampledNet_war_withcov <- prepare_data(adj_beligerent, list(military_power = war$beligerent$power))
+adj_belligerent <- war$belligerent \%>\% igraph::as_adj(sparse = FALSE)
+sampledNet_war_nocov <- prepare_data(adj_belligerent)
+sampledNet_war_withcov <- prepare_data(adj_belligerent,
+                             list(military_power = war$belligerent$power))
 }
 \seealso{
 \code{\link{estimate}} and \code{\link{sampledNetwork}}.

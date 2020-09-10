@@ -2,9 +2,8 @@
 #'
 #' This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.
 #'
-#' @seealso The function \code{\link{estimate}}, which produces an instance of this class.
-#' The function \code{\link{smooth}} can be used to smooth the ICL on a collection of model,
-#' as post-treatment.
+#' @seealso The function [`estimate`], which produces an instance of this class.
+#' The function [`smooth`] can be used to smooth the ICL on a collection of model, as post-treatment.
 #'
 #' @include missSBM_fit-Class.R
 #' @export

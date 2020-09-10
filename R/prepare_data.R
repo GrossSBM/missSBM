@@ -17,7 +17,8 @@
 #' data(war)
 #' adj_belligerent <- war$belligerent %>% igraph::as_adj(sparse = FALSE)
 #' sampledNet_war_nocov <- prepare_data(adj_belligerent)
-#' sampledNet_war_withcov <- prepare_data(adj_belligerent, list(military_power = war$belligerent$power))
+#' sampledNet_war_withcov <- prepare_data(adj_belligerent,
+#'                              list(military_power = war$belligerent$power))
 #' @export
 prepare_data <- function(adjacencyMatrix, covariates = NULL, similarity = missSBM:::l1_similarity) {
 

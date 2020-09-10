@@ -53,6 +53,7 @@ R6::R6Class(classname = "dyadSampler",
     #' @description constructor for networkSampling
     #' @param type character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")
     #' @param parameters the vector of parameters associated to the sampling at play
+    #' @param parameters the vector of parameters associated to the sampling at play
     #' @param nNodes number of nodes in the network
     #' @param directed logical, directed network of not
     initialize = function(type = NA, parameters = NA, nNodes = NA, directed = FALSE) {
@@ -77,7 +78,8 @@ R6::R6Class(classname = "dyadSampler",
 # ================================================================================
 # NODE-CENTERED SAMPLINGS
 #
-# Virtual class for all node-centerd samplers
+
+#' Virtual class for all node-centerd samplers
 nodeSampler <-
 R6::R6Class(classname = "nodeSampler",
   inherit = networkSampler,

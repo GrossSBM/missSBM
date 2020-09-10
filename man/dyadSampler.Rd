@@ -42,6 +42,8 @@ constructor for networkSampling
 
 \item{\code{parameters}}{the vector of parameters associated to the sampling at play}
 
+\item{\code{parameters}}{the vector of parameters associated to the sampling at play}
+
 \item{\code{nNodes}}{number of nodes in the network}
 
 \item{\code{directed}}{logical, directed network of not}

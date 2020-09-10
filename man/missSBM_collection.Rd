@@ -9,13 +9,11 @@ An object to represent a collection of missSBM_fit
 An object to represent a collection of missSBM_fit
 }
 \details{
-This R6 class stores a collection of missSBM_fit. Comes with basic printing methods an
-field access.
+This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.
 }
 \seealso{
-The function \code{\link{estimate}}, which produces an instance of this class.
-The function \code{\link{smooth}} can be used to smooth the ICL on a collection of model,
-as post-treatment.
+The function [`estimate`], which produces an instance of this class.
+The function [`smooth`] can be used to smooth the ICL on a collection of model, as post-treatment.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -38,8 +36,6 @@ as post-treatment.
 \item \href{#method-new}{\code{missSBM_collection$new()}}
 \item \href{#method-estimate}{\code{missSBM_collection$estimate()}}
 \item \href{#method-smooth}{\code{missSBM_collection$smooth()}}
-\item \href{#method-smoothing_forward}{\code{missSBM_collection$smoothing_forward()}}
-\item \href{#method-smoothing_backward}{\code{missSBM_collection$smoothing_backward()}}
 \item \href{#method-show}{\code{missSBM_collection$show()}}
 \item \href{#method-clone}{\code{missSBM_collection$clone()}}
 }
@@ -48,6 +44,12 @@ as post-treatment.
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+method for performing forward smoothing of the ICL
+
+
+method for performing backward smoothing of the ICL
+
+
 constructor for networkSampling
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$new(
@@ -77,6 +79,10 @@ constructor for networkSampling
 \item{\code{trace}}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 
 \item{\code{useCov}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
+
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
 }
 \if{html}{\out{</div>}}
 }
@@ -113,40 +119,6 @@ method for performing smoothing of the ICL
 \item{\code{type}}{character, the type of smoothing: forward, backward, both}
 
 \item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function [`smooth`]}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-smoothing_forward"></a>}}
-\if{latex}{\out{\hypertarget{method-smoothing_forward}{}}}
-\subsection{Method \code{smoothing_forward()}}{
-method for performing forward smoothing of the ICL
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smoothing_forward(control)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-smoothing_backward"></a>}}
-\if{latex}{\out{\hypertarget{method-smoothing_backward}{}}}
-\subsection{Method \code{smoothing_backward()}}{
-method for performing backward smoothing of the ICL
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smoothing_backward(control)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
 }
 \if{html}{\out{</div>}}
 }
