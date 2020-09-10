@@ -2,11 +2,11 @@
 % Please edit documentation in R/networkSampler-Class.R
 \name{nodeSampler}
 \alias{nodeSampler}
-\title{Virtual class for all node-centerd samplers}
+\title{Virtual class for all node-centered samplers}
 \description{
-Virtual class for all node-centerd samplers
+Virtual class for all node-centered samplers
 
-Virtual class for all node-centerd samplers
+Virtual class for all node-centered samplers
 }
 \section{Super classes}{
 \code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSampler]{missSBM::networkSampler}} -> \code{nodeSampler}

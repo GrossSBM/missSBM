@@ -79,7 +79,7 @@ R6::R6Class(classname = "dyadSampler",
 # NODE-CENTERED SAMPLINGS
 #
 
-#' Virtual class for all node-centerd samplers
+#' Virtual class for all node-centered samplers
 nodeSampler <-
 R6::R6Class(classname = "nodeSampler",
   inherit = networkSampler,
