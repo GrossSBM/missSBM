@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • missSBM</title>
+<title>Extract model coefficients — coef.missSBM_fit • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Extract model coefficients — coef.missSBM_fit" />
+<meta property="og:description" content="Extracts model coefficients from objects [`missSBM_fit`] returned by [estimate()]" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -126,140 +127,46 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Extract model coefficients</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_fit-Class.R'><code>R/missSBM_fit-Class.R</code></a></small>
+    <div class="hidden name"><code>coef.missSBM_fit.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Extracts model coefficients from objects [`missSBM_fit`] returned by [estimate()]</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='co'># S3 method for missSBM_fit</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(
+  <span class='kw'>object</span>,
+  type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mixture"</span>, <span class='st'>"connectivity"</span>, <span class='st'>"covariates"</span>, <span class='st'>"sampling"</span>),
+  <span class='kw'>...</span>
+)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-top-level-fitting-functions" class="hasAnchor"><a href="#section-top-level-fitting-functions" class="anchor"></a>Top-level fitting functions</h2>
-          <p class="section-desc"><p>Main functions for simulating, sampling and estimating an SBM with missing data</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="simulate.html">simulate()</a></code> </p>
-        </td>
-        <td><p>Simulation of an SBM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sample.html">sample()</a></code> </p>
-        </td>
-        <td><p>Sampling of network data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="estimate.html">estimate()</a></code> </p>
-        </td>
-        <td><p>Estimation of SBMs with missing data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="smooth.html">smooth()</a></code> </p>
-        </td>
-        <td><p>Smooth the path ICL in a collection of missSBM_fit models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prepare_data.html">prepare_data()</a></code> </p>
-        </td>
-        <td><p>Prepare network data for estimation with missing data</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-classes-of-objects" class="hasAnchor"><a href="#section-classes-of-objects" class="anchor"></a>Classes of objects</h2>
-          <p class="section-desc"><p>Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="missSBM_collection.html">missSBM_collection</a></code> </p>
-        </td>
-        <td><p>An object to represent a collection of missSBM_fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="missSBM_fit.html">fitted(<i>&lt;missSBM_fit&gt;</i>)</a></code> <code><a href="missSBM_fit.html">predict(<i>&lt;missSBM_fit&gt;</i>)</a></code> <code><a href="missSBM_fit.html">summary(<i>&lt;missSBM_fit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>R6 Class definition of an missSBM_fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="SBM_fit.html">SBM_fit</a></code> </p>
-        </td>
-        <td><p>R6 Class definition of an SBM-fit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="SBM_sampler.html">SBM_sampler</a></code> </p>
-        </td>
-        <td><p>An R6 Class to represent a sampler for a SBM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sampledNetwork.html">sampledNetwork</a></code> </p>
-        </td>
-        <td><p>An R6 Class to represent sampled network data</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-data-sets" class="hasAnchor"><a href="#section-data-sets" class="anchor"></a>Data sets</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="war.html">war</a></code> </p>
-        </td>
-        <td><p>War data set</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="frenchblog2007.html">frenchblog2007</a></code> </p>
-        </td>
-        <td><p>Political Blogosphere network prior to 2007 French presidential election</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="er_network.html">er_network</a></code> </p>
-        </td>
-        <td><p>ER ego centered network</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>an R6 object with class [`missSBM_fit`]</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>type of parameter that should be extracted. Either "mixture" (default), "connectivity", "covariates" or "sampling"</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional parameters for S3 compatibility. Not used</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A vector or matrix of coefficients extracted from the missSBM_fit model.</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

@@ -205,7 +205,7 @@
 <span class='co'>## draw a SBM model with node-centered covariates</span>
 <span class='kw'>sbm_cov</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'>simulate</span>(<span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>gamma</span>, <span class='kw'>directed</span>, <span class='kw'>X</span>, <span class='kw'>eta</span>)
 <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>sbm_cov</span>, <span class='st'>"covariates"</span>)
-</div><div class='output co'>#&gt; [1] -2.361105 -1.665860</div><div class='input'>
+</div><div class='output co'>#&gt; [1] -0.1828250 -0.5270891</div><div class='input'>
 <span class='kw'>old_param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(mfrow = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sbm</span>)
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sbm_cov</span>)

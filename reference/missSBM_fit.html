@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>R6 Class definition of an SBM-fit — missSBM_fit • missSBM</title>
+<title>R6 Class definition of an missSBM_fit — missSBM_fit • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,11 @@
 
 
 
-<meta property="og:title" content="R6 Class definition of an SBM-fit — missSBM_fit" />
-<meta property="og:description" content="R6 Class definition of an SBM-fit
-R6 Class definition of an SBM-fit" />
+<meta property="og:title" content="R6 Class definition of an missSBM_fit — missSBM_fit" />
+<meta property="og:description" content="This class is designed to adjust a Stochastic Block Model on a network with missing values.
+See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
+The user can resort to this class to fit the model, but its is recommended to use the to level function [`estimate`]
+for this task." />
 
 
 
@@ -130,21 +132,48 @@ R6 Class definition of an SBM-fit" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>R6 Class definition of an SBM-fit</h1>
+    <h1>R6 Class definition of an missSBM_fit</h1>
     <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_fit-Class.R'><code>R/missSBM_fit-Class.R</code></a></small>
     <div class="hidden name"><code>missSBM_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>R6 Class definition of an SBM-fit</p>
-<p>R6 Class definition of an SBM-fit</p>
+    <p>This class is designed to adjust a Stochastic Block Model on a network with missing values.</p>
+<p>See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]</p>
+<p>The user can resort to this class to fit the model, but its is recommended to use the to level function [`estimate`]
+for this task.</p>
     </div>
 
+    <pre class="usage"><span class='co'># S3 method for missSBM_fit</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
+<span class='co'># S3 method for missSBM_fit</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+<span class='co'># S3 method for missSBM_fit</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)</pre>
 
-    <p>This class is designed to adjust a Stochastic Block Model on a network with missing entries.</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>an R6 object with class [`missSBM_fit`]</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional parameters for S3 compatibility.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
+
+    
+<ul>
+<li><p><code>fitted.missSBM_fit</code>: fitted value of a ['missSBM_fit']</p></li>
+<li><p><code>predict.missSBM_fit</code>: prediction (imputed network) of a ['missSBM_fit']</p></li>
+<li><p><code>summary.missSBM_fit</code>: summary of a ['missSBM_fit']</p></li>
+</ul>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
@@ -203,7 +232,9 @@ R6 Class definition of an SBM-fit" />
 <p><hr>
 <a id="method-doVEM"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>doVEM()</code></h3>
 <p>a method to perform inference of the current missSBM fit with variational EM</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'>doVEM</span>(<span class='kw'>control</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'>doVEM</span>(
+  control = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(threshold = <span class='fl'>0.001</span>, maxIter = <span class='fl'>100</span>, fixPointIter = <span class='fl'>5</span>, trace = <span class='fl'>1</span>)
+)</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -228,6 +259,32 @@ R6 Class definition of an SBM-fit" />
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## Sample 75% of dyads in  French political Blogosphere's network data</span>
+<span class='kw'>samplingParameters</span> <span class='op'>&lt;-</span> <span class='fl'>.25</span> <span class='co'># the sampling rate</span>
+<span class='kw'>sampling</span> <span class='op'>&lt;-</span> <span class='st'>"dyad"</span>       <span class='co'># the sampling design</span>
+<span class='kw'>sampledNet</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='kw'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
+  <span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> (sparse = <span class='fl'>FALSE</span>) <span class='op'>%&gt;%</span>
+  <span class='kw'>missSBM</span>::<span class='fu'><a href='sample.html'>sample</a></span>(<span class='kw'>sampling</span>, <span class='kw'>samplingParameters</span>)
+
+<span class='co'>## Fit a SBM with random dyad sampling and 5 block</span>
+<span class='kw'>my_missSBM</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'>new</span>(
+    sampledNet  = <span class='kw'>sampledNet</span>,
+    nBlocks     = <span class='fl'>5</span>,
+    netSampling = <span class='st'>"dyad"</span>,
+    clusterInit = <span class='kw'>base</span>::<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='kw'>sampledNet</span><span class='op'>$</span><span class='kw'>nNodes</span>, rep = <span class='fl'>TRUE</span>),
+    useCov      = <span class='fl'>FALSE</span>
+  )
+<span class='kw'>my_missSBM</span><span class='op'>$</span><span class='fu'>doVEM</span>()
+</div><div class='output co'>#&gt; 
+#&gt;  Adjusting Variational EM for Stochastic Block Model
+#&gt; 
+#&gt; 	Dyads are distributed according to a 'undirected' SBM.
+#&gt; 
+#&gt; 	Imputation assumes a 'dyad' network-sampling process
+#&gt;  iteration #: 1  iteration #: 2  iteration #: 3  iteration #: 4  iteration #: 5  iteration #: 6  iteration #: 7  iteration #: 8  iteration #: 9  iteration #: 10  iteration #: 11  iteration #: 12  iteration #: 13  iteration #: 14  iteration #: 15  iteration #: 16  iteration #: 17  iteration #: 18  iteration #: 19  iteration #: 20  iteration #: 21  iteration #: 22  iteration #: 23 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>my_missSBM</span>, <span class='st'>"network"</span>)
+</div><div class='img'><img src='missSBM_fit-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
