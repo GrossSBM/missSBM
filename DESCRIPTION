@@ -30,6 +30,7 @@ Imports:
     ggplot2,
     corrplot,
     R6,
+    rlang,
     magrittr
 LinkingTo: Rcpp, RcppArmadillo
 Collate:

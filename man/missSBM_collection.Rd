@@ -44,12 +44,6 @@ The function [`smooth`] can be used to smooth the ICL on a collection of model, 
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-method for performing forward smoothing of the ICL
-
-
-method for performing backward smoothing of the ICL
-
-
 constructor for networkSampling
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$new(
@@ -79,10 +73,6 @@ constructor for networkSampling
 \item{\code{trace}}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 
 \item{\code{useCov}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
-
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
-
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
 }
 \if{html}{\out{</div>}}
 }

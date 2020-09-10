@@ -15,8 +15,8 @@ missSBM_collection <-
   ## fields for internal use (referring to mathematical notations)
   private = list(
     missSBM_fit = NULL, # a list of models
-    #' @description method for performing forward smoothing of the ICL
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    # method for performing forward smoothing of the ICL
+    # a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
     smoothing_forward = function(control) {
       trace <- control$trace > 0; control$trace <- FALSE
       sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
@@ -67,8 +67,8 @@ missSBM_collection <-
       }
       if (trace) cat("\r                                                                                                    \r")
     },
-    #' @description method for performing backward smoothing of the ICL
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    # method for performing backward smoothing of the ICL
+    # control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
     smoothing_backward = function(control) {
 
       trace <- control$trace > 0; control$trace <- FALSE

@@ -193,8 +193,15 @@ summary.missSBM_fit <- function(object, ...) {
   object$show()
 }
 
+#' Visualization for an object [`missSBM_fit`]
+#'
+#' Plot function for the various fields of a [`missSBM_fit`]
+#'
+#' @param type the type specifies the field to plot, either "network", "connectivity", "sampledNetwork" of "monitoring"
+#' @param ... additional parameters for S3 compatibility. Not used
 #' @export
 #' @import ggplot2
+#' @importFrom rlang .data
 plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampledNetwork", "monitoring"), ...) {
   stopifnot(is_missSBMfit(x))
   type <- match.arg(type)
@@ -205,9 +212,18 @@ plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampledNetw
   if (type == "sampledNetwork")
     x$sampledNetwork$plot(x$fittedSBM$memberships)
   if (type == "monitoring")
-    ggplot(x$monitoring, aes_string(x = 'iteration', y = 'objective')) + geom_line() + theme_bw()
+    ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
 }
 
+#' Extract model coefficients
+#'
+#' @description Extracts model coefficients from objects [`missSBM_fit`] returned by [estimate()]
+#'
+#' @param object an R6 object with class [`missSBM_fit`]
+#' @param type type of parameter that should be extracted. Either "mixture" (default), "connectivity", "covariates" or "sampling"
+#' @param ... additional parameters for S3 compatibility. Not used
+#' @return A vector or matrix of coefficients extracted from the missSBM_fit model.
+#'
 #' @export
 coef.missSBM_fit <- function(object, type = c("mixture", "connectivity", "covariates", "sampling"), ...) {
   stopifnot(is_missSBMfit(object))
