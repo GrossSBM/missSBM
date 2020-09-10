@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Prepare network data for estimation with missing data — prepare_data • missSBM</title>
+<title>Class for defining a simple node sampler — simpleNodeSampler • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,9 @@
 
 
 
-<meta property="og:title" content="Prepare network data for estimation with missing data — prepare_data" />
-<meta property="og:description" content="This function puts together the adjacency matrix of a network and an optional list of covariates
-into a single sampledNetwork object, ready to use for inference with the estimate
-function of the missSBM package." />
+<meta property="og:title" content="Class for defining a simple node sampler — simpleNodeSampler" />
+<meta property="og:description" content="Class for defining a simple node sampler
+Class for defining a simple node sampler" />
 
 
 
@@ -131,56 +130,74 @@ function of the missSBM package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Prepare network data for estimation with missing data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/prepare_data.R'><code>R/prepare_data.R</code></a></small>
-    <div class="hidden name"><code>prepare_data.Rd</code></div>
+    <h1>Class for defining a simple node sampler</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/networkSampler-Class.R'><code>R/networkSampler-Class.R</code></a></small>
+    <div class="hidden name"><code>simpleNodeSampler.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function puts together the adjacency matrix of a network and an optional list of covariates
-into a single <code><a href='sampledNetwork.html'>sampledNetwork</a></code> object, ready to use for inference with the <code><a href='estimate.html'>estimate</a></code>
-function of the missSBM package.</p>
+    <p>Class for defining a simple node sampler</p>
+<p>Class for defining a simple node sampler</p>
     </div>
 
-    <pre class="usage"><span class='fu'>prepare_data</span>(
-  <span class='kw'>adjacencyMatrix</span>,
-  covariates = <span class='kw'>NULL</span>,
-  similarity = <span class='kw'>missSBM</span>:::<span class='kw'>l1_similarity</span>
-)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>adjacencyMatrix</th>
-      <td><p>The adjacency matrix of the network (NAs allowed)</p></td>
-    </tr>
-    <tr>
-      <th>covariates</th>
-      <td><p>An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of <code>covariates</code>
-must be a size-N vector;  if the covariates are dyad-centered, each entry of <code>covariates</code> must be N x N matrix.</p></td>
-    </tr>
-    <tr>
-      <th>similarity</th>
-      <td><p>An optional R x R -&gt; R function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
-Only relevant when the <code>covariates</code> is a list of size-N vectors.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
 
-    <p>Returns an R6 object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code>.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code><a href='networkSampler.html'>missSBM::networkSampler</a></code> -&gt; <code><a href='nodeSampler.html'>missSBM::nodeSampler</a></code> -&gt; <code>simpleNodeSampler</code></p>
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
-    <div class='dont-index'><p><code><a href='estimate.html'>estimate</a></code> and <code><a href='sampledNetwork.html'>sampledNetwork</a></code>.</p></div>
+    
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>war</span>)
-<span class='kw'>adj_belligerent</span> <span class='op'>&lt;-</span> <span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span> <span class='op'>%&gt;%</span> <span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span>(sparse = <span class='fl'>FALSE</span>)
-<span class='kw'>sampledNet_war_nocov</span> <span class='op'>&lt;-</span> <span class='fu'>prepare_data</span>(<span class='kw'>adj_belligerent</span>)
-<span class='kw'>sampledNet_war_withcov</span> <span class='op'>&lt;-</span> <span class='fu'>prepare_data</span>(<span class='kw'>adj_belligerent</span>,
-                             <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(military_power = <span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span><span class='op'>$</span><span class='kw'>power</span>))
-</div></pre>
+<ul>
+<li><p><a href='#method-new'><code>simpleNodeSampler$new()</code></a></p></li>
+<li><p><a href='#method-clone'><code>simpleNodeSampler$clone()</code></a></p></li>
+</ul>
+<p><details open ><summary>Inherited methods</summary>
+<ul>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-show'><code>missSBM::networkSampling$show()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></p></li>
+</ul>
+</details>
+
+<hr>
+<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
+<p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>simpleNodeSampler</span><span class='op'>$</span><span class='fu'>new</span>(
+  parameters = <span class='fl'>NA</span>,
+  nNodes = <span class='fl'>NA</span>,
+  directed = <span class='fl'>FALSE</span>,
+  covarMatrix = <span class='kw'>NULL</span>,
+  intercept = <span class='fl'>0</span>
+)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>parameters</code></dt><dd><p>the vector of parameters associated to the sampling at play</p></dd>
+
+<dt><code>nNodes</code></dt><dd><p>number of nodes in the network</p></dd>
+
+<dt><code>directed</code></dt><dd><p>logical, directed network of not</p></dd>
+
+<dt><code>covarMatrix</code></dt><dd><p>a matrix of covariates used</p></dd>
+
+<dt><code>intercept</code></dt><dd><p>double, intercept term used to compute the probability of sampling in the presence of covariates. Default 0.</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>simpleNodeSampler</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
+
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

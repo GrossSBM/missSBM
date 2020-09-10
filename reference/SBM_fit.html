@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="R6 Class definition of an SBM-fit — SBM_fit" />
-<meta property="og:description" content="This class is designed to adjust a Stochastic Block Model on a fully observed network.
-The doVEM method performs inference via Variational EM." />
+<meta property="og:description" content="R6 Class definition of an SBM-fit
+R6 Class definition of an SBM-fit" />
 
 
 
@@ -73,7 +73,7 @@ The doVEM method performs inference via Variational EM." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9020</span>
       </span>
     </div>
 
@@ -136,20 +136,94 @@ The doVEM method performs inference via Variational EM." />
     </div>
 
     <div class="ref-description">
-    <p>This class is designed to adjust a Stochastic Block Model on a fully observed network.
-The doVEM method performs inference via Variational EM.</p>
+    <p>R6 Class definition of an SBM-fit</p>
+<p>R6 Class definition of an SBM-fit</p>
     </div>
 
-    <pre class="usage"><span class='no'>SBM_fit</span></pre>
 
 
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>R6ClassGenerator</code> of length 24.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This class is virtual: inference is effective only for instance of one of the two child
+    <p>This class is designed to adjust a Stochastic Block Model on a fully observed network.
+The doVEM method performs inference via Variational EM.</p>
+<p>This class is virtual: inference is effective only for instance of one of the two child
 classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'</p>
+    <h2 class="hasAnchor" id="super-class"><a class="anchor" href="#super-class"></a>Super class</h2>
+
+    <p><code><a href='SBM.html'>missSBM::SBM</a></code> -&gt; <code>SBM_fit</code></p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
+
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>vBound</code></dt><dd><p>double: approximation of the log-likelihood (variational lower bound) reached</p></dd>
+
+<dt><code>vICL</code></dt><dd><p>double: value of the integrated classification log-likelihood</p></dd>
+
+<dt><code>blocks</code></dt><dd><p>matrix for clustering memberships</p></dd>
+
+<dt><code>memberships</code></dt><dd><p>vector of clustering</p></dd>
+
+<dt><code>penalty</code></dt><dd><p>double, value of the penalty term in vICL</p></dd>
+
+<dt><code>entropy</code></dt><dd><p>double, value of the entropy due to the clustering distribution</p></dd>
+
+<dt><code>connectProb</code></dt><dd><p>expected values of connection under the current model</p></dd>
+
+</dl><p></div></p>
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+
+    
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
+
+<ul>
+<li><p><a href='#method-doVEM'><code>SBM_fit$doVEM()</code></a></p></li>
+<li><p><a href='#method-show'><code>SBM_fit$show()</code></a></p></li>
+<li><p><a href='#method-clone'><code>SBM_fit$clone()</code></a></p></li>
+</ul>
+<p><details open ><summary>Inherited methods</summary>
+<ul>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="initialize"><a href='../../missSBM/html/SBM.html#method-initialize'><code>missSBM::SBM$initialize()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="plot"><a href='../../missSBM/html/SBM.html#method-plot'><code>missSBM::SBM$plot()</code></a></span></p></li>
+</ul>
+</details>
+
+<hr>
+<a id="method-doVEM"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>doVEM()</code></h3>
+<p>method to perform estimation via variational EM</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>SBM_fit</span><span class='op'>$</span><span class='fu'>doVEM</span>(threshold = <span class='fl'>1e-04</span>, maxIter = <span class='fl'>10</span>, fixPointIter = <span class='fl'>3</span>, trace = <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>threshold</code></dt><dd><p>stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.</p></dd>
+
+<dt><code>maxIter</code></dt><dd><p>V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10</p></dd>
+
+<dt><code>fixPointIter</code></dt><dd><p>number of fix-point iterations in the Variational E step. Default is 3.</p></dd>
+
+<dt><code>trace</code></dt><dd><p>logical for verbosity. Default is <code>FALSE</code>.</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
+<p>show method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>SBM_fit</span><span class='op'>$</span><span class='fu'>show</span>(type = <span class='st'>"Fit of a Stochastic Block Model\n"</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>type</code></dt><dd><p>character used to specify the type of SBM</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>SBM_fit</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -166,7 +240,7 @@ classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

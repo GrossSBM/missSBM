@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>An object to represent a collection of missSBM_fit — missSBM_collection • missSBM</title>
+<title>An R6 Class to represent a SBM — SBM • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="An object to represent a collection of missSBM_fit — missSBM_collection" />
-<meta property="og:description" content="An object to represent a collection of missSBM_fit
-An object to represent a collection of missSBM_fit" />
+<meta property="og:title" content="An R6 Class to represent a SBM — SBM" />
+<meta property="og:description" content="An R6 Class to represent a SBM
+An R6 Class to represent a SBM" />
 
 
 
@@ -130,37 +130,48 @@ An object to represent a collection of missSBM_fit" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>An object to represent a collection of missSBM_fit</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_collection-Class.R'><code>R/missSBM_collection-Class.R</code></a></small>
-    <div class="hidden name"><code>missSBM_collection.Rd</code></div>
+    <h1>An R6 Class to represent a SBM</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/SBM-Class.R'><code>R/SBM-Class.R</code></a></small>
+    <div class="hidden name"><code>SBM.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>An object to represent a collection of missSBM_fit</p>
-<p>An object to represent a collection of missSBM_fit</p>
+    <p>An R6 Class to represent a SBM</p>
+<p>An R6 Class to represent a SBM</p>
     </div>
 
 
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>The function [`estimate`], which produces an instance of this class.
-The function [`smooth`] can be used to smooth the ICL on a collection of model, as post-treatment.</p></div>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
-<dt><code>models</code></dt><dd><p>a list of models</p></dd>
+<dt><code>nNodes</code></dt><dd><p>The number of nodes</p></dd>
 
-<dt><code>ICL</code></dt><dd><p>the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)</p></dd>
+<dt><code>nBlocks</code></dt><dd><p>The number of blocks</p></dd>
 
-<dt><code>bestModel</code></dt><dd><p>the best model according to the ICL</p></dd>
+<dt><code>nCovariates</code></dt><dd><p>The number of covariates</p></dd>
 
-<dt><code>vBlocks</code></dt><dd><p>a vector with the number of blocks</p></dd>
+<dt><code>nDyads</code></dt><dd><p>The number of dyads</p></dd>
 
-<dt><code>optimizationStatus</code></dt><dd><p>a data.frame summarizing the optimization process for all models</p></dd>
+<dt><code>direction</code></dt><dd><p>character indicating if the network is directed or not</p></dd>
+
+<dt><code>hasCovariates</code></dt><dd><p>boolean indicating if the SBM owns covariate(s)</p></dd>
+
+<dt><code>mixtureParam</code></dt><dd><p>the vector of mixture parameters (block proportions)</p></dd>
+
+<dt><code>connectParam</code></dt><dd><p>the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.</p></dd>
+
+<dt><code>adjacencyMatrix</code></dt><dd><p>The adjacency matrix of the network</p></dd>
+
+<dt><code>covarParam</code></dt><dd><p>the vector of parameters associated with the covariates</p></dd>
+
+<dt><code>covarArray</code></dt><dd><p>the array of covariates</p></dd>
+
+<dt><code>df_mixtureParams</code></dt><dd><p>degrees of freedoms for the mixture parameters</p></dd>
+
+<dt><code>df_connectParams</code></dt><dd><p>degrees of freedoms for the connectivity parameters</p></dd>
+
+<dt><code>df_covarParams</code></dt><dd><p>degrees of freedoms for the covariate parameters</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -169,81 +180,62 @@ The function [`smooth`] can be used to smooth the ICL on a collection of model, 
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
 <ul>
-<li><p><a href='#method-new'><code>missSBM_collection$new()</code></a></p></li>
-<li><p><a href='#method-estimate'><code>missSBM_collection$estimate()</code></a></p></li>
-<li><p><a href='#method-smooth'><code>missSBM_collection$smooth()</code></a></p></li>
-<li><p><a href='#method-show'><code>missSBM_collection$show()</code></a></p></li>
-<li><p><a href='#method-clone'><code>missSBM_collection$clone()</code></a></p></li>
+<li><p><a href='#method-new'><code>SBM$new()</code></a></p></li>
+<li><p><a href='#method-show'><code>SBM$show()</code></a></p></li>
+<li><p><a href='#method-plot'><code>SBM$plot()</code></a></p></li>
+<li><p><a href='#method-clone'><code>SBM$clone()</code></a></p></li>
 </ul>
 <p><hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
-<p>method for performing forward smoothing of the ICL</p>
-
-<p>method for performing backward smoothing of the ICL</p>
-
-<p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'>new</span>(
-  <span class='kw'>sampledNet</span>,
-  <span class='kw'>vBlocks</span>,
-  <span class='kw'>sampling</span>,
-  <span class='kw'>clusterInit</span>,
-  <span class='kw'>cores</span>,
-  <span class='kw'>trace</span>,
-  <span class='kw'>useCov</span>
+<p>Initialize an [`SBM`] object</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>SBM</span><span class='op'>$</span><span class='fu'>new</span>(
+  directed = <span class='fl'>FALSE</span>,
+  nNodes = <span class='fl'>NA</span>,
+  mixtureParam = <span class='fl'>NA</span>,
+  connectParam = <span class='fl'>NA</span>,
+  covarParam = <span class='kw'>NULL</span>,
+  covarArray = <span class='kw'>NULL</span>
 )</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>sampledNet</code></dt><dd><p>An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).</p></dd>
+<dt><code>directed</code></dt><dd><p>logical indicating if the network is directed or not</p></dd>
 
-<dt><code>vBlocks</code></dt><dd><p>vector of integer with the number of blocks in the successively fitted models</p></dd>
+<dt><code>nNodes</code></dt><dd><p>The number of nodes</p></dd>
 
-<dt><code>sampling</code></dt><dd><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></dd>
+<dt><code>mixtureParam</code></dt><dd><p>the vector of mixture parameters</p></dd>
 
-<dt><code>clusterInit</code></dt><dd><p>Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering. Default is "hierarchical".</p></dd>
+<dt><code>connectParam</code></dt><dd><p>the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.</p></dd>
 
-<dt><code>cores</code></dt><dd><p>integer for number of cores used. Default is 1.</p></dd>
+<dt><code>covarParam</code></dt><dd><p>the vector of parameters associated with the covariates</p></dd>
 
-<dt><code>trace</code></dt><dd><p>integer for verbosity (0, 1, 2). Default is 1. Useless when <code>cores</code> &gt; 1</p></dd>
-
-<dt><code>useCov</code></dt><dd><p>logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></dd>
-
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
-
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
-
-</dl><p></div></p>
-<p><hr>
-<a id="method-estimate"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='estimate.html'>estimate()</a></code></h3>
-<p>method to launch the estimation of the collection of models</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'><a href='estimate.html'>estimate</a></span>(<span class='kw'>control</span>)</pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
-
-</dl><p></div></p>
-<p><hr>
-<a id="method-smooth"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='smooth.html'>smooth()</a></code></h3>
-<p>method for performing smoothing of the ICL</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'><a href='smooth.html'>smooth</a></span>(<span class='kw'>type</span>, <span class='kw'>control</span>)</pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>type</code></dt><dd><p>character, the type of smoothing: forward, backward, both</p></dd>
-
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the smoothing. See details of regular function [`smooth`]</p></dd>
+<dt><code>covarArray</code></dt><dd><p>the array of covariates</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
-<p>show method for missSBM_collection</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'>show</span>()</pre><p></div></p>
+<p>show method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>SBM</span><span class='op'>$</span><span class='fu'>show</span>(type = <span class='st'>"Stochastic Block Model\n"</span>)</pre><p></div></p>
 
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>type</code></dt><dd><p>character used to specify the type of SBM</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-plot"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot()</a></code></h3>
+<p>basic matrix plot method for SBM object</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>SBM</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"network"</span>, <span class='st'>"connectivity"</span>))</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>type</code></dt><dd><p>character for the type of plot: either 'network' (true connection) or 'connectivity' (fitted connection). Default to 'network'.</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>SBM</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

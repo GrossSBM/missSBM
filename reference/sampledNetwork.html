@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="An R6 Class to represent sampled network data — sampledNetwork" />
-<meta property="og:description" content="The function sample and prepare_data produces an instance of an object with class sampledNetwork." />
+<meta property="og:description" content="An R6 Class to represent sampled network data
+An R6 Class to represent sampled network data" />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9020</span>
       </span>
     </div>
 
@@ -135,38 +136,34 @@
     </div>
 
     <div class="ref-description">
-    <p>The function <code><a href='sample.html'>sample</a></code> and <code><a href='prepare_data.html'>prepare_data</a></code> produces an instance of an object with class <code>sampledNetwork</code>.</p>
+    <p>An R6 Class to represent sampled network data</p>
+<p>An R6 Class to represent sampled network data</p>
     </div>
 
-    <pre class="usage"><span class='no'>sampledNetwork</span></pre>
 
 
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>R6ClassGenerator</code> of length 24.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods</p>
-    <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
+    <p>The function <code><a href='sample.html'>sample</a></code> and <code><a href='prepare_data.html'>prepare_data</a></code> produces an instance of an object with class <code>sampledNetwork</code>.</p>
+<p>All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods</p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>samplingRate</code></dt><dd><p>The percentage of observed dyads</p></dd>
 
-<dl'>
-<dt><code>samplingRate</code></dt><dd><p>percentage of observed dyads</p></dd>
+<dt><code>nNodes</code></dt><dd><p>The number of nodes</p></dd>
 
-<dt><code>nNodes</code></dt><dd><p>number of nodes</p></dd>
+<dt><code>nDyads</code></dt><dd><p>The number of dyads</p></dd>
 
-<dt><code>nDyads</code></dt><dd><p>number of dyads</p></dd>
+<dt><code>is_directed</code></dt><dd><p>logical indicating if the network is directed or not</p></dd>
 
-<dt><code>is_directed</code></dt><dd><p>direction</p></dd>
+<dt><code>adjacencyMatrix</code></dt><dd><p>The adjacency matrix of the network</p></dd>
 
-<dt><code>adjacencyMatrix</code></dt><dd><p>adjacency matrix (with NA)</p></dd>
+<dt><code>covarArray</code></dt><dd><p>the array of covariates</p></dd>
 
-<dt><code>covarMatrix</code></dt><dd><p>the matrix of covariates (if applicable)</p></dd>
+<dt><code>covarMatrix</code></dt><dd><p>the matrix of covariates</p></dd>
 
-<dt><code>covarArray</code></dt><dd><p>the array of covariates (if applicable)</p></dd>
-
-<dt><code>dyads</code></dt><dd><p>list of potential dyads in the network</p></dd>
+<dt><code>dyads</code></dt><dd><p>a list of potential dyads in the network</p></dd>
 
 <dt><code>missingDyads</code></dt><dd><p>array indices of missing dyads</p></dd>
 
@@ -174,43 +171,123 @@
 
 <dt><code>samplingMatrix</code></dt><dd><p>matrix of observed and non-observed edges</p></dd>
 
-<dt><code>observedNodes</code></dt><dd><p>vector of observed and non-observed nodes</p></dd>
+<dt><code>observedNodes</code></dt><dd><p>a vector of observed and non-observed nodes</p></dd>
 
 <dt><code>NAs</code></dt><dd><p>boolean for NA entries in the adjacencyMatrix</p></dd>
 
-</dl>
+</dl><p></div></p>
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+
+    
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
+
+<ul>
+<li><p><a href='#method-new'><code>sampledNetwork$new()</code></a></p></li>
+<li><p><a href='#method-plot'><code>sampledNetwork$plot()</code></a></p></li>
+<li><p><a href='#method-show'><code>sampledNetwork$show()</code></a></p></li>
+<li><p><a href='#method-clone'><code>sampledNetwork$clone()</code></a></p></li>
+</ul>
+<p><hr>
+<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
+<p>constructor</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>sampledNetwork</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>adjacencyMatrix</span>, covarMatrix = <span class='kw'>NULL</span>, covarArray = <span class='kw'>NULL</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>adjacencyMatrix</code></dt><dd><p>The adjacency matrix of the network</p></dd>
+
+<dt><code>covarMatrix</code></dt><dd><p>the matrix of covariates (default is <code>NULL</code>).</p></dd>
+
+<dt><code>covarArray</code></dt><dd><p>the array of covariates  (default is <code>NULL</code>).</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-plot"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot()</a></code></h3>
+<p>plot method for sampledNetwork</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>sampledNetwork</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
+  clustering = <span class='kw'>NULL</span>,
+  main = <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span>(<span class='st'>"Network with sampling rate:"</span>, <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>signif</a></span>(<span class='kw'>self</span><span class='op'>$</span><span class='kw'>samplingRate</span>, <span class='fl'>3</span>))
+)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>clustering</code></dt><dd><p>an optional vector of clustering memberships, default to <code>NULL</code>.</p></dd>
+
+<dt><code>main</code></dt><dd><p>a character for the title of the plot</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
+<p>show method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>sampledNetwork</span><span class='op'>$</span><span class='fu'>show</span>()</pre><p></div></p>
+
+<p><hr>
+<a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>sampledNetwork</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## SBM parameters</span>
-<span class='no'>directed</span> <span class='kw'>&lt;-</span> <span class='fl'>FALSE</span>
-<span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of nodes</span>
-<span class='no'>Q</span> <span class='kw'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
-<span class='no'>alpha</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='no'>Q</span>)/<span class='no'>Q</span>     <span class='co'># mixture parameter</span>
-<span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>,<span class='no'>Q</span>) + <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
+<span class='kw'>directed</span> <span class='op'>&lt;-</span> <span class='fl'>FALSE</span>
+<span class='kw'>N</span> <span class='op'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of nodes</span>
+<span class='kw'>Q</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
+<span class='kw'>alpha</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameter</span>
+<span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>,<span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
 
 <span class='co'>## simulate a SBM without covariates</span>
-<span class='no'>sbm</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='simulate.html'>simulate</a></span>(<span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>pi</span>, <span class='no'>directed</span>)
+<span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='simulate.html'>simulate</a></span>(<span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>pi</span>, <span class='kw'>directed</span>)
 
 <span class='co'>## Sample network data</span>
-<span class='no'>sampled_network</span> <span class='kw'>&lt;-</span>
-     <span class='kw pkg'>missSBM</span><span class='kw ns'>::</span><span class='fu'><a href='sample.html'>sample</a></span>(
-       <span class='kw'>adjacencyMatrix</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>adjacencyMatrix</span>,
-       <span class='kw'>sampling</span>        <span class='kw'>=</span> <span class='st'>"double-standard"</span>,
-       <span class='kw'>parameters</span>      <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.4</span>, <span class='fl'>0.8</span>)
+<span class='kw'>sampled_network</span> <span class='op'>&lt;-</span>
+     <span class='kw'>missSBM</span>::<span class='fu'><a href='sample.html'>sample</a></span>(
+       adjacencyMatrix = <span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>adjacencyMatrix</span>,
+       sampling        = <span class='st'>"double-standard"</span>,
+       parameters      = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.4</span>, <span class='fl'>0.8</span>)
      )
 
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>sampled_network</span>)</div><div class='output co'>#&gt; Sampled Network with 300 nodes and sampling rate equal to 0.478 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>sampled_network</span>)
+</div><div class='output co'>#&gt; Sampled Network with 300 nodes and sampling rate equal to 0.478 
 #&gt;  - 21435 observed dyads (7090 links and 14345 no-links)
-#&gt;  - 23415 missing dyads</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>sampled_network</span>)</div><div class='output co'>#&gt; Sampled Network
-#&gt; ==================================================================
-#&gt; Structure for storing a sampled network in missSBM
-#&gt; ==================================================================
-#&gt; * Useful fields 
-#&gt;   $nNodes, $nDyads, $is_directed
-#&gt;    $adjacencyMatrix, $covarMatrix, $covarArray
-#&gt;    $dyads, $missingDyads, $observedDyads, $observedNodes
-#&gt;    $samplingRate, $samplingMatrix, $NAs
-#&gt; * Useful method: plot(), summary() , print()  </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>sampled_network</span>, <span class='kw'>clustering</span> <span class='kw'>=</span> <span class='no'>sbm</span>$<span class='no'>memberships</span>)</div><div class='img'><img src='sampledNetwork-1.png' alt='' width='700' height='433' /></div></pre>
+#&gt;  - 23415 missing dyads</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>sampled_network</span>)
+</div><div class='output co'>#&gt; &lt;sampledNetwork&gt;
+#&gt;   Public:
+#&gt;     adjacencyMatrix: active binding
+#&gt;     clone: function (deep = FALSE) 
+#&gt;     covarArray: active binding
+#&gt;     covarMatrix: active binding
+#&gt;     dyads: active binding
+#&gt;     initialize: function (adjacencyMatrix, covarMatrix = NULL, covarArray = NULL) 
+#&gt;     is_directed: active binding
+#&gt;     missingDyads: active binding
+#&gt;     NAs: active binding
+#&gt;     nDyads: active binding
+#&gt;     nNodes: active binding
+#&gt;     observedDyads: active binding
+#&gt;     observedNodes: active binding
+#&gt;     plot: function (clustering = NULL, main = paste("Network with sampling rate:", 
+#&gt;     samplingMatrix: active binding
+#&gt;     samplingRate: active binding
+#&gt;     show: function () 
+#&gt;   Private:
+#&gt;     D: 301 601 602 901 902 903 1201 1202 1203 1204 1501 1502 15 ...
+#&gt;     D_miss: 601 902 903 1201 1202 1204 1502 1503 1504 1801 1802 1804 ...
+#&gt;     D_obs: 301 602 901 1203 1501 1505 1803 2106 2107 2404 2405 2408 ...
+#&gt;     directed: FALSE
+#&gt;     nas: FALSE FALSE TRUE FALSE TRUE FALSE TRUE TRUE TRUE FALSE F ...
+#&gt;     phi: NULL
+#&gt;     R: FALSE TRUE FALSE TRUE FALSE TRUE FALSE FALSE FALSE TRUE  ...
+#&gt;     S: FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FA ...
+#&gt;     X: NULL
+#&gt;     Y: 0 1 NA 0 NA 0 NA NA NA 0 0 0 NA 1 NA NA NA NA 0 NA NA 0  ...</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sampled_network</span>, clustering = <span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>memberships</span>)
+</div><div class='img'><img src='sampledNetwork-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -226,7 +303,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

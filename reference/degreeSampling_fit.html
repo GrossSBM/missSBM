@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>An object to represent a collection of missSBM_fit — missSBM_collection • missSBM</title>
+<title>Class for fitting a degree sampling — degreeSampling_fit • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="An object to represent a collection of missSBM_fit — missSBM_collection" />
-<meta property="og:description" content="An object to represent a collection of missSBM_fit
-An object to represent a collection of missSBM_fit" />
+<meta property="og:title" content="Class for fitting a degree sampling — degreeSampling_fit" />
+<meta property="og:description" content="Class for fitting a degree sampling
+Class for fitting a degree sampling" />
 
 
 
@@ -130,37 +130,25 @@ An object to represent a collection of missSBM_fit" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>An object to represent a collection of missSBM_fit</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_collection-Class.R'><code>R/missSBM_collection-Class.R</code></a></small>
-    <div class="hidden name"><code>missSBM_collection.Rd</code></div>
+    <h1>Class for fitting a degree sampling</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/networkSampling_fit-Class.R'><code>R/networkSampling_fit-Class.R</code></a></small>
+    <div class="hidden name"><code>degreeSampling_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>An object to represent a collection of missSBM_fit</p>
-<p>An object to represent a collection of missSBM_fit</p>
+    <p>Class for fitting a degree sampling</p>
+<p>Class for fitting a degree sampling</p>
     </div>
 
 
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
 
-    <p>This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>The function [`estimate`], which produces an instance of this class.
-The function [`smooth`] can be used to smooth the ICL on a collection of model, as post-treatment.</p></div>
+    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code><a href='networkSamplingNodes_fit.html'>missSBM::networkSamplingNodes_fit</a></code> -&gt; <code>degreeSampling_fit</code></p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
-<dt><code>models</code></dt><dd><p>a list of models</p></dd>
-
-<dt><code>ICL</code></dt><dd><p>the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)</p></dd>
-
-<dt><code>bestModel</code></dt><dd><p>the best model according to the ICL</p></dd>
-
-<dt><code>vBlocks</code></dt><dd><p>a vector with the number of blocks</p></dd>
-
-<dt><code>optimizationStatus</code></dt><dd><p>a data.frame summarizing the optimization process for all models</p></dd>
+<dt><code>vExpec</code></dt><dd><p>variational expectation of the sampling</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -169,81 +157,57 @@ The function [`smooth`] can be used to smooth the ICL on a collection of model, 
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
 <ul>
-<li><p><a href='#method-new'><code>missSBM_collection$new()</code></a></p></li>
-<li><p><a href='#method-estimate'><code>missSBM_collection$estimate()</code></a></p></li>
-<li><p><a href='#method-smooth'><code>missSBM_collection$smooth()</code></a></p></li>
-<li><p><a href='#method-show'><code>missSBM_collection$show()</code></a></p></li>
-<li><p><a href='#method-clone'><code>missSBM_collection$clone()</code></a></p></li>
+<li><p><a href='#method-new'><code>degreeSampling_fit$new()</code></a></p></li>
+<li><p><a href='#method-update_parameters'><code>degreeSampling_fit$update_parameters()</code></a></p></li>
+<li><p><a href='#method-update_imputation'><code>degreeSampling_fit$update_imputation()</code></a></p></li>
+<li><p><a href='#method-clone'><code>degreeSampling_fit$clone()</code></a></p></li>
 </ul>
-<p><hr>
+<p><details open ><summary>Inherited methods</summary>
+<ul>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-show'><code>missSBM::networkSamplingNodes_fit$show()</code></a></span></p></li>
+</ul>
+</details>
+
+<hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
-<p>method for performing forward smoothing of the ICL</p>
-
-<p>method for performing backward smoothing of the ICL</p>
-
-<p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'>new</span>(
-  <span class='kw'>sampledNet</span>,
-  <span class='kw'>vBlocks</span>,
-  <span class='kw'>sampling</span>,
-  <span class='kw'>clusterInit</span>,
-  <span class='kw'>cores</span>,
-  <span class='kw'>trace</span>,
-  <span class='kw'>useCov</span>
-)</pre><p></div></p>
+<p>constructor</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>degreeSampling_fit</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>sampledNetwork</span>, <span class='kw'>blockInit</span>, <span class='kw'>connectInit</span>)</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>sampledNet</code></dt><dd><p>An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).</p></dd>
+<dt><code>sampledNetwork</code></dt><dd><p>a object with class sampledNetwork representing the observed data with possibly missing entries</p></dd>
 
-<dt><code>vBlocks</code></dt><dd><p>vector of integer with the number of blocks in the successively fitted models</p></dd>
+<dt><code>blockInit</code></dt><dd><p>n x Q matrix of initial block indicators</p></dd>
 
-<dt><code>sampling</code></dt><dd><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></dd>
-
-<dt><code>clusterInit</code></dt><dd><p>Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering. Default is "hierarchical".</p></dd>
-
-<dt><code>cores</code></dt><dd><p>integer for number of cores used. Default is 1.</p></dd>
-
-<dt><code>trace</code></dt><dd><p>integer for verbosity (0, 1, 2). Default is 1. Useless when <code>cores</code> &gt; 1</p></dd>
-
-<dt><code>useCov</code></dt><dd><p>logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></dd>
-
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
-
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
+<dt><code>connectInit</code></dt><dd><p>Q x Q matrix of initial block probabilities of connection</p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-estimate"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='estimate.html'>estimate()</a></code></h3>
-<p>method to launch the estimation of the collection of models</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'><a href='estimate.html'>estimate</a></span>(<span class='kw'>control</span>)</pre><p></div></p>
+<a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
+<p>a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>degreeSampling_fit</span><span class='op'>$</span><span class='fu'>update_parameters</span>(<span class='kw'>imputedNet</span>, <span class='kw'>...</span>)</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
+<dt><code>imputedNet</code></dt><dd><p>an adjacency matrix where missing values have been imputed</p></dd>
+
+<dt><code>...</code></dt><dd><p>used for compatibility</p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-smooth"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='smooth.html'>smooth()</a></code></h3>
-<p>method for performing smoothing of the ICL</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'><a href='smooth.html'>smooth</a></span>(<span class='kw'>type</span>, <span class='kw'>control</span>)</pre><p></div></p>
+<a id="method-update_imputation"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_imputation()</code></h3>
+<p>a method to update the imputation of the missing entries.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>degreeSampling_fit</span><span class='op'>$</span><span class='fu'>update_imputation</span>(<span class='kw'>PI</span>)</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>type</code></dt><dd><p>character, the type of smoothing: forward, backward, both</p></dd>
-
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the smoothing. See details of regular function [`smooth`]</p></dd>
+<dt><code>PI</code></dt><dd><p>the matrix of inter/intra class probability of connection</p></dd>
 
 </dl><p></div></p>
-<p><hr>
-<a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
-<p>show method for missSBM_collection</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'>show</span>()</pre><p></div></p>
-
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_collection</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>degreeSampling_fit</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

@@ -41,10 +41,10 @@
 
 <meta property="og:title" content="War data set — war" />
 <meta property="og:description" content="This dataset contains two networks where the nodes are countries and an
-edge in network &quot;beligerent&quot; means that the two countries have been at
+edge in network &quot;belligerent&quot; means that the two countries have been at
 least once at war between years 1816 to 2007 while an edge in network &quot;alliance&quot;
 means that the two countries have had a formal alliance between years 1816 to 2012.
- The network `beligerent` have less nodes since countries which have not been at
+ The network `belligerent` have less nodes since countries which have not been at
  war are not considered." />
 
 
@@ -77,7 +77,7 @@ means that the two countries have had a formal alliance between years 1816 to 20
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9020</span>
       </span>
     </div>
 
@@ -141,19 +141,19 @@ means that the two countries have had a formal alliance between years 1816 to 20
 
     <div class="ref-description">
     <p>This dataset contains two networks where the nodes are countries and an
-edge in network "beligerent" means that the two countries have been at
+edge in network "belligerent" means that the two countries have been at
 least once at war between years 1816 to 2007 while an edge in network "alliance"
 means that the two countries have had a formal alliance between years 1816 to 2012.
- The network `beligerent` have less nodes since countries which have not been at
+ The network `belligerent` have less nodes since countries which have not been at
  war are not considered.</p>
     </div>
 
-    <pre class="usage"><span class='no'>war</span></pre>
+    <pre class="usage"><span class='kw'>war</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A list with 2 two igraph objects, <code>alliance</code> and <code>beligerent</code>.
+    <p>A list with 2 two igraph objects, <code>alliance</code> and <code>belligerent</code>.
 Each graph have three attributes: 'name' (the country name), 'power' (a score related to military power: the higher, the better) and
 'trade' (a score related to the trade effort between pairs of countries).</p>
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
@@ -165,8 +165,12 @@ Each graph have three attributes: 'name' (the country name), 'power' (a score re
 <p>Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>war</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>war</span>$<span class='no'>beligerent</span>)</div><div class='output co'>#&gt; [1] "igraph"</div><div class='input'><span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span>(<span class='no'>war</span>$<span class='no'>alliance</span>)</div><div class='output co'>#&gt; [1] 171</div><div class='input'><span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span>(<span class='no'>war</span>$<span class='no'>beligerent</span>)</div><div class='output co'>#&gt; [1] 83</div><div class='input'><span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/edge.html'>edges</a></span>(<span class='no'>war</span>$<span class='no'>alliance</span>)</div><div class='output co'>#&gt; [[1]]
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>war</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span>)
+</div><div class='output co'>#&gt; [1] "igraph"</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>alliance</span>)
+</div><div class='output co'>#&gt; [1] 171</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span>)
+</div><div class='output co'>#&gt; [1] 83</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/edge.html'>edges</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>alliance</span>)
+</div><div class='output co'>#&gt; [[1]]
 #&gt; IGRAPH 00c3a83 UN-- 171 1654 -- 
 #&gt; + attr: trade (g/n), power (g/n), name (v/c)
 #&gt; + edges from 00c3a83 (vertex names):
@@ -181,7 +185,8 @@ Each graph have three attributes: 'name' (the country name), 'power' (a score re
 #&gt; + ... omitted several edges
 #&gt; 
 #&gt; attr(,"class")
-#&gt; [1] "igraph.edge"</div><div class='input'><span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_attr.html'>get.graph.attribute</a></span>(<span class='no'>war</span>$<span class='no'>alliance</span>)</div><div class='output co'>#&gt; $trade
+#&gt; [1] "igraph.edge"</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_attr.html'>get.graph.attribute</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>alliance</span>)
+</div><div class='output co'>#&gt; $trade
 #&gt;                                  United States of America    Canada     Bahamas
 #&gt; United States of America                         11838636 83309.874 29769.84735
 #&gt; Canada                                                 NA  3543.593 24812.14783
@@ -10692,7 +10697,7 @@ Each graph have three attributes: 'name' (the country name), 'power' (a score re
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

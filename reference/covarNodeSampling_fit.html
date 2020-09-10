@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Prepare network data for estimation with missing data — prepare_data • missSBM</title>
+<title>Class for fitting a node-centered sampling with covariate — covarNodeSampling_fit • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,9 @@
 
 
 
-<meta property="og:title" content="Prepare network data for estimation with missing data — prepare_data" />
-<meta property="og:description" content="This function puts together the adjacency matrix of a network and an optional list of covariates
-into a single sampledNetwork object, ready to use for inference with the estimate
-function of the missSBM package." />
+<meta property="og:title" content="Class for fitting a node-centered sampling with covariate — covarNodeSampling_fit" />
+<meta property="og:description" content="Class for fitting a node-centered sampling with covariate
+Class for fitting a node-centered sampling with covariate" />
 
 
 
@@ -131,56 +130,71 @@ function of the missSBM package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Prepare network data for estimation with missing data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/prepare_data.R'><code>R/prepare_data.R</code></a></small>
-    <div class="hidden name"><code>prepare_data.Rd</code></div>
+    <h1>Class for fitting a node-centered sampling with covariate</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/networkSampling_fit-Class.R'><code>R/networkSampling_fit-Class.R</code></a></small>
+    <div class="hidden name"><code>covarNodeSampling_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function puts together the adjacency matrix of a network and an optional list of covariates
-into a single <code><a href='sampledNetwork.html'>sampledNetwork</a></code> object, ready to use for inference with the <code><a href='estimate.html'>estimate</a></code>
-function of the missSBM package.</p>
+    <p>Class for fitting a node-centered sampling with covariate</p>
+<p>Class for fitting a node-centered sampling with covariate</p>
     </div>
 
-    <pre class="usage"><span class='fu'>prepare_data</span>(
-  <span class='kw'>adjacencyMatrix</span>,
-  covariates = <span class='kw'>NULL</span>,
-  similarity = <span class='kw'>missSBM</span>:::<span class='kw'>l1_similarity</span>
-)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>adjacencyMatrix</th>
-      <td><p>The adjacency matrix of the network (NAs allowed)</p></td>
-    </tr>
-    <tr>
-      <th>covariates</th>
-      <td><p>An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of <code>covariates</code>
-must be a size-N vector;  if the covariates are dyad-centered, each entry of <code>covariates</code> must be N x N matrix.</p></td>
-    </tr>
-    <tr>
-      <th>similarity</th>
-      <td><p>An optional R x R -&gt; R function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
-Only relevant when the <code>covariates</code> is a list of size-N vectors.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
 
-    <p>Returns an R6 object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code>.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code><a href='networkSamplingNodes_fit.html'>missSBM::networkSamplingNodes_fit</a></code> -&gt; <code>covarNodeSampling_fit</code></p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    <div class='dont-index'><p><code><a href='estimate.html'>estimate</a></code> and <code><a href='sampledNetwork.html'>sampledNetwork</a></code>.</p></div>
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>prob_obs</code></dt><dd><p>sampling rate</p></dd>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>war</span>)
-<span class='kw'>adj_belligerent</span> <span class='op'>&lt;-</span> <span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span> <span class='op'>%&gt;%</span> <span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span>(sparse = <span class='fl'>FALSE</span>)
-<span class='kw'>sampledNet_war_nocov</span> <span class='op'>&lt;-</span> <span class='fu'>prepare_data</span>(<span class='kw'>adj_belligerent</span>)
-<span class='kw'>sampledNet_war_withcov</span> <span class='op'>&lt;-</span> <span class='fu'>prepare_data</span>(<span class='kw'>adj_belligerent</span>,
-                             <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(military_power = <span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span><span class='op'>$</span><span class='kw'>power</span>))
-</div></pre>
+<dt><code>vExpec</code></dt><dd><p>variational expectation of the sampling</p></dd>
+
+</dl><p></div></p>
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+
+    
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
+
+<ul>
+<li><p><a href='#method-new'><code>covarNodeSampling_fit$new()</code></a></p></li>
+<li><p><a href='#method-clone'><code>covarNodeSampling_fit$clone()</code></a></p></li>
+</ul>
+<p><details open ><summary>Inherited methods</summary>
+<ul>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-show'><code>missSBM::networkSamplingNodes_fit$show()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-update_imputation'><code>missSBM::networkSamplingNodes_fit$update_imputation()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-update_parameters'><code>missSBM::networkSamplingNodes_fit$update_parameters()</code></a></span></p></li>
+</ul>
+</details>
+
+<hr>
+<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
+<p>constructor</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>covarNodeSampling_fit</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>sampledNetwork</span>, <span class='kw'>...</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>sampledNetwork</code></dt><dd><p>a object with class sampledNetwork representing the observed data with possibly missing entries</p></dd>
+
+<dt><code>...</code></dt><dd><p>used for compatibility</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>covarNodeSampling_fit</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
+
+
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -40,9 +40,8 @@
 
 
 <meta property="og:title" content="Definition of R6 Class 'networkSampling' — networkSampling" />
-<meta property="og:description" content="this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
-It is used to define a sampling model for a network.
-It has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork." />
+<meta property="og:description" content="Definition of R6 Class 'networkSampling'
+Definition of R6 Class 'networkSampling'" />
 
 
 
@@ -74,7 +73,7 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9020</span>
       </span>
     </div>
 
@@ -137,17 +136,75 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
     </div>
 
     <div class="ref-description">
+    <p>Definition of R6 Class 'networkSampling'</p>
+<p>Definition of R6 Class 'networkSampling'</p>
+    </div>
+
+
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
     <p>this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
 It is used to define a sampling model for a network.
 It has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.</p>
-    </div>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    <pre class="usage"><span class='no'>networkSampling</span></pre>
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>type</code></dt><dd><p>a character for the type of sampling</p></dd>
+
+<dt><code>prob</code></dt><dd><p>a double representing the overall sampling rate</p></dd>
+
+<dt><code>parameters</code></dt><dd><p>the vector of parameters associated with the sampling at play</p></dd>
+
+<dt><code>df</code></dt><dd><p>the number of entries in the vector of parameters</p></dd>
+
+</dl><p></div></p>
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+
+    
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
+
+<ul>
+<li><p><a href='#method-new'><code>networkSampling$new()</code></a></p></li>
+<li><p><a href='#method-show'><code>networkSampling$show()</code></a></p></li>
+<li><p><a href='#method-clone'><code>networkSampling$clone()</code></a></p></li>
+</ul>
+<p><hr>
+<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
+<p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>networkSampling</span><span class='op'>$</span><span class='fu'>new</span>(type = <span class='fl'>NA</span>, parameters = <span class='fl'>NA</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>type</code></dt><dd><p>character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")</p></dd>
+
+<dt><code>parameters</code></dt><dd><p>the vector of parameters associated to the sampling at play</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
+<p>show method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>networkSampling</span><span class='op'>$</span><span class='fu'>show</span>(
+  type = <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='kw'>private</span><span class='op'>$</span><span class='kw'>name</span>, <span class='st'>"-model for network sampling\n"</span>)
+)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>type</code></dt><dd><p>character used to specify the type of sampling</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='kw'>networkSampling</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
+
+</dl><p></div></p>
 
 
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>R6ClassGenerator</code> of length 24.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -164,7 +221,7 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

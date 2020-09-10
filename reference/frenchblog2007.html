@@ -42,7 +42,7 @@
 <meta property="og:title" content="Political Blogosphere network prior to 2007 French presidential election — frenchblog2007" />
 <meta property="og:description" content="French Political Blogosphere network dataset consists of a single day snapshot of
 over 200 political blogs automatically extracted the 14 October 2006 and manually classified by
-the &quot;Observatoire Presidentielle&quot; project. Originally part of the 'mixer' package" />
+the &quot;Observatoire Présidentielle&quot; project. Originally part of the 'mixer' package" />
 
 
 
@@ -74,7 +74,7 @@ the &quot;Observatoire Presidentielle&quot; project. Originally part of the 'mix
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9020</span>
       </span>
     </div>
 
@@ -139,10 +139,10 @@ the &quot;Observatoire Presidentielle&quot; project. Originally part of the 'mix
     <div class="ref-description">
     <p>French Political Blogosphere network dataset consists of a single day snapshot of
 over 200 political blogs automatically extracted the 14 October 2006 and manually classified by
-the "Observatoire Presidentielle" project. Originally part of the 'mixer' package</p>
+the "Observatoire Présidentielle" project. Originally part of the 'mixer' package</p>
     </div>
 
-    <pre class="usage"><span class='no'>frenchblog2007</span></pre>
+    <pre class="usage"><span class='kw'>frenchblog2007</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -154,8 +154,9 @@ clustering of the nodes.</p>
     <p><a href='https://www.linkfluence.com/'>https://www.linkfluence.com/</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>frenchblog2007</span>)
-<span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span>(<span class='no'>frenchblog2007</span>)$<span class='no'>party</span></div><div class='output co'>#&gt;   [1] "green"        "green"        "green"        "green"        "green"       
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>frenchblog2007</span>)
+<span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span>(<span class='kw'>frenchblog2007</span>)<span class='op'>$</span><span class='kw'>party</span>
+</div><div class='output co'>#&gt;   [1] "green"        "green"        "green"        "green"        "green"       
 #&gt;   [6] "green"        "green"        "right"        "right"        "right"       
 #&gt;  [11] "right"        "right"        "right"        "right"        "right"       
 #&gt;  [16] "right"        "right"        "right"        "right"        "right"       
@@ -194,10 +195,11 @@ clustering of the nodes.</p>
 #&gt; [181] "green"        "liberal"      "liberal"      "liberal"      "liberal"     
 #&gt; [186] "liberal"      "liberal"      "liberal"      "liberal"      "liberal"     
 #&gt; [191] "liberal"      "liberal"      "liberal"      "liberal"      "liberal"     
-#&gt; [196] "liberal"     </div><div class='input'><span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/plot.igraph.html'>plot.igraph</a></span>(<span class='no'>frenchblog2007</span>,
-  <span class='kw'>vertex.color</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span>(<span class='no'>frenchblog2007</span>)$<span class='no'>party</span>),
-  <span class='kw'>vertex.label</span> <span class='kw'>=</span> <span class='fl'>NA</span>
- )</div><div class='img'><img src='frenchblog2007-1.png' alt='' width='700' height='433' /></div></pre>
+#&gt; [196] "liberal"     </div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/plot.igraph.html'>plot.igraph</a></span>(<span class='kw'>frenchblog2007</span>,
+  vertex.color = <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span>(<span class='kw'>frenchblog2007</span>)<span class='op'>$</span><span class='kw'>party</span>),
+  vertex.label = <span class='fl'>NA</span>
+ )
+</div><div class='img'><img src='frenchblog2007-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -213,7 +215,7 @@ clustering of the nodes.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>
