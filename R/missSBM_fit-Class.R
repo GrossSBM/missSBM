@@ -1,6 +1,30 @@
-#' R6 Class definition of an SBM-fit
+#' @title R6 Class definition of an missSBM_fit
 #'
-#' This class is designed to adjust a Stochastic Block Model on a network with missing entries.
+#' @description This class is designed to adjust a Stochastic Block Model on a network with missing values.
+#'
+#' See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
+#'
+#' The user can resort to this class to fit the model, but its is recommended to use the to level function [`estimate`]
+#' for this task.
+#'
+#' @examples
+#' ## Sample 75% of dyads in  French political Blogosphere's network data
+#' samplingParameters <- .25 # the sampling rate
+#' sampling <- "dyad"       # the sampling design
+#' sampledNet <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adj (sparse = FALSE) %>%
+#'   missSBM::sample(sampling, samplingParameters)
+#'
+#' ## Fit a SBM with random dyad sampling and 5 block
+#' my_missSBM <- missSBM::missSBM_fit$new(
+#'     sampledNet  = sampledNet,
+#'     nBlocks     = 5,
+#'     netSampling = "dyad",
+#'     clusterInit = base::sample(1:5, sampledNet$nNodes, rep = TRUE),
+#'     useCov      = FALSE
+#'   )
+#' my_missSBM$doVEM()
+#' plot(my_missSBM, "network")
 #'
 #' @include SBM_fit-Class.R
 #' @include networkSampling_fit-Class.R
@@ -73,7 +97,7 @@ missSBM_fit <-
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
-    doVEM = function(control) {
+    doVEM = function(control = list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 1)) {
 
       ## Initialization of quantities that monitor convergence
       delta     <- vector("numeric", control$maxIter)
@@ -175,18 +199,27 @@ missSBM_fit <-
 ## Auxiliary functions to check the given class of an objet
 is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 
+#' @describeIn missSBM_fit fitted value of a ['missSBM_fit']
+#' @param object an R6 object with class [`missSBM_fit`]
+#' @param ... additional parameters for S3 compatibility.
 #' @export
 fitted.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
   fitted(object$fittedSBM)
 }
 
+#' @describeIn missSBM_fit prediction (imputed network) of a ['missSBM_fit']
+#' @param object an R6 object with class [`missSBM_fit`]
+#' @param ... additional parameters for S3 compatibility.
 #' @export
 predict.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
   object$imputedNetwork
 }
 
+#' @describeIn missSBM_fit summary of a ['missSBM_fit']
+#' @param object an R6 object with class [`missSBM_fit`]
+#' @param ... additional parameters for S3 compatibility.
 #' @export
 summary.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -197,6 +230,7 @@ summary.missSBM_fit <- function(object, ...) {
 #'
 #' Plot function for the various fields of a [`missSBM_fit`]
 #'
+#' @param x an object with class [`missSBM_fit`]
 #' @param type the type specifies the field to plot, either "network", "connectivity", "sampledNetwork" of "monitoring"
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @export

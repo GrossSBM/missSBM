@@ -37,6 +37,10 @@ reference:
     Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.
   contents:
     - '`missSBM_collection`'
+    - '`missSBM_fit`'
+    - '`SBM_fit`'
+    - '`SBM_fit_covariates`'
+    - '`SBM_fit_nocovariate`'
     - '`SBM_sampler`'
     - '`sampledNetwork`'
 - title: Data sets

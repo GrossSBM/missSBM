@@ -9,7 +9,7 @@ An R6 Class to represent a sampler for a SBM
 An R6 Class to represent a sampler for a SBM
 }
 \details{
-The function \code{\link{simulate}} produces an instance of an object with class \code{SBM_sampler}.
+The function [`simulate`] produces an instance of an object with class [`SBM_sampler`].
 
 All fields of this class are only accessible for reading. This class comes with a set of methods,
 some of them being useful for the user (see examples)
@@ -138,16 +138,9 @@ a method to sample an adjacency matrix for the current SBM
 \subsection{Method \code{show()}}{
 show method
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$show(type = "Sampler for Stochastic Block Model\\n")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$show()}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{type}}{character used to specify the type of SBM}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

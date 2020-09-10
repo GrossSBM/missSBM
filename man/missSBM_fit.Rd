@@ -2,14 +2,58 @@
 % Please edit documentation in R/missSBM_fit-Class.R
 \name{missSBM_fit}
 \alias{missSBM_fit}
-\title{R6 Class definition of an SBM-fit}
-\description{
-R6 Class definition of an SBM-fit
+\alias{fitted.missSBM_fit}
+\alias{predict.missSBM_fit}
+\alias{summary.missSBM_fit}
+\title{R6 Class definition of an missSBM_fit}
+\usage{
+\method{fitted}{missSBM_fit}(object, ...)
 
-R6 Class definition of an SBM-fit
+\method{predict}{missSBM_fit}(object, ...)
+
+\method{summary}{missSBM_fit}(object, ...)
 }
-\details{
-This class is designed to adjust a Stochastic Block Model on a network with missing entries.
+\arguments{
+\item{object}{an R6 object with class [`missSBM_fit`]}
+
+\item{...}{additional parameters for S3 compatibility.}
+}
+\description{
+This class is designed to adjust a Stochastic Block Model on a network with missing values.
+
+See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
+
+The user can resort to this class to fit the model, but its is recommended to use the to level function [`estimate`]
+for this task.
+}
+\section{Functions}{
+\itemize{
+\item \code{fitted.missSBM_fit}: fitted value of a ['missSBM_fit']
+
+\item \code{predict.missSBM_fit}: prediction (imputed network) of a ['missSBM_fit']
+
+\item \code{summary.missSBM_fit}: summary of a ['missSBM_fit']
+}}
+
+\examples{
+## Sample 75\% of dyads in  French political Blogosphere's network data
+samplingParameters <- .25 # the sampling rate
+sampling <- "dyad"       # the sampling design
+sampledNet <- missSBM::frenchblog2007 \%>\%
+  igraph::as_adj (sparse = FALSE) \%>\%
+  missSBM::sample(sampling, samplingParameters)
+
+## Fit a SBM with random dyad sampling and 5 block
+my_missSBM <- missSBM::missSBM_fit$new(
+    sampledNet  = sampledNet,
+    nBlocks     = 5,
+    netSampling = "dyad",
+    clusterInit = base::sample(1:5, sampledNet$nNodes, rep = TRUE),
+    useCov      = FALSE
+  )
+my_missSBM$doVEM()
+plot(my_missSBM, "network")
+
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -78,7 +122,9 @@ constructor for networkSampling
 \subsection{Method \code{doVEM()}}{
 a method to perform inference of the current missSBM fit with variational EM
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$doVEM(control)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$doVEM(
+  control = list(threshold = 0.001, maxIter = 100, fixPointIter = 5, trace = 1)
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

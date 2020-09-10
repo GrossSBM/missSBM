@@ -1,6 +1,6 @@
 #' An R6 Class to represent a sampler for a SBM
 #'
-#' The function \code{\link{simulate}} produces an instance of an object with class \code{SBM_sampler}.
+#' The function [`simulate`] produces an instance of an object with class [`SBM_sampler`].
 #'
 #' All fields of this class are only accessible for reading. This class comes with a set of methods,
 #' some of them being useful for the user (see examples)
@@ -72,9 +72,8 @@ SBM_sampler <-
       private$Y <- Y
     },
     #' @description show method
-    #' @param type character used to specify the type of SBM
-    show = function(type = "Sampler for Stochastic Block Model\n") {
-      super$show(type)
+    show = function() {
+      super$show("Sampler for Stochastic Block Model\n")
       cat("* Sampling methods \n")
       cat("  $rBlocks(), $rAdjmatrix()\n")
       cat("* Additional fields \n")
@@ -101,16 +100,3 @@ SBM_sampler <-
     }
   )
 )
-
-# SBM_sampler$set("public", "print", function() self$show())
-# @param nNodes The number of nodes
-# @param nBlocks The number of blocks
-# @param nCovariates  The number of covariates
-# @param nDyads The number of possible dyad in the network (depends on the direction)
-# @param direction A character indicating if the network is directed or undirected
-# @param hasCovariates a boolean indicating if the model has covariates
-# @param mixtureParam the vector of mixture parameters
-# @param connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
-# @param covarParam the vector of parameters associated with the covariates
-# @param covarArray the array of covariates
-

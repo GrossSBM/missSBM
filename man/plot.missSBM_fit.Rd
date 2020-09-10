@@ -11,6 +11,8 @@
 )
 }
 \arguments{
+\item{x}{an object with class [`missSBM_fit`]}
+
 \item{type}{the type specifies the field to plot, either "network", "connectivity", "sampledNetwork" of "monitoring"}
 
 \item{...}{additional parameters for S3 compatibility. Not used}
