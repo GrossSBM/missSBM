@@ -58,10 +58,10 @@ plot(war$belligerent,
 
 To pursue our analysis, we extract the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and a covariate on the dyads describing the intensity of trade between two countries.
 
-```{r beligenrent network}
+```{r belligerent network}
 belligerent_adjacency <- as_adj(war$belligerent, sparse = FALSE)
-beligerent_power     <- war$beligerent$power
-beligerent_trade     <- war$beligerent$trade
+belligerent_power     <- war$belligerent$power
+belligerent_trade     <- war$belligerent$trade
 ```
 
 ### Generating missing data
@@ -70,7 +70,7 @@ Even though the dataset was complete, we can assume that some data may be missin
 More specifically, the data collection may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. Thus, the sampling is node-centered and collects edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `sample` in **missSBM**:
 
 ```{r sampling node}
-sampledNet_war <- missSBM::sample(beligerent_adjacency, sampling = "node", parameters = .8)
+sampledNet_war <- missSBM::sample(belligerent_adjacency, sampling = "node", parameters = .8)
 plot(sampledNet_war)
 ```
 
@@ -117,7 +117,7 @@ We would like to compare our results with the clustering obtained on the fully o
 ```{r inference full, results='hide'}
 collection_sbm_full <- 
   missSBM::estimate(
-    sampledNet  = prepare_data(beligerent_adjacency), 
+    sampledNet  = prepare_data(belligerent_adjacency), 
     vBlocks     = vBlocks, 
     sampling    = "node"
   )
@@ -172,7 +172,7 @@ We first consider a covariate reflecting the military power of the country, henc
 Let us first prepare the data for missSBM inference on the full set of data. When preparing the data the covariate should be provided in a list as a vector:
 
 ```{r war network with power} 
-sampleNet_cov <- prepare_data(beligerent_adjacency, list(beligerent_power)) 
+sampleNet_cov <- prepare_data(belligerent_adjacency, list(belligerent_power)) 
 ``` 
 
 Then we run the inference on the fully observed network^[Note that smoothing is not performed to alleviate computational time.]: 
@@ -193,14 +193,14 @@ collection_sbm_power_full$bestModel$fittedSBM$covarParam
 
 The covariate could be responsible for the sampling. The state with bigger military power are more likely to be fully observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.
 ```{r power_sampling}
-nWar <- nrow(beligerent_adjacency)
+nWar <- nrow(belligerent_adjacency)
 parameters_sample <- 600
 sampleNet_power_miss <- missSBM::sample(
-   beligerent_adjacency,
+   belligerent_adjacency,
    sampling = "covar-node",
-   parameters = parameters_sample, covariates = list(beligerent_power), intercept = -2
+   parameters = parameters_sample, covariates = list(belligerent_power), intercept = -2
   )
-boxplot(1/(1 + exp(-cbind(1,beligerent_power) %*% c(-2, parameters_sample))) ~ sampleNet_power_miss$observedNodes, ylab="mil power",xlab = "observed node")
+boxplot(1/(1 + exp(-cbind(1,belligerent_power) %*% c(-2, parameters_sample))) ~ sampleNet_power_miss$observedNodes, ylab="mil power",xlab = "observed node")
 plot(sampleNet_power_miss)
 ```
 
@@ -225,7 +225,7 @@ collection_sbm_power_miss$bestModel$fittedSBM$covarParam
 Another covariate is the average trade exchange between the states. This covariate is related to pairs of states hence to the dyads. We first build a matrix of dissimilarity according to this covariate:
 
 ```{r trade}
-trade <- beligerent_trade 
+trade <- belligerent_trade 
 trade[is.na(trade)] <- 0
 trade <- trade + t(trade)
 trade <- log(trade + 1)
@@ -237,7 +237,7 @@ We then conduct a similar analysis as with the power to see how it can be accoun
 We first sample according to it:
 ```{r samptrade}
 parameters_sample <- 1
-sampleNet_trade_miss <- missSBM::sample(beligerent_adjacency, sampling = "covar-dyad", parameters = parameters_sample, covariates = list(trade), intercept = -2)
+sampleNet_trade_miss <- missSBM::sample(belligerent_adjacency, sampling = "covar-dyad", parameters = parameters_sample, covariates = list(trade), intercept = -2)
 plot(sampleNet_trade_miss)
 ```
 
