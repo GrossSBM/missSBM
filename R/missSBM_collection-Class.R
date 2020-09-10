@@ -1,7 +1,6 @@
 #' An object to represent a collection of missSBM_fit
 #'
-#' This R6 class stores a collection of missSBM_fit. Comes with basic printing methods an
-#' field access.
+#' This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.
 #'
 #' @seealso The function \code{\link{estimate}}, which produces an instance of this class.
 #' The function \code{\link{smooth}} can be used to smooth the ICL on a collection of model,
@@ -22,12 +21,12 @@ missSBM_collection <-
   public = list(
     #' @description constructor for networkSampling
     #' @param sampledNet An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).
-    #' @param vBlocks vector of integer with the number of blocks in the succesively fitted models
+    #' @param vBlocks vector of integer with the number of blocks in the successively fitted models
     #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".
     #' @param cores integer for number of cores used. Default is 1.
     #' @param trace integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1
-    #' @param useCov logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
+    #' @param useCov logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
     initialize = function(sampledNet, vBlocks, sampling, clusterInit, cores, trace, useCov) {
 
       if (trace) cat("\n")

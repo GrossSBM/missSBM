@@ -3,11 +3,11 @@ library(missSBM)
 library(igraph)
 
 data(war)
-beligerent_adjacency <- as_adj(war$beligerent, sparse = FALSE)
-nWar = nrow(beligerent_adjacency)
-matsumpower = matrix(war$beligerent$power,nrow = nWar,ncol = nWar) + matrix(war$beligerent$power,nrow = nWar,ncol = nWar,byrow=T)
+belligerent_adjacency <- as_adj(war$belligerent, sparse = FALSE)
+nWar = nrow(belligerent_adjacency)
+matsumpower = matrix(war$belligerent$power,nrow = nWar,ncol = nWar) + matrix(war$belligerent$power,nrow = nWar,ncol = nWar,byrow=T)
 diag(matsumpower) = 0 # diagonal has to be set to 0
-sampleNet_cov <- prepare_data(beligerent_adjacency, covariates = list(matsumpower))
+sampleNet_cov <- prepare_data(belligerent_adjacency, covariates = list(matsumpower))
 
 vBlocks <- 1:5
 collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "dyad")
@@ -35,7 +35,7 @@ collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling =
 
 # other solution
 
-sampleNet_cov2 <- prepare_data(beligerent_adjacency, covariates = list(war$beligerent$power),similarity = function(v1,v2) {
+sampleNet_cov2 <- prepare_data(belligerent_adjacency, covariates = list(war$belligerent$power),similarity = function(v1,v2) {
   v1+v2})
 sampleNet_cov2$covarArray
 collection_sbm_cov_full2 <- estimate(sampleNet_cov2, vBlocks = vBlocks, sampling = "node")

@@ -128,7 +128,7 @@ sampledNetwork <-
       private$R <- R
     },
     #' @description plot method for sampledNetwork
-    #' @param clustering an optional vector of clutering memberships, default to \code{NULL}.
+    #' @param clustering an optional vector of clustering memberships, default to \code{NULL}.
     #' @param main a character for the title of the plot
     #' @importFrom corrplot corrplot
     plot = function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {

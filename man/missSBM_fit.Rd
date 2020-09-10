@@ -18,7 +18,7 @@ This class is designed to adjust a Stochastic Block Model on a network with miss
 
 \item{\code{fittedSampling}}{the fitted sampling, inheriting from class [`networkSampling_fit`]}
 
-\item{\code{useCovariates}}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{\code{useCovariates}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 
 \item{\code{sampledNetwork}}{The original network data used for the fit, with class [`sampledNetwork`]}
 
@@ -67,7 +67,7 @@ constructor for networkSampling
 
 \item{\code{clusterInit}}{Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".}
 
-\item{\code{useCov}}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{\code{useCov}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 }
 \if{html}{\out{</div>}}
 }

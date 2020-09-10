@@ -11,7 +11,7 @@
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
 #' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
 #' providing a user-defined clustering. Default is "hierarchical".
-#' @param useCovariates logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
+#' @param useCovariates logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'

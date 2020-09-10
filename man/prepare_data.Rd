@@ -13,8 +13,8 @@ prepare_data(
 \arguments{
 \item{adjacencyMatrix}{The adjacency matrix of the network (NAs allowed)}
 
-\item{covariates}{An optional list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
-must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.}
+\item{covariates}{An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
+must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.}
 
 \item{similarity}{An optional R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
 Only relevant when the \code{covariates} is a list of size-N vectors.}

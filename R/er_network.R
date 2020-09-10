@@ -1,6 +1,6 @@
-#' ER ego centred network
+#' ER ego centered network
 #'
-#' A dataset containing the weighted PPI network centred around the ESR1 (ER) protein
+#' A dataset containing the weighted PPI network centered around the ESR1 (ER) protein
 #'
 #' @format A sparse symmetric matrix with 741 rows and 741 columns \code{ESR1}
 #' @examples

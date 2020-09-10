@@ -28,7 +28,7 @@ missSBM_fit <-
     #' @param nBlocks integer, the number of blocks in the SBM
     #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".
-    #' @param useCov logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
+    #' @param useCov logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit, useCov) {
 
       ## Basic sanity checks
@@ -144,7 +144,7 @@ missSBM_fit <-
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling_fit`]
     fittedSampling = function(value) {private$sampling}  ,
-    #' @field useCovariates logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
+    #' @field useCovariates logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
     useCovariates  = function(value) {private$useCov}   ,
     #' @field sampledNetwork The original network data used for the fit, with class [`sampledNetwork`]
     sampledNetwork = function(value) {private$sampledNet},

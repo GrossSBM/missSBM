@@ -16,7 +16,7 @@ Class for fitting a block-node sampling
 \describe{
 \item{\code{vExpec}}{variational expectation of the sampling}
 
-\item{\code{log_lambda}}{double, term for adjusting the imputation stepn which depends on the type of sampling}
+\item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
 }
 \if{html}{\out{</div>}}
 }

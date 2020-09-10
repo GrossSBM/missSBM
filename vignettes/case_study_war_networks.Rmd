@@ -42,16 +42,16 @@ The `war` data set comes with the `missSBM` package:
 data("war")
 ```
 
-This data set contains a list of two networks (`beligerent` and `alliance`) where the nodes are countries; an edge in the network `beligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 and 2012.  The network `beligerent` have less nodes since countries which have not been at war at all are not considered.
+This data set contains a list of two networks (`belligerent` and `alliance`) where the nodes are countries; an edge in the network `belligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 and 2012.  The network `belligerent` have less nodes since countries which have not been at war at all are not considered.
 
 These two networks were extracted from [http://www.correlatesofwar.org/](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance). Version 4.0 was used for war data and version 4.1 for formal alliance. 
 On the top of the two networks, two covariates were considered. One covariate is concerned with military power of the states (see @singer1972capability, version 5.0 was used) and the other is concerned with trade exchanges between country (see @barbieri2012correlates and @barbieri2009trading, version 4.0 was used).
-In the following, we focus on the network `war$beligerent`, which is provided as an igraph object:
+In the following, we focus on the network `war$belligerent`, which is provided as an igraph object:
 
 ```{r war network plot, fig.width=7,  fig.height=7}
 par(mar = c(0,0,0,0))
-plot(war$beligerent, 
-     vertex.shape="none", vertex.label=V(war$beligerent)$name,
+plot(war$belligerent, 
+     vertex.shape="none", vertex.label=V(war$belligerent)$name,
      vertex.label.color = "steel blue", vertex.label.font=1.5,
      vertex.label.cex=.6, edge.color="gray70", edge.width = 2)
 ```
@@ -59,7 +59,7 @@ plot(war$beligerent,
 To pursue our analysis, we extract the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and a covariate on the dyads describing the intensity of trade between two countries.
 
 ```{r beligenrent network}
-beligerent_adjacency <- as_adj(war$beligerent, sparse = FALSE)
+belligerent_adjacency <- as_adj(war$belligerent, sparse = FALSE)
 beligerent_power     <- war$beligerent$power
 beligerent_trade     <- war$beligerent$trade
 ```

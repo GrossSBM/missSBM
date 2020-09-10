@@ -66,7 +66,7 @@ constructor for networkSampling
 \describe{
 \item{\code{sampledNet}}{An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
 
-\item{\code{vBlocks}}{vector of integer with the number of blocks in the succesively fitted models}
+\item{\code{vBlocks}}{vector of integer with the number of blocks in the successively fitted models}
 
 \item{\code{sampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
@@ -76,7 +76,7 @@ constructor for networkSampling
 
 \item{\code{trace}}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 
-\item{\code{useCov}}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{\code{useCov}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 }
 \if{html}{\out{</div>}}
 }

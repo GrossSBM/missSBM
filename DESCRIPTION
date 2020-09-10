@@ -63,4 +63,6 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
+    spelling
 VignetteBuilder: knitr
+Language: en-US

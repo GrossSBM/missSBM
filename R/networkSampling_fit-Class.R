@@ -41,7 +41,7 @@ networkSamplingDyads_fit <-
   active = list(
     #' @field penalty double, value of the penalty term in vICL
     penalty = function(value) {log(private$card_D) * self$df},
-    #' @field log_lambda double, term for adjusting the imputation stepn which depends on the type of sampling
+    #' @field log_lambda double, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {0}
   )
 )
@@ -80,7 +80,7 @@ networkSamplingNodes_fit <-
   active = list(
     #' @field penalty double, value of the penalty term in vICL
     penalty = function(value) {log(private$card_N) * self$df},
-    #' @field log_lambda double, term for adjusting the imputation stepn which depends on the type of sampling
+    #' @field log_lambda double, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {0}
   )
 )
@@ -328,7 +328,7 @@ blockSampling_fit <-
       res <- c(crossprod(private$So, log(private$psi)) +  crossprod(private$Sm, log(1 - private$psi)))
       res
     },
-    #' @field log_lambda double, term for adjusting the imputation stepn which depends on the type of sampling
+    #' @field log_lambda double, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {
       res <- sapply(private$psi, function(psi) ifelse(private$N_obs, log(psi), log(1 - psi)))
       res

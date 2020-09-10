@@ -26,7 +26,7 @@ and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
 providing a user-defined clustering. Default is "hierarchical".}
 
-\item{useCovariates}{logicial. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{useCovariates}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 
 \item{control}{a list of parameters controlling the variational EM algorithm. See details.}
 }

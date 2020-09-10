@@ -24,8 +24,8 @@ we assume an undirected network with no loop; otherwise the network is assumed d
 
 \item{clusters}{An optional clustering membership vector of the nodes, only necessary for block samplings}
 
-\item{covariates}{A list with M entries (the M covariates). If the covariates are node-centred, each entry of \code{covariates}
-must be a size-N vector;  if the covariates are dyad-centred, each entry of \code{covariates} must be N x N matrix.}
+\item{covariates}{A list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
+must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.}
 
 \item{similarity}{An optional function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
 Only relevant when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).}

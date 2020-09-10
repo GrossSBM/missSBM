@@ -6,7 +6,7 @@ test_that("SBM_fit and missSBMfit are coherent", {
   data("war")
 
   ## adjacency matrix without missing values
-  A <- war$beligerent %>%  as_adj(sparse = FALSE)
+  A <- war$belligerent %>%  as_adj(sparse = FALSE)
 
   ## coherence of sampledNetwork object
   sampledNet <- sampledNetwork$new(A)

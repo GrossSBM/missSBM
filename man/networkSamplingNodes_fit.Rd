@@ -16,7 +16,7 @@ Virtual class used to define a family of networkSamplingNodes_fit
 \describe{
 \item{\code{penalty}}{double, value of the penalty term in vICL}
 
-\item{\code{log_lambda}}{double, term for adjusting the imputation stepn which depends on the type of sampling}
+\item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
 }
 \if{html}{\out{</div>}}
 }

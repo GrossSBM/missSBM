@@ -112,7 +112,7 @@ plot method for sampledNetwork
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{clustering}}{an optional vector of clutering memberships, default to \code{NULL}.}
+\item{\code{clustering}}{an optional vector of clustering memberships, default to \code{NULL}.}
 
 \item{\code{main}}{a character for the title of the plot}
 }
