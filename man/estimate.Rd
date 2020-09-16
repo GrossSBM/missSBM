@@ -48,7 +48,25 @@ variational EM algorithm, with the following parameters
  \item{"trace"}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 }
 
-
+The different sampling designs are split into two families in which we find dyad-centered and
+node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
+\itemize{
+\item Missing at Random (MAR)
+  \itemize{
+    \item{"dyad": parameter = p and \deqn{p = P(Dyad (i,j) is sampled)}}
+    \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
+    \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
+    \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
+    \item{"snowball": parameter estimation is not relevant for this sampling}
+  }
+\item Not Missing At Random (NMAR)
+  \itemize{
+    \item{"double-standard": parameter = (p0,p1) and \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
+    \item{"block-node": parameter = c(p(1),...,p(Q)) and \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
+    \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and \deqn{p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}}
+    \item{"degree": parameter = c(a,b) and \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
+  }
+}
 }
 \examples{
 ## SBM parameters

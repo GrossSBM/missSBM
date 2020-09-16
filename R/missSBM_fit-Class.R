@@ -92,7 +92,8 @@ missSBM_fit <-
         "block-node"      = blockSampling_fit$new(private$sampledNet, Z),
         "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
         "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, Z),
-        "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam)
+        "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam),
+        "snowball"        = nodeSampling_fit$new(private$sampledNet) # estimated sampling parameter not relevant
       )
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM

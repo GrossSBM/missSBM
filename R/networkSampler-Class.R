@@ -266,7 +266,7 @@ snowballSampler <-
                   # wave 1
                   observedNodes <- (runif(n) < pfirstwave)*1
                   nRemainingWaves <- nWaves - 1
-                  while (nRemainingWaves>1 & sum(observedNodes)<n)
+                  while (nRemainingWaves>0 & sum(observedNodes)<n)
                   {
                     link <- adjacencyMatrix[which(observedNodes==1),,drop=FALSE]
                     observedNodes[which(colSums(link)>0)] <- 1 # link tracing in giver to receiver
