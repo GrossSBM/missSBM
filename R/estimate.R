@@ -6,7 +6,7 @@
 #' @param sampledNet An object with class \code{\link{sampledNetwork}}, typically obtained with
 #' the function \code{\link{prepare_data}} (real-word data) or \code{\link{sample}} (simulation).
 #' @param vBlocks The vector of number of blocks considered in the collection
-#' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node")
+#' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node","sampling")
 #' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
 #' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
@@ -34,6 +34,7 @@
 #'     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
 #'     \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
 #'     \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
+#'     \item{"snowball": parameter = number of waves and \deqn{P(Node i is sampled in the 1st Wave)}
 #'   }
 #' \item Not Missing At Random (NMAR)
 #'   \itemize{

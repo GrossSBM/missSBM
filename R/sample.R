@@ -27,6 +27,7 @@
 #'     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
 #'     \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
 #'     \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
+#'     \item{"snowball": parameter = number of waves and \deqn{P(Node i is sampled in the 1st Wave)}
 #'   }
 #' \item Not Missing At Random (NMAR)
 #'   \itemize{
@@ -56,7 +57,8 @@
 #'    "double-standard" = c(0.4, 0.8),
 #'    "block-node" = c(.3, .8, .5),
 #'    "block-dyad" = pi,
-#'    "degree" = c(.01, .01)
+#'    "degree" = c(.01, .01),
+#'    "snowball" = c(2,.1)
 #'  )
 #'
 #' sampled_networks <- list()
@@ -72,7 +74,7 @@
 #' }
 #' \donttest{
 #' ## SSOOOO long, but fancy
-#' old_par <- par(mfrow = c(2,3))
+#' old_par <- par(mfrow = c(2,4))
 #' for (sampling in names(sampling_parameters)) {
 #'   plot(sampled_networks[[sampling]],
 #'     clustering = sbm$memberships, main = paste(sampling, "sampling"))
@@ -111,7 +113,9 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
       "block-node" = blockNodeSampler$new(
         parameters = parameters, nNodes = nNodes, directed = directed, clusters = clusters),
       "degree"     = degreeSampler$new(
-        parameters = parameters, degrees = rowSums(adjacencyMatrix), directed = directed)
+        parameters = parameters, degrees = rowSums(adjacencyMatrix), directed = directed),
+      "snowball" = snowballSampler$new(
+        parameters = parameters, adjacencyMatrix = adjacencyMatrix ,directed=directed)
   )
 
   ## draw a sampling matrix R

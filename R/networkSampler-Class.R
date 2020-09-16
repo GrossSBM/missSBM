@@ -249,6 +249,35 @@ R6::R6Class(classname = "degreeSampler",
   )
 )
 
+#' Class for defining a snowball sampler
+snowballSampler <-
+  R6::R6Class(classname = "snowballSampler",
+              inherit = nodeSampler,
+              public = list(
+                #' @description constructor for networkSampling
+                #' @param parameters the vector of parameters associated to the sampling at play
+                #' @param adjacencyMatrix the adjacency matrix of the network
+                #' @param directed logical, directed network of not
+                initialize = function(parameters = NA,adjacencyMatrix=NA, directed = FALSE) {
+                  stopifnot(length(parameters) == 2)
+                  n <- nrow(adjacencyMatrix)
+                  nWaves <- parameters[1] # number of waves
+                  pfirstwave <- parameters[2] # proportion of nodes seen in the first wave
+                  # wave 1
+                  observedNodes <- (runif(n) < pfirstwave)*1
+                  nRemainingWaves <- nWaves - 1
+                  while (nRemainingWaves>1 & sum(observedNodes)<n)
+                  {
+                    link <- adjacencyMatrix[which(observedNodes==1),,drop=FALSE]
+                    observedNodes[which(colSums(link)>0)] <- 1 # link tracing in giver to receiver
+                    nRemainingWaves <- nRemainingWaves - 1
+                  }
+                  super$initialize("snowball", parameters, n, directed)
+                  private$rho <- observedNodes # 0-1 probabilities
+                }
+              )
+  )
+
 ### TODO: SNOWBALL SAMPLING add a parameter for the number of waves
 # "snowball" = function(adjMatrix, ...) {
 #   # initial set

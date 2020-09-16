@@ -41,24 +41,7 @@ This function samples observations in an adjacency matrix according to a given s
 The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.
 }
 \details{
-The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
-\itemize{
-\item Missing at Random (MAR)
-  \itemize{
-    \item{"dyad": parameter = p \deqn{p = P(Dyad (i,j) is sampled)}}
-    \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
-    \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
-    \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
-  }
-\item Not Missing At Random (NMAR)
-  \itemize{
-    \item{"double-standard": parameter = (p0,p1) and \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
-    \item{"block-node": parameter = c(p(1),...,p(Q)) and \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
-    \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and \deqn{p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}}
-    \item{"degree": parameter = c(a,b) and \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
-  }
-}
+
 }
 \examples{
 ## SBM parameters
@@ -80,7 +63,8 @@ sampling_parameters <- list(
    "double-standard" = c(0.4, 0.8),
    "block-node" = c(.3, .8, .5),
    "block-dyad" = pi,
-   "degree" = c(.01, .01)
+   "degree" = c(.01, .01),
+   "snowball" = c(2,.1)
  )
 
 sampled_networks <- list()
@@ -96,7 +80,7 @@ for (sampling in names(sampling_parameters)) {
 }
 \donttest{
 ## SSOOOO long, but fancy
-old_par <- par(mfrow = c(2,3))
+old_par <- par(mfrow = c(2,4))
 for (sampling in names(sampling_parameters)) {
   plot(sampled_networks[[sampling]],
     clustering = sbm$memberships, main = paste(sampling, "sampling"))

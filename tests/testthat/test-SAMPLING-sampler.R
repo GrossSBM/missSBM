@@ -133,3 +133,17 @@ test_that("Consistency of block-dyad sampling", {
 
 })
 
+
+test_that("Consistency of snowball sampling", {
+
+  param <- c(2,.05)
+  mySampler <- missSBM:::snowballSampler$new(param, A, directed)
+  expect_is(mySampler, "snowballSampler")
+  expect_equal(mySampler$type, "snowball")
+  expect_equal(mySampler$parameters, param)
+  mySampler$rSamplingMatrix()
+  expect_equal(dim(mySampler$samplingMatrix), c(N,N))
+
+})
+
+
