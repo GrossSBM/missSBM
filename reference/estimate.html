@@ -163,7 +163,7 @@ the function <code><a href='prepare_data.html'>prepare_data</a></code> (real-wor
     </tr>
     <tr>
       <th>sampling</th>
-      <td><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node")
+      <td><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node","sampling")
 and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></td>
     </tr>
     <tr>
@@ -203,6 +203,7 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
 <li><p>"node": parameter = p and $$p = P(Node i is sampled)$$</p></li>
 <li><p>"covar-dyad": parameter = beta in R^M and $$P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))$$</p></li>
 <li><p>"covar-node": parameter = nu in R^M and $$P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)$$</p></li>
+<li><p>"snowball": parameter estimation is not relevant for this sampling</p></li>
 </ul></li>
 <li><p>Not Missing At Random (NMAR)</p><ul>
 <li><p>"double-standard": parameter = (p0,p1) and $$p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=$$, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
@@ -957,7 +958,7 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

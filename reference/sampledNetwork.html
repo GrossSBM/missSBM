@@ -254,9 +254,9 @@ An R6 Class to represent sampled network data" />
      )
 
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>sampled_network</span>)
-</div><div class='output co'>#&gt; Sampled Network with 300 nodes and sampling rate equal to 0.482 
-#&gt;  - 21604 observed dyads (7183 links and 14421 no-links)
-#&gt;  - 23246 missing dyads</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>sampled_network</span>)
+</div><div class='output co'>#&gt; Sampled Network with 300 nodes and sampling rate equal to 0.478 
+#&gt;  - 21417 observed dyads (7136 links and 14281 no-links)
+#&gt;  - 23433 missing dyads</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>sampled_network</span>)
 </div><div class='output co'>#&gt; &lt;sampledNetwork&gt;
 #&gt;   Public:
 #&gt;     adjacencyMatrix: active binding
@@ -278,15 +278,15 @@ An R6 Class to represent sampled network data" />
 #&gt;     show: function () 
 #&gt;   Private:
 #&gt;     D: 301 601 602 901 902 903 1201 1202 1203 1204 1501 1502 15 ...
-#&gt;     D_miss: 903 1203 1204 1504 1801 1802 1803 1805 1806 2103 2104 21 ...
-#&gt;     D_obs: 301 601 602 901 902 1201 1202 1501 1502 1503 1505 1804 2 ...
+#&gt;     D_miss: 601 901 903 1201 1202 1204 1501 1503 1801 1803 1805 1806 ...
+#&gt;     D_obs: 301 602 902 1203 1502 1504 1505 1802 1804 2103 2104 2106 ...
 #&gt;     directed: FALSE
-#&gt;     nas: FALSE FALSE FALSE FALSE FALSE FALSE TRUE FALSE FALSE TRU ...
+#&gt;     nas: FALSE FALSE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE ...
 #&gt;     phi: NULL
-#&gt;     R: FALSE TRUE TRUE TRUE TRUE TRUE FALSE TRUE TRUE FALSE FAL ...
+#&gt;     R: FALSE TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FAL ...
 #&gt;     S: FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FA ...
 #&gt;     X: NULL
-#&gt;     Y: 0 0 1 1 0 1 NA 0 0 NA NA NA 0 1 NA NA 1 NA NA NA 1 0 1 0 ...</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sampled_network</span>, clustering = <span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>memberships</span>)
+#&gt;     Y: 0 0 NA NA NA NA NA NA NA NA NA NA NA 0 1 NA NA NA 0 NA 0 ...</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sampled_network</span>, clustering = <span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>memberships</span>)
 </div><div class='img'><img src='sampledNetwork-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -303,7 +303,7 @@ An R6 Class to represent sampled network data" />
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
