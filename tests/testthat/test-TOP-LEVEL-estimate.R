@@ -32,7 +32,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     sampledNet <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
 
     ## control parameter for the VEM
-    control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0)
+    control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0, clusterInit = "spectral")
 
     ## Perform inference with internal classes
     missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling, "spectral", TRUE)
@@ -43,7 +43,6 @@ test_that("missSBM and class missSBM-fit are coherent", {
       sampledNet  = sampledNet,
       vBlocks     = Q,
       sampling    = sampling,
-      clusterInit = "spectral",
       control     = control
     )
 

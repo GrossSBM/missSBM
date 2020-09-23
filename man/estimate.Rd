@@ -4,13 +4,7 @@
 \alias{estimate}
 \title{Estimation of SBMs with missing data}
 \usage{
-estimate(
-  sampledNet,
-  vBlocks,
-  sampling,
-  clusterInit = "hierarchical",
-  control = list(useCovariates = TRUE)
-)
+estimate(sampledNet, vBlocks, sampling, control = list())
 }
 \arguments{
 \item{sampledNet}{An object with class \code{\link{sampledNetwork}}, typically obtained with
@@ -20,10 +14,6 @@ the function \code{\link{prepare_data}} (real-word data) or \code{\link{sample}}
 
 \item{sampling}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node","sampling")
 and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
-
-\item{clusterInit}{Initial method for clustering: either a character in "hierarchical", "spectral"
-or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
-providing a user-defined clustering. Default is "hierarchical".}
 
 \item{control}{a list of parameters controlling the variational EM algorithm. See details.}
 }
@@ -35,11 +25,14 @@ Variational inference from sampled network data on a collection of
 Stochastic Block Models indexed by block number.
 }
 \details{
-The list of parameters \code{control} essentially tunes more advanced features, such as the way
-covariates are integrated into the SBM, the optimization process and the
-variational EM algorithm, with the following parameters
+The list of parameters \code{control} tunes more advanced features, such as the
+initialization, how covariates are handled in the model, and the variational EM algorithm:
  \itemize{
- \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+ \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the
+        inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+ \item{"clusterInit"}{Initial method for clustering: either a character in "hierarchical", "spectral"
+        or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
+        \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "hierarchical".}
  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}
@@ -95,6 +88,7 @@ coef(myModel, "sampling")
 coef(myModel, "connectivity")
 head(predict(myModel))
 head(fitted(myModel))
+
 }
 \seealso{
 \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.

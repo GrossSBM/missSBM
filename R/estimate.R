@@ -8,17 +8,17 @@
 #' @param vBlocks The vector of number of blocks considered in the collection
 #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node","sampling")
 #' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
-#' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
-#' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
-#' providing a user-defined clustering. Default is "hierarchical".
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
-#' @details The list of parameters \code{control} essentially tunes more advanced features, such as the way
-#' covariates are integrated into the SBM, the optimization process and the
-#' variational EM algorithm, with the following parameters
+#' @details The list of parameters \code{control} tunes more advanced features, such as the
+#' initialization, how covariates are handled in the model, and the variational EM algorithm:
 #'  \itemize{
-#'  \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+#'  \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the
+#'         inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+#'  \item{"clusterInit"}{Initial method for clustering: either a character in "hierarchical", "spectral"
+#'         or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
+#'         \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "hierarchical".}
 #'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
 #'  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
 #'  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}
@@ -74,22 +74,26 @@
 #' coef(myModel, "connectivity")
 #' head(predict(myModel))
 #' head(fitted(myModel))
+#'
 #' @import R6 parallel
 #' @export
-estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", control = list(useCovariates = TRUE)) {
+
+estimate <- function(sampledNet, vBlocks, sampling, control = list()) {
 
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
 
-  ## If no covariates, you cannot have to use them
+  ## If nothing specified by the user, use covariates by default
+  if (is.null(control$useCovariates)) control$useCovariates <- TRUE
+  ## But If no covariate is provided, you cannot ask for using them
   if (is.null(sampledNet$covarArray)) control$useCovariates <- FALSE
 
-  ## Defaut control parameters for VEM, overwritten by user specification
+  ## Defaut control parameters overwritten by user specification
   if (control$useCovariates) {
     stopifnot(sampling %in% available_samplings_covariates)
-    ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, trace = 1, cores = 1)
+    ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, trace = 1, cores = 1, clusterInit = "hierarchical")
   } else {
-    ctrl <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 1, cores = 1)
+    ctrl <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 1, cores = 1, clusterInit = "hierarchical")
   }
   ctrl[names(control)] <- control
 
@@ -98,7 +102,7 @@ estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical"
       sampledNet  = sampledNet,
       vBlocks     = vBlocks,
       sampling    = sampling,
-      clusterInit = clusterInit,
+      clusterInit = ctrl$clusterInit,
       cores       = ctrl$cores,
       trace       = (ctrl$trace > 0),
       useCov      = ctrl$useCovariates

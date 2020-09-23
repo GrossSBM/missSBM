@@ -25,7 +25,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       sampledNet = prepare_data(refAlgo$sampledNet),
       vBlocks = truth$nBlocks,
       sampling = sampling,
-      clusterInit = "spectral"
+      control = list(clusterInit = "spectral")
     )
     newAlgo <- missSBM_out$bestModel
 
@@ -98,7 +98,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       sampledNet  = prepare_data(refAlgo$sampledNet, refAlgo$covariates),
       vBlocks     = truth$nBlocks,
       sampling    = ifelse(sampling == "dyad-covariates", "covar-dyad", "covar-node"),
-      clusterInit = "spectral"
+      control     = list(clusterInit = "spectral")
     )
     newAlgo <- missSBM_out$bestModel
 

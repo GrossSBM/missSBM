@@ -1,7 +1,7 @@
 adjacencyMatrix
-beligerent
 Blogosphere
 cloneable
+clusterInit
 correlatesofwar
 covar
 CQ
@@ -41,6 +41,7 @@ SBM
 SBMs
 subtypes
 undirected
+useCovariates
 variational
 Variational
 vICL
