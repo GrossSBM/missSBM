@@ -243,9 +243,9 @@ More specifically, the data collection may be missing for some countries in the 
 <p>Then we run the inference on the fully observed network<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit">
 <span class="kw">vBlocks</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>
-<span class="kw">collection_sbm_power_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampleNet_cov</span>, vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"node"</span>, useCovariates = <span class="fl">TRUE</span>)
+<span class="kw">collection_sbm_power_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampleNet_cov</span>, vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"node"</span>)
 </pre></div>
-<p>The option <code>useCovariates = TRUE</code> specifies that the covariate(s) should be used in the SBM i.e. the distribution of edges depends on the covariate(s).</p>
+<p>Note that by default, the distribution of edges depends on the covariate(s) in any are included in the model.</p>
 <p>The covariate provided as a vector is transferred on edges through an <span class="math inline">\(\ell_1\)</span> similarity: for edge <span class="math inline">\((i,j)\)</span> the associated covariate is defined by <span class="math inline">\(|x_i-x_j|\)</span> where <span class="math inline">\(x_i\)</span> denotes the covariate for node <span class="math inline">\(i\)</span>. Another similarity measure could be provided via the option <code>similarity</code>.</p>
 <p>The estimated effect of the covariate is obtained through</p>
 <div class="sourceCode" id="cb16"><pre class="downlit">
@@ -270,7 +270,7 @@ More specifically, the data collection may be missing for some countries in the 
 <p><img src="case_study_war_networks_files/figure-html/power_sampling-2.png" width="480"></p>
 <p>Then, we can estimate the model by setting the sampling to be <code>covar-node</code>. We can still choose whether to consider or not the covariate in the SBM.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="kw">collection_sbm_power_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampleNet_power_miss</span>, vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"covar-node"</span>, useCovariates = <span class="fl">TRUE</span>)
+<span class="kw">collection_sbm_power_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampleNet_power_miss</span>, vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"covar-node"</span>)
 </pre></div>
 <pre><code>## 
 ## 
@@ -318,7 +318,7 @@ More specifically, the data collection may be missing for some countries in the 
 <p><img src="case_study_war_networks_files/figure-html/samptrade-1.png" width="480"></p>
 <p>The choice of the sampling parameters leads to more likely observe dyads with important trade exchange. We then perform estimation on the missing data drawn according to the trade covariate.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit">
-<span class="kw">collection_sbm_trade_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampleNet_trade_miss</span> ,vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"covar-dyad"</span>, useCovariates  = <span class="fl">TRUE</span>)
+<span class="kw">collection_sbm_trade_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampleNet_trade_miss</span> ,vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"covar-dyad"</span>)
 </pre></div>
 <pre><code>## 
 ## 
