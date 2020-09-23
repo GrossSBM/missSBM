@@ -179,10 +179,10 @@ Then we run the inference on the fully observed network^[Note that smoothing is 
 
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:4
-collection_sbm_power_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "node", useCovariates = TRUE)
+collection_sbm_power_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "node")
 ```
 
-The option `useCovariates = TRUE` specifies that the covariate(s) should be used in the SBM i.e. the  distribution of edges depends on the covariate(s). 
+Note that by default, the distribution of edges depends on the covariate(s) in any are included in the model. 
 
 The covariate provided as a vector is transferred on edges through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`. 
 
@@ -206,7 +206,7 @@ plot(sampleNet_power_miss)
 
 Then, we can estimate the model by setting the sampling to be `covar-node`. We can still choose whether to consider or not the covariate in the SBM.
 ```{r fit power missing}
-collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node", useCovariates = TRUE)
+collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node")
 ```
 
 Then we can access the estimated sampling parameters:
@@ -245,7 +245,7 @@ The choice of the sampling parameters leads to more likely observe dyads with im
 We then perform estimation on the missing data drawn according to the trade covariate.
 
 ```{r estimate trade}
-collection_sbm_trade_miss <- estimate(sampleNet_trade_miss ,vBlocks = vBlocks, sampling = "covar-dyad", useCovariates  = TRUE)
+collection_sbm_trade_miss <- estimate(sampleNet_trade_miss ,vBlocks = vBlocks, sampling = "covar-dyad")
 collection_sbm_trade_miss$bestModel$fittedSampling$parameters
 collection_sbm_trade_miss$bestModel$fittedSBM$covarParam
 ```

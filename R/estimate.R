@@ -11,13 +11,14 @@
 #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral"
 #' or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
 #' providing a user-defined clustering. Default is "hierarchical".
-#' @param useCovariates logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
-#' @details The list of parameters \code{control} essentially tunes the optimization process and the
+#' @details The list of parameters \code{control} essentially tunes more advanced features, such as the way
+#' covariates are integrated into the SBM, the optimization process and the
 #' variational EM algorithm, with the following parameters
 #'  \itemize{
+#'  \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 #'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
 #'  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
 #'  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}
@@ -75,16 +76,16 @@
 #' head(fitted(myModel))
 #' @import R6 parallel
 #' @export
-estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", useCovariates = TRUE, control = list()) {
+estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical", control = list(useCovariates = TRUE)) {
 
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
 
-  ## If no covariates, you don't have to use them
-  if (is.null(sampledNet$covarArray)) useCovariates <- FALSE
+  ## If no covariates, you cannot have to use them
+  if (is.null(sampledNet$covarArray)) control$useCovariates <- FALSE
 
   ## Defaut control parameters for VEM, overwritten by user specification
-  if (useCovariates) {
+  if (control$useCovariates) {
     stopifnot(sampling %in% available_samplings_covariates)
     ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, trace = 1, cores = 1)
   } else {
@@ -100,7 +101,7 @@ estimate <- function(sampledNet, vBlocks, sampling, clusterInit = "hierarchical"
       clusterInit = clusterInit,
       cores       = ctrl$cores,
       trace       = (ctrl$trace > 0),
-      useCov      = useCovariates
+      useCov      = ctrl$useCovariates
   )
 
   ## Launch estimation of each missSBM_fit

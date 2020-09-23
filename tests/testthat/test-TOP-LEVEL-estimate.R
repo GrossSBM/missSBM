@@ -78,8 +78,7 @@ test_that("missSBM with a collection of models", {
       sampledNet  = sampledNet,
       vBlocks     = 1:5,
       sampling    = sampling,
-      control     = control,
-      useCovariates = TRUE
+      control     = control
     )
 
     expect_is(collection, "missSBM_collection")

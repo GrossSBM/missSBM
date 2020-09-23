@@ -9,8 +9,7 @@ estimate(
   vBlocks,
   sampling,
   clusterInit = "hierarchical",
-  useCovariates = TRUE,
-  control = list()
+  control = list(useCovariates = TRUE)
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
 providing a user-defined clustering. Default is "hierarchical".}
 
-\item{useCovariates}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
-
 \item{control}{a list of parameters controlling the variational EM algorithm. See details.}
 }
 \value{
@@ -38,9 +35,11 @@ Variational inference from sampled network data on a collection of
 Stochastic Block Models indexed by block number.
 }
 \details{
-The list of parameters \code{control} essentially tunes the optimization process and the
+The list of parameters \code{control} essentially tunes more advanced features, such as the way
+covariates are integrated into the SBM, the optimization process and the
 variational EM algorithm, with the following parameters
  \itemize{
+ \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}
