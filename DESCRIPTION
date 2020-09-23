@@ -50,7 +50,6 @@ Collate:
     'missSBM_fit-Class.R'
     'missSBM_collection-Class.R'
     'networkSampler-Class.R'
-    'prepare_data.R'
     'sample.R'
     'sampledNetwork-Class.R'
     'simulate.R'

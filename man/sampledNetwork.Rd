@@ -9,8 +9,6 @@ An R6 Class to represent sampled network data
 An R6 Class to represent sampled network data
 }
 \details{
-The function \code{\link{sample}} and \code{\link{prepare_data}} produces an instance of an object with class \code{sampledNetwork}.
-
 All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
 }
 \examples{
@@ -35,6 +33,7 @@ sampled_network <-
 summary(sampled_network)
 print(sampled_network)
 plot(sampled_network, clustering = sbm$memberships)
+
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}

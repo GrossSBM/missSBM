@@ -29,8 +29,8 @@ test_that("Consistency of sampling fit", {
     cat("\n -", sampling$name)
 
     ## sampled the network
-    sampledNet <- missSBM::sample(sbm$adjacencyMatrix, sampling$name, sampling$psi, sbm$memberships)
-
+    adjMatrix  <- missSBM::sample(sbm$adjacencyMatrix, sampling$name, sampling$psi, sbm$memberships)
+    sampledNet <- missSBM:::sampledNetwork$new(adjMatrix)
     fittedSampling <- switch(
       sampling$name,
       "dyad"            = missSBM:::dyadSampling_fit$new(sampledNet),

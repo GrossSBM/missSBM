@@ -3,11 +3,13 @@
 #' Variational inference from sampled network data on a collection of
 #' Stochastic Block Models indexed by block number.
 #'
-#' @param sampledNet An object with class \code{\link{sampledNetwork}}, typically obtained with
-#' the function \code{\link{prepare_data}} (real-word data) or \code{\link{sample}} (simulation).
+#' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
+#' we assume an undirected network with no loop; otherwise the network is assumed directed.
 #' @param vBlocks The vector of number of blocks considered in the collection
 #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node","sampling")
 #' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
+#' @param covariates A list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
+#' must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
@@ -19,6 +21,7 @@
 #'  \item{"clusterInit"}{Initial method for clustering: either a character in "hierarchical", "spectral"
 #'         or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
 #'         \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "hierarchical".}
+#'  \item{"similarity"}{An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
 #'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
 #'  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
 #'  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}
@@ -78,24 +81,30 @@
 #' @import R6 parallel
 #' @export
 
-estimate <- function(sampledNet, vBlocks, sampling, control = list()) {
+estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, control = list()) {
 
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
+  stopifnot(is.numeric(vBlocks))
 
   ## If nothing specified by the user, use covariates by default
   if (is.null(control$useCovariates)) control$useCovariates <- TRUE
   ## But If no covariate is provided, you cannot ask for using them
-  if (is.null(sampledNet$covarArray)) control$useCovariates <- FALSE
+  if (is.null(covariates)) control$useCovariates <- FALSE
 
   ## Defaut control parameters overwritten by user specification
+  ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, clusterInit = "hierarchical")
   if (control$useCovariates) {
     stopifnot(sampling %in% available_samplings_covariates)
-    ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, trace = 1, cores = 1, clusterInit = "hierarchical")
+    ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2, similarity = missSBM:::l1_similarity))
   } else {
-    ctrl <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 1, cores = 1, clusterInit = "hierarchical")
+    ctrl <- c(ctrl, list(maxIter = 100, fixPointIter = 5))
   }
   ctrl[names(control)] <- control
+
+  ## Prepare network data for estimation with missing data
+  covar <- format_covariates(covariates, ctrl$similarity)
+  sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(

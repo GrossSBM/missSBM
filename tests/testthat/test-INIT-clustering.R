@@ -16,12 +16,10 @@ A_full <- sbm$adjacencyMatrix             # the adjacency matrix
 
 ## Draw random missing entries: MAR case (dyads)
 psi <- 0.8
-sampledNet <- missSBM::sample(A_full, "dyad", psi)
-A_dyad <- sampledNet$adjacencyMatrix
+A_dyad <- missSBM::sample(A_full, "dyad", psi)
 
 psi <- 0.8
-sampledNet <- missSBM::sample(A_full, "node", psi)
-A_node <- sampledNet$adjacencyMatrix
+A_node <- missSBM::sample(A_full, "node", psi)
 
 test_that("Spectral clustering is consistent", {
 
@@ -142,8 +140,8 @@ test_that("Init clustering with covariate is consistent", {
 
   A_full <- sbm$adjacencyMatrix
   psi <- runif(M, -5, 5)
-  A_dyad <- missSBM::sample(A_full, "covar-dyad", psi, covariates = covariates_dyad)$adjacencyMatrix
-  A_node <- missSBM::sample(A_full, "covar-node", psi, covariates = covariates_node)$adjacencyMatrix
+  A_dyad <- missSBM::sample(A_full, "covar-dyad", psi, covariates = covariates_dyad)
+  A_node <- missSBM::sample(A_full, "covar-node", psi, covariates = covariates_node)
 
   for (A in list(A_full, A_dyad, A_node)) {
     for (method in c("hierarchical", "spectral", "kmeans")) {

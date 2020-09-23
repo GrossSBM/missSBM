@@ -4,16 +4,25 @@
 \alias{estimate}
 \title{Estimation of SBMs with missing data}
 \usage{
-estimate(sampledNet, vBlocks, sampling, control = list())
+estimate(
+  adjacencyMatrix,
+  vBlocks,
+  sampling,
+  covariates = NULL,
+  control = list()
+)
 }
 \arguments{
-\item{sampledNet}{An object with class \code{\link{sampledNetwork}}, typically obtained with
-the function \code{\link{prepare_data}} (real-word data) or \code{\link{sample}} (simulation).}
+\item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
+we assume an undirected network with no loop; otherwise the network is assumed directed.}
 
 \item{vBlocks}{The vector of number of blocks considered in the collection}
 
 \item{sampling}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node","sampling")
 and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
+
+\item{covariates}{A list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
+must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.}
 
 \item{control}{a list of parameters controlling the variational EM algorithm. See details.}
 }
@@ -33,6 +42,7 @@ initialization, how covariates are handled in the model, and the variational EM 
  \item{"clusterInit"}{Initial method for clustering: either a character in "hierarchical", "spectral"
         or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
         \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "hierarchical".}
+ \item{"similarity"}{An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}

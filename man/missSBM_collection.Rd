@@ -60,7 +60,7 @@ constructor for networkSampling
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{sampledNet}}{An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
+\item{\code{sampledNet}}{An object with class [`sampledNetwork`].}
 
 \item{\code{vBlocks}}{vector of integer with the number of blocks in the successively fitted models}
 

@@ -117,7 +117,7 @@ We would like to compare our results with the clustering obtained on the fully o
 ```{r inference full, results='hide'}
 collection_sbm_full <- 
   missSBM::estimate(
-    sampledNet  = prepare_data(belligerent_adjacency), 
+    adjacencyMatrix = belligerent_adjacency, 
     vBlocks     = vBlocks, 
     sampling    = "node"
   )
@@ -167,19 +167,11 @@ This part shows how to account for covariates in the model.
 
 #### Military power
 
-We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate.  
-
-Let us first prepare the data for missSBM inference on the full set of data. When preparing the data the covariate should be provided in a list as a vector:
-
-```{r war network with power} 
-sampleNet_cov <- prepare_data(belligerent_adjacency, list(belligerent_power)) 
-``` 
-
-Then we run the inference on the fully observed network^[Note that smoothing is not performed to alleviate computational time.]: 
+We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate. We run the inference on the fully observed network^[Note that smoothing is not performed to alleviate computational time.]: 
 
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:4
-collection_sbm_power_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "node")
+collection_sbm_power_full <- estimate(belligerent_adjacency, vBlocks = vBlocks, sampling = "node", covariates = list(belligerent_power))
 ```
 
 Note that by default, the distribution of edges depends on the covariate(s) in any are included in the model. 

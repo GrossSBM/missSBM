@@ -1,7 +1,7 @@
 #' Sampling of network data
 #'
+#' An internal class use to represent conveniently network data with missing entries.
 #' This function samples observations in an adjacency matrix according to a given sampling design.
-#' The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.
 #'
 #' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
 #' we assume an undirected network with no loop; otherwise the network is assumed directed.
@@ -14,9 +14,7 @@
 #' Only relevant when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
 #' @param intercept An optional intercept term to be added in case of the presence of covariates. Default is 0.
 #'
-#' @return an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
-#' Can then feed the \code{\link{estimate}} function.
-#' @seealso The class \code{\link{sampledNetwork}}
+#' @return an adjacency matrix with the dimension as the input, yet with additional NAs.
 #'
 #' @details The different sampling designs are split into two families in which we find dyad-centered and
 #' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
@@ -72,15 +70,16 @@
 #'        cluster         = sbm$memberships
 #'      )
 #' }
-#' \donttest{
-#' ## SSOOOO long, but fancy
-#' old_par <- par(mfrow = c(2,4))
-#' for (sampling in names(sampling_parameters)) {
-#'   plot(sampled_networks[[sampling]],
-#'     clustering = sbm$memberships, main = paste(sampling, "sampling"))
-#' }
-#' par(old_par)
-#' }
+#'
+# \donttest{
+# ## SSOOOO long, but fancy
+# old_par <- par(mfrow = c(2,4))
+# for (sampling in names(sampling_parameters)) {
+#   plot(sampled_networks[[sampling]],
+#     clustering = sbm$memberships, main = paste(sampling, "sampling"))
+# }
+# par(old_par)
+# }
 #' @export
 sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity, intercept = 0) {
 
@@ -123,6 +122,8 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
 
   ## turn this matrix to a sampled Network object
   adjacencyMatrix[mySampler$samplingMatrix == 0] <- NA
-  sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
-  sampledNet
+  adjacencyMatrix
+
+  # sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
+  # sampledNet
 }

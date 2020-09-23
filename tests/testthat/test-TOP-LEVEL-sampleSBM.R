@@ -26,7 +26,9 @@ sbm_cov_node <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, co
 test_that("Consistency of dyad-centered sampling", {
 
   ## testing the formatting of the output
-  dyad  <- missSBM::sample(sbm$adjacencyMatrix, "dyad", .1)
+  adjMatrix  <- missSBM::sample(sbm$adjacencyMatrix, "dyad", .1)
+  dyad <- missSBM:::sampledNetwork$new(adjMatrix)
+
   expect_is(dyad, "sampledNetwork", "R6")
   expect_lte(dyad$samplingRate, 1)
   expect_gte(dyad$samplingRate, 0)
@@ -41,13 +43,17 @@ test_that("Consistency of dyad-centered sampling", {
   # With dyad sampling, psi is the probability of sampling a dyad
   # The samplign rate is very well controlled
   for (psi in c(.1, .25, .4)) {
-    dyad <- missSBM::sample(sbm$adjacencyMatrix, "dyad", psi)
+    adjMatrix <-missSBM::sample(sbm$adjacencyMatrix, "dyad", psi)
+    dyad  <- missSBM:::sampledNetwork$new(adjMatrix)
     expect_lt(abs(dyad$samplingRate - psi), psi/10)
   }
 
   ## with covariates
   psi <- runif(M, -5, 5)
-  dyad <- missSBM::sample(sbm_cov_dyad$adjacencyMatrix, "covar-dyad", psi, covariates = covariates_dyad)
+  adjMatrix <- missSBM::sample(sbm_cov_dyad$adjacencyMatrix, "covar-dyad", psi, covariates = covariates_dyad)
+  ## Prepare network data for estimation with missing data
+  covar <- missSBM:::format_covariates(covariates_dyad, missSBM:::l1_similarity)
+  dyad <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
   expect_is(dyad, "sampledNetwork", "R6")
   expect_equal(dim(dyad$adjacencyMatrix), dim(sbm_cov_dyad$adjacencyMatrix))
 
@@ -55,7 +61,9 @@ test_that("Consistency of dyad-centered sampling", {
 
 test_that("Consistency of node-centered network sampling", {
 
-  node  <- missSBM::sample(sbm$adjacencyMatrix, "node", .1)
+  adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "node", .1)
+  node <- missSBM:::sampledNetwork$new(adjMatrix)
+
   expect_is(node, "sampledNetwork", "R6")
   expect_lte(node$samplingRate, 1)
   expect_gte(node$samplingRate, 0)
@@ -68,13 +76,16 @@ test_that("Consistency of node-centered network sampling", {
   # With node sampling, psi is the probability of sampling a node
   # The expected samplign rate is psi * (2-psi)
   for (psi in c(.05, .1, .25, .5)) {
-    node <- missSBM::sample(sbm$adjacencyMatrix, "node", psi)
+    adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "node", psi)
+    node <- missSBM:::sampledNetwork$new(adjMatrix)
     expect_lt(abs(node$samplingRate - psi * (2 - psi)), .1)
   }
 
   ## with covariates
   psi <- runif(M, -5, 5)
-  node <- missSBM::sample(sbm_cov_node$adjacencyMatrix, "covar-node", psi, covariates = covariates_node)
+  adjMatrix <- missSBM::sample(sbm_cov_node$adjacencyMatrix, "covar-node", psi, covariates = covariates_node)
+  covar <- missSBM:::format_covariates(covariates_node, missSBM:::l1_similarity)
+  node <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
   expect_is(node, "sampledNetwork", "R6")
   expect_equal(dim(node$adjacencyMatrix), dim(sbm_cov_node$adjacencyMatrix))
 
@@ -82,7 +93,8 @@ test_that("Consistency of node-centered network sampling", {
 
 test_that("Consistency of block-node network sampling", {
 
-  block <- missSBM::sample(sbm$adjacencyMatrix, "block-node", c(.1, .2, .7), clusters = sbm$memberships)
+  adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "block-node", c(.1, .2, .7), clusters = sbm$memberships)
+  block <- missSBM:::sampledNetwork$new(adjMatrix)
   expect_is(block, "sampledNetwork", "R6")
   expect_lte(block$samplingRate, 1)
   expect_gte(block$samplingRate, 0)
@@ -99,7 +111,8 @@ test_that("Consistency of block-node network sampling", {
 
 test_that("Consistency of block-node network sampling", {
 
-  block <- missSBM::sample(sbm$adjacencyMatrix, "block-dyad", sbm$connectParam, clusters = sbm$memberships)
+  adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "block-dyad", sbm$connectParam, clusters = sbm$memberships)
+  block <- missSBM:::sampledNetwork$new(adjMatrix)
   expect_is(block, "sampledNetwork", "R6")
   expect_lte(block$samplingRate, 1)
   expect_gte(block$samplingRate, 0)
@@ -117,7 +130,9 @@ test_that("Consistency of block-node network sampling", {
 
 test_that("Consistency of double-standard sampling", {
 
-  double_standard <- missSBM::sample(sbm$adjacencyMatrix,"double-standard", c(0.1, 0.5))
+  adjMatrix <- missSBM::sample(sbm$adjacencyMatrix,"double-standard", c(0.1, 0.5))
+  double_standard <- missSBM:::sampledNetwork$new(adjMatrix)
+
   expect_is(double_standard, "sampledNetwork", "R6")
   expect_lte(double_standard$samplingRate, 1)
   expect_gte(double_standard$samplingRate, 0)
@@ -133,7 +148,8 @@ test_that("Consistency of double-standard sampling", {
 
 test_that("Consistency of degree network sampling", {
 
-  degree <- missSBM::sample(sbm$adjacencyMatrix,"degree", c(0.01,0.01))
+  adjMatrix <- missSBM::sample(sbm$adjacencyMatrix,"degree", c(0.01,0.01))
+  degree <- missSBM:::sampledNetwork$new(adjMatrix)
   expect_is(degree, "sampledNetwork", "R6")
   expect_lte(degree$samplingRate, 1)
   expect_gte(degree$samplingRate, 0)

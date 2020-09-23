@@ -33,12 +33,11 @@ Only relevant when the covariates are node-centered (i.e. \code{covariates} is a
 \item{intercept}{An optional intercept term to be added in case of the presence of covariates. Default is 0.}
 }
 \value{
-an object with class \code{\link{sampledNetwork}} containing all the useful information about the sampling.
-Can then feed the \code{\link{estimate}} function.
+an adjacency matrix with the dimension as the input, yet with additional NAs.
 }
 \description{
+An internal class use to represent conveniently network data with missing entries.
 This function samples observations in an adjacency matrix according to a given sampling design.
-The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.
 }
 \details{
 The different sampling designs are split into two families in which we find dyad-centered and
@@ -96,16 +95,5 @@ for (sampling in names(sampling_parameters)) {
        cluster         = sbm$memberships
      )
 }
-\donttest{
-## SSOOOO long, but fancy
-old_par <- par(mfrow = c(2,4))
-for (sampling in names(sampling_parameters)) {
-  plot(sampled_networks[[sampling]],
-    clustering = sbm$memberships, main = paste(sampling, "sampling"))
-}
-par(old_par)
-}
-}
-\seealso{
-The class \code{\link{sampledNetwork}}
+
 }
