@@ -27,7 +27,7 @@
 #'     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
 #'     \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
 #'     \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
-#'     \item{"snowball": parameter = number of waves and \deqn{P(Node i is sampled in the 1st Wave)}
+#'     \item{"snowball": parameter = number of waves and \deqn{P(Node i is sampled in the 1st Wave)}}
 #'   }
 #' \item Not Missing At Random (NMAR)
 #'   \itemize{
