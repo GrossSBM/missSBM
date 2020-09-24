@@ -46,6 +46,7 @@ All fields of this class are only accessible for reading. This class comes with 
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{sampledNetwork$new()}}
+\item \href{#method-plot}{\code{sampledNetwork$plot()}}
 \item \href{#method-show}{\code{sampledNetwork$show()}}
 \item \href{#method-print}{\code{sampledNetwork$print()}}
 \item \href{#method-clone}{\code{sampledNetwork$clone()}}
@@ -68,6 +69,28 @@ constructor
 \item{\code{covarMatrix}}{the matrix of covariates (default is \code{NULL}).}
 
 \item{\code{covarArray}}{the array of covariates  (default is \code{NULL}).}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-plot}{}}}
+\subsection{Method \code{plot()}}{
+plot method for sampledNetwork
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$plot(
+  clustering = NULL,
+  main = paste("Network with sampling rate:", signif(self$samplingRate, 3))
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{clustering}}{an optional vector of clustering memberships, default to \code{NULL}.}
+
+\item{\code{main}}{a character for the title of the plot}
 }
 \if{html}{\out{</div>}}
 }

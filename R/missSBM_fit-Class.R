@@ -1,31 +1,21 @@
 #' @title R6 Class definition of an missSBM_fit
 #'
-#' @description This class is designed to adjust a Stochastic Block Model on a network with missing values.
+#' @description The function [estimate()] fits a collection of SBM for varying number of block. Each
+#' fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
+#'
+#' Fields are accessed via active binding and cannot be changed by the user.
 #'
 #' See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
 #'
-#' The user can resort to this class to fit the model, but its is recommended to use the top level function [`estimate`]
-#' for this task.
-#'
 #' @examples
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
-#' samplingParameters <- .25 # the sampling rate
-#' sampling <- "dyad"       # the sampling design
 #' adjMatrix <- missSBM::frenchblog2007 %>%
 #'   igraph::as_adj (sparse = FALSE) %>%
-#'   missSBM::sample(sampling, samplingParameters)
-#'
-#'
-#' ## Fit a SBM with random dyad sampling and 5 block
-#' my_missSBM <- missSBM::missSBM_fit$new(
-#'     sampledNet  = missSBM:::sampledNetwork$new(adjMatrix),
-#'     nBlocks     = 5,
-#'     netSampling = "dyad",
-#'     clusterInit = base::sample(1:5, ncol(adjMatrix), rep = TRUE),
-#'     useCov      = FALSE
-#'   )
-#' my_missSBM$doVEM()
-#' plot(my_missSBM, "network")
+#'   missSBM::sample(sampling = "dyad", parameters = 0.25)
+#' collection <- missSBM::estimate(adjMatrix, 3:5, sampling = "dyad")
+#' my_missSBM_fit <- collection$bestModel
+#' class(my_missSBM_fit)
+#' plot(my_missSBM_fit, "network")
 #'
 #' @include SBM_fit-Class.R
 #' @include networkSampling_fit-Class.R

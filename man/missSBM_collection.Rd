@@ -2,17 +2,28 @@
 % Please edit documentation in R/missSBM_collection-Class.R
 \name{missSBM_collection}
 \alias{missSBM_collection}
-\title{An object to represent a collection of missSBM_fit}
+\title{An object to represent a collection of SBM fits}
 \description{
-An object to represent a collection of missSBM_fit
+The function [`estimate`] fits a collection of SBM fitted for varying number of block.
+They are stored in an instance of this class.
 
-An object to represent a collection of missSBM_fit
+Fields are accessed via active binding and cannot be changed by the user.
+
+See S3 methods [`show`], [`print`], [`smooth`]
 }
 \details{
 This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.
 }
+\examples{
+## Sample 75\% of dyads in  French political Blogosphere's network data
+adjMatrix <- missSBM::frenchblog2007 \%>\%
+  igraph::as_adj (sparse = FALSE) \%>\%
+  missSBM::sample(sampling = "dyad", parameters = 0.25)
+collection <- missSBM::estimate(adjMatrix, 3:5, sampling = "dyad")
+class(collection)
+
+}
 \seealso{
-The function [`estimate`], which produces an instance of this class.
 The function [`smooth`] can be used to smooth the ICL on a collection of model, as post-treatment.
 }
 \section{Active bindings}{

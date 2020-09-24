@@ -59,6 +59,7 @@ R6::R6Class(classname = "SBM",
     print = function() { self$show() },
     #' @description basic matrix plot method for SBM object
     #' @param type character for the type of plot: either 'network' (true connection) or 'connectivity' (fitted connection). Default to 'network'.
+    #' @importFrom corrplot corrplot
     plot = function(type = c("network", "connectivity")) {
       type <- match.arg(type)
       if (type == "network") {
