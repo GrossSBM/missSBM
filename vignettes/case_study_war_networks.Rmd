@@ -30,6 +30,7 @@ On top of **missSBM**, our analysis will rely on the **igraph** package for netw
 ```{r package requirement, message=FALSE}
 library(igraph)
 library(ggplot2)
+library(corrplot)
 library(magrittr)
 library(missSBM)
 ```
@@ -50,7 +51,7 @@ In the following, we focus on the network `war$belligerent`, which is provided a
 
 ```{r war network plot, fig.width=7,  fig.height=7}
 par(mar = c(0,0,0,0))
-plot(war$belligerent, 
+plot(war$belligerent,
      vertex.shape="none", vertex.label=V(war$belligerent)$name,
      vertex.label.color = "steel blue", vertex.label.font=1.5,
      vertex.label.cex=.6, edge.color="gray70", edge.width = 2)
@@ -71,7 +72,14 @@ More specifically, the data collection may be missing for some countries in the 
 
 ```{r sampling node}
 sampledNet_war <- missSBM::sample(belligerent_adjacency, sampling = "node", parameters = .8)
-plot(sampledNet_war)
+corrplot(sampledNet_war, 
+  is.corr      = FALSE,
+  tl.pos       = "n",
+  method       = "color", 
+  cl.pos       = "n",
+  na.label.col = "grey",
+  mar          = c(0,0,1,0)
+  )
 ```
 
 ### Estimation with missing data
@@ -192,13 +200,21 @@ sampleNet_power_miss <- missSBM::sample(
    sampling = "covar-node",
    parameters = parameters_sample, covariates = list(belligerent_power), intercept = -2
   )
-boxplot(1/(1 + exp(-cbind(1,belligerent_power) %*% c(-2, parameters_sample))) ~ sampleNet_power_miss$observedNodes, ylab="mil power",xlab = "observed node")
-plot(sampleNet_power_miss)
+observedNodes <- !is.na(rowSums(sampleNet_power_miss))
+boxplot(1/(1 + exp(-cbind(1,belligerent_power) %*% c(-2, parameters_sample))) ~ observedNodes, ylab="mil power",xlab = "observed node")
+corrplot(sampleNet_power_miss, 
+  is.corr      = FALSE,
+  tl.pos       = "n",
+  method       = "color", 
+  cl.pos       = "n",
+  na.label.col = "grey",
+  mar          = c(0,0,1,0)
+  )
 ```
 
 Then, we can estimate the model by setting the sampling to be `covar-node`. We can still choose whether to consider or not the covariate in the SBM.
 ```{r fit power missing}
-collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node")
+collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node", covariates = list(belligerent_power))
 ```
 
 Then we can access the estimated sampling parameters:
@@ -230,14 +246,21 @@ We first sample according to it:
 ```{r samptrade}
 parameters_sample <- 1
 sampleNet_trade_miss <- missSBM::sample(belligerent_adjacency, sampling = "covar-dyad", parameters = parameters_sample, covariates = list(trade), intercept = -2)
-plot(sampleNet_trade_miss)
+corrplot(sampleNet_trade_miss, 
+  is.corr      = FALSE,
+  tl.pos       = "n",
+  method       = "color", 
+  cl.pos       = "n",
+  na.label.col = "grey",
+  mar          = c(0,0,1,0)
+  )
 ```
 
 The choice of the sampling parameters leads to more likely observe dyads with important trade exchange.
 We then perform estimation on the missing data drawn according to the trade covariate.
 
 ```{r estimate trade}
-collection_sbm_trade_miss <- estimate(sampleNet_trade_miss ,vBlocks = vBlocks, sampling = "covar-dyad")
+collection_sbm_trade_miss <- estimate(sampleNet_trade_miss ,vBlocks = vBlocks, sampling = "covar-dyad", covariates = list(trade))
 collection_sbm_trade_miss$bestModel$fittedSampling$parameters
 collection_sbm_trade_miss$bestModel$fittedSBM$covarParam
 ```
