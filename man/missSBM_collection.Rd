@@ -37,6 +37,7 @@ The function [`smooth`] can be used to smooth the ICL on a collection of model, 
 \item \href{#method-estimate}{\code{missSBM_collection$estimate()}}
 \item \href{#method-smooth}{\code{missSBM_collection$smooth()}}
 \item \href{#method-show}{\code{missSBM_collection$show()}}
+\item \href{#method-print}{\code{missSBM_collection$print()}}
 \item \href{#method-clone}{\code{missSBM_collection$clone()}}
 }
 }
@@ -120,6 +121,16 @@ method for performing smoothing of the ICL
 show method for missSBM_collection
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$show()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+User friendly print method
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$print()}\if{html}{\out{</div>}}
 }
 
 }

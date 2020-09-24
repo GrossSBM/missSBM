@@ -68,6 +68,7 @@ The function \code{\link{simulate}}.
 \item \href{#method-rBlocks}{\code{SBM_sampler$rBlocks()}}
 \item \href{#method-rAdjMatrix}{\code{SBM_sampler$rAdjMatrix()}}
 \item \href{#method-show}{\code{SBM_sampler$show()}}
+\item \href{#method-print}{\code{SBM_sampler$print()}}
 \item \href{#method-clone}{\code{SBM_sampler$clone()}}
 }
 }
@@ -139,6 +140,16 @@ a method to sample an adjacency matrix for the current SBM
 show method
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$show()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+User friendly print method
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$print()}\if{html}{\out{</div>}}
 }
 
 }

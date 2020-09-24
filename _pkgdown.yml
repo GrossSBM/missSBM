@@ -31,7 +31,6 @@ reference:
     - '`sample`'
     - '`estimate`'
     - '`smooth`'
-    - '`prepare_data`'
 - title: 'Classes of objects'
   desc: >
     Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.
@@ -42,7 +41,6 @@ reference:
     - '`SBM_fit_covariates`'
     - '`SBM_fit_nocovariate`'
     - '`SBM_sampler`'
-    - '`sampledNetwork`'
 - title: Data sets
   desc: ~
   contents:

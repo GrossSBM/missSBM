@@ -173,8 +173,8 @@ missSBM_fit <-
     fittedSampling = function(value) {private$sampling}  ,
     #' @field useCovariates logical. If covariates are present in sampledNet, should they be used for the inference of the network sampling design, or just for the SBM inference? default is TRUE.
     useCovariates  = function(value) {private$useCov}   ,
-#    #' @field sampledNetwork The original network data used for the fit, with class [`sampledNetwork`]
-#    sampledNetwork = function(value) {private$sampledNet},
+    #' @field sampledNetwork The original network data used for the fit, with class [`sampledNetwork`]
+    sampledNetwork = function(value) {private$sampledNet},
     #' @field imputedNetwork The network data with NAs values imputed with the model.
     imputedNetwork = function(value) {private$imputedNet},
     #' @field monitoring a list carrying information about the optimization process

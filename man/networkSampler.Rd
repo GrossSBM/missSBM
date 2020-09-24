@@ -37,6 +37,7 @@ with class sampledNetwork.
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show">}\href{../../missSBM/html/networkSampling.html#method-show}{\code{missSBM::networkSampling$show()}}\out{</span>}
 }
 \out{</details>}

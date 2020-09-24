@@ -63,9 +63,7 @@ plot(my_missSBM, "network")
 
 \item{\code{fittedSampling}}{the fitted sampling, inheriting from class [`networkSampling_fit`]}
 
-\item{\code{useCovariates}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
-
-\item{\code{sampledNetwork}}{The original network data used for the fit, with class [`sampledNetwork`]}
+\item{\code{useCovariates}}{logical. If covariates are present in sampledNet, should they be used for the inference of the network sampling design, or just for the SBM inference? default is TRUE.}
 
 \item{\code{imputedNetwork}}{The network data with NAs values imputed with the model.}
 
@@ -89,6 +87,7 @@ plot(my_missSBM, "network")
 \item \href{#method-new}{\code{missSBM_fit$new()}}
 \item \href{#method-doVEM}{\code{missSBM_fit$doVEM()}}
 \item \href{#method-show}{\code{missSBM_fit$show()}}
+\item \href{#method-print}{\code{missSBM_fit$print()}}
 \item \href{#method-clone}{\code{missSBM_fit$clone()}}
 }
 }
@@ -143,6 +142,16 @@ a method to perform inference of the current missSBM fit with variational EM
 show method for missSBM_fit
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$show()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+User friendly print method
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$print()}\if{html}{\out{</div>}}
 }
 
 }

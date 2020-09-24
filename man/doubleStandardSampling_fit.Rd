@@ -30,6 +30,7 @@ Class for fitting a double-standard sampling
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show">}\href{../../missSBM/html/networkSamplingDyads_fit.html#method-show}{\code{missSBM::networkSamplingDyads_fit$show()}}\out{</span>}
 }
 \out{</details>}

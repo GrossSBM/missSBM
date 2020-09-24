@@ -50,6 +50,7 @@ classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'
 \itemize{
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="initialize">}\href{../../missSBM/html/SBM.html#method-initialize}{\code{missSBM::SBM$initialize()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="plot">}\href{../../missSBM/html/SBM.html#method-plot}{\code{missSBM::SBM$plot()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="print">}\href{../../missSBM/html/SBM.html#method-print}{\code{missSBM::SBM$print()}}\out{</span>}
 }
 \out{</details>}
 }

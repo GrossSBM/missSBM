@@ -31,6 +31,7 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 \itemize{
 \item \href{#method-new}{\code{networkSampling$new()}}
 \item \href{#method-show}{\code{networkSampling$show()}}
+\item \href{#method-print}{\code{networkSampling$print()}}
 \item \href{#method-clone}{\code{networkSampling$clone()}}
 }
 }
@@ -71,6 +72,16 @@ show method
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+User friendly print method
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{networkSampling$print()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

@@ -46,6 +46,7 @@ An R6 Class to represent a SBM
 \itemize{
 \item \href{#method-new}{\code{SBM$new()}}
 \item \href{#method-show}{\code{SBM$show()}}
+\item \href{#method-print}{\code{SBM$print()}}
 \item \href{#method-plot}{\code{SBM$plot()}}
 \item \href{#method-clone}{\code{SBM$clone()}}
 }
@@ -100,6 +101,16 @@ show method
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+User friendly print method
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SBM$print()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-plot"></a>}}

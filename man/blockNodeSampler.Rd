@@ -21,6 +21,7 @@ Class for defining a block node sampler
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show">}\href{../../missSBM/html/networkSampling.html#method-show}{\code{missSBM::networkSampling$show()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix">}\href{../../missSBM/html/networkSampler.html#method-rSamplingMatrix}{\code{missSBM::networkSampler$rSamplingMatrix()}}\out{</span>}
 }
