@@ -1,31 +1,31 @@
-#' An R6 Class to represent sampled network data
+#' An R6 Class used for internal representation of sampled network data
 #'
 #' All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
 #'
 #' @importFrom R6 R6Class
-#' @examples
-#' ## SBM parameters
-#' directed <- FALSE
-#' N <- 300 # number of nodes
-#' Q <- 3   # number of clusters
-#' alpha <- rep(1,Q)/Q     # mixture parameter
-#' pi <- diag(.45,Q) + .05 # connectivity matrix
-#'
-#' ## simulate a SBM without covariates
-#' sbm <- missSBM::simulate(N, alpha, pi, directed)
-#'
-#' ## Sample network data
-#' sampled_network <-
-#'      missSBM::sample(
-#'        adjacencyMatrix = sbm$adjacencyMatrix,
-#'        sampling        = "double-standard",
-#'        parameters      = c(0.4, 0.8)
-#'      )
-#'
-#' summary(sampled_network)
-#' print(sampled_network)
-#' plot(sampled_network, clustering = sbm$memberships)
-#'
+#
+# #' ## SBM parameters
+# directed <- FALSE
+# N <- 300 # number of nodes
+# Q <- 3   # number of clusters
+# alpha <- rep(1,Q)/Q     # mixture parameter
+# pi <- diag(.45,Q) + .05 # connectivity matrix
+#
+# ## simulate a SBM without covariates
+# sbm <- missSBM::simulate(N, alpha, pi, directed)
+#
+# ## Sample network data
+# sampled_network <-
+#      missSBM::sample(
+#        adjacencyMatrix = sbm$adjacencyMatrix,
+#        sampling        = "double-standard",
+#        parameters      = c(0.4, 0.8)
+#      )
+#
+# summary(sampled_network)
+# print(sampled_network)
+# plot(sampled_network, clustering = sbm$memberships)
+#
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
@@ -125,22 +125,22 @@ sampledNetwork <-
       if (!private$directed)  R <- t(R) | R
       private$R <- R
     },
-    #' @description plot method for sampledNetwork
-    #' @param clustering an optional vector of clustering memberships, default to \code{NULL}.
-    #' @param main a character for the title of the plot
-    #' @importFrom corrplot corrplot
-    plot = function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {
-      if (is.null(clustering)) {
-        adjMatrix <- self$adjacencyMatrix
-      } else {
-        Z <- missSBM:::clustering_indicator(as.factor(clustering))
-        colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
-        colorMat <- Z %*% colors %*% t(Z)
-        colorMap <- colorMat[order(clustering),order(clustering)]
-        adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
-      }
-      corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
-    },
+    # #' @description plot method for sampledNetwork
+    # #' @param clustering an optional vector of clustering memberships, default to \code{NULL}.
+    # #' @param main a character for the title of the plot
+    # #' @importFrom corrplot corrplot
+    # plot = function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {
+    #   if (is.null(clustering)) {
+    #     adjMatrix <- self$adjacencyMatrix
+    #   } else {
+    #     Z <- missSBM:::clustering_indicator(as.factor(clustering))
+    #     colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
+    #     colorMat <- Z %*% colors %*% t(Z)
+    #     colorMap <- colorMat[order(clustering),order(clustering)]
+    #     adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
+    #   }
+    #   corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
+    # },
     #' @description show method
     show = function() {
       cat("Sampled Network\n")
@@ -151,7 +151,9 @@ sampledNetwork <-
       cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
           "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
       cat("* Useful method: plot(), summary() , print()  \n")
-    }
+    },
+    #' @description User friendly print method
+    print = function() { self$show() }
   )
 )
 
@@ -163,12 +165,12 @@ sampledNetwork <-
 ## Auxiliary functions to check the given class of an objet
 is_sampledNetwork <- function(Robject) {inherits(Robject, "sampledNetwork")}
 
-#' @export
-summary.sampledNetwork <- function(object, ...) {
-  stopifnot(is_sampledNetwork(object))
-  cat("Sampled Network with", object$nNodes, "nodes and sampling rate equal to", round(object$samplingRate,3),"\n")
-  cat(" - ",length(object$observedDyads)," observed dyads (",
-      sum(object$adjacencyMatrix[object$observedDyads] != 0), " links and ",
-      sum(object$adjacencyMatrix[object$observedDyads] == 0), " no-links)\n",
-      " - ", length(object$missingDyads)              , " missing dyads\n", sep = "")
-}
+# #' @export
+# summary.sampledNetwork <- function(object, ...) {
+#   stopifnot(is_sampledNetwork(object))
+#   cat("Sampled Network with", object$nNodes, "nodes and sampling rate equal to", round(object$samplingRate,3),"\n")
+#   cat(" - ",length(object$observedDyads)," observed dyads (",
+#       sum(object$adjacencyMatrix[object$observedDyads] != 0), " links and ",
+#       sum(object$adjacencyMatrix[object$observedDyads] == 0), " no-links)\n",
+#       " - ", length(object$missingDyads)              , " missing dyads\n", sep = "")
+# }

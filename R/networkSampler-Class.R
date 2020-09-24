@@ -251,39 +251,28 @@ R6::R6Class(classname = "degreeSampler",
 #' Class for defining a snowball sampler
 snowballSampler <-
   R6::R6Class(classname = "snowballSampler",
-              inherit = nodeSampler,
-              public = list(
-                #' @description constructor for networkSampling
-                #' @param parameters the vector of parameters associated to the sampling at play
-                #' @param adjacencyMatrix the adjacency matrix of the network
-                #' @param directed logical, directed network of not
-                initialize = function(parameters = NA,adjacencyMatrix=NA, directed = FALSE) {
-                  stopifnot(length(parameters) == 2)
-                  n <- nrow(adjacencyMatrix)
-                  nWaves <- parameters[1] # number of waves
-                  pfirstwave <- parameters[2] # proportion of nodes seen in the first wave
-                  # wave 1
-                  observedNodes <- (runif(n) < pfirstwave)*1
-                  nRemainingWaves <- nWaves - 1
-                  while (nRemainingWaves>0 & sum(observedNodes)<n)
-                  {
-                    link <- adjacencyMatrix[which(observedNodes==1),,drop=FALSE]
-                    observedNodes[which(colSums(link)>0)] <- 1 # link tracing in giver to receiver
-                    nRemainingWaves <- nRemainingWaves - 1
-                  }
-                  super$initialize("snowball", parameters, n, directed)
-                  private$rho <- observedNodes # 0-1 probabilities
-                }
-              )
+    inherit = nodeSampler,
+    public = list(
+      #' @description constructor for networkSampling
+      #' @param parameters the vector of parameters associated to the sampling at play
+      #' @param adjacencyMatrix the adjacency matrix of the network
+      #' @param directed logical, directed network of not
+      initialize = function(parameters = NA, adjacencyMatrix=NA, directed = FALSE) {
+        stopifnot(length(parameters) == 2)
+        n <- nrow(adjacencyMatrix)
+        nWaves <- parameters[1] # number of waves
+        pfirstwave <- parameters[2] # proportion of nodes seen in the first wave
+        # wave 1
+        observedNodes <- (runif(n) < pfirstwave)*1
+        nRemainingWaves <- nWaves - 1
+        while (nRemainingWaves>0 & sum(observedNodes)<n)
+        {
+          link <- adjacencyMatrix[which(observedNodes==1),,drop=FALSE]
+          observedNodes[which(colSums(link)>0)] <- 1 # link tracing in giver to receiver
+          nRemainingWaves <- nRemainingWaves - 1
+        }
+        super$initialize("snowball", parameters, n, directed)
+        private$rho <- observedNodes # 0-1 probabilities
+      }
+    )
   )
-
-### TODO: SNOWBALL SAMPLING add a parameter for the number of waves
-# "snowball" = function(adjMatrix, ...) {
-#   # initial set
-#   N <- nrow(adjMatrix)
-#   wave1 <- which(runif(N) < self$parameters)
-#   # first wave
-#   wave2 <- unique(unlist(adjMatrix[wave1, ] != 0, 1, function(x) which(x != 0)))
-#   N_obs <- union(wave1, wave2)
-#   D_obs <- unique(rbind(as.matrix(expand.grid(N_obs, 1:N)), as.matrix(rev(expand.grid(N_obs, 1:N)))))
-# }

@@ -38,7 +38,9 @@ R6::R6Class(classname = "networkSampling",
       cat("==================================================================\n")
       cat("* Useful fields \n")
       cat("  $type, $parameters, $prob, $df\n")
-    }
+    },
+    #' @description User friendly print method
+    print = function() { self$show() }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING

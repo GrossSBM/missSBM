@@ -154,13 +154,14 @@ missSBM_fit <-
       cat("* Useful fields (most are special object themselves with methods) \n")
       cat("  $fittedSBM (the adjusted stochastic block model)                \n")
       cat("  $fittedSampling (the estimated sampling process)                \n")
-      cat("  $sampledNetwork (the sampled network data)                      \n")
+#      cat("  $sampledNetwork (the sampled network data)                      \n")
       cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
       cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
       cat("* S3 methods                                                      \n")
       cat("  plot, coef, fitted, predict, print                              \n")
-    }
-
+    },
+    #' @description User friendly print method
+    print = function() { self$show() }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -170,10 +171,10 @@ missSBM_fit <-
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling_fit`]
     fittedSampling = function(value) {private$sampling}  ,
-    #' @field useCovariates logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
+    #' @field useCovariates logical. If covariates are present in sampledNet, should they be used for the inference of the network sampling design, or just for the SBM inference? default is TRUE.
     useCovariates  = function(value) {private$useCov}   ,
-    #' @field sampledNetwork The original network data used for the fit, with class [`sampledNetwork`]
-    sampledNetwork = function(value) {private$sampledNet},
+#    #' @field sampledNetwork The original network data used for the fit, with class [`sampledNetwork`]
+#    sampledNetwork = function(value) {private$sampledNet},
     #' @field imputedNetwork The network data with NAs values imputed with the model.
     imputedNetwork = function(value) {private$imputedNet},
     #' @field monitoring a list carrying information about the optimization process

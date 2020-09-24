@@ -169,7 +169,9 @@ missSBM_collection <-
       cat(" - Number of blocks considers: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
       cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nBlocks, "\n", sep = "")
       cat(" - Fields: $models, $ICL, $vBlocks, $bestModel, $optimizationStatus\n")
-    }
+    },
+    #' @description User friendly print method
+    print = function() { self$show() }
   ),
   active = list(
     #' @field models a list of models

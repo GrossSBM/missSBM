@@ -55,6 +55,8 @@ R6::R6Class(classname = "SBM",
       cat("* Useful fields \n")
       cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam\n", "$covarParam, $covarArray \n")
     },
+    #' @description User friendly print method
+    print = function() { self$show() },
     #' @description basic matrix plot method for SBM object
     #' @param type character for the type of plot: either 'network' (true connection) or 'connectivity' (fitted connection). Default to 'network'.
     plot = function(type = c("network", "connectivity")) {

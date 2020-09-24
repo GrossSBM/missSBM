@@ -80,7 +80,9 @@ SBM_sampler <-
       cat("  $blocks, $memberships, $adjMatrix, $connectProb\n")
       cat("* S3 methods \n")
       cat("  plot, print, summary, coef\n")
-   }
+    },
+    #' @description User friendly print method
+    print = function() { self$show() }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
