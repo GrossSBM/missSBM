@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Sampling of network data — sample" />
-<meta property="og:description" content="This function samples observations in an adjacency matrix according to a given sampling design.
-The final results is an adjacency matrix with the dimension as the input, yet with additional NAs." />
+<meta property="og:description" content="An internal class use to represent conveniently network data with missing entries.
+This function samples observations in an adjacency matrix according to a given sampling design." />
 
 
 
@@ -73,7 +73,7 @@ The final results is an adjacency matrix with the dimension as the input, yet wi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1-9050</span>
       </span>
     </div>
 
@@ -136,8 +136,8 @@ The final results is an adjacency matrix with the dimension as the input, yet wi
     </div>
 
     <div class="ref-description">
-    <p>This function samples observations in an adjacency matrix according to a given sampling design.
-The final results is an adjacency matrix with the dimension as the input, yet with additional NAs.</p>
+    <p>An internal class use to represent conveniently network data with missing entries.
+This function samples observations in an adjacency matrix according to a given sampling design.</p>
     </div>
 
     <pre class="usage"><span class='fu'>sample</span>(
@@ -188,8 +188,7 @@ Only relevant when the covariates are node-centered (i.e. <code>covariates</code
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an object with class <code><a href='sampledNetwork.html'>sampledNetwork</a></code> containing all the useful information about the sampling.
-Can then feed the <code><a href='estimate.html'>estimate</a></code> function.</p>
+    <p>an adjacency matrix with the dimension as the input, yet with additional NAs.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The different sampling designs are split into two families in which we find dyad-centered and
@@ -209,9 +208,6 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
 </ul></li>
 </ul>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>The class <code><a href='sampledNetwork.html'>sampledNetwork</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## SBM parameters</span>
@@ -248,15 +244,7 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
        cluster         = <span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>memberships</span>
      )
 }
-<span class='co'># \donttest{</span>
-<span class='co'>## SSOOOO long, but fancy</span>
-<span class='kw'>old_par</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(mfrow = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>4</span>))
-<span class='co'>for</span> (<span class='kw'>sampling</span> <span class='co'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>sampling_parameters</span>)) {
-  <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sampled_networks</span>[[<span class='kw'>sampling</span>]],
-    clustering = <span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>memberships</span>, main = <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span>(<span class='kw'>sampling</span>, <span class='st'>"sampling"</span>))
-}
-<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>old_par</span>)
-</div><div class='img'><img src='sample-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># }</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
