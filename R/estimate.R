@@ -96,7 +96,7 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, cont
   ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, clusterInit = "hierarchical")
   if (control$useCovariates) {
     stopifnot(sampling %in% available_samplings_covariates)
-    ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2, similarity = missSBM:::l1_similarity))
+    ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2, similarity = l1_similarity))
   } else {
     ctrl <- c(ctrl, list(maxIter = 100, fixPointIter = 5))
   }
