@@ -4,7 +4,7 @@
 #'
 #' See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
 #'
-#' The user can resort to this class to fit the model, but its is recommended to use the to level function [`estimate`]
+#' The user can resort to this class to fit the model, but its is recommended to use the top level function [`estimate`]
 #' for this task.
 #'
 #' @examples

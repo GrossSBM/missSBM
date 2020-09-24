@@ -23,7 +23,7 @@ This class is designed to adjust a Stochastic Block Model on a network with miss
 
 See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
 
-The user can resort to this class to fit the model, but its is recommended to use the to level function [`estimate`]
+The user can resort to this class to fit the model, but its is recommended to use the top level function [`estimate`]
 for this task.
 }
 \section{Functions}{
@@ -39,16 +39,17 @@ for this task.
 ## Sample 75\% of dyads in  French political Blogosphere's network data
 samplingParameters <- .25 # the sampling rate
 sampling <- "dyad"       # the sampling design
-sampledNet <- missSBM::frenchblog2007 \%>\%
+adjMatrix <- missSBM::frenchblog2007 \%>\%
   igraph::as_adj (sparse = FALSE) \%>\%
   missSBM::sample(sampling, samplingParameters)
 
+
 ## Fit a SBM with random dyad sampling and 5 block
 my_missSBM <- missSBM::missSBM_fit$new(
-    sampledNet  = sampledNet,
+    sampledNet  = missSBM:::sampledNetwork$new(adjMatrix),
     nBlocks     = 5,
     netSampling = "dyad",
-    clusterInit = base::sample(1:5, sampledNet$nNodes, rep = TRUE),
+    clusterInit = base::sample(1:5, ncol(adjMatrix), rep = TRUE),
     useCov      = FALSE
   )
 my_missSBM$doVEM()
