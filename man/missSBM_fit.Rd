@@ -30,8 +30,6 @@ plot(my_missSBM_fit, "network")
 
 \item{\code{fittedSampling}}{the fitted sampling, inheriting from class [`networkSampling_fit`]}
 
-\item{\code{useCovariates}}{logical. If covariates are present in sampledNet, should they be used for the inference of the network sampling design, or just for the SBM inference? default is TRUE.}
-
 \item{\code{sampledNetwork}}{The original network data used for the fit, with class [`sampledNetwork`]}
 
 \item{\code{imputedNetwork}}{The network data with NAs values imputed with the model.}
@@ -78,7 +76,7 @@ constructor for networkSampling
 
 \item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
-\item{\code{clusterInit}}{Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".}
+\item{\code{clusterInit}}{Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels. Default is "hierarchical".}
 
 \item{\code{useCov}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 }

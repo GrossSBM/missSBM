@@ -99,6 +99,42 @@ sampledNetwork <-
       if (!private$directed)  R <- t(R) | R
       private$R <- R
     },
+    #' @description method to cluster network data with missing value
+    #' @param nBlocks integer, the chosen number of blocks
+    #' @param method character with a clustering method among "hierarchical", "spectral", "kmeans".
+    clustering = function(nBlocks, method = c("hierarchical", "spectral", "kmeans")) {
+
+      if (nBlocks > 1) {
+        adjacencyMatrix <- private$Y
+        if (!is.null(private$phi)) {
+          y <- as.vector(adjacencyMatrix)
+          X <- cbind(1, apply(private$phi, 3, as.vector))
+          NAs <- as.vector(private$nas)
+          adjacencyMatrix <- matrix(NA, self$nNodes, self$nNodes)
+          adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
+        }
+        clustering <-
+          switch(match.arg(method),
+                 "spectral"     = init_spectral(    adjacencyMatrix, nBlocks),
+                 "kmeans"       = init_kmeans(      adjacencyMatrix, nBlocks),
+                 "hierarchical" = init_hierarchical(adjacencyMatrix, nBlocks))
+      } else {
+        clustering <- rep(1L, self$nNodes)
+      }
+      clustering
+    },
+    #' @description basic imputation from existing clustering
+    #' @param a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.
+    #' @return an adjacencu matrix with imputed values
+    imputation = function(clustering) {
+      adjancency0 <- private$Y
+      adjancency0[private$nas] <- 0
+      Z <- clustering_indicator(clustering)
+      pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(self$nNodes)) %*% Z))
+      imputation <- private$Y
+      imputation[private$nas] <- (Z %*% pi0 %*% t(Z))[private$nas]
+      imputation
+    },
     #' @description plot method for sampledNetwork
     #' @param clustering an optional vector of clustering memberships, default to \code{NULL}.
     #' @param main a character for the title of the plot

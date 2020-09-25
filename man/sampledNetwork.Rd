@@ -46,6 +46,8 @@ All fields of this class are only accessible for reading.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{sampledNetwork$new()}}
+\item \href{#method-clustering}{\code{sampledNetwork$clustering()}}
+\item \href{#method-imputation}{\code{sampledNetwork$imputation()}}
 \item \href{#method-plot}{\code{sampledNetwork$plot()}}
 \item \href{#method-show}{\code{sampledNetwork$show()}}
 \item \href{#method-print}{\code{sampledNetwork$print()}}
@@ -75,6 +77,48 @@ constructor
 \item{\code{similarity}}{An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clustering"></a>}}
+\if{latex}{\out{\hypertarget{method-clustering}{}}}
+\subsection{Method \code{clustering()}}{
+method to cluster network data with missing value
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$clustering(
+  nBlocks,
+  method = c("hierarchical", "spectral", "kmeans")
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{nBlocks}}{integer, the chosen number of blocks}
+
+\item{\code{method}}{character with a clustering method among "hierarchical", "spectral", "kmeans".}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-imputation"></a>}}
+\if{latex}{\out{\hypertarget{method-imputation}{}}}
+\subsection{Method \code{imputation()}}{
+basic imputation from existing clustering
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$imputation(clustering)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{a}}{vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+an adjacencu matrix with imputed values
 }
 }
 \if{html}{\out{<hr>}}

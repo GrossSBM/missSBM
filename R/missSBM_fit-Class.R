@@ -42,7 +42,7 @@ missSBM_fit <-
     #' @param sampledNet An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).
     #' @param nBlocks integer, the number of blocks in the SBM
     #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
-    #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".
+    #' @param clusterInit Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels. Default is "hierarchical".
     #' @param useCov logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
     initialize = function(sampledNet, nBlocks, netSampling, clusterInit, useCov) {
 
@@ -51,15 +51,14 @@ missSBM_fit <-
       stopifnot(inherits(sampledNet, "sampledNetwork"))
       stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
 
-      ## Initial Clustering - Should / Could be a method of sampledNetwork for clarity
-      clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, sampledNet$covarArray, clusterInit)
-      Z <- clustering_indicator(clusterInit)
+      ## Initial Clustering
+      if (is.numeric(clusterInit) | is.factor(clusterInit))
+        clusterInit <- as.integer(clusterInit)
+      else
+        clusterInit <- sampledNet$clustering(nBlocks, clusterInit)
 
       ## network data with basic imputation at start-up
-      adjancency0 <- sampledNet$adjacencyMatrix; adjancency0[sampledNet$NAs] <- 0
-      pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
-      private$imputedNet <- sampledNet$adjacencyMatrix
-      private$imputedNet[sampledNet$NAs] <- (Z %*% pi0 %*% t(Z))[sampledNet$NAs]
+      private$imputedNet <- sampledNet$imputation(clusterInit)
 
       ## Save the sampledNetwork object in the current environment
       private$sampledNet <- sampledNet
