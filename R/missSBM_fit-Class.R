@@ -6,7 +6,7 @@
 #' Fields are accessed via active binding and cannot be changed by the user.
 #'
 #' This class comes with a set of R6 methods, some of them being useful for the user and exported
-#' as S3 methods. See the documentation for  [`show`], [`print`], [`fitted`], [`predict`], [`plot`].
+#' as S3 methods. See the documentation for  [show()], [print()], [fitted()], [predict()], [plot()].
 #'
 #' @examples
 #' ## Sample 75% of dyads in  French political Blogosphere's network data

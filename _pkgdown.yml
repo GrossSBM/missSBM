@@ -31,12 +31,27 @@ reference:
     - '`sample`'
     - '`estimate`'
     - '`smooth`'
-- title: 'Classes of objects'
+- title: 'Class missSBM fit'
+  desc: >
+    Description of the missSBM_fit object and methods for its manipulation. This is the more central
+    class of object in the package, embedding fits for both the SBM and the sampling model.
+  contents:
+    - '`missSBM_fit`'
+    - '`coef.missSBM_fit`'
+    - '`fitted.missSBM_fit`'
+    - '`predict.missSBM_fit`'
+    - '`plot.missSBM_fit`'
+- title: 'Class missSBM collection'
+  desc: >
+    Description of the missSBM_collection object and methods for its manipulation.
+    Ouput of the top-level function estimate(), storing a collection of missSBM_fit.
+  contents:
+    - '`missSBM_collection`'
+    - '`smooth`'
+- title: 'Other classes of objects'
   desc: >
     Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.
   contents:
-    - '`missSBM_collection`'
-    - '`missSBM_fit`'
     - '`SBM_fit`'
     - '`SBM_fit_covariates`'
     - '`SBM_fit_nocovariate`'
