@@ -1,15 +1,14 @@
-#' An object to represent a collection of SBM fits
+#' An R6 class to represent a collection of SBM fits with missing data
 #'
-#' This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.
-#'
-#' @description The function [`estimate`] fits a collection of SBM fitted for varying number of block.
-#' They are stored in an instance of this class.
+#' @description The function [estimate()] fits a collection of SBM for varying number
+#' of block, which are stored in an instance of an object with class [`missSBM_collection`],
+#' described here.
 #'
 #' Fields are accessed via active binding and cannot be changed by the user.
 #'
-#' See S3 methods [`show`], [`print`], [`smooth`]
-
-#' @seealso The function [`smooth`] can be used to smooth the ICL on a collection of model, as post-treatment.
+#' This class comes with a set of R6 methods, some of them being useful for the user and exported
+#' as S3 methods. See the documentation for [show()], [print()] and [smooth()], the latter being
+#' used to smooth the ICL on a collection of model, as post-treatment.
 #'
 #' @examples
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
@@ -18,6 +17,8 @@
 #'   missSBM::sample(sampling = "dyad", parameters = 0.25)
 #' collection <- missSBM::estimate(adjMatrix, 3:5, sampling = "dyad")
 #' class(collection)
+#'
+#' @rdname missSBM_collection
 #'
 #' @include missSBM_fit-Class.R
 #' @export

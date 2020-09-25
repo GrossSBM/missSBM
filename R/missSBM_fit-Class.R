@@ -1,11 +1,12 @@
-#' @title R6 Class definition of an missSBM_fit
+#' An R6 class to represent an SBM fit with missing data
 #'
-#' @description The function [estimate()] fits a collection of SBM for varying number of block. Each
-#' fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
+#' @description The function [estimate()] fits a collection of SBM for varying number of block.
+#' Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
 #'
 #' Fields are accessed via active binding and cannot be changed by the user.
 #'
-#' See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
+#' This class comes with a set of R6 methods, some of them being useful for the user and exported
+#' as S3 methods. See the documentation for  [`show`], [`print`], [`fitted`], [`predict`], [`plot`].
 #'
 #' @examples
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
@@ -192,27 +193,43 @@ missSBM_fit <-
 ## Auxiliary functions to check the given class of an objet
 is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 
-#' @describeIn missSBM_fit fitted value of a ['missSBM_fit']
+#' Extract model fitted values from object  ['missSBM_fit'], return by [estimate()]
+#'
+#' @name fitted.missSBM_fit
+#'
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param ... additional parameters for S3 compatibility.
+#' @return a matrix of estimated probability of connection
+#'
 #' @export
 fitted.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
   fitted(object$fittedSBM)
 }
 
-#' @describeIn missSBM_fit prediction (imputed network) of a ['missSBM_fit']
+#' Prediction of a ['missSBM_fit'] (i.e. network with imputed missing dyads)
+#'
+#' @name predicted.missSBM_fit
+#'
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param ... additional parameters for S3 compatibility.
+#'
+#' @return an adjacency matrix between pairs of nodes. Missing dyads are imputed with
+#' their expected values, i.e. by there estimated probabilities of connection under the missing SBM.
+#'
 #' @export
 predict.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
   object$imputedNetwork
 }
 
-#' @describeIn missSBM_fit summary of a ['missSBM_fit']
+#' Summary method for a ['missSBM_fit']
+#'
+#' @name summary.missSBM_fit
+#'
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param ... additional parameters for S3 compatibility.
+#'
 #' @export
 summary.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -221,22 +238,25 @@ summary.missSBM_fit <- function(object, ...) {
 
 #' Visualization for an object [`missSBM_fit`]
 #'
-#' Plot function for the various fields of a [`missSBM_fit`]
+#' @description Plot function for the various fields of a [`missSBM_fit`]: the fitted SBM (network or connectivity),
+#' the original sampled network data, and a plot monitoring the optimization.
+#'
+#' @name plot.missSBM_fit
 #'
 #' @param x an object with class [`missSBM_fit`]
-#' @param type the type specifies the field to plot, either "network", "connectivity", "sampledNetwork" of "monitoring"
+#' @param type the type specifies the field to plot, either "network", "connectivity", "sampled" of "monitoring"
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
-plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampledNetwork", "monitoring"), ...) {
+plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampled", "monitoring"), ...) {
   stopifnot(is_missSBMfit(x))
   type <- match.arg(type)
   if (type == "network")
     x$fittedSBM$plot("network")
   if (type == "connectivity")
     x$fittedSBM$plot("connectivity")
-  if (type == "sampledNetwork")
+  if (type == "sampled")
     x$sampledNetwork$plot(x$fittedSBM$memberships)
   if (type == "monitoring")
     ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
@@ -245,6 +265,8 @@ plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampledNetw
 #' Extract model coefficients
 #'
 #' @description Extracts model coefficients from objects [`missSBM_fit`] returned by [estimate()]
+#'
+#' @name coef.missSBM_fit
 #'
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param type type of parameter that should be extracted. Either "mixture" (default), "connectivity", "covariates" or "sampling"

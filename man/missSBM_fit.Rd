@@ -2,39 +2,16 @@
 % Please edit documentation in R/missSBM_fit-Class.R
 \name{missSBM_fit}
 \alias{missSBM_fit}
-\alias{fitted.missSBM_fit}
-\alias{predict.missSBM_fit}
-\alias{summary.missSBM_fit}
-\title{R6 Class definition of an missSBM_fit}
-\usage{
-\method{fitted}{missSBM_fit}(object, ...)
-
-\method{predict}{missSBM_fit}(object, ...)
-
-\method{summary}{missSBM_fit}(object, ...)
-}
-\arguments{
-\item{object}{an R6 object with class [`missSBM_fit`]}
-
-\item{...}{additional parameters for S3 compatibility.}
-}
+\title{An R6 class to represent an SBM fit with missing data}
 \description{
-The function [estimate()] fits a collection of SBM for varying number of block. Each
-fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
+The function [estimate()] fits a collection of SBM for varying number of block.
+Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
 
 Fields are accessed via active binding and cannot be changed by the user.
 
-See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]
+This class comes with a set of R6 methods, some of them being useful for the user and exported
+as S3 methods. See the documentation for  [`show`], [`print`], [`fitted`], [`predict`], [`plot`].
 }
-\section{Functions}{
-\itemize{
-\item \code{fitted.missSBM_fit}: fitted value of a ['missSBM_fit']
-
-\item \code{predict.missSBM_fit}: prediction (imputed network) of a ['missSBM_fit']
-
-\item \code{summary.missSBM_fit}: summary of a ['missSBM_fit']
-}}
-
 \examples{
 ## Sample 75\% of dyads in  French political Blogosphere's network data
 adjMatrix <- missSBM::frenchblog2007 \%>\%
