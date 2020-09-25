@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>An object to represent a collection of SBM fits — missSBM_collection • missSBM</title>
+<title>An R6 class to represent a collection of SBM fits with missing data — missSBM_collection • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,14 @@
 
 
 
-<meta property="og:title" content="An object to represent a collection of SBM fits — missSBM_collection" />
-<meta property="og:description" content="The function [`estimate`] fits a collection of SBM fitted for varying number of block.
-They are stored in an instance of this class.
+<meta property="og:title" content="An R6 class to represent a collection of SBM fits with missing data — missSBM_collection" />
+<meta property="og:description" content="The function [estimate()] fits a collection of SBM for varying number
+of block, which are stored in an instance of an object with class [`missSBM_collection`],
+described here.
 Fields are accessed via active binding and cannot be changed by the user.
-See S3 methods [`show`], [`print`], [`smooth`]" />
+This class comes with a set of R6 methods, some of them being useful for the user and exported
+as S3 methods. See the documentation for [show()], [print()] and [smooth()], the latter being
+used to smooth the ICL on a collection of model, as post-treatment." />
 
 
 
@@ -132,26 +135,23 @@ See S3 methods [`show`], [`print`], [`smooth`]" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>An object to represent a collection of SBM fits</h1>
+    <h1>An R6 class to represent a collection of SBM fits with missing data</h1>
     <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_collection-Class.R'><code>R/missSBM_collection-Class.R</code></a></small>
     <div class="hidden name"><code>missSBM_collection.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function [`estimate`] fits a collection of SBM fitted for varying number of block.
-They are stored in an instance of this class.</p>
+    <p>The function [estimate()] fits a collection of SBM for varying number
+of block, which are stored in an instance of an object with class [`missSBM_collection`],
+described here.</p>
 <p>Fields are accessed via active binding and cannot be changed by the user.</p>
-<p>See S3 methods [`show`], [`print`], [`smooth`]</p>
+<p>This class comes with a set of R6 methods, some of them being useful for the user and exported
+as S3 methods. See the documentation for [show()], [print()] and [smooth()], the latter being
+used to smooth the ICL on a collection of model, as post-treatment.</p>
     </div>
 
 
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This R6 class stores a collection of missSBM_fit. Comes with basic printing methods and field access.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>The function [`smooth`] can be used to smooth the ICL on a collection of model, as post-treatment.</p></div>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>

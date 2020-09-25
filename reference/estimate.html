@@ -183,8 +183,8 @@ must be a size-N vector;  if the covariates are dyad-centered, each entry of <co
 
     <p>The list of parameters <code>control</code> tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul>
-<li><p>"useCovariates"logical. If covariates are present in sampledNet, should they be used for the
-        inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></li>
+<li><p>"useCovSBM"logical. If covariates is not null, should they be used for the
+        for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
 <li><p>"clusterInit"Initial method for clustering: either a character in "hierarchical", "spectral"
         or "kmeans", or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size
         <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>,  providing a user-defined clustering. Default is "hierarchical".</p></li>
@@ -225,17 +225,17 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
 <span class='kw'>alpha</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameter</span>
 <span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>,<span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
 
-<span class='co'>## simulate a SBM without covariates</span>
+<span class='co'>## Sampling parameters</span>
+<span class='kw'>samplingParameters</span> <span class='op'>&lt;-</span> <span class='fl'>.5</span> <span class='co'># the sampling rate</span>
+<span class='kw'>sampling</span>  <span class='op'>&lt;-</span> <span class='st'>"dyad"</span>       <span class='co'># the sampling design</span>
+
+<span class='co'>## simulate a SBM without covariate</span>
 <span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='simulate.html'>simulate</a></span>(<span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>pi</span>, <span class='kw'>directed</span>)
 
-<span class='co'>## Sample network data</span>
-<span class='kw'>samplingParameters</span> <span class='op'>&lt;-</span> <span class='fl'>.5</span> <span class='co'># the sampling rate</span>
-<span class='kw'>sampling</span> <span class='op'>&lt;-</span> <span class='st'>"dyad"</span>       <span class='co'># the sampling design</span>
-<span class='kw'>sampledNet</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='sample.html'>sample</a></span>(<span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>adjacencyMatrix</span>, <span class='kw'>sampling</span>, <span class='kw'>samplingParameters</span>)
-
-<span class='co'>## Inference :</span>
-<span class='kw'>vBlocks</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span> <span class='co'># number of classes</span>
-<span class='kw'>collection</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'>estimate</span>(<span class='kw'>sampledNet</span>, <span class='kw'>vBlocks</span>, <span class='kw'>sampling</span>)
+<span class='co'>## Sample some dyads data + Infer SBM with missing data</span>
+<span class='kw'>collection</span> <span class='op'>&lt;-</span>
+   <span class='kw'>missSBM</span>::<span class='fu'><a href='sample.html'>sample</a></span>(<span class='kw'>sbm</span><span class='op'>$</span><span class='kw'>adjacencyMatrix</span>, <span class='kw'>sampling</span>, <span class='kw'>samplingParameters</span>) <span class='op'>%&gt;%</span>
+   <span class='kw'>missSBM</span>::<span class='fu'>estimate</span>(vBlocks = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, sampling = <span class='kw'>sampling</span>)
 </div><div class='output co'>#&gt; 
 #&gt; 
 #&gt;  Adjusting Variational EM for Stochastic Block Model

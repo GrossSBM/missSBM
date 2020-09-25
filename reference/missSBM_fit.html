@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>R6 Class definition of an missSBM_fit — missSBM_fit • missSBM</title>
+<title>An R6 class to represent an SBM fit with missing data — missSBM_fit • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,12 @@
 
 
 
-<meta property="og:title" content="R6 Class definition of an missSBM_fit — missSBM_fit" />
-<meta property="og:description" content="The function [estimate()] fits a collection of SBM for varying number of block. Each
-fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
+<meta property="og:title" content="An R6 class to represent an SBM fit with missing data — missSBM_fit" />
+<meta property="og:description" content="The function [estimate()] fits a collection of SBM for varying number of block.
+Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
 Fields are accessed via active binding and cannot be changed by the user.
-See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]" />
+This class comes with a set of R6 methods, some of them being useful for the user and exported
+as S3 methods. See the documentation for  [show()], [print()], [fitted()], [predict()], [plot()]." />
 
 
 
@@ -132,48 +133,21 @@ See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>R6 Class definition of an missSBM_fit</h1>
+    <h1>An R6 class to represent an SBM fit with missing data</h1>
     <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_fit-Class.R'><code>R/missSBM_fit-Class.R</code></a></small>
     <div class="hidden name"><code>missSBM_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function [estimate()] fits a collection of SBM for varying number of block. Each
-fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.</p>
+    <p>The function [estimate()] fits a collection of SBM for varying number of block.
+Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.</p>
 <p>Fields are accessed via active binding and cannot be changed by the user.</p>
-<p>See S3 methods [`show`], [`print`], [`fitted`], [`predict`], [`plot`]</p>
+<p>This class comes with a set of R6 methods, some of them being useful for the user and exported
+as S3 methods. See the documentation for  [show()], [print()], [fitted()], [predict()], [plot()].</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for missSBM_fit</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
-<span class='co'># S3 method for missSBM_fit</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
-<span class='co'># S3 method for missSBM_fit</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>object</th>
-      <td><p>an R6 object with class [`missSBM_fit`]</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional parameters for S3 compatibility.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
-
-    
-<ul>
-<li><p><code>fitted.missSBM_fit</code>: fitted value of a ['missSBM_fit']</p></li>
-<li><p><code>predict.missSBM_fit</code>: prediction (imputed network) of a ['missSBM_fit']</p></li>
-<li><p><code>summary.missSBM_fit</code>: summary of a ['missSBM_fit']</p></li>
-</ul>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visualization for an object [`missSBM_fit`] — plot.missSBM_fit • missSBM</title>
+<title>Summary method for a ['missSBM_fit'] — summary.missSBM_fit • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Visualization for an object [`missSBM_fit`] — plot.missSBM_fit" />
-<meta property="og:description" content="Plot function for the various fields of a [`missSBM_fit`]: the fitted SBM (network or connectivity),
-the original sampled network data, and a plot monitoring the optimization." />
+<meta property="og:title" content="Summary method for a ['missSBM_fit'] — summary.missSBM_fit" />
+<meta property="og:description" content="Summary method for a ['missSBM_fit']" />
 
 
 
@@ -130,33 +129,28 @@ the original sampled network data, and a plot monitoring the optimization." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visualization for an object [`missSBM_fit`]</h1>
+    <h1>Summary method for a ['missSBM_fit']</h1>
     <small class="dont-index">Source: <a href='https://github.com/jchiquet/missSBM/blob/master/R/missSBM_fit-Class.R'><code>R/missSBM_fit-Class.R</code></a></small>
-    <div class="hidden name"><code>plot.missSBM_fit.Rd</code></div>
+    <div class="hidden name"><code>summary.missSBM_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot function for the various fields of a [`missSBM_fit`]: the fitted SBM (network or connectivity),
-the original sampled network data, and a plot monitoring the optimization.</p>
+    <p>Summary method for a ['missSBM_fit']</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for missSBM_fit</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>x</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"network"</span>, <span class='st'>"connectivity"</span>, <span class='st'>"sampled"</span>, <span class='st'>"monitoring"</span>), <span class='kw'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>an object with class [`missSBM_fit`]</p></td>
-    </tr>
-    <tr>
-      <th>type</th>
-      <td><p>the type specifies the field to plot, either "network", "connectivity", "sampled" of "monitoring"</p></td>
+      <th>object</th>
+      <td><p>an R6 object with class [`missSBM_fit`]</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional parameters for S3 compatibility. Not used</p></td>
+      <td><p>additional parameters for S3 compatibility.</p></td>
     </tr>
     </table>
 
