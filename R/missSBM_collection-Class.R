@@ -36,7 +36,7 @@ missSBM_collection <-
       trace <- control$trace > 0; control$trace <- FALSE
       sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-      useCov      <- private$missSBM_fit[[1]]$useCovariates
+      useCov      <- private$missSBM_fit[[1]]$fittedSBM$hasCovariates
       adjacencyMatrix <- sampledNet$adjacencyMatrix
       if (!is.null(sampledNet$covarArray)) {
         y <- as.vector(adjacencyMatrix)

@@ -32,8 +32,7 @@ missSBM_fit <-
     imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
-    optStatus  = NULL, # status of the optimization process
-    useCov     = NULL  # use or not covariates for SBM fitting
+    optStatus  = NULL  # status of the optimization process
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -71,9 +70,6 @@ missSBM_fit <-
       } else {
         private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, sampledNet$covarArray)
       }
-
-      ## Covariates in SBM or not
-      private$useCov <- useCov
 
       ## Initialize the sampling fit
       private$sampling <- switch(netSampling,
@@ -161,8 +157,6 @@ missSBM_fit <-
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling_fit`]
     fittedSampling = function(value) {private$sampling}  ,
-    #' @field useCovariates logical. If covariates are present in sampledNet, should they be used for the inference of the network sampling design, or just for the SBM inference? default is TRUE.
-    useCovariates  = function(value) {private$useCov}   ,
     #' @field sampledNetwork The original network data used for the fit, with class [`sampledNetwork`]
     sampledNetwork = function(value) {private$sampledNet},
     #' @field imputedNetwork The network data with NAs values imputed with the model.
