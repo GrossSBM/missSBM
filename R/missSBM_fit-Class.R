@@ -33,7 +33,7 @@ missSBM_fit <-
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
     optStatus  = NULL, # status of the optimization process
-    useCov     = NULL  # use or not os covariates for SBM fitting
+    useCov     = NULL  # use or not covariates for SBM fitting
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -56,7 +56,7 @@ missSBM_fit <-
       clusterInit <- init_clustering(sampledNet$adjacencyMatrix, nBlocks, sampledNet$covarArray, clusterInit)
       Z <- clustering_indicator(clusterInit)
 
-      ## network data with basic imputation at startup
+      ## network data with basic imputation at start-up
       adjancency0 <- sampledNet$adjacencyMatrix; adjancency0[sampledNet$NAs] <- 0
       pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(sampledNet$nNodes)) %*% Z))
       private$imputedNet <- sampledNet$adjacencyMatrix
@@ -145,7 +145,6 @@ missSBM_fit <-
       cat("* Useful fields (most are special object themselves with methods) \n")
       cat("  $fittedSBM (the adjusted stochastic block model)                \n")
       cat("  $fittedSampling (the estimated sampling process)                \n")
-#      cat("  $sampledNetwork (the sampled network data)                      \n")
       cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
       cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
       cat("* S3 methods                                                      \n")

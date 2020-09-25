@@ -123,7 +123,4 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
   ## turn this matrix to a sampled Network object
   adjacencyMatrix[mySampler$samplingMatrix == 0] <- NA
   adjacencyMatrix
-
-  # sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
-  # sampledNet
 }

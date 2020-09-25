@@ -52,8 +52,7 @@ test_that("Consistency of dyad-centered sampling", {
   psi <- runif(M, -5, 5)
   adjMatrix <- missSBM::sample(sbm_cov_dyad$adjacencyMatrix, "covar-dyad", psi, covariates = covariates_dyad)
   ## Prepare network data for estimation with missing data
-  covar <- missSBM:::format_covariates(covariates_dyad, missSBM:::l1_similarity)
-  dyad <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  dyad <- missSBM:::sampledNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
   expect_is(dyad, "sampledNetwork", "R6")
   expect_equal(dim(dyad$adjacencyMatrix), dim(sbm_cov_dyad$adjacencyMatrix))
 
@@ -84,8 +83,7 @@ test_that("Consistency of node-centered network sampling", {
   ## with covariates
   psi <- runif(M, -5, 5)
   adjMatrix <- missSBM::sample(sbm_cov_node$adjacencyMatrix, "covar-node", psi, covariates = covariates_node)
-  covar <- missSBM:::format_covariates(covariates_node, missSBM:::l1_similarity)
-  node <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  node <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
   expect_is(node, "sampledNetwork", "R6")
   expect_equal(dim(node$adjacencyMatrix), dim(sbm_cov_node$adjacencyMatrix))
 

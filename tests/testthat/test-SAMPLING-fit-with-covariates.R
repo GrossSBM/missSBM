@@ -19,8 +19,7 @@ test_that("Parameter estimation in dyad-centered sampling with covariates", {
   sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
 
   adjMatrix  <- missSBM::sample(sbm$adjacencyMatrix, "covar-dyad", covarParam, covariates = covariates, intercept = intercept)
-  covar <- missSBM:::format_covariates(covariates, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::covarDyadSampling_fit$new(sampledNet, sbm$covarArray)
   expect_is(fittedSampling, "covarDyadSampling_fit")
@@ -42,8 +41,7 @@ test_that("Parameter estimation in dyad-centered sampling with covariates but ig
   sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
 
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "dyad", parameters = .9, covariates = covariates)
-  covar <- missSBM:::format_covariates(covariates, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::dyadSampling_fit$new(sampledNet, sbm$covarArray)
   expect_is(fittedSampling, "dyadSampling_fit")
@@ -67,8 +65,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
 
   sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "covar-node", covarParam, covariates = covariates_node, intercept = intercept)
-  covar <- missSBM:::format_covariates(covariates_node, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::covarNodeSampling_fit$new(sampledNet, simplify2array(covariates_node))
   expect_is(fittedSampling, "covarNodeSampling_fit")
@@ -92,8 +89,7 @@ test_that("Parameter estimation in node-centered sampling with covariates but ig
   sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
 
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "node", .9, covariates = covariates_node)
-  covar <- missSBM:::format_covariates(covariates_node, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::nodeSampling_fit$new(sampledNet, simplify2array(covariates_node))
   expect_is(fittedSampling, "nodeSampling_fit")

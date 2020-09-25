@@ -39,8 +39,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "covar-dyad", covarParam, covariates = covariates_dyad)
 
   ## Prepare network data for estimation with missing data
-  covar <- missSBM:::format_covariates(covariates_dyad, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
 
   ## Perform inference
   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "covar-dyad", "spectral", TRUE)
@@ -73,8 +72,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "dyad", 0.9)
 
   ## Prepare network data for estimation with missing data
-  covar <- missSBM:::format_covariates(covariates_dyad, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
 
   ## Perform inference
   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "dyad", "spectral", TRUE)
@@ -111,8 +109,7 @@ test_that("miss SBM with covariates and node sampling works", {
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "covar-node", covarParam, covariates = covariates_node)
 
   ## Prepare network data for estimation with missing data
-  covar <- missSBM:::format_covariates(covariates_node, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   ## Perform inference
   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "covar-node", clusterInit = "spectral", TRUE)
@@ -144,8 +141,7 @@ test_that("miss SBM with covariates and node sampling works", {
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "node", 0.9)
 
   ## Prepare network data for estimation with missing data
-  covar <- missSBM:::format_covariates(covariates_node, missSBM:::l1_similarity)
-  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covar$Matrix, covar$Array)
+  sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   ## Perform inference
   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "node", clusterInit = "spectral", TRUE)

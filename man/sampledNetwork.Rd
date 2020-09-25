@@ -9,7 +9,7 @@ An R6 Class used for internal representation of sampled network data
 An R6 Class used for internal representation of sampled network data
 }
 \details{
-All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
+All fields of this class are only accessible for reading.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -58,7 +58,11 @@ All fields of this class are only accessible for reading. This class comes with 
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$new(adjacencyMatrix, covarMatrix = NULL, covarArray = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$new(
+  adjacencyMatrix,
+  covariates = NULL,
+  similarity = l1_similarity
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -66,9 +70,9 @@ constructor
 \describe{
 \item{\code{adjacencyMatrix}}{The adjacency matrix of the network}
 
-\item{\code{covarMatrix}}{the matrix of covariates (default is \code{NULL}).}
+\item{\code{covariates}}{A list with M entries (the M covariates), each of whom being either a size-N vector or N x N matrix.}
 
-\item{\code{covarArray}}{the array of covariates  (default is \code{NULL}).}
+\item{\code{similarity}}{An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
 }
 \if{html}{\out{</div>}}
 }

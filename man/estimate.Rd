@@ -37,8 +37,8 @@ Stochastic Block Models indexed by block number.
 The list of parameters \code{control} tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:
  \itemize{
- \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the
-        inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+ \item{"useCovSBM"}{logical. If covariates is not null, should they be used for the
+        for the SBM inference (or just for the sampling)? Default is TRUE.}
  \item{"clusterInit"}{Initial method for clustering: either a character in "hierarchical", "spectral"
         or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
         \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "hierarchical".}
@@ -78,17 +78,17 @@ Q <- 3   # number of clusters
 alpha <- rep(1,Q)/Q     # mixture parameter
 pi <- diag(.45,Q) + .05 # connectivity matrix
 
-## simulate a SBM without covariates
+## Sampling parameters
+samplingParameters <- .5 # the sampling rate
+sampling  <- "dyad"       # the sampling design
+
+## simulate a SBM without covariate
 sbm <- missSBM::simulate(N, alpha, pi, directed)
 
-## Sample network data
-samplingParameters <- .5 # the sampling rate
-sampling <- "dyad"       # the sampling design
-sampledNet <- missSBM::sample(sbm$adjacencyMatrix, sampling, samplingParameters)
-
-## Inference :
-vBlocks <- 1:5 # number of classes
-collection <- missSBM::estimate(sampledNet, vBlocks, sampling)
+## Sample some dyads data + Infer SBM with missing data
+collection <-
+   missSBM::sample(sbm$adjacencyMatrix, sampling, samplingParameters) \%>\%
+   missSBM::estimate(vBlocks = 1:5, sampling = sampling)
 collection$ICL
 coef(collection$bestModel$fittedSBM, "connectivity")
 

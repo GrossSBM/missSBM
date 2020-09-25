@@ -16,8 +16,8 @@
 #' @details The list of parameters \code{control} tunes more advanced features, such as the
 #' initialization, how covariates are handled in the model, and the variational EM algorithm:
 #'  \itemize{
-#'  \item{"useCovariates"}{logical. If covariates are present in sampledNet, should they be used for the
-#'         inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+#'  \item{"useCovSBM"}{logical. If covariates is not null, should they be used for the
+#'         for the SBM inference (or just for the sampling)? Default is TRUE.}
 #'  \item{"clusterInit"}{Initial method for clustering: either a character in "hierarchical", "spectral"
 #'         or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
 #'         \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "hierarchical".}
@@ -57,17 +57,17 @@
 #' alpha <- rep(1,Q)/Q     # mixture parameter
 #' pi <- diag(.45,Q) + .05 # connectivity matrix
 #'
-#' ## simulate a SBM without covariates
+#' ## Sampling parameters
+#' samplingParameters <- .5 # the sampling rate
+#' sampling  <- "dyad"       # the sampling design
+#'
+#' ## simulate a SBM without covariate
 #' sbm <- missSBM::simulate(N, alpha, pi, directed)
 #'
-#' ## Sample network data
-#' samplingParameters <- .5 # the sampling rate
-#' sampling <- "dyad"       # the sampling design
-#' sampledNet <- missSBM::sample(sbm$adjacencyMatrix, sampling, samplingParameters)
-#'
-#' ## Inference :
-#' vBlocks <- 1:5 # number of classes
-#' collection <- missSBM::estimate(sampledNet, vBlocks, sampling)
+#' ## Sample some dyads data + Infer SBM with missing data
+#' collection <-
+#'    missSBM::sample(sbm$adjacencyMatrix, sampling, samplingParameters) %>%
+#'    missSBM::estimate(vBlocks = 1:5, sampling = sampling)
 #' collection$ICL
 #' coef(collection$bestModel$fittedSBM, "connectivity")
 #'
@@ -86,15 +86,16 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, cont
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
   stopifnot(is.numeric(vBlocks))
+  stopifnot(is.character(sampling))
 
+  ## If no covariate is provided, you cannot ask for using them
+  if (is.null(covariates)) control$useCovSBM <- FALSE
   ## If nothing specified by the user, use covariates by default
-  if (is.null(control$useCovariates)) control$useCovariates <- TRUE
-  ## But If no covariate is provided, you cannot ask for using them
-  if (is.null(covariates)) control$useCovariates <- FALSE
+  else if (is.null(control$useCovSBM)) control$useCovSBM <- TRUE
 
   ## Defaut control parameters overwritten by user specification
   ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, clusterInit = "hierarchical")
-  if (control$useCovariates) {
+  if (control$useCovSBM) {
     stopifnot(sampling %in% available_samplings_covariates)
     ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2, similarity = l1_similarity))
   } else {
@@ -103,8 +104,7 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, cont
   ctrl[names(control)] <- control
 
   ## Prepare network data for estimation with missing data
-  covar <- format_covariates(covariates, ctrl$similarity)
-  sampledNet <- sampledNetwork$new(adjacencyMatrix, covar$Matrix, covar$Array)
+  sampledNet <- sampledNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
@@ -114,7 +114,7 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, cont
       clusterInit = ctrl$clusterInit,
       cores       = ctrl$cores,
       trace       = (ctrl$trace > 0),
-      useCov      = ctrl$useCovariates
+      useCov      = ctrl$useCovSBM
   )
 
   ## Launch estimation of each missSBM_fit

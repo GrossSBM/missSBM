@@ -1,31 +1,8 @@
 #' An R6 Class used for internal representation of sampled network data
 #'
-#' All fields of this class are only accessible for reading. This class comes with a basic plot, summary and print methods
+#' All fields of this class are only accessible for reading.
 #'
 #' @importFrom R6 R6Class
-#
-# #' ## SBM parameters
-# directed <- FALSE
-# N <- 300 # number of nodes
-# Q <- 3   # number of clusters
-# alpha <- rep(1,Q)/Q     # mixture parameter
-# pi <- diag(.45,Q) + .05 # connectivity matrix
-#
-# ## simulate a SBM without covariates
-# sbm <- missSBM::simulate(N, alpha, pi, directed)
-#
-# ## Sample network data
-# sampled_network <-
-#      missSBM::sample(
-#        adjacencyMatrix = sbm$adjacencyMatrix,
-#        sampling        = "double-standard",
-#        parameters      = c(0.4, 0.8)
-#      )
-#
-# summary(sampled_network)
-# print(sampled_network)
-# plot(sampled_network, clustering = sbm$memberships)
-#
 sampledNetwork <-
   R6::R6Class(classname = "sampledNetwork",
   ## FIELDS : encode network with missing edges
@@ -83,9 +60,9 @@ sampledNetwork <-
   public = list(
     #' @description constructor
     #' @param adjacencyMatrix The adjacency matrix of the network
-    #' @param covarMatrix the matrix of covariates (default is \code{NULL}).
-    #' @param covarArray the array of covariates  (default is \code{NULL}).
-    initialize = function(adjacencyMatrix, covarMatrix = NULL, covarArray = NULL) {
+    #' @param covariates A list with M entries (the M covariates), each of whom being either a size-N vector or N x N matrix.
+    #' @param similarity An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
+    initialize = function(adjacencyMatrix, covariates = NULL, similarity = l1_similarity) {
 
       ## adjacency matrix
       stopifnot(is.matrix(adjacencyMatrix))
@@ -96,12 +73,9 @@ sampledNetwork <-
       private$Y  <- adjacencyMatrix
 
       ## covariates
-      if (!is.null(covarMatrix)) {
-        private$X <- covarMatrix
-      }
-      if (!is.null(covarArray)) {
-        private$phi <- covarArray
-      }
+      covar <- format_covariates(covariates, similarity)
+      private$X   <- covar$Matrix
+      private$phi <- covar$Array
 
       ## sets of observed / unobserved dyads
       private$nas <- is.na(adjacencyMatrix)
@@ -164,13 +138,3 @@ sampledNetwork <-
 
 ## Auxiliary functions to check the given class of an objet
 is_sampledNetwork <- function(Robject) {inherits(Robject, "sampledNetwork")}
-
-# #' @export
-# summary.sampledNetwork <- function(object, ...) {
-#   stopifnot(is_sampledNetwork(object))
-#   cat("Sampled Network with", object$nNodes, "nodes and sampling rate equal to", round(object$samplingRate,3),"\n")
-#   cat(" - ",length(object$observedDyads)," observed dyads (",
-#       sum(object$adjacencyMatrix[object$observedDyads] != 0), " links and ",
-#       sum(object$adjacencyMatrix[object$observedDyads] == 0), " no-links)\n",
-#       " - ", length(object$missingDyads)              , " missing dyads\n", sep = "")
-# }
