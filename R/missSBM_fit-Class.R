@@ -76,10 +76,10 @@ missSBM_fit <-
         "node"            = nodeSampling_fit$new(private$sampledNet),
         "covar-dyad"      = covarDyadSampling_fit$new(private$sampledNet),
         "covar-node"      = covarNodeSampling_fit$new(private$sampledNet),
-        "block-node"      = blockSampling_fit$new(private$sampledNet, Z),
+        "block-node"      = blockSampling_fit$new(private$sampledNet, clustering_indicator(clusterInit)),
         "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
-        "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, Z),
-        "degree"          = degreeSampling_fit$new(private$sampledNet, Z, private$SBM$connectParam),
+        "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, clustering_indicator(clusterInit)),
+        "degree"          = degreeSampling_fit$new(private$sampledNet, clustering_indicator(clusterInit), private$SBM$connectParam),
         "snowball"        = nodeSampling_fit$new(private$sampledNet) # estimated sampling parameter not relevant
       )
     },
