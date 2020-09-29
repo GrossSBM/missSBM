@@ -6,8 +6,8 @@
 #' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
 #' we assume an undirected network with no loop; otherwise the network is assumed directed.
 #' @param vBlocks The vector of number of blocks considered in the collection
-#' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node","sampling")
-#' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
+#' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node","covar-dyad","covar-node","snowball")
+#' and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree"). See details.
 #' @param covariates A list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.
 #' @param control a list of parameters controlling the variational EM algorithm. See details.
