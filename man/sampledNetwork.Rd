@@ -16,9 +16,9 @@ All fields of this class are only accessible for reading.
 \describe{
 \item{\code{samplingRate}}{The percentage of observed dyads}
 
-\item{\code{nNodes}}{The number of nodes}
+\item{\code{nbNodes}}{The number of nodes}
 
-\item{\code{nDyads}}{The number of dyads}
+\item{\code{nbDyads}}{The number of dyads}
 
 \item{\code{is_directed}}{logical indicating if the network is directed or not}
 
@@ -86,7 +86,7 @@ constructor
 method to cluster network data with missing value
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{sampledNetwork$clustering(
-  nBlocks,
+  nbBlocks,
   method = c("hierarchical", "spectral", "kmeans")
 )}\if{html}{\out{</div>}}
 }
@@ -94,7 +94,7 @@ method to cluster network data with missing value
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{nBlocks}}{integer, the chosen number of blocks}
+\item{\code{nbBlocks}}{integer, the chosen number of blocks}
 
 \item{\code{method}}{character with a clustering method among "hierarchical", "spectral", "kmeans".}
 }
@@ -113,7 +113,7 @@ basic imputation from existing clustering
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{clustering}}{a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.}
+\item{\code{clustering}}{a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
 }
 \if{html}{\out{</div>}}
 }

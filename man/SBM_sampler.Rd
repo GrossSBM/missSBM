@@ -14,7 +14,7 @@ The function [`simulate`] produces an instance of an object with class [`SBM_sam
 All fields of this class are only accessible for reading. This class comes with a set of methods,
 some of them being useful for the user (see examples)
 \itemize{
-\item{R6 methods:}{$rBlocks(), $rAdjancencyMatrix()}
+\item{R6 methods:}{$rMemberships(), $rAdjacency()}
 \item{S3 methods}{print(), plot()}
 }
 
@@ -37,8 +37,8 @@ sbm <- missSBM::simulate(N, alpha, pi, directed)
 
 ## equivalent construction from the SBM_sampler class itslef
 sbm_s <- SBM_sampler$new(directed, N, alpha, pi)
-sbm_s$rBlocks() # draw some blocks
-sbm_s$rAdjMatrix() # draw some edges
+sbm_s$rMemberships() # draw some blocks
+sbm_s$rAdjacency() # draw some edges
 
 coef(sbm_s, "mixture")
 coef(sbm_s, "connectivity")
@@ -53,11 +53,11 @@ The function \code{\link{simulate}}.
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{blocks}}{matrix for clustering memberships}
+\item{\code{indMemberships}}{matrix for clustering memberships}
 
 \item{\code{memberships}}{vector of clustering}
 
-\item{\code{connectProb}}{expected values of connection under the current model}
+\item{\code{expectation}}{expected values of connection under the current model}
 }
 \if{html}{\out{</div>}}
 }
@@ -65,8 +65,8 @@ The function \code{\link{simulate}}.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SBM_sampler$new()}}
-\item \href{#method-rBlocks}{\code{SBM_sampler$rBlocks()}}
-\item \href{#method-rAdjMatrix}{\code{SBM_sampler$rAdjMatrix()}}
+\item \href{#method-rMemberships}{\code{SBM_sampler$rMemberships()}}
+\item \href{#method-rAdjacency}{\code{SBM_sampler$rAdjacency()}}
 \item \href{#method-show}{\code{SBM_sampler$show()}}
 \item \href{#method-print}{\code{SBM_sampler$print()}}
 \item \href{#method-clone}{\code{SBM_sampler$clone()}}
@@ -87,8 +87,8 @@ Initialize a [`SBM_sampler`] object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$new(
   directed = FALSE,
-  nNodes = NA,
-  mixtureParam = NA,
+  nbNodes = NA,
+  blockProp = NA,
   connectParam = NA,
   covarParam = NULL,
   covarArray = NULL
@@ -100,9 +100,9 @@ Initialize a [`SBM_sampler`] object
 \describe{
 \item{\code{directed}}{logical indicating if the network is directed or not}
 
-\item{\code{nNodes}}{The number of nodes}
+\item{\code{nbNodes}}{The number of nodes}
 
-\item{\code{mixtureParam}}{the vector of mixture parameters}
+\item{\code{blockProp}}{the vector of mixture parameters}
 
 \item{\code{connectParam}}{the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.}
 
@@ -114,22 +114,22 @@ Initialize a [`SBM_sampler`] object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-rBlocks"></a>}}
-\if{latex}{\out{\hypertarget{method-rBlocks}{}}}
-\subsection{Method \code{rBlocks()}}{
+\if{html}{\out{<a id="method-rMemberships"></a>}}
+\if{latex}{\out{\hypertarget{method-rMemberships}{}}}
+\subsection{Method \code{rMemberships()}}{
 a method to generate a vector of clusters indicators
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$rBlocks()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$rMemberships()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-rAdjMatrix"></a>}}
-\if{latex}{\out{\hypertarget{method-rAdjMatrix}{}}}
-\subsection{Method \code{rAdjMatrix()}}{
+\if{html}{\out{<a id="method-rAdjacency"></a>}}
+\if{latex}{\out{\hypertarget{method-rAdjacency}{}}}
+\subsection{Method \code{rAdjacency()}}{
 a method to sample an adjacency matrix for the current SBM
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$rAdjMatrix()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SBM_sampler$rAdjacency()}\if{html}{\out{</div>}}
 }
 
 }

@@ -8,12 +8,12 @@ R6::R6Class(classname = "SBM_fit_covariates",
     initialize = function(adjacencyMatrix, clusterInit, covarArray) {
 
       # Basic fields intialization and call to super constructor
-      nBlocks <- length(unique(clusterInit))
+      nbBlocks <- length(unique(clusterInit))
       super$initialize(
         directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
-        nNodes       = nrow(adjacencyMatrix),
-        mixtureParam = rep(NA, nBlocks),
-        connectParam = matrix(NA, nBlocks, nBlocks),
+        nbNodes       = nrow(adjacencyMatrix),
+        blockProp = rep(NA, nbBlocks),
+        connectParam = matrix(NA, nbBlocks, nbBlocks),
         covarParam   = numeric(dim(covarArray)[3]),
         covarArray   = covarArray
       )
@@ -23,7 +23,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       Z <- clustering_indicator(clusterInit)
 
       ## Initialize parameters
-      private$pi    <- logit(check_boundaries(quad_form(adjacencyMatrix, Z) / quad_form(1 - diag(self$nNodes), Z)))
+      private$pi    <- logit(check_boundaries(quad_form(adjacencyMatrix, Z) / quad_form(1 - diag(self$nbNodes), Z)))
       private$alpha <- check_boundaries(colMeans(Z))
       private$beta  <- numeric(private$M)
       private$tau   <- Z

@@ -2,8 +2,8 @@
 #'
 #' Generates a realization (blocks and adjacency matrix) of a Stochastic Block model
 #'
-#' @param nNodes The number of nodes
-#' @param mixtureParam The mixture parameters
+#' @param nbNodes The number of nodes
+#' @param blockProp The mixture parameters
 #' @param connectParam The connectivity matrix (inter/intra clusters probabilities. provided on a logit scale for a model with covariates)
 #' @param directed Boolean variable to indicate whether the network is directed or not. Default to \code{FALSE}.
 #' @param covariates A list with M entries (the M covariates). Each entry of the list must be an N x N matrix.
@@ -36,7 +36,7 @@
 #' par(old_param)
 #'
 #' @export
-simulate <- function(nNodes, mixtureParam, connectParam, directed = FALSE, covariates = NULL, covarParam = NULL) {
+simulate <- function(nbNodes, blockProp, connectParam, directed = FALSE, covariates = NULL, covarParam = NULL) {
 
   ## Conversion of covariates to an array
   if (!is.null(covariates)) covariates <- simplify2array(covariates)
@@ -45,18 +45,18 @@ simulate <- function(nNodes, mixtureParam, connectParam, directed = FALSE, covar
   mySBM <-
     SBM_sampler$new(
       directed     = directed,
-      nNodes       = nNodes,
-      mixtureParam = mixtureParam,
+      nbNodes       = nbNodes,
+      blockProp = blockProp,
       connectParam = connectParam,
       covarParam   = covarParam,
       covarArray   = covariates
     )
 
   ## draw blocks
-  mySBM$rBlocks()
+  mySBM$rMemberships()
 
   ## draw adjacency matrix
-  mySBM$rAdjMatrix()
+  mySBM$rAdjacency()
 
   ## send the sampled SBM object
   mySBM

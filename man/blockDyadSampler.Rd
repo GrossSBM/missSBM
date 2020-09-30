@@ -42,7 +42,7 @@ constructor for networkSampling
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{blockDyadSampler$new(
   parameters = NA,
-  nNodes = NA,
+  nbNodes = NA,
   directed = FALSE,
   clusters = NA
 )}\if{html}{\out{</div>}}
@@ -53,7 +53,7 @@ constructor for networkSampling
 \describe{
 \item{\code{parameters}}{the vector of parameters associated to the sampling at play}
 
-\item{\code{nNodes}}{number of nodes in the network}
+\item{\code{nbNodes}}{number of nodes in the network}
 
 \item{\code{directed}}{logical, directed network of not}
 

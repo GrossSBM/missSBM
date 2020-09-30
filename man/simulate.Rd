@@ -5,8 +5,8 @@
 \title{Simulation of an SBM}
 \usage{
 simulate(
-  nNodes,
-  mixtureParam,
+  nbNodes,
+  blockProp,
   connectParam,
   directed = FALSE,
   covariates = NULL,
@@ -14,9 +14,9 @@ simulate(
 )
 }
 \arguments{
-\item{nNodes}{The number of nodes}
+\item{nbNodes}{The number of nodes}
 
-\item{mixtureParam}{The mixture parameters}
+\item{blockProp}{The mixture parameters}
 
 \item{connectParam}{The connectivity matrix (inter/intra clusters probabilities. provided on a logit scale for a model with covariates)}
 

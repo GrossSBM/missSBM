@@ -36,12 +36,12 @@ missSBM_collection <-
       trace <- control$trace > 0; control$trace <- FALSE
       sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-      useCov      <- private$missSBM_fit[[1]]$fittedSBM$hasCovariates
+      useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
       adjacencyMatrix <- sampledNet$adjacencyMatrix
       if (!is.null(sampledNet$covarArray)) {
         y <- as.vector(adjacencyMatrix)
         X <- apply(sampledNet$covarArray, 3, as.vector)
-        adjacencyMatrix <- matrix(NA, sampledNet$nNodes, sampledNet$nNodes)
+        adjacencyMatrix <- matrix(NA, sampledNet$nbNodes, sampledNet$nbNodes)
         NAs <- is.na(y)
         adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
       }
@@ -65,17 +65,17 @@ missSBM_collection <-
             }
             model
           }, mc.cores = control$cores)
-          best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
-          if (is.na(private$missSBM_fit[[i + 1]]$vICL)) {
+          best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$ICL))]]
+          if (is.na(private$missSBM_fit[[i + 1]]$ICL)) {
             private$missSBM_fit[[i + 1]] <- best_one
-          } else if (best_one$vICL < private$missSBM_fit[[i + 1]]$vICL) {
+          } else if (best_one$ICL < private$missSBM_fit[[i + 1]]$ICL) {
             private$missSBM_fit[[i + 1]] <- best_one
           }
 
-          # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-          # if (is.na(private$missSBM_fit[[i + 1]]$vBound)) {
+          # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$loglik))]]
+          # if (is.na(private$missSBM_fit[[i + 1]]$loglik)) {
           #   private$missSBM_fit[[i + 1]] <- best_one
-          # } else if (best_one$vBound > private$missSBM_fit[[i + 1]]$vBound) {
+          # } else if (best_one$loglik > private$missSBM_fit[[i + 1]]$loglik) {
           #   private$missSBM_fit[[i + 1]] <- best_one
           # }
         }
@@ -89,7 +89,7 @@ missSBM_collection <-
       trace <- control$trace > 0; control$trace <- FALSE
       sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-      useCov      <- private$missSBM_fit[[1]]$fittedSBM$hasCovariates
+      useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
       if (trace) cat("   Going backward ")
       for (i in rev(self$vBlocks[-1])) {
@@ -105,17 +105,17 @@ missSBM_collection <-
             model
           }, mc.cores = control$cores)
 
-          best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$vICL))]]
-          if (is.na(private$missSBM_fit[[i - 1]]$vICL)) {
+          best_one <- candidates[[which.min(sapply(candidates, function(candidate) candidate$ICL))]]
+          if (is.na(private$missSBM_fit[[i - 1]]$ICL)) {
             private$missSBM_fit[[i - 1]] <- best_one
-          } else if (best_one$vICL < private$missSBM_fit[[i - 1]]$vICL) {
+          } else if (best_one$ICL < private$missSBM_fit[[i - 1]]$ICL) {
             private$missSBM_fit[[i - 1]] <- best_one
           }
 
-          # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$vBound))]]
-          # if (is.na(private$missSBM_fit[[i - 1]]$vBound)) {
+          # best_one <- candidates[[which.max(sapply(candidates, function(candidate) candidate$loglik))]]
+          # if (is.na(private$missSBM_fit[[i - 1]]$loglik)) {
           #   private$missSBM_fit[[i - 1]] <- best_one
-          # } else if (best_one$vBound > private$missSBM_fit[[i - 1]]$vBound) {
+          # } else if (best_one$loglik > private$missSBM_fit[[i - 1]]$loglik) {
           #   private$missSBM_fit[[i - 1]] <- best_one
           # }
         }
@@ -158,7 +158,7 @@ missSBM_collection <-
       if (trace_main) cat("\n")
       invisible(
         mclapply(private$missSBM_fit, function(model) {
-          if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nBlocks,"blocks.\r")
+          if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nbBlocks,"blocks.\r")
             model$doVEM(control)
           }, mc.cores = control$cores
         )
@@ -182,7 +182,7 @@ missSBM_collection <-
       cat("COLLECTION OF", length(self$vBlocks), "SBM fits          \n")
       cat("========================================================\n")
       cat(" - Number of blocks considers: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
-      cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nBlocks, "\n", sep = "")
+      cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nbBlocks, "\n", sep = "")
       cat(" - Fields: $models, $ICL, $vBlocks, $bestModel, $optimizationStatus\n")
     },
     #' @description User friendly print method
@@ -192,17 +192,17 @@ missSBM_collection <-
     #' @field models a list of models
     models = function(value) (private$missSBM_fit),
     #' @field ICL the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)
-    ICL = function(value) {setNames(sapply(self$models, function(model) model$vICL), names(self$vBlocks))},
+    ICL = function(value) {setNames(sapply(self$models, function(model) model$ICL), names(self$vBlocks))},
     #' @field bestModel the best model according to the ICL
     bestModel = function(value) {self$models[[which.min(self$ICL)]]},
     #' @field vBlocks a vector with the number of blocks
-    vBlocks = function(value) {sapply(self$models, function(model) model$fittedSBM$nBlocks)},
+    vBlocks = function(value) {sapply(self$models, function(model) model$fittedSBM$nbBlocks)},
     #' @field optimizationStatus a data.frame summarizing the optimization process for all models
     optimizationStatus = function(value) {
       Reduce("rbind",
              lapply(self$models, function(model) {
                res <- model$monitoring
-               res$nBlock <- model$fittedSBM$nBlocks
+               res$nBlock <- model$fittedSBM$nbBlocks
                res
              })
       )

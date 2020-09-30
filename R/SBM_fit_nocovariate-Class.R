@@ -7,12 +7,12 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
     initialize = function(adjacencyMatrix, clusterInit) {
 
       # Basic fields intialization and call to super constructor
-      nBlocks <- length(unique(clusterInit))
+      nbBlocks <- length(unique(clusterInit))
       super$initialize(
         directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
-        nNodes       = nrow(adjacencyMatrix),
-        mixtureParam = rep(NA, nBlocks),
-        connectParam = matrix(NA, nBlocks, nBlocks)
+        nbNodes       = nrow(adjacencyMatrix),
+        blockProp = rep(NA, nbBlocks),
+        connectParam = matrix(NA, nbBlocks, nbBlocks)
       )
       private$Y <- adjacencyMatrix
 
@@ -25,7 +25,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       invisible(self)
     },
     update_parameters = function() { # NA not allowed in adjMatrix (should be imputed)
-      private$pi    <- check_boundaries(quad_form(private$Y, private$tau) / quad_form(1 - diag(self$nNodes), private$tau))
+      private$pi    <- check_boundaries(quad_form(private$Y, private$tau) / quad_form(1 - diag(self$nbNodes), private$tau))
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_blocks = function(log_lambda = 0) {
@@ -38,7 +38,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
           tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
         }
         # tau <- check_boundaries(t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax)), zero = 1e-4)
-        # private$tau <- tau / matrix(rowSums(tau), self$nNodes, private$Q, byrow = FALSE)
+        # private$tau <- tau / matrix(rowSums(tau), self$nbNodes, private$Q, byrow = FALSE)
         private$tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
       }
     }

@@ -21,7 +21,7 @@ networkSamplingDyads_fit <-
     initialize = function(sampledNetwork, name) {
       private$name    <- name
       private$D_miss  <- sampledNetwork$missingDyads
-      private$card_D  <- sampledNetwork$nDyads
+      private$card_D  <- sampledNetwork$nbDyads
     },
     #' @description show method
     show = function() {
@@ -39,7 +39,7 @@ networkSamplingDyads_fit <-
   ## ACTIVE BINDING
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
-    #' @field penalty double, value of the penalty term in vICL
+    #' @field penalty double, value of the penalty term in ICL
     penalty = function(value) {log(private$card_D) * self$df},
     #' @field log_lambda double, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {0}
@@ -63,7 +63,7 @@ networkSamplingNodes_fit <-
     initialize = function(sampledNetwork, name) {
       private$name   <- name
       private$N_obs  <- sampledNetwork$observedNodes
-      private$card_N <- sampledNetwork$nNodes
+      private$card_N <- sampledNetwork$nbNodes
     },
     #' @description show method
     show = function() {
@@ -78,7 +78,7 @@ networkSamplingNodes_fit <-
     update_imputation = function(PI) {PI} ## good for MCAR on node, dyads and NMAR with blocks
   ),
   active = list(
-    #' @field penalty double, value of the penalty term in vICL
+    #' @field penalty double, value of the penalty term in ICL
     penalty = function(value) {log(private$card_N) * self$df},
     #' @field log_lambda double, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {0}
@@ -227,7 +227,7 @@ doubleStandardSampling_fit <-
       private$So      <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
       private$So.bar  <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
       ## can we do better than that?
-      imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+      imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nbNodes, sampledNetwork$nbNodes)
       self$update_parameters(imputedNet)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
@@ -274,7 +274,7 @@ blockDyadSampling_fit <-
       private$NAs      <- sampledNetwork$NAs
       private$R        <- sampledNetwork$samplingMatrix
       private$directed <- sampledNetwork$is_directed
-      imputedNet       <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nNodes, sampledNetwork$nNodes)
+      imputedNet       <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nbNodes, sampledNetwork$nbNodes)
       self$update_parameters(imputedNet, blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)

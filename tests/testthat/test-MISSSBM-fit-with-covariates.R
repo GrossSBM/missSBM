@@ -56,7 +56,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$mixtureParam, sbm$mixtureParam, sort = TRUE), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
 
@@ -89,7 +89,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$mixtureParam, sbm$mixtureParam, sort = TRUE), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
 
@@ -125,7 +125,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$mixtureParam, sbm$mixtureParam, sort = TRUE), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
 
@@ -157,7 +157,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$mixtureParam, sbm$mixtureParam, sort = TRUE), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
   expect_lt(error(logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
 

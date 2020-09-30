@@ -85,7 +85,7 @@ test_that("missSBM with a collection of models", {
 
     expect_true(is.data.frame(collection$optimizationStatus))
 
-    #expect_equal(collection$bestModel$fittedSBM$nBlocks, Q)
+    #expect_equal(collection$bestModel$fittedSBM$nbBlocks, Q)
     #expect_true(which.min(collection$ICL) == Q)
 
   }

@@ -20,11 +20,11 @@ networkSampler <-
     #' @description constructor for networkSampling
     #' @param type character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")
     #' @param parameters the vector of parameters associated to the sampling at play
-    #' @param nNodes number of nodes in the network
+    #' @param nbNodes number of nodes in the network
     #' @param directed logical, directed network of not
-    initialize = function(type=NA, parameters=NA, nNodes=NA, directed=FALSE) {
+    initialize = function(type=NA, parameters=NA, nbNodes=NA, directed=FALSE) {
       super$initialize(type, parameters)
-      private$N <- nNodes
+      private$N <- nbNodes
       private$directed <- directed
     },
     #' @description a method for drawing a sampling matrix according to the current sampling design
@@ -53,10 +53,10 @@ R6::R6Class(classname = "dyadSampler",
     #' @description constructor for networkSampling
     #' @param type character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")
     #' @param parameters the vector of parameters associated to the sampling at play
-    #' @param nNodes number of nodes in the network
+    #' @param nbNodes number of nodes in the network
     #' @param directed logical, directed network of not
-    initialize = function(type = NA, parameters = NA, nNodes = NA, directed = FALSE) {
-      super$initialize(type, parameters, nNodes, directed)
+    initialize = function(type = NA, parameters = NA, nbNodes = NA, directed = FALSE) {
+      super$initialize(type, parameters, nbNodes, directed)
       tmp_mat <- matrix(NA, private$N, private$N)
       if (!directed) {
         private$dyads <- which(lower.tri(tmp_mat))
@@ -103,12 +103,12 @@ R6::R6Class(classname = "simpleDyadSampler",
   public = list(
     #' @description constructor for networkSampling
     #' @param parameters the vector of parameters associated to the sampling at play
-    #' @param nNodes number of nodes in the network
+    #' @param nbNodes number of nodes in the network
     #' @param directed logical, directed network of not
     #' @param covarArray an array of covariates used
     #' @param intercept double, intercept term used to compute the probability of sampling in the presence of covariates. Default 0.
-    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarArray = NULL, intercept = 0) {
-      super$initialize("dyad", parameters, nNodes, directed)
+    initialize = function(parameters = NA, nbNodes = NA, directed = FALSE, covarArray = NULL, intercept = 0) {
+      super$initialize("dyad", parameters, nbNodes, directed)
       if (is.null(covarArray)) {
         stopifnot(length(parameters) == 1, all(parameters >= 0), all(parameters <= 1))
         sampling_prob <- rep(parameters, length(private$dyads))
@@ -156,10 +156,10 @@ R6::R6Class(classname = "blockDyadSampler",
   public = list(
     #' @description constructor for networkSampling
     #' @param parameters the vector of parameters associated to the sampling at play
-    #' @param nNodes number of nodes in the network
+    #' @param nbNodes number of nodes in the network
     #' @param directed logical, directed network of not
     #' @param clusters a vector of class memberships
-    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, clusters = NA) {
+    initialize = function(parameters = NA, nbNodes = NA, directed = FALSE, clusters = NA) {
       Q <- length(unique(clusters))
       stopifnot(
         all(parameters >= 0),
@@ -167,8 +167,8 @@ R6::R6Class(classname = "blockDyadSampler",
         length(unique(clusters)) == Q,
         dim(parameters) == c(Q,Q)
       )
-      super$initialize("block-dyad", parameters, nNodes, directed)
-      Z <- matrix(0, nNodes, Q)
+      super$initialize("block-dyad", parameters, nbNodes, directed)
+      Z <- matrix(0, nbNodes, Q)
       Z[cbind(1:private$N, private$clusters)] <- 1
       private$rho <- (Z %*% self$parameters %*% t(Z))[private$dyads]
       private$Q <- Q
@@ -193,20 +193,20 @@ R6::R6Class(classname = "simpleNodeSampler",
   public = list(
     #' @description constructor for networkSampling
     #' @param parameters the vector of parameters associated to the sampling at play
-    #' @param nNodes number of nodes in the network
+    #' @param nbNodes number of nodes in the network
     #' @param directed logical, directed network of not
     #' @param covarMatrix a matrix of covariates used
     #' @param intercept double, intercept term used to compute the probability of sampling in the presence of covariates. Default 0.
-    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, covarMatrix = NULL, intercept = 0) {
+    initialize = function(parameters = NA, nbNodes = NA, directed = FALSE, covarMatrix = NULL, intercept = 0) {
       ## w/o covariates
       if (is.null(covarMatrix)) {
         stopifnot(length(parameters) == 1, all(parameters >= 0), all(parameters <= 1))
-        sampling_prob <- rep(parameters, nNodes)
+        sampling_prob <- rep(parameters, nbNodes)
       } else {
         stopifnot(length(parameters) == ncol(covarMatrix))
         sampling_prob <- logistic(intercept + covarMatrix %*% parameters)
       }
-      super$initialize("node", parameters, nNodes, directed)
+      super$initialize("node", parameters, nbNodes, directed)
       private$rho <- sampling_prob
     }
   )
@@ -219,13 +219,13 @@ R6::R6Class(classname = "blockNodeSampler",
   public = list(
     #' @description constructor for networkSampling
     #' @param parameters the vector of parameters associated to the sampling at play
-    #' @param nNodes number of nodes in the network
+    #' @param nbNodes number of nodes in the network
     #' @param directed logical, directed network of not
     #' @param clusters a vector of class memberships
-    initialize = function(parameters = NA, nNodes = NA, directed = FALSE, clusters = NA) {
+    initialize = function(parameters = NA, nbNodes = NA, directed = FALSE, clusters = NA) {
       stopifnot(all(parameters >= 0), all(parameters <= 1))
-      stopifnot(length(clusters) == nNodes, length(parameters) == length(unique(clusters)))
-      super$initialize("block-node", parameters, nNodes, directed)
+      stopifnot(length(clusters) == nbNodes, length(parameters) == length(unique(clusters)))
+      super$initialize("block-node", parameters, nbNodes, directed)
       private$rho <- self$parameters[clusters]
     }
   )

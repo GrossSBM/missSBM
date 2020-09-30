@@ -34,7 +34,7 @@ test_that("Spectral clustering is consistent", {
     cl_spectral <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         clusterInit = "spectral"
       )
     expect_is(cl_spectral, "integer")
@@ -59,7 +59,7 @@ test_that("Kmeans clustering is consistent", {
     cl_kmeans <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         clusterInit = "kmeans"
       )
     expect_is(cl_kmeans, "integer")
@@ -83,7 +83,7 @@ test_that("Hierarchical clustering is consistent", {
     cl_hierarchical <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         clusterInit = "hierarchical"
       )
     expect_is(cl_hierarchical, "integer")
@@ -105,7 +105,7 @@ test_that("Clustering initializations are relevant", {
       cl <-
         missSBM:::init_clustering(
           adjacencyMatrix = A,
-          nBlocks = Q,
+          nbBlocks = Q,
           clusterInit = method
         )
 
@@ -148,7 +148,7 @@ test_that("Init clustering with covariate is consistent", {
     cl <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         covarArray = sbm$covarArray,
         clusterInit = method
       )

@@ -30,9 +30,9 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     newAlgo <- missSBM_out$bestModel
 
     ## mixture parameters (alpha)
-    err_new <- error(newAlgo$fittedSBM$mixtureParam, truth$mixtureParam, sort = TRUE)
-    err_old <- error(refAlgo$mixtureParam          , truth$mixtureParam, sort = TRUE)
-    gap_old <- error(newAlgo$fittedSBM$mixtureParam, refAlgo$mixtureParam, sort = TRUE)
+    err_new <- error(newAlgo$fittedSBM$blockProp, truth$mixtureParam, sort = TRUE)
+    err_old <- error(refAlgo$mixtureParam       , truth$mixtureParam, sort = TRUE)
+    gap_old <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth)
       cat(" new better on mixture")
@@ -104,9 +104,9 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     newAlgo <- missSBM_out$bestModel
 
     ## mixture parameters (alpha)
-    err_new <- error(newAlgo$fittedSBM$mixtureParam, truth$mixtureParam, sort = TRUE)
-    err_old <- error(refAlgo$mixtureParam          , truth$mixtureParam, sort = TRUE)
-    gap_old <- error(newAlgo$fittedSBM$mixtureParam, refAlgo$mixtureParam, sort = TRUE)
+    err_new <- error(newAlgo$fittedSBM$blockProp, truth$mixtureParam, sort = TRUE)
+    err_old <- error(refAlgo$mixtureParam       , truth$mixtureParam, sort = TRUE)
+    gap_old <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth)
       cat(" new better on mixture")

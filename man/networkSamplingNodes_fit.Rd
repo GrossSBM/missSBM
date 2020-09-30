@@ -14,7 +14,7 @@ Virtual class used to define a family of networkSamplingNodes_fit
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{penalty}}{double, value of the penalty term in vICL}
+\item{\code{penalty}}{double, value of the penalty term in ICL}
 
 \item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
 }

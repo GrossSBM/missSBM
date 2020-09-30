@@ -40,22 +40,22 @@ missSBM_fit <-
   public = list(
     #' @description constructor for networkSampling
     #' @param sampledNet An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).
-    #' @param nBlocks integer, the number of blocks in the SBM
+    #' @param nbBlocks integer, the number of blocks in the SBM
     #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
-    #' @param clusterInit Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels. Default is "hierarchical".
+    #' @param clusterInit Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".
     #' @param useCov logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    initialize = function(sampledNet, nBlocks, netSampling, clusterInit, useCov) {
+    initialize = function(sampledNet, nbBlocks, netSampling, clusterInit, useCov) {
 
       ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(sampledNet, "sampledNetwork"))
-      stopifnot(length(nBlocks) == 1 & nBlocks >= 1 & is.numeric(nBlocks))
+      stopifnot(length(nbBlocks) == 1 & nbBlocks >= 1 & is.numeric(nbBlocks))
 
       ## Initial Clustering
       if (is.numeric(clusterInit) | is.factor(clusterInit))
         clusterInit <- as.integer(clusterInit)
       else
-        clusterInit <- sampledNet$clustering(nBlocks, clusterInit)
+        clusterInit <- sampledNet$clustering(nbBlocks, clusterInit)
 
       ## network data with basic imputation at start-up
       private$imputedNet <- sampledNet$imputation(clusterInit)
@@ -106,7 +106,7 @@ missSBM_fit <-
         #
         for (k in seq.int(control$fixPointIter)) {
           # update the variational parameters for missing entries (a.k.a nu)
-          nu <- private$sampling$update_imputation(private$SBM$connectProb)
+          nu <- private$sampling$update_imputation(private$SBM$expectation)
           private$imputedNet[private$sampledNet$NAs] <- nu[private$sampledNet$NAs]
           # update the variational parameters for block memberships (a.k.a tau)
           private$SBM$adjacencyMatrix <- private$imputedNet
@@ -119,12 +119,12 @@ missSBM_fit <-
         # update the parameters of the SBM (a.k.a alpha and pi)
         private$SBM$update_parameters()
         # update the parameters of network sampling process (a.k.a psi)
-        private$sampling$update_parameters(private$imputedNet, private$SBM$blocks)
+        private$sampling$update_parameters(private$imputedNet, private$SBM$probMemberships)
 
         ## Check convergence
         delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
         cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
-        objective[i] <- self$vBound
+        objective[i] <- self$loglik
 
       }
       if (control$trace) cat("\n")
@@ -141,7 +141,7 @@ missSBM_fit <-
       cat("  $fittedSBM (the adjusted stochastic block model)                \n")
       cat("  $fittedSampling (the estimated sampling process)                \n")
       cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
-      cat("  $monitoring, $vICL, $vBound, $vExpec, $penalty                  \n")
+      cat("  $monitoring, $ICL, $loglik, $vExpec, $penalty                  \n")
       cat("* S3 methods                                                      \n")
       cat("  plot, coef, fitted, predict, print                              \n")
     },
@@ -168,14 +168,14 @@ missSBM_fit <-
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
       res
     },
-    #' @field vBound double: approximation of the log-likelihood (variational lower bound) reached
-    vBound  = function(value) {private$SBM$vBound + self$entropyImputed + private$sampling$vExpec},
+    #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
+    loglik  = function(value) {private$SBM$loglik + self$entropyImputed + private$sampling$vExpec},
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {private$SBM$vExpec + private$sampling$vExpec},
-    #' @field penalty double, value of the penalty term in vICL
+    #' @field penalty double, value of the penalty term in ICL
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
-    #' @field vICL double: value of the integrated classification log-likelihood
-    vICL    = function(value) {-2 * self$vExpec + self$penalty}
+    #' @field ICL double: value of the integrated classification log-likelihood
+    ICL    = function(value) {-2 * self$vExpec + self$penalty}
   )
 )
 
@@ -269,7 +269,7 @@ plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampled", "
 coef.missSBM_fit <- function(object, type = c("mixture", "connectivity", "covariates", "sampling"), ...) {
   stopifnot(is_missSBMfit(object))
   switch(match.arg(type),
-         mixture      = object$fittedSBM$mixtureParam,
+         mixture      = object$fittedSBM$blockProp,
          connectivity = object$fittedSBM$connectParam,
          covariates   = object$fittedSBM$covarParam,
          sampling     = object$fittedSampling$parameters)

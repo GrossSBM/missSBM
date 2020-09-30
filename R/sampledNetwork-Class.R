@@ -26,12 +26,12 @@ sampledNetwork <-
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
     #' @field samplingRate The percentage of observed dyads
-    samplingRate = function(value) {length(private$D_obs)/self$nDyads},
-    #' @field nNodes The number of nodes
-    nNodes = function(value) {ncol(private$Y)},
-    #' @field nDyads The number of dyads
-    nDyads = function(value) {
-      ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)
+    samplingRate = function(value) {length(private$D_obs)/self$nbDyads},
+    #' @field nbNodes The number of nodes
+    nbNodes = function(value) {ncol(private$Y)},
+    #' @field nbDyads The number of dyads
+    nbDyads = function(value) {
+      ifelse(private$directed, self$nbNodes*(self$nbNodes - 1), self$nbNodes*(self$nbNodes - 1)/2)
     },
     #' @field is_directed logical indicating if the network is directed or not
     is_directed = function(value) {private$directed},
@@ -89,48 +89,48 @@ sampledNetwork <-
       private$D_obs  <- intersect(which(!private$nas), private$D )
 
       ## sets of observed / unobserved nodes
-      S <- rep(FALSE, self$nNodes)
+      S <- rep(FALSE, self$nbNodes)
       S[!is.na(rowSums(adjacencyMatrix))] <- TRUE
       private$S <- S
 
       ## sampling matrix (indicating who is observed) : USELESS ??
-      R <- matrix(0, self$nNodes, self$nNodes)
+      R <- matrix(0, self$nbNodes, self$nbNodes)
       R[private$D_obs] <- 1
       if (!private$directed)  R <- t(R) | R
       private$R <- R
     },
     #' @description method to cluster network data with missing value
-    #' @param nBlocks integer, the chosen number of blocks
+    #' @param nbBlocks integer, the chosen number of blocks
     #' @param method character with a clustering method among "hierarchical", "spectral", "kmeans".
-    clustering = function(nBlocks, method = c("hierarchical", "spectral", "kmeans")) {
+    clustering = function(nbBlocks, method = c("hierarchical", "spectral", "kmeans")) {
 
-      if (nBlocks > 1) {
+      if (nbBlocks > 1) {
         adjacencyMatrix <- private$Y
         if (!is.null(private$phi)) {
           y <- as.vector(adjacencyMatrix)
           X <- cbind(1, apply(private$phi, 3, as.vector))
           NAs <- as.vector(private$nas)
-          adjacencyMatrix <- matrix(NA, self$nNodes, self$nNodes)
+          adjacencyMatrix <- matrix(NA, self$nbNodes, self$nbNodes)
           adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
         }
         clustering <-
           switch(match.arg(method),
-                 "spectral"     = init_spectral(    adjacencyMatrix, nBlocks),
-                 "kmeans"       = init_kmeans(      adjacencyMatrix, nBlocks),
-                 "hierarchical" = init_hierarchical(adjacencyMatrix, nBlocks))
+                 "spectral"     = init_spectral(    adjacencyMatrix, nbBlocks),
+                 "kmeans"       = init_kmeans(      adjacencyMatrix, nbBlocks),
+                 "hierarchical" = init_hierarchical(adjacencyMatrix, nbBlocks))
       } else {
-        clustering <- rep(1L, self$nNodes)
+        clustering <- rep(1L, self$nbNodes)
       }
       clustering
     },
     #' @description basic imputation from existing clustering
-    #' @param clustering a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.
+    #' @param clustering a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
     #' @return an adjacency matrix with imputed values
     imputation = function(clustering) {
       adjancency0 <- private$Y
       adjancency0[private$nas] <- 0
       Z <- clustering_indicator(clustering)
-      pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(self$nNodes)) %*% Z))
+      pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(self$nbNodes)) %*% Z))
       imputation <- private$Y
       imputation[private$nas] <- (Z %*% pi0 %*% t(Z))[private$nas]
       imputation
@@ -158,7 +158,7 @@ sampledNetwork <-
       cat("Structure for storing a sampled network in missSBM\n")
       cat("==================================================================\n")
       cat("* Useful fields \n")
-      cat("  $nNodes, $nDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
+      cat("  $nbNodes, $nbDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
           "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
       cat("* Useful method: plot(), summary() , print()  \n")
     },

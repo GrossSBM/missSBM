@@ -32,12 +32,12 @@ test_that("Creation of a SBM_fit_covariates", {
   expect_is(mySBM_fit, "SBM_fit_covariates")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
-  expect_true(mySBM_fit$hasCovariates)
+  expect_true(mySBM_fit$nbCovariates > 0)
   expect_equal(mySBM_fit$df_covarParams, M)
-  expect_equal(mySBM_fit$df_mixtureParams, Q - 1)
-  expect_equal(mySBM_fit$blocks, missSBM:::clustering_indicator(cl_rand))
+  expect_equal(mySBM_fit$df_blockProps, Q - 1)
+  expect_equal(mySBM_fit$probMemberships, missSBM:::clustering_indicator(cl_rand))
   expect_equal(dim(mySBM_fit$connectParam), dim(sbm$connectParam))
-  expect_equal(length(mySBM_fit$mixtureParam), length(sbm$mixtureParam))
+  expect_equal(length(mySBM_fit$blockProp), length(sbm$blockProp))
   expect_equal(mySBM_fit$direction, "undirected")
 
 })
@@ -79,7 +79,7 @@ test_that("Creation of a SBM_fit_covariates", {
 
 ## CONSISTENCY WITH BLOCKMODELS
 
-test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nBlocks", {
+test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nbBlocks", {
 
   ## ========================================================================
   ## A SBM model with covariates
@@ -105,21 +105,21 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   BM$estimate()
 
   vBlocks <- 1:3
-  models <- lapply(vBlocks, function(nBlocks) {
-    cl0 <- missSBM:::init_clustering(sbm$adjacencyMatrix, nBlocks, sbm$covarArray, "hierarchical")
+  models <- lapply(vBlocks, function(nbBlocks) {
+    cl0 <- missSBM:::init_clustering(sbm$adjacencyMatrix, nbBlocks, sbm$covarArray, "hierarchical")
     myFit <- missSBM:::SBM_fit_covariates$new(sbm$adjacencyMatrix, cl0, sbm$covarArray)
     myFit$doVEM()
     myFit
   })
 
-  vICLs  <- sapply(models, function(model) model$vICL)
-  bestICL <- models[[which.min(vICLs)]]
+  ICLs  <- sapply(models, function(model) model$ICL)
+  bestICL <- models[[which.min(ICLs)]]
 
-  expect_equal(which.min(vICLs), which.max(BM$ICL))
+  expect_equal(which.min(ICLs), which.max(BM$ICL))
 
   tol_ref   <- 1e-2
   tol_truth <- 1e-2
-  expect_lt(sum(((-.5 * vICLs - BM$ICL)/BM$ICL)^2), tol_ref)
+  expect_lt(sum(((-.5 * ICLs - BM$ICL)/BM$ICL)^2), tol_ref)
 
   error_missSBM <- error(logistic(sbm$connectParam), logistic(bestICL$connectParam))
   error_BM      <- error(logistic(bestICL$connectParam),

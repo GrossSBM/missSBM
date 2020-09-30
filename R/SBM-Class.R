@@ -24,17 +24,17 @@ R6::R6Class(classname = "SBM",
   public = list(
     #' @description Initialize an [`SBM`] object
     #' @param directed logical indicating if the network is directed or not
-    #' @param nNodes The number of nodes
-    #' @param mixtureParam the vector of mixture parameters
+    #' @param nbNodes The number of nodes
+    #' @param blockProp the vector of mixture parameters
     #' @param connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
     #' @param covarParam the vector of parameters associated with the covariates
     #' @param covarArray the array of covariates
-    initialize = function(directed=FALSE, nNodes=NA, mixtureParam=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
+    initialize = function(directed=FALSE, nbNodes=NA, blockProp=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
       private$directed <- directed
-      private$N        <- nNodes
-      private$Q        <- length(mixtureParam)
+      private$N        <- nbNodes
+      private$Q        <- length(blockProp)
       private$M        <- ifelse(is.null(covarArray), 0, length(covarParam))
-      private$alpha    <- mixtureParam
+      private$alpha    <- blockProp
       private$pi       <- connectParam
       if (!is.null(covarArray)) {
         stopifnot(all.equal(dim(covarArray), c(private$N, private$N, private$M)))
@@ -48,12 +48,12 @@ R6::R6Class(classname = "SBM",
       cat(type)
       cat("==================================================================\n")
       cat("Model", self$direction, "with",
-          self$nNodes,"nodes,",
-          self$nBlocks, "blocks and",
-          ifelse(self$hasCovariates, self$nCovariates, "no"), "covariate(s).\n")
+          self$nbNodes,"nodes,",
+          self$nbBlocks, "blocks and",
+          ifelse(self$nbCovariates > 0, self$nbCovariates, "no"), "covariate(s).\n")
       cat("==================================================================\n")
       cat("* Useful fields \n")
-      cat("  $nNodes, $nBlocks, $nCovariates, $nDyads\n", " $mixtureParam, $connectParam\n", "$covarParam, $covarArray \n")
+      cat("  $nbNodes, $nbBlocks, $nbCovariates, $nbDyads\n", " $blockProp, $connectParam\n", "$covarParam, $covarArray \n")
     },
     #' @description User friendly print method
     print = function() { self$show() },
@@ -71,7 +71,7 @@ R6::R6Class(classname = "SBM",
         corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", mar = c(0,0,1,0))
       }
       if (type == "connectivity") {
-        corrplot(self$connectProb[order(self$memberships), order(self$memberships)],
+        corrplot(self$expectation[order(self$memberships), order(self$memberships)],
                  tl.pos = "n", method = "color", is.corr = FALSE, main = "")
       }
     }
@@ -80,20 +80,18 @@ R6::R6Class(classname = "SBM",
   ## ACTIVE BINDING
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
-    #' @field nNodes The number of nodes
-    nNodes        = function(value) {private$N}, # number of nodes
-    #' @field nBlocks The number of blocks
-    nBlocks       = function(value) {private$Q}, # number of blocks
-    #' @field nCovariates The number of covariates
-    nCovariates   = function(value) {private$M}, # number of covariates
-    #' @field nDyads The number of dyads
-    nDyads        = function(value) {ifelse(private$directed, self$nNodes*(self$nNodes - 1), self$nNodes*(self$nNodes - 1)/2)},
+    #' @field nbNodes The number of nodes
+    nbNodes        = function(value) {private$N}, # number of nodes
+    #' @field nbBlocks The number of blocks
+    nbBlocks       = function(value) {private$Q}, # number of blocks
+    #' @field nbCovariates The number of covariates
+    nbCovariates   = function(value) {private$M}, # number of covariates
+    #' @field nbDyads The number of dyads
+    nbDyads        = function(value) {ifelse(private$directed, self$nbNodes*(self$nbNodes - 1), self$nbNodes*(self$nbNodes - 1)/2)},
     #' @field direction character indicating if the network is directed or not
     direction     = function(value) {if (private$directed) "directed" else "undirected"}, # directed network or not
-    #' @field hasCovariates boolean indicating if the SBM owns covariate(s)
-    hasCovariates = function(value) {ifelse(self$nCovariates > 0 , TRUE, FALSE)}, # with or without covariates
-    #' @field mixtureParam the vector of mixture parameters (block proportions)
-    mixtureParam = function(value) {if (missing(value)) return(private$alpha) else private$alpha <- value},
+    #' @field blockProp the vector of mixture parameters (block proportions)
+    blockProp = function(value) {if (missing(value)) return(private$alpha) else private$alpha <- value},
     #' @field connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
     connectParam     = function(value) {if (missing(value)) return(private$pi) else private$pi <- values},
     #' @field adjacencyMatrix  The adjacency matrix of the network
@@ -102,12 +100,12 @@ R6::R6Class(classname = "SBM",
     covarParam       = function(value) {if (missing(value)) return(private$beta) else private$beta <- value},
     #' @field covarArray the array of covariates
     covarArray       = function(value) {private$X},
-    #' @field df_mixtureParams degrees of freedoms for the mixture parameters
-    df_mixtureParams = function(value) {self$nBlocks - 1},
+    #' @field df_blockProps degrees of freedoms for the mixture parameters
+    df_blockProps = function(value) {self$nbBlocks - 1},
     #' @field df_connectParams degrees of freedoms for the connectivity parameters
-    df_connectParams = function(value) {ifelse(private$directed, self$nBlocks^2, self$nBlocks*(self$nBlocks + 1)/2)},
+    df_connectParams = function(value) {ifelse(private$directed, self$nbBlocks^2, self$nbBlocks*(self$nbBlocks + 1)/2)},
     #' @field df_covarParams degrees of freedoms for the covariate parameters
-    df_covarParams   = function(value) {self$nCovariates}
+    df_covarParams   = function(value) {self$nbCovariates}
   )
 )
 
@@ -126,7 +124,7 @@ is_SBM <- function(Robject) {inherits(Robject, "SBM")}
 coef.SBM <- function(object, type = c("mixture", "connectivity", "covariates"), ...) {
   stopifnot(is_SBM(object))
   switch(match.arg(type),
-         mixture      = object$mixtureParam,
+         mixture      = object$blockProp,
          connectivity = object$connectParam,
          covariates   = object$covarParam)
 }
@@ -135,7 +133,7 @@ coef.SBM <- function(object, type = c("mixture", "connectivity", "covariates"), 
 #' @export
 fitted.SBM <- function(object, ...) {
   stopifnot(is_SBM(object))
-  object$connectProb
+  object$expectation
 }
 
 #' @export

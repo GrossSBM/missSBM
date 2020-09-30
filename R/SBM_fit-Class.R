@@ -44,7 +44,7 @@ R6::R6Class(classname = "SBM_fit",
         # Assess convergence
         delta[iterate] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
         stop <- (iterate > maxIter) |  (delta[iterate] < threshold)
-        objective[iterate] <- self$vBound
+        objective[iterate] <- self$loglik
       }
       if (trace) cat("\n")
       res <- data.frame(delta = delta[1:iterate], objective = objective[1:iterate])
@@ -55,27 +55,27 @@ R6::R6Class(classname = "SBM_fit",
     show = function(type = "Fit of a Stochastic Block Model\n") {
       super$show(type)
       cat("* Additional fields \n")
-      cat("  $blocks, $memberships, $adjMatrix, $connectProb, $vBound, $vICL, $penalty\n")
+      cat("  $probMemberships, $memberships, $adjMatrix, $expectation, $loglik, $ICL, $penalty\n")
       cat("* S3 methods \n")
       cat("  plot, print, summary, coef, fitted \n")
     }
   ),
   active = list(
-    #' @field vBound double: approximation of the log-likelihood (variational lower bound) reached
-    vBound      = function(value) {self$vExpec + self$entropy},
-    #' @field vICL double: value of the integrated classification log-likelihood
-    vICL        = function(value) {-2 * self$vExpec + self$penalty},
-    #' @field blocks matrix for clustering memberships
-    blocks      = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
+    #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
+    loglik      = function(value) {self$vExpec + self$entropy},
+    #' @field ICL double: value of the integrated classification log-likelihood
+    ICL        = function(value) {-2 * self$vExpec + self$penalty},
+    #' @field probMemberships matrix for clustering memberships
+    probMemberships      = function(value) {if (missing(value)) return(private$tau) else  private$tau <- value},
     #' @field memberships vector of clustering
     memberships = function(value) {apply(private$tau, 1, which.max)},
-    #' @field penalty double, value of the penalty term in vICL
-    penalty     = function(value) {(self$df_connectParams + self$df_covarParams) * log(self$nDyads) + self$df_mixtureParams * log(self$nNodes)},
+    #' @field penalty double, value of the penalty term in ICL
+    penalty     = function(value) {(self$df_connectParams + self$df_covarParams) * log(self$nbDyads) + self$df_blockProps * log(self$nbNodes)},
     #' @field entropy double, value of the entropy due to the clustering distribution
     entropy     = function(value) {-sum(xlogx(private$tau))},
-    #' @field connectProb expected values of connection under the current model
-    connectProb = function(value) {
-      if (self$hasCovariates) {## pi is gamma in covariate SBM
+    #' @field expectation expected values of connection under the current model
+    expectation = function(value) {
+      if (self$nbCovariates > 0) {## pi is gamma in covariate SBM
         Prob <- check_boundaries(logistic(private$tau %*% private$pi %*% t(private$tau) + roundProduct(private$X, private$beta)))
       } else {
         Prob <- check_boundaries(logistic(private$tau %*% logit(private$pi) %*% t(private$tau)))

@@ -99,7 +99,7 @@ test_that("Consistency of block-node sampling", {
   mySampler <- missSBM:::blockNodeSampler$new(psi, N, directed, mySBM$memberships)
   expect_is(mySampler, "blockNodeSampler")
   expect_equal(mySampler$type, "block-node")
-  expect_equal(mySampler$df, mySBM$nBlocks)
+  expect_equal(mySampler$df, mySBM$nbBlocks)
   expect_equal(mySampler$parameters, psi)
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))

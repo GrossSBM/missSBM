@@ -87,7 +87,7 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
   stopifnot(sampling %in% available_samplings)
 
   ## general network parameters
-  nNodes   <- ncol(adjacencyMatrix)
+  nbNodes   <- ncol(adjacencyMatrix)
   directed <- !isSymmetric(adjacencyMatrix)
 
   ## Prepare the covariates
@@ -98,19 +98,19 @@ sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covar
   mySampler <-
     switch(sampling,
       "dyad"       = simpleDyadSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed),
+        parameters = parameters, nbNodes = nbNodes, directed = directed),
       "node"       = simpleNodeSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed),
+        parameters = parameters, nbNodes = nbNodes, directed = directed),
       "covar-dyad" = simpleDyadSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, covarArray  = covar$Array, intercept = intercept),
+        parameters = parameters, nbNodes = nbNodes, directed = directed, covarArray  = covar$Array, intercept = intercept),
       "covar-node" = simpleNodeSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, covarMatrix = covar$Matrix, intercept = intercept),
+        parameters = parameters, nbNodes = nbNodes, directed = directed, covarMatrix = covar$Matrix, intercept = intercept),
       "double-standard" = doubleStandardSampler$new(
         parameters = parameters, adjMatrix = adjacencyMatrix, directed = directed),
       "block-dyad" = blockDyadSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, clusters = clusters),
+        parameters = parameters, nbNodes = nbNodes, directed = directed, clusters = clusters),
       "block-node" = blockNodeSampler$new(
-        parameters = parameters, nNodes = nNodes, directed = directed, clusters = clusters),
+        parameters = parameters, nbNodes = nbNodes, directed = directed, clusters = clusters),
       "degree"     = degreeSampler$new(
         parameters = parameters, degrees = rowSums(adjacencyMatrix), directed = directed),
       "snowball" = snowballSampler$new(
