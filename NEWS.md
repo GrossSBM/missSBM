@@ -1,11 +1,14 @@
+# missSBM 0.2.2 [2019-09-30]
+
+  - unexporting sampledNetwork, only use internally
+  - merging prepare_data with estimate
+  - enhanced documentation
+  - moving ownership to großBM
+
 # missSBM 0.2.1 [2019-09-16]
  
-  - added S3 methods for missSBM_fit, SBM and sampledNetwork  
-
-## significant changes:
-  - decent vignette
-  - faster tests
-  - many bugs corrected
+  - added S3 methods for missSBM_fit, SBM_fit
+  - 
 
 # missSBM 0.2.0 [2019-06-06]
 

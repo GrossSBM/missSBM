@@ -1,21 +1,22 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 0.2.1-9050
+Version: 0.2.2-9000
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
   person("Pierre", "Barbillon", role = c("aut"), email = "pierre.barbillon@agroparistech.fr",
       comment = c(ORCID = "0000-0002-7766-7693")),
-  person("Timothée", "Tabouy", role = c("aut"), email = "timothee.tabouy@agroparistech.fr")
+  person("Timothée", "Tabouy", role = c("aut"), email = "timothee.tabouy@agroparistech.fr"),
+  person("großBM team", role = c("ctb"))
   )
 Maintainer: Julien Chiquet <julien.chiquet@inrae.fr>
 Description: When a network is partially observed (here, NAs in the adjacency matrix rather than 1 or 0 
   due to missing information between node pairs), it is possible to account for the underlying process
   that generates those NAs. 'missSBM' adjusts the popular stochastic block model from network data 
   sampled under various missing data conditions, as described in Tabouy, Barbillon and Chiquet (2019) <doi:10.1080/01621459.2018.1562934>.
-URL: https://jchiquet.github.io/missSBM
-BugReports: https://github.com/jchiquet/missSBM/issues
+URL: https://grosssbm.github.io/missSBM
+BugReports: https://github.com/grossSBM/missSBM/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
