@@ -41,7 +41,7 @@ SBM
 SBMs
 subtypes
 undirected
-useCovariates
+useCovSBM
 variational
 Variational
 vICL

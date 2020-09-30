@@ -113,12 +113,12 @@ basic imputation from existing clustering
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{a}}{vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.}
+\item{\code{clustering}}{a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-an adjacencu matrix with imputed values
+an adjacency matrix with imputed values
 }
 }
 \if{html}{\out{<hr>}}

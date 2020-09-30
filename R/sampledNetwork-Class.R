@@ -124,8 +124,8 @@ sampledNetwork <-
       clustering
     },
     #' @description basic imputation from existing clustering
-    #' @param a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.
-    #' @return an adjacencu matrix with imputed values
+    #' @param clustering a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels.
+    #' @return an adjacency matrix with imputed values
     imputation = function(clustering) {
       adjancency0 <- private$Y
       adjancency0[private$nas] <- 0
