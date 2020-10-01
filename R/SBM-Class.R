@@ -29,7 +29,7 @@ R6::R6Class(classname = "SBM",
     #' @param blockProp the vector of mixture parameters
     #' @param connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
     #' @param covarParam the vector of parameters associated with the covariates
-    #' @param covarArray the array of covariates
+    #' @param covarList A list with M entries (the M covariates). Each entry of the list must be an N x N matrix
     initialize = function(directed=FALSE, nbNodes=NA, blockProp=NA, connectParam=NA, covarParam=numeric(length(covarList)), covarList=list()) {
 
       stopifnot(all.equal(length(covarParam), length(covarList)))
