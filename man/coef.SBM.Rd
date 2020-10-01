@@ -18,6 +18,5 @@ or "covariates" for \deqn{\beta}. Default is 'connectivity'.}
 vector or list of parameters.
 }
 \description{
-Extracts model coefficients from objects with class \code{\link[=SBM]{SBM}} and children (\code{\link[=SimpleSBM_fit]{SimpleSBM_fit}},
-\code{\link[=BipartiteSBM_fit]{BipartiteSBM_fit}})
+Extracts model coefficients from objects with class \code{\link[=SBM]{SBM}} and children
 }

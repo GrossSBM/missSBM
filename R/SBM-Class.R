@@ -133,8 +133,7 @@ is_SBM <- function(Robject) {inherits(Robject, "SBM")}
 
 #' Extract model coefficients
 #'
-#' Extracts model coefficients from objects with class \code{\link[=SBM]{SBM}} and children (\code{\link[=SimpleSBM_fit]{SimpleSBM_fit}},
-#' \code{\link[=BipartiteSBM_fit]{BipartiteSBM_fit}})
+#' Extracts model coefficients from objects with class \code{\link[=SBM]{SBM}} and children
 #'
 #' @param object an R6 object inheriting from class SBM_fit (like SimpleSBM_fit or BipartiteSBM_fit)
 #' @param type type of parameter that should be extracted. Either 'block' for \deqn{\pi}, 'connectivity' for \deqn{\theta},

@@ -28,9 +28,6 @@ Q <- 3   # number of clusters
 alpha <- rep(1,Q)/Q     # mixture parameter
 pi <- diag(.45,Q) + .05 # connectivity matrix
 gamma <- log(pi/(1-pi)) # logit transform fo the model with covariates
-M <- 2 # two Gaussian covariates
-covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
-covarParam  <- rnorm(M, -1, 1)
 
 ## draw a SBM without covariates through simulateSBM
 sbm <- missSBM::simulate(N, alpha, pi, directed)
@@ -40,7 +37,7 @@ sbm_s <- SBM_sampler$new(directed, N, alpha, pi)
 sbm_s$rMemberships() # draw some blocks
 sbm_s$rAdjacency() # draw some edges
 
-coef(sbm_s, "mixture")
+coef(sbm_s, "block")
 coef(sbm_s, "connectivity")
 summary(sbm_s)
 }
