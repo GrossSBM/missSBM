@@ -10,8 +10,8 @@ set.seed(178303)
 N <- 100
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45,Q) + .05                 # connectivity matrix
-gamma <- missSBM:::.logit(pi)
+theta <- diag(.45,Q) + .05                 # connectivity matrix
+gamma <- missSBM:::.logit(theta)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -52,9 +52,9 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   N <- 40
   Q <- 2
   alpha <- rep(1, Q)/Q                     # mixture parameter
-  pi <- diag(.45, Q) + .05                 # connectivity matrix
+  theta <- diag(.45, Q) + .05                 # connectivity matrix
   directed <- FALSE
-  gamma <- missSBM:::.logit(pi)
+  gamma <- missSBM:::.logit(theta)
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
   M <- 1

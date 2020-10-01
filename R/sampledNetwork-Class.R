@@ -131,9 +131,9 @@ sampledNetwork <-
       adjancency0 <- private$Y
       adjancency0[private$nas] <- 0
       Z <- clustering_indicator(clustering)
-      pi0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(self$nbNodes)) %*% Z))
+      theta0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(self$nbNodes)) %*% Z))
       imputation <- private$Y
-      imputation[private$nas] <- (Z %*% pi0 %*% t(Z))[private$nas]
+      imputation[private$nas] <- (Z %*% theta0 %*% t(Z))[private$nas]
       imputation
     },
     #' @description plot method for sampledNetwork

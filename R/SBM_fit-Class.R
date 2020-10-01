@@ -34,7 +34,7 @@ R6::R6Class(classname = "SBM_fit",
         iterate <- iterate + 1
         if (trace) cat(" iteration #:", iterate, "\r")
 
-        pi_old <- private$pi # save old value of parameters to assess convergence
+        theta_old <- private$theta # save old value of parameters to assess convergence
 
         # Variational E-Step
         for (i in seq.int(fixPointIter)) self$update_blocks()
@@ -42,7 +42,7 @@ R6::R6Class(classname = "SBM_fit",
         self$update_parameters()
 
         # Assess convergence
-        delta[iterate] <- sqrt(sum((private$pi - pi_old)^2)) / sqrt(sum((pi_old)^2))
+        delta[iterate] <- sqrt(sum((private$theta - theta_old)^2)) / sqrt(sum((theta_old)^2))
         stop <- (iterate > maxIter) |  (delta[iterate] < threshold)
         objective[iterate] <- self$loglik
       }
@@ -75,10 +75,10 @@ R6::R6Class(classname = "SBM_fit",
     entropy     = function(value) {-sum(xlogx(private$tau))},
     #' @field expectation expected values of connection under the current model
     expectation = function(value) {
-      if (self$nbCovariates > 0) {## pi is gamma in covariate SBM
-        Prob <- check_boundaries(.logistic(private$tau %*% private$pi %*% t(private$tau) + self$covarEffect))
+      if (self$nbCovariates > 0) {## theta is gamma in covariate SBM
+        Prob <- check_boundaries(.logistic(private$tau %*% private$theta %*% t(private$tau) + self$covarEffect))
       } else {
-        Prob <- check_boundaries(.logistic(private$tau %*% .logit(private$pi) %*% t(private$tau)))
+        Prob <- check_boundaries(.logistic(private$tau %*% .logit(private$theta) %*% t(private$tau)))
       }
       Prob
     }

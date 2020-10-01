@@ -14,7 +14,7 @@ R6::R6Class(classname = "SBM",
     directed = NULL, # directed or undirected network
     N        = NULL, # number of nodes
     alpha    = NULL, # vector of block parameters
-    pi       = NULL, # matrix of connectivity
+    theta    = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
     Y        = NULL, # the adjacency matrix
     X        = NULL  # list of covariates (list of dim[1] x dim[2] matrices)
@@ -41,7 +41,7 @@ R6::R6Class(classname = "SBM",
       private$directed <- directed
       private$N        <- nbNodes
       private$alpha    <- blockProp
-      private$pi       <- connectParam
+      private$theta    <- connectParam
 
       private$model   <- "bernoulli"
       private$X       <- covarList
@@ -100,7 +100,7 @@ R6::R6Class(classname = "SBM",
     #' @field blockProp the vector of mixture parameters (block proportions)
     blockProp = function(value) {if (missing(value)) return(private$alpha) else private$alpha <- value},
     #' @field connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
-    connectParam     = function(value) {if (missing(value)) return(private$pi) else private$pi <- values},
+    connectParam     = function(value) {if (missing(value)) return(private$theta) else private$theta <- values},
     #' @field adjacencyMatrix  The adjacency matrix of the network
     adjacencyMatrix  = function(value) {if (missing(value)) return(private$Y) else private$Y <- value},
     #' @field covarParam the vector of parameters associated with the covariates

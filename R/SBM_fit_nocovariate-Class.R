@@ -25,17 +25,17 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       invisible(self)
     },
     update_parameters = function() { # NA not allowed in adjMatrix (should be imputed)
-      private$pi    <- check_boundaries(quad_form(private$Y, private$tau) / quad_form(1 - diag(self$nbNodes), private$tau))
+      private$theta <- check_boundaries(quad_form(private$Y, private$tau) / quad_form(1 - diag(self$nbNodes), private$tau))
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_blocks = function(log_lambda = 0) {
       if (self$nbBlocks > 1) {
         adjMatrix_bar <- bar(private$Y)
         ## Bernoulli undirected
-        tau <- private$Y %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log_lambda
+        tau <- private$Y %*% private$tau %*% t(log(private$theta)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$theta)) + log_lambda
         if (private$directed) {
           ## Bernoulli directed
-          tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
+          tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$theta))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$theta)))
         }
         # tau <- check_boundaries(t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax)), zero = 1e-4)
         # private$tau <- tau / matrix(rowSums(tau), self$nbNodes, self$nbBlocks, byrow = FALSE)
@@ -47,8 +47,8 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
     vExpec = function(value) {
       factor <- ifelse(private$directed, 1, .5)
       adjMat <- private$Y ; diag(adjMat) <- 0
-      tmp <- factor * sum( adjMat * private$tau %*% log(private$pi) %*% t(private$tau) +
-                             bar(private$Y)  *  private$tau %*% log(1 - private$pi) %*% t(private$tau))
+      tmp <- factor * sum( adjMat * private$tau %*% log(private$theta) %*% t(private$tau) +
+                             bar(private$Y)  *  private$tau %*% log(1 - private$theta) %*% t(private$tau))
       sum(private$tau %*% log(private$alpha)) +  tmp
     }
   )

@@ -21,7 +21,7 @@ Mstep_covariates_directed <- function(param, Y, cov, Tau) {
     .Call('_missSBM_Mstep_covariates_directed', PACKAGE = 'missSBM', param, Y, cov, Tau)
 }
 
-E_step_nocovariate <- function(Y, Y_bar, pi, Tau, alpha, log_lambda, fixPointIter) {
-    .Call('_missSBM_E_step_nocovariate', PACKAGE = 'missSBM', Y, Y_bar, pi, Tau, alpha, log_lambda, fixPointIter)
+E_step_nocovariate <- function(Y, Y_bar, theta, Tau, alpha, log_lambda, fixPointIter) {
+    .Call('_missSBM_E_step_nocovariate', PACKAGE = 'missSBM', Y, Y_bar, theta, Tau, alpha, log_lambda, fixPointIter)
 }
 

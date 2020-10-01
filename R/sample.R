@@ -41,10 +41,10 @@
 #' N <- 300 # number of nodes
 #' Q <- 3   # number of clusters
 #' alpha <- rep(1,Q)/Q     # mixture parameter
-#' pi <- diag(.45,Q) + .05 # connectivity matrix
+#' theta <- diag(.45,Q) + .05 # connectivity matrix
 #'
 #' ## simulate a SBM without covariates
-#' sbm <- missSBM::simulate(N, alpha, pi, directed)
+#' sbm <- missSBM::simulate(N, alpha, theta, directed)
 #'
 #' ## Sample network data
 #'
@@ -54,7 +54,7 @@
 #'    "node" = .3,
 #'    "double-standard" = c(0.4, 0.8),
 #'    "block-node" = c(.3, .8, .5),
-#'    "block-dyad" = pi,
+#'    "block-dyad" = theta,
 #'    "degree" = c(.01, .01),
 #'    "snowball" = c(2,.1)
 #'  )

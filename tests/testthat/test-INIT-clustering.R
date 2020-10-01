@@ -5,12 +5,12 @@ library(aricode)
 set.seed(178303)
 N <- 50
 Q <- 3
-alpha <- rep(1, Q)/Q       # mixture parameter
-pi <- diag(.45, Q, Q) + .05   # connectivity matrix
-directed <- FALSE         # if the network is directed or not
+alpha <- rep(1, Q)/Q           # block proportion
+theta <- diag(.45, Q, Q) + .05 # connectivity matrix
+directed <- FALSE              # if the network is directed or not
 
 ### Draw a SBM model
-sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
+sbm <- missSBM::simulate(N, alpha, theta, directed) # simulation of a Bernoulli non-directed SBM
 
 A_full <- sbm$adjacencyMatrix             # the adjacency matrix
 
@@ -123,9 +123,9 @@ test_that("Clustering initializations are relevant", {
 set.seed(178303)
 N <- 40
 Q <- 2
-alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
-gamma <- missSBM:::.logit(pi)
+alpha <- rep(1,Q)/Q               # block proportion
+theta <- diag(.45, Q, Q) + .05    # connectivity matrix
+gamma <- missSBM:::.logit(theta)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates

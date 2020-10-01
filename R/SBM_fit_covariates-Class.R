@@ -22,7 +22,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       Z <- clustering_indicator(clusterInit)
 
       ## Initialize parameters
-      private$pi    <- .logit(check_boundaries(quad_form(adjacencyMatrix, Z) / quad_form(1 - diag(self$nbNodes), Z)))
+      private$theta <- .logit(check_boundaries(quad_form(adjacencyMatrix, Z) / quad_form(1 - diag(self$nbNodes), Z)))
       private$alpha <- check_boundaries(colMeans(Z))
       private$beta  <- numeric(self$nbCovariates)
       private$tau   <- Z
@@ -33,7 +33,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       optim_out  <-
         nloptr::nloptr(
           # starting parameters
-          c(as.vector(private$pi),private$beta),
+          c(as.vector(private$theta),private$beta),
           # objective function + gradient
           ifelse(private$directed, Mstep_covariates_directed, Mstep_covariates_undirected),
           # optimizer parameters
@@ -42,7 +42,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
           Y = private$Y, cov = self$covarArray, Tau = private$tau,
         )
       private$beta  <- optim_out$solution[-(1:(self$nbBlocks^2))]
-      private$pi    <- matrix(optim_out$solution[1:(self$nbBlocks^2)], self$nbBlocks, self$nbBlocks)
+      private$theta <- matrix(optim_out$solution[1:(self$nbBlocks^2)], self$nbBlocks, self$nbBlocks)
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_blocks =   function(log_lambda = NULL) {
@@ -50,7 +50,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         E_step_covariates(
           private$Y,
           self$covarEffect,
-          private$pi,
+          self$connectParam,
           private$tau,
           private$alpha
         )
@@ -61,7 +61,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       vExpec_covariates(
         private$Y,
         self$covarEffect,
-        private$pi,
+        self$connectParam,
         private$tau,
         private$alpha
       )

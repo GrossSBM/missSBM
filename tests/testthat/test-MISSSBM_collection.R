@@ -4,12 +4,12 @@ set.seed(1890718)
 ### A SBM model : ###
 N <- 100
 Q <- 3
-alpha <- rep(1, Q)/Q       # mixture parameter
-pi <- diag(.45, Q, Q) + .05   # connectivity matrix
-directed <- FALSE         # if the network is directed or not
+alpha <- rep(1, Q)/Q           # block proportion
+theta <- diag(.45, Q, Q) + .05 # connectivity matrix
+directed <- FALSE              # if the network is directed or not
 
 ### Draw a SBM model
-mySBM <- missSBM::simulate(N, alpha, pi, directed) # simulation of ad Bernoulli non-directed SBM
+mySBM <- missSBM::simulate(N, alpha, theta, directed) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$adjacencyMatrix             # the adjacency matrix
 
 test_that("missSBMcollection works", {

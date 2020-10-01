@@ -4,13 +4,13 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 100
 Q <- 3
-alpha <- rep(1, Q)/Q                     # mixture parameter
-pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
-gamma <- missSBM:::.logit(pi)
+alpha <- rep(1, Q)/Q           # block proportion
+theta <- diag(.45, Q, Q) + .05 # connectivity matrix
+gamma <- missSBM:::.logit(theta)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
-sbm <- missSBM::simulate(N, alpha, pi, directed)
+sbm <- missSBM::simulate(N, alpha, theta, directed)
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 2

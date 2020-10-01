@@ -10,8 +10,8 @@ set.seed(1827)
 N <- 100
 Q <- 2
 alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
-gamma <- missSBM:::.logit(pi)
+theta <- diag(.45, Q, Q) + .05                 # connectivity matrix
+gamma <- missSBM:::.logit(theta)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -58,7 +58,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
+  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth*10)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*3)
@@ -91,7 +91,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), pi), tol_truth*10)
+  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth*10)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*2)
@@ -127,7 +127,7 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
+  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
@@ -159,7 +159,7 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), pi), tol_truth)
+  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSampling$parameters, 0.9), 10 * tol_truth)

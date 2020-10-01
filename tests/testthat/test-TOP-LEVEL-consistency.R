@@ -41,7 +41,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       expect_lt(gap_old, tol_ref)
     }
 
-    ## connectivity parameters (pi)
+    ## connectivity parameters (theta)
     err_new <- error(newAlgo$fittedSBM$connectParam, truth$connectParam, sort = TRUE)
     err_old <- error(refAlgo$connectParam          , truth$connectParam, sort = TRUE)
     err_gap <- error(newAlgo$fittedSBM$connectParam, refAlgo$connectParam, sort = TRUE)
@@ -115,7 +115,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       expect_lt(err_gap, tol_ref)
     }
 
-    ## connectivity parameters (pi)
+    ## connectivity parameters (theta)
     err_new <- error(.logistic(newAlgo$fittedSBM$connectParam), .logistic(truth$connectParam), sort = TRUE)
     err_old <- error(.logistic(refAlgo$connectParam)          , .logistic(truth$connectParam), sort = TRUE)
     err_gap <- error(.logistic(newAlgo$fittedSBM$connectParam), .logistic(refAlgo$connectParam), sort = TRUE)

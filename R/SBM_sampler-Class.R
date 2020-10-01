@@ -21,14 +21,13 @@
 #' N <- 300 # number of nodes
 #' Q <- 3   # number of clusters
 #' alpha <- rep(1,Q)/Q     # mixture parameter
-#' pi <- diag(.45,Q) + .05 # connectivity matrix
-#' gamma <- log(pi/(1-pi)) # logit transform fo the model with covariates
+#' theta <- diag(.45,Q) + .05 # connectivity matrix
 #'
 #' ## draw a SBM without covariates through simulateSBM
-#' sbm <- missSBM::simulate(N, alpha, pi, directed)
+#' sbm <- missSBM::simulate(N, alpha, theta, directed)
 #'
 #' ## equivalent construction from the SBM_sampler class itslef
-#' sbm_s <- SBM_sampler$new(directed, N, alpha, pi)
+#' sbm_s <- SBM_sampler$new(directed, N, alpha, theta)
 #' sbm_s$rMemberships() # draw some blocks
 #' sbm_s$rAdjacency() # draw some edges
 #'
@@ -91,7 +90,7 @@ SBM_sampler <-
     memberships = function(value) {apply(private$Z, 1, which.max)},
     #' @field expectation expected values of connection under the current model
     expectation = function(value) {
-      PI <- private$Z %*% private$pi %*% t(private$Z)
+      PI <- private$Z %*% private$theta %*% t(private$Z)
       if (self$nbCovariates > 0) {
         PI <- .logistic(PI + self$covarEffect)
       }

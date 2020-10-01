@@ -12,7 +12,7 @@ using namespace arma;
 Rcpp::NumericMatrix E_step_nocovariate(
     const arma::mat& Y,
     const arma::mat& Y_bar,
-    const arma::mat&  pi,
+    const arma::mat&  theta,
     const arma::mat&  Tau,
     const arma::vec&  alpha,
     const double& log_lambda,
@@ -21,7 +21,7 @@ Rcpp::NumericMatrix E_step_nocovariate(
   mat Tau_new ;
 
   for (int iter=0; iter < fixPointIter; iter++) {
-    Tau_new = Y * Tau * trans(log(pi)) + Y_bar * Tau * trans(log(1 - pi)) + log_lambda ;
+    Tau_new = Y * Tau * trans(log(theta)) + Y_bar * Tau * trans(log(1 - theta)) + log_lambda ;
   }
 
   return Rcpp::wrap(Tau_new);

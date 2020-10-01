@@ -8,11 +8,11 @@ set.seed(178303)
 N <- 100
 Q <- 3
 alpha <- rep(1, Q)/Q                     # mixture parameter
-pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
+theta <- diag(.45, Q, Q) + .05                 # connectivity matrix
 directed <- FALSE
 
 ### Draw a undirected SBM model
-mySBM <- missSBM::simulate(N, alpha, pi, directed)
+mySBM <- missSBM::simulate(N, alpha, theta, directed)
 A <- mySBM$adjacencyMatrix
 cl_rand <- base::sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
@@ -49,7 +49,7 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
 
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_max = Q, plotting = "", ncores = 1)
   BM$estimate()
-  pi_BM <- BM$model_parameters[[Q]]$pi
+  theta_BM <- BM$model_parameters[[Q]]$pi
 
   ## checking estimation consistency
   expect_lt(sum((mySBM_fit_spec$connectParam - mySBM$connectParam)^2), tol)
@@ -57,9 +57,9 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
   expect_lt(sum((mySBM_fit_kmns$connectParam - mySBM$connectParam)^2), tol)
 
   ## checking estimation consistency with block model
-  expect_lt(sum((mySBM_fit_spec$connectParam - pi_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam - pi_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam - pi_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_spec$connectParam - theta_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_hier$connectParam - theta_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_kmns$connectParam - theta_BM)^2), tol)
 
   ## checking consistency of the clustering
   expect_lt(1 - ARI(mySBM_fit_hier$memberships, mySBM$memberships), tol)

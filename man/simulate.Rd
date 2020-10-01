@@ -39,13 +39,13 @@ N <- 300 # number of nodes
 Q <- 3   # number of clusters
 M <- 2 # two Gaussian covariates
 alpha <- rep(1, Q)/Q     # mixture parameters
-pi <- diag(.45, Q) + .05 # connectivity matrix
-eta <- rnorm(M, -1, 1)  # covariate parametes
-gamma <- log(pi/(1-pi)) # logit transform of pi for the model with covariates
+theta <- diag(.45, Q) + .05 # connectivity matrix
+eta   <- rnorm(M, -1, 1)  # covariate parametes
+gamma <- log(theta/(1-theta)) # logit transform of theta for the model with covariates
 X <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 
 ## draw a SBM without covariates
-sbm <- missSBM::simulate(N, alpha, pi, directed)
+sbm <- missSBM::simulate(N, alpha, theta, directed)
 coef(sbm, "connectivity")
 
 ## draw a SBM model with node-centered covariates

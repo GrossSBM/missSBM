@@ -99,7 +99,7 @@ missSBM_fit <-
       while (!cond) {
         i <- i + 1
         if (control$trace) cat(" iteration #:", i, "\r")
-        pi_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
+        theta_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
 
         ## ______________________________________________________
         ## Variational E-Step
@@ -116,13 +116,13 @@ missSBM_fit <-
         ## ______________________________________________________
         ## M-step
         #
-        # update the parameters of the SBM (a.k.a alpha and pi)
+        # update the parameters of the SBM (a.k.a alpha and theta)
         private$SBM$update_parameters()
         # update the parameters of network sampling process (a.k.a psi)
         private$sampling$update_parameters(private$imputedNet, private$SBM$probMemberships)
 
         ## Check convergence
-        delta[i] <- sqrt(sum((private$SBM$connectParam - pi_old)^2)) / sqrt(sum((pi_old)^2))
+        delta[i] <- sqrt(sum((private$SBM$connectParam - theta_old)^2)) / sqrt(sum((theta_old)^2))
         cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
         objective[i] <- self$loglik
 
