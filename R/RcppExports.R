@@ -5,12 +5,12 @@ roundProduct <- function(phi, beta) {
     .Call('_missSBM_roundProduct', PACKAGE = 'missSBM', phi, beta)
 }
 
-vExpec_covariates <- function(Y, roundProd, gamma, Tau, alpha) {
-    .Call('_missSBM_vExpec_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, alpha)
+vExpec_covariates <- function(Y, roundProd, gamma, Tau, pi) {
+    .Call('_missSBM_vExpec_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, pi)
 }
 
-E_step_covariates <- function(Y, roundProd, gamma, Tau, alpha) {
-    .Call('_missSBM_E_step_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, alpha)
+E_step_covariates <- function(Y, roundProd, gamma, Tau, pi) {
+    .Call('_missSBM_E_step_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, pi)
 }
 
 Mstep_covariates_undirected <- function(param, Y, cov, Tau) {
@@ -21,7 +21,7 @@ Mstep_covariates_directed <- function(param, Y, cov, Tau) {
     .Call('_missSBM_Mstep_covariates_directed', PACKAGE = 'missSBM', param, Y, cov, Tau)
 }
 
-E_step_nocovariate <- function(Y, Y_bar, pi, Tau, alpha, log_lambda, fixPointIter) {
-    .Call('_missSBM_E_step_nocovariate', PACKAGE = 'missSBM', Y, Y_bar, pi, Tau, alpha, log_lambda, fixPointIter)
+E_step_nocovariate <- function(Y, Y_bar, theta, Tau, pi, log_lambda, fixPointIter) {
+    .Call('_missSBM_E_step_nocovariate', PACKAGE = 'missSBM', Y, Y_bar, theta, Tau, pi, log_lambda, fixPointIter)
 }
 

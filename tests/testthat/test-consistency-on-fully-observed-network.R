@@ -11,8 +11,8 @@ test_that("SBM_fit and missSBMfit are coherent", {
   ## coherence of sampledNetwork object
   sampledNet <- sampledNetwork$new(A)
   expect_equal(A, sampledNet$adjacencyMatrix)
-  expect_equal(ncol(A), sampledNet$nNodes)
-  expect_equal(ncol(A) * (ncol(A) - 1)/2, sampledNet$nDyads)
+  expect_equal(ncol(A), sampledNet$nbNodes)
+  expect_equal(ncol(A) * (ncol(A) - 1)/2, sampledNet$nbDyads)
   expect_equal(length(sampledNet$missingDyads), 0)
   expect_equal(sampledNet$dyads, sampledNet$observedDyads)
   expect_equal(rep(TRUE, ncol(A)), sampledNet$observedNodes)
@@ -26,12 +26,12 @@ test_that("SBM_fit and missSBMfit are coherent", {
   ## using SBM_fit class
   my_SBM <- missSBM:::SBM_fit_nocovariate$new(adjacencyMatrix = A, clusterInit = cl0)
   my_SBM$doVEM(control$threshold, control$maxIter, control$fixPointIter, control$trace)
-  my_SBM$vICL
+  my_SBM$ICL
 
   ## using missSBM_fit class
   my_missSBM <- missSBM:::missSBM_fit$new(sampledNet = sampledNet, Q, netSampling = "node", clusterInit = cl0, useCov = TRUE)
   my_missSBM$doVEM(control)
-  my_missSBM$fittedSBM$vICL
+  my_missSBM$fittedSBM$ICL
 
 
   ## using missSBM_collection class
@@ -48,5 +48,5 @@ test_that("SBM_fit and missSBMfit are coherent", {
 
   expect_equivalent(my_SBM, my_missSBM$fittedSBM)
   expect_equivalent(my_SBM, my_collection$bestModel$fittedSBM)
-  expect_lt(my_SBM$vICL, my_collection$ICL) ## different due an addition df for sampling
+  expect_lt(my_SBM$ICL, my_collection$ICL) ## different due an addition df for sampling
 })

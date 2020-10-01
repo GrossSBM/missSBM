@@ -19,8 +19,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vExpec_covariates
-double vExpec_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha);
-RcppExport SEXP _missSBM_vExpec_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
+double vExpec_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector pi);
+RcppExport SEXP _missSBM_vExpec_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP piSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -28,14 +28,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type roundProd(roundProdSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(vExpec_covariates(Y, roundProd, gamma, Tau, alpha));
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type pi(piSEXP);
+    rcpp_result_gen = Rcpp::wrap(vExpec_covariates(Y, roundProd, gamma, Tau, pi));
     return rcpp_result_gen;
 END_RCPP
 }
 // E_step_covariates
-Rcpp::NumericMatrix E_step_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector alpha);
-RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP alphaSEXP) {
+Rcpp::NumericMatrix E_step_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector pi);
+RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP piSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -43,8 +43,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type roundProd(roundProdSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, roundProd, gamma, Tau, alpha));
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type pi(piSEXP);
+    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, roundProd, gamma, Tau, pi));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -77,19 +77,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // E_step_nocovariate
-Rcpp::NumericMatrix E_step_nocovariate(const arma::mat& Y, const arma::mat& Y_bar, const arma::mat& pi, const arma::mat& Tau, const arma::vec& alpha, const double& log_lambda, int fixPointIter);
-RcppExport SEXP _missSBM_E_step_nocovariate(SEXP YSEXP, SEXP Y_barSEXP, SEXP piSEXP, SEXP TauSEXP, SEXP alphaSEXP, SEXP log_lambdaSEXP, SEXP fixPointIterSEXP) {
+Rcpp::NumericMatrix E_step_nocovariate(const arma::mat& Y, const arma::mat& Y_bar, const arma::mat& theta, const arma::mat& Tau, const arma::vec& pi, const double& log_lambda, int fixPointIter);
+RcppExport SEXP _missSBM_E_step_nocovariate(SEXP YSEXP, SEXP Y_barSEXP, SEXP thetaSEXP, SEXP TauSEXP, SEXP piSEXP, SEXP log_lambdaSEXP, SEXP fixPointIterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Y_bar(Y_barSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type pi(piSEXP);
     Rcpp::traits::input_parameter< const double& >::type log_lambda(log_lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type fixPointIter(fixPointIterSEXP);
-    rcpp_result_gen = Rcpp::wrap(E_step_nocovariate(Y, Y_bar, pi, Tau, alpha, log_lambda, fixPointIter));
+    rcpp_result_gen = Rcpp::wrap(E_step_nocovariate(Y, Y_bar, theta, Tau, pi, log_lambda, fixPointIter));
     return rcpp_result_gen;
 END_RCPP
 }

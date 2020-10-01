@@ -11,19 +11,17 @@ An R6 Class to represent a SBM
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{nNodes}}{The number of nodes}
+\item{\code{nbNodes}}{The number of nodes}
 
-\item{\code{nBlocks}}{The number of blocks}
+\item{\code{nbBlocks}}{The number of blocks}
 
-\item{\code{nCovariates}}{The number of covariates}
+\item{\code{nbCovariates}}{The number of covariates}
 
-\item{\code{nDyads}}{The number of dyads}
+\item{\code{nbDyads}}{The number of dyads}
 
-\item{\code{direction}}{character indicating if the network is directed or not}
+\item{\code{directed}}{is the network directed or not}
 
-\item{\code{hasCovariates}}{boolean indicating if the SBM owns covariate(s)}
-
-\item{\code{mixtureParam}}{the vector of mixture parameters (block proportions)}
+\item{\code{blockProp}}{the vector of mixture parameters (block proportions)}
 
 \item{\code{connectParam}}{the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.}
 
@@ -33,7 +31,11 @@ An R6 Class to represent a SBM
 
 \item{\code{covarArray}}{the array of covariates}
 
-\item{\code{df_mixtureParams}}{degrees of freedoms for the mixture parameters}
+\item{\code{covarList}}{list of matrices of covariates}
+
+\item{\code{covarEffect}}{effect of covariates}
+
+\item{\code{df_blockProps}}{degrees of freedoms for the mixture parameters}
 
 \item{\code{df_connectParams}}{degrees of freedoms for the connectivity parameters}
 
@@ -59,11 +61,11 @@ Initialize an [`SBM`] object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SBM$new(
   directed = FALSE,
-  nNodes = NA,
-  mixtureParam = NA,
+  nbNodes = NA,
+  blockProp = NA,
   connectParam = NA,
-  covarParam = NULL,
-  covarArray = NULL
+  covarParam = numeric(length(covarList)),
+  covarList = list()
 )}\if{html}{\out{</div>}}
 }
 
@@ -72,15 +74,15 @@ Initialize an [`SBM`] object
 \describe{
 \item{\code{directed}}{logical indicating if the network is directed or not}
 
-\item{\code{nNodes}}{The number of nodes}
+\item{\code{nbNodes}}{The number of nodes}
 
-\item{\code{mixtureParam}}{the vector of mixture parameters}
+\item{\code{blockProp}}{the vector of mixture parameters}
 
 \item{\code{connectParam}}{the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.}
 
 \item{\code{covarParam}}{the vector of parameters associated with the covariates}
 
-\item{\code{covarArray}}{the array of covariates}
+\item{\code{covarList}}{A list with M entries (the M covariates). Each entry of the list must be an N x N matrix}
 }
 \if{html}{\out{</div>}}
 }

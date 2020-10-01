@@ -91,7 +91,7 @@ vBlocks <- 1:5
 collection_sbm <- missSBM::estimate(sampledNet_war, vBlocks = vBlocks, sampling = "node")
 res_unsmoothed <- data.frame(
   ICL     = collection_sbm$ICL,
-  nBlocks = vBlocks, 
+  nbBlocks = vBlocks, 
   type    = "raw"
 )
 ```
@@ -104,7 +104,7 @@ The `smooth` function allows the user to produce a smoothed version of the Integ
 smooth(collection_sbm, "both")
 res_smoothed <- data.frame(
   ICL     = collection_sbm$ICL,
-  nBlocks = vBlocks, 
+  nbBlocks = vBlocks, 
   type    = "smoothed"
 )
 ```
@@ -113,7 +113,7 @@ Let us now check that the smoothing did its job correctly:
 
 ```{r smoothing effect plot, fig.width = 7, fig.height = 5}
 rbind(res_unsmoothed, res_smoothed) %>% 
-  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
+  ggplot(aes(x = nbBlocks, y = ICL, group = type, color = type)) + 
     geom_line() + theme_bw()
 ```
 
@@ -139,11 +139,11 @@ res_missing <- res_smoothed
 res_missing$type <- "missing"
 res_full <- data.frame(
   ICL     = collection_sbm_full$ICL,
-  nBlocks = vBlocks, 
+  nbBlocks = vBlocks, 
   type    = "full"
 )
 rbind(res_missing, res_full) %>% 
-  ggplot(aes(x = nBlocks, y = ICL, group = type, color = type)) + 
+  ggplot(aes(x = nbBlocks, y = ICL, group = type, color = type)) + 
     geom_line() + theme_bw()
 
 ```

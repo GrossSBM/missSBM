@@ -4,8 +4,8 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 200
 Q <- 3
-alpha <- rep(1, Q)/Q                       # mixture parameter
-pi <- diag(.45, Q, Q) + .05                   # connectivity matrix
+pi <- rep(1, Q)/Q                       # mixture parameter
+theta <- diag(.45, Q, Q) + .05                   # connectivity matrix
 directed <- FALSE                         # if the network is directed or not
 
 test_that("Parameter estimation in dyad-centered sampling with covariates", {
@@ -16,7 +16,7 @@ test_that("Parameter estimation in dyad-centered sampling with covariates", {
   covarParam  <- rnorm(M, 0, 1)
   intercept  <- .5
 
-  sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
+  sbm <- missSBM::simulate(N, pi, log(theta/(1 - theta)), directed, covariates, covarParam)
 
   adjMatrix  <- missSBM::sample(sbm$adjacencyMatrix, "covar-dyad", covarParam, covariates = covariates, intercept = intercept)
   sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
@@ -38,7 +38,7 @@ test_that("Parameter estimation in dyad-centered sampling with covariates but ig
   M <- 5
   covariates <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
   covarParam  <- rnorm(M, 0, 1)
-  sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
+  sbm <- missSBM::simulate(N, pi, log(theta/(1 - theta)), directed, covariates, covarParam)
 
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "dyad", parameters = .9, covariates = covariates)
   sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
@@ -63,7 +63,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
   covarParam <- rnorm(M, 0, 1)
   intercept  <- .5
 
-  sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
+  sbm <- missSBM::simulate(N, pi, log(theta/(1 - theta)), directed, covariates, covarParam)
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "covar-node", covarParam, covariates = covariates_node, intercept = intercept)
   sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
@@ -86,7 +86,7 @@ test_that("Parameter estimation in node-centered sampling with covariates but ig
   covariates <- lapply(1:M, function(m) covarArray[,,m])
   covarParam  <- rnorm(M, 0, 1)
 
-  sbm <- missSBM::simulate(N, alpha, log(pi/(1 - pi)), directed, covariates, covarParam)
+  sbm <- missSBM::simulate(N, pi, log(theta/(1 - theta)), directed, covariates, covarParam)
 
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "node", .9, covariates = covariates_node)
   sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
@@ -105,7 +105,7 @@ test_that("Parameter estimation in node-centered sampling with covariates but ig
 test_that("Parameter estimation in degree sampling", {
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
-  sbm <- missSBM::simulate(N, alpha, pi, directed)
+  sbm <- missSBM::simulate(N, pi, theta, directed)
 
   psi <- c(-.5,0.01)
   adjMatrix <- missSBM::sample(sbm$adjacencyMatrix, "degree", psi)

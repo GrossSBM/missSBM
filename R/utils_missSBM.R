@@ -11,6 +11,13 @@ bar <- function(X) {
   X.bar
 }
 
+array2list <-function(X) {
+  D <- dim(X)[3]
+  L <- vector("list", length = D)
+  for (i in 1:D) L[[i]] <- X[,,i]
+  L
+}
+
 format_covariates <- function(covariates, similarity) {
   if (!is.null(covariates)) {
     # Conversion of covariates to an array
@@ -49,15 +56,15 @@ getCovarArray <- function(X, s) {
 
 quad_form <- function(A,x) {t(x) %*% A %*% x}
 
-logistic <- function(x) {1/(1 + exp(-x))}
-logit    <- function(x) {log(x/(1 - x))}
+.logistic <- function(x) {1/(1 + exp(-x))}
+.logit    <- function(x) {log(x/(1 - x))}
 
 .softmax <- function(x) {
   b <- max(x)
   exp(x - b) / sum(exp(x - b))
 }
 
-h <- function(x) {-.5 * (logistic(x) - 0.5) / x}
+h <- function(x) {-.5 * (.logistic(x) - 0.5) / x}
 
 xlogx <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
 

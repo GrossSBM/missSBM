@@ -7,12 +7,12 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 100
 Q <- 3
-alpha <- rep(1, Q)/Q                     # mixture parameter
-pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
+pi <- rep(1, Q)/Q                     # mixture parameter
+theta <- diag(.45, Q, Q) + .05                 # connectivity matrix
 directed <- FALSE
 
 ### Draw a undirected SBM model
-mySBM <- missSBM::simulate(N, alpha, pi, directed)
+mySBM <- missSBM::simulate(N, pi, theta, directed)
 A <- mySBM$adjacencyMatrix
 cl_rand <- base::sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
@@ -26,11 +26,11 @@ test_that("Creation of a SBM_fit_nocovariate", {
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
   expect_equal(mySBM_fit$df_covarParams, 0)
-  expect_equal(mySBM_fit$df_mixtureParams, Q - 1)
-  expect_equal(mySBM_fit$blocks, missSBM:::clustering_indicator(cl_rand))
+  expect_equal(mySBM_fit$df_blockProps, Q - 1)
+  expect_equal(mySBM_fit$probMemberships, missSBM:::clustering_indicator(cl_rand))
   expect_equal(dim(mySBM_fit$connectParam), dim(mySBM$connectParam))
-  expect_equal(length(mySBM_fit$mixtureParam), length(mySBM$mixtureParam))
-  expect_equal(mySBM_fit$direction, "undirected")
+  expect_equal(length(mySBM_fit$blockProp), length(mySBM$blockProp))
+  expect_equal(mySBM_fit$directed, FALSE)
 
 })
 
@@ -49,7 +49,7 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
 
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_max = Q, plotting = "", ncores = 1)
   BM$estimate()
-  pi_BM <- BM$model_parameters[[Q]]$pi
+  theta_BM <- BM$model_parameters[[Q]]$pi
 
   ## checking estimation consistency
   expect_lt(sum((mySBM_fit_spec$connectParam - mySBM$connectParam)^2), tol)
@@ -57,41 +57,41 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
   expect_lt(sum((mySBM_fit_kmns$connectParam - mySBM$connectParam)^2), tol)
 
   ## checking estimation consistency with block model
-  expect_lt(sum((mySBM_fit_spec$connectParam - pi_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam - pi_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam - pi_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_spec$connectParam - theta_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_hier$connectParam - theta_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_kmns$connectParam - theta_BM)^2), tol)
 
   ## checking consistency of the clustering
   expect_lt(1 - ARI(mySBM_fit_hier$memberships, mySBM$memberships), tol)
   expect_lt(1 - ARI(mySBM_fit_spec$memberships, mySBM$memberships), tol)
   expect_lt(1 - ARI(mySBM_fit_kmns$memberships, mySBM$memberships), tol)
 
-  expect_equal(mySBM_fit_hier$vBound,
-               mySBM_fit_spec$vBound,
-               mySBM_fit_kmns$vBound)
-  expect_gt(mySBM_fit_hier$vBound - .5 * mySBM_fit_hier$penalty,  BM$ICL[[Q]])
+  expect_equal(mySBM_fit_hier$loglik,
+               mySBM_fit_spec$loglik,
+               mySBM_fit_kmns$loglik)
+  expect_gt(mySBM_fit_hier$loglik - .5 * mySBM_fit_hier$penalty,  BM$ICL[[Q]])
 
 })
 
 
-test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nBlocks", {
+test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nbBlocks", {
 
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 5, explore_max = 5, plotting = "", ncores = 1)
   BM$estimate()
 
   vBlocks <- 1:5
-  models <- lapply(vBlocks, function(nBlocks) {
-    cl0 <- missSBM:::init_clustering(mySBM$adjacencyMatrix, nBlocks, NULL, "hierarchical")
+  models <- lapply(vBlocks, function(nbBlocks) {
+    cl0 <- missSBM:::init_clustering(mySBM$adjacencyMatrix, nbBlocks, NULL, "hierarchical")
     myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
     myFit$doVEM()
     myFit
   })
 
-  vICLs  <- sapply(models, function(model) model$vICL)
-  bestICL <- models[[which.min(vICLs)]]
+  ICLs  <- sapply(models, function(model) model$ICL)
+  bestICL <- models[[which.min(ICLs)]]
 
-  expect_equal(which.min(vICLs), which.max(BM$ICL))
+  expect_equal(which.min(ICLs), which.max(BM$ICL))
 
-  expect_lt(sum((-.5 * vICLs - BM$ICL)/BM$ICL^2), 5e-6)
+  expect_lt(sum((-.5 * ICLs - BM$ICL)/BM$ICL^2), 5e-6)
 })
 

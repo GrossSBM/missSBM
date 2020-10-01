@@ -6,13 +6,13 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 200
 Q <- 3
-alpha <- rep(1, Q)/Q        # mixture parameter
-pi <- diag(.45, Q, Q) + .05 # connectivity matrix
-gamma <- log(pi/(1 - pi))   # logit transform of pi for the model with covariates
+pi <- rep(1, Q)/Q            # block proportion
+theta <- diag(.45, Q, Q) + .05  # connectivity matrix
+gamma <- log(theta/(1 - theta)) # logit transform of theta for the model with covariates
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
-mySBM <- missSBM::simulate(N, alpha, pi, directed)
+mySBM <- missSBM::simulate(N, pi, theta, directed)
 A <- mySBM$adjacencyMatrix
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -22,7 +22,7 @@ covarMatrix <- simplify2array(covariates_node)
 covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
 covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
 covarParam  <- rnorm(M, 0, 1)
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
+sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
 A_cov <- sbm$adjacencyMatrix
 
 ## tolerance for tests
@@ -99,7 +99,7 @@ test_that("Consistency of block-node sampling", {
   mySampler <- missSBM:::blockNodeSampler$new(psi, N, directed, mySBM$memberships)
   expect_is(mySampler, "blockNodeSampler")
   expect_equal(mySampler$type, "block-node")
-  expect_equal(mySampler$df, mySBM$nBlocks)
+  expect_equal(mySampler$df, mySBM$nbBlocks)
   expect_equal(mySampler$parameters, psi)
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))

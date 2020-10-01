@@ -2,8 +2,8 @@
 #'
 #' Generates a realization (blocks and adjacency matrix) of a Stochastic Block model
 #'
-#' @param nNodes The number of nodes
-#' @param mixtureParam The mixture parameters
+#' @param nbNodes The number of nodes
+#' @param blockProp The mixture parameters
 #' @param connectParam The connectivity matrix (inter/intra clusters probabilities. provided on a logit scale for a model with covariates)
 #' @param directed Boolean variable to indicate whether the network is directed or not. Default to \code{FALSE}.
 #' @param covariates A list with M entries (the M covariates). Each entry of the list must be an N x N matrix.
@@ -16,18 +16,18 @@
 #' N <- 300 # number of nodes
 #' Q <- 3   # number of clusters
 #' M <- 2 # two Gaussian covariates
-#' alpha <- rep(1, Q)/Q     # mixture parameters
-#' pi <- diag(.45, Q) + .05 # connectivity matrix
-#' eta <- rnorm(M, -1, 1)  # covariate parametes
-#' gamma <- log(pi/(1-pi)) # logit transform of pi for the model with covariates
+#' pi <- rep(1, Q)/Q     # mixture parameters
+#' theta <- diag(.45, Q) + .05 # connectivity matrix
+#' eta   <- rnorm(M, -1, 1)  # covariate parametes
+#' gamma <- log(theta/(1-theta)) # logit transform of theta for the model with covariates
 #' X <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 #'
 #' ## draw a SBM without covariates
-#' sbm <- missSBM::simulate(N, alpha, pi, directed)
+#' sbm <- missSBM::simulate(N, pi, theta, directed)
 #' coef(sbm, "connectivity")
 #'
 #' ## draw a SBM model with node-centered covariates
-#' sbm_cov <- missSBM::simulate(N, alpha, gamma, directed, X, eta)
+#' sbm_cov <- missSBM::simulate(N, pi, gamma, directed, X, eta)
 #' coef(sbm_cov, "covariates")
 #'
 #' old_param <- par(mfrow = c(1,2))
@@ -36,27 +36,24 @@
 #' par(old_param)
 #'
 #' @export
-simulate <- function(nNodes, mixtureParam, connectParam, directed = FALSE, covariates = NULL, covarParam = NULL) {
-
-  ## Conversion of covariates to an array
-  if (!is.null(covariates)) covariates <- simplify2array(covariates)
+simulate <- function(nbNodes, blockProp, connectParam, directed = FALSE, covariates = list(), covarParam = numeric(length(covariates))) {
 
   ## Instantiation of the SBM sampler
   mySBM <-
     SBM_sampler$new(
       directed     = directed,
-      nNodes       = nNodes,
-      mixtureParam = mixtureParam,
+      nbNodes      = nbNodes,
+      blockProp    = blockProp,
       connectParam = connectParam,
       covarParam   = covarParam,
-      covarArray   = covariates
+      covarList    = covariates
     )
 
   ## draw blocks
-  mySBM$rBlocks()
+  mySBM$rMemberships()
 
   ## draw adjacency matrix
-  mySBM$rAdjMatrix()
+  mySBM$rAdjacency()
 
   ## send the sampled SBM object
   mySBM

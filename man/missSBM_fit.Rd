@@ -38,13 +38,13 @@ plot(my_missSBM_fit, "network")
 
 \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
 
-\item{\code{vBound}}{double: approximation of the log-likelihood (variational lower bound) reached}
+\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
 \item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
 
-\item{\code{penalty}}{double, value of the penalty term in vICL}
+\item{\code{penalty}}{double, value of the penalty term in ICL}
 
-\item{\code{vICL}}{double: value of the integrated classification log-likelihood}
+\item{\code{ICL}}{double: value of the integrated classification log-likelihood}
 }
 \if{html}{\out{</div>}}
 }
@@ -64,7 +64,7 @@ plot(my_missSBM_fit, "network")
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(sampledNet, nBlocks, netSampling, clusterInit, useCov)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(sampledNet, nbBlocks, netSampling, clusterInit, useCov)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -72,11 +72,11 @@ constructor for networkSampling
 \describe{
 \item{\code{sampledNet}}{An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
 
-\item{\code{nBlocks}}{integer, the number of blocks in the SBM}
+\item{\code{nbBlocks}}{integer, the number of blocks in the SBM}
 
 \item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
-\item{\code{clusterInit}}{Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nBlocks} levels. Default is "hierarchical".}
+\item{\code{clusterInit}}{Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".}
 
 \item{\code{useCov}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 }

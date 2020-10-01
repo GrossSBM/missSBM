@@ -7,27 +7,27 @@ test_that("SBM sampler without covariates", {
   ### A SBM model : ###
   N <- 100
   Q <- 3
-  alpha <- rep(1,Q)/Q                     # mixture parameter
-  pi <- diag(.45,Q) + .05                 # connectivity matrix
+  pi <- rep(1,Q)/Q                     # mixture parameter
+  theta <- diag(.45,Q) + .05                 # connectivity matrix
   directed <- FALSE
 
-  mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, pi)
+  mySBM <- missSBM:::SBM_sampler$new(directed, N, pi, theta)
   expect_null(mySBM$adjacencyMatrix)
-  expect_null(mySBM$blocks)
+  expect_null(mySBM$indMemberships)
   expect_error(mySBM$memberships)
-  expect_equal(mySBM$connectParam, pi)
-  expect_equal(mySBM$mixtureParam, alpha)
-  expect_null(mySBM$covarParam)
-  expect_null(mySBM$covarArray)
-  expect_false(mySBM$hasCovariates)
-  expect_equal(mySBM$direction, "undirected")
+  expect_equal(mySBM$connectParam, theta)
+  expect_equal(mySBM$blockProp, pi)
+  expect_equal(mySBM$covarParam, numeric(0))
+  expect_equal(mySBM$covarList, list())
+  expect_false(mySBM$nbCovariates > 0)
+  expect_equal(mySBM$directed, FALSE)
 
-  mySBM$rBlocks()
+  mySBM$rMemberships()
   expect_equal(length(mySBM$memberships), N)
-  expect_equal(dim(mySBM$blocks), c(N, Q))
+  expect_equal(dim(mySBM$indMemberships), c(N, Q))
   expect_equal(length(unique(mySBM$memberships)), Q)
 
-  mySBM$rAdjMatrix()
+  mySBM$rAdjacency()
   expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
   expect_true(isSymmetric(mySBM$adjacencyMatrix))
 })
@@ -38,9 +38,9 @@ test_that("SBM sampler with covariates", {
   ### A SBM model : ###
   N <- 100
   Q <- 3
-  alpha <- rep(1,Q)/Q                     # mixture parameter
-  pi <- diag(.45,Q) + .05                 # connectivity matrix
-  gamma <- missSBM:::logit(pi)
+  pi <- rep(1,Q)/Q                     # mixture parameter
+  theta <- diag(.45,Q) + .05                 # connectivity matrix
+  gamma <- missSBM:::.logit(theta)
   directed <- FALSE
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -48,23 +48,23 @@ test_that("SBM sampler with covariates", {
   covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
   covarParam  <- rnorm(M,0,1)
   covarArray <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
-  mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, gamma, covarParam, covarArray)
+  mySBM <- missSBM:::SBM_sampler$new(directed, N, pi, gamma, covarParam, missSBM:::array2list(covarArray))
   expect_null(mySBM$adjacencyMatrix)
-  expect_null(mySBM$blocks)
+  expect_null(mySBM$indMemberships)
   expect_error(mySBM$memberships)
-  expect_equal(missSBM:::logistic(mySBM$connectParam), pi)
-  expect_equal(mySBM$mixtureParam, alpha)
-  expect_true(mySBM$hasCovariates)
+  expect_equal(missSBM:::.logistic(mySBM$connectParam), theta)
+  expect_equal(mySBM$blockProp, pi)
+  expect_true(mySBM$nbCovariates > 0)
   expect_equal(mySBM$covarParam, covarParam)
   expect_equal(dim(mySBM$covarArray) , c(N, N, M))
-  expect_equal(mySBM$direction, "undirected")
+  expect_equal(mySBM$directed, FALSE)
 
-  mySBM$rBlocks()
+  mySBM$rMemberships()
   expect_equal(length(mySBM$memberships), N)
-  expect_equal(dim(mySBM$blocks), c(N, Q))
+  expect_equal(dim(mySBM$indMemberships), c(N, Q))
   expect_equal(length(unique(mySBM$memberships)), Q)
 
-  mySBM$rAdjMatrix()
+  mySBM$rAdjacency()
   expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
   expect_true(isSymmetric(mySBM$adjacencyMatrix))
 

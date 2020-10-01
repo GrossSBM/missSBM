@@ -21,19 +21,19 @@ classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{vBound}}{double: approximation of the log-likelihood (variational lower bound) reached}
+\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-\item{\code{vICL}}{double: value of the integrated classification log-likelihood}
+\item{\code{ICL}}{double: value of the integrated classification log-likelihood}
 
-\item{\code{blocks}}{matrix for clustering memberships}
+\item{\code{probMemberships}}{matrix for clustering memberships}
 
 \item{\code{memberships}}{vector of clustering}
 
-\item{\code{penalty}}{double, value of the penalty term in vICL}
+\item{\code{penalty}}{double, value of the penalty term in ICL}
 
 \item{\code{entropy}}{double, value of the entropy due to the clustering distribution}
 
-\item{\code{connectProb}}{expected values of connection under the current model}
+\item{\code{expectation}}{expected values of connection under the current model}
 }
 \if{html}{\out{</div>}}
 }

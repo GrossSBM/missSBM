@@ -5,12 +5,12 @@ library(aricode)
 set.seed(178303)
 N <- 50
 Q <- 3
-alpha <- rep(1, Q)/Q       # mixture parameter
-pi <- diag(.45, Q, Q) + .05   # connectivity matrix
-directed <- FALSE         # if the network is directed or not
+pi <- rep(1, Q)/Q           # block proportion
+theta <- diag(.45, Q, Q) + .05 # connectivity matrix
+directed <- FALSE              # if the network is directed or not
 
 ### Draw a SBM model
-sbm <- missSBM::simulate(N, alpha, pi, directed) # simulation of a Bernoulli non-directed SBM
+sbm <- missSBM::simulate(N, pi, theta, directed) # simulation of a Bernoulli non-directed SBM
 
 A_full <- sbm$adjacencyMatrix             # the adjacency matrix
 
@@ -34,7 +34,7 @@ test_that("Spectral clustering is consistent", {
     cl_spectral <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         clusterInit = "spectral"
       )
     expect_is(cl_spectral, "integer")
@@ -59,7 +59,7 @@ test_that("Kmeans clustering is consistent", {
     cl_kmeans <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         clusterInit = "kmeans"
       )
     expect_is(cl_kmeans, "integer")
@@ -83,7 +83,7 @@ test_that("Hierarchical clustering is consistent", {
     cl_hierarchical <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         clusterInit = "hierarchical"
       )
     expect_is(cl_hierarchical, "integer")
@@ -105,7 +105,7 @@ test_that("Clustering initializations are relevant", {
       cl <-
         missSBM:::init_clustering(
           adjacencyMatrix = A,
-          nBlocks = Q,
+          nbBlocks = Q,
           clusterInit = method
         )
 
@@ -123,9 +123,9 @@ test_that("Clustering initializations are relevant", {
 set.seed(178303)
 N <- 40
 Q <- 2
-alpha <- rep(1,Q)/Q                     # mixture parameter
-pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
-gamma <- missSBM:::logit(pi)
+pi <- rep(1,Q)/Q               # block proportion
+theta <- diag(.45, Q, Q) + .05    # connectivity matrix
+gamma <- missSBM:::.logit(theta)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -134,7 +134,7 @@ covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
 covariates_dyad <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
+sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
 
 test_that("Init clustering with covariate is consistent", {
 
@@ -148,7 +148,7 @@ test_that("Init clustering with covariate is consistent", {
     cl <-
       missSBM:::init_clustering(
         adjacencyMatrix = A,
-        nBlocks = Q,
+        nbBlocks = Q,
         covarArray = sbm$covarArray,
         clusterInit = method
       )
