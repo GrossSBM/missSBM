@@ -247,6 +247,7 @@ More specifically, the data collection may be missing for some countries in the 
 <div class="sourceCode" id="cb14"><pre class="downlit">
 <span class="kw">vBlocks</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>
 <span class="kw">collection_sbm_power_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">belligerent_adjacency</span>, vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"node"</span>, covariates = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">belligerent_power</span>))
+<span class="fu"><a href="../reference/smooth.html">smooth</a></span>(<span class="kw">collection_sbm_power_full</span>)
 </pre></div>
 <p>Note that by default, the distribution of edges depends on the covariate(s) in any are included in the model.</p>
 <p>The covariate provided as a vector is transferred on edges through an <span class="math inline">\(\ell_1\)</span> similarity: for edge <span class="math inline">\((i,j)\)</span> the associated covariate is defined by <span class="math inline">\(|x_i-x_j|\)</span> where <span class="math inline">\(x_i\)</span> denotes the covariate for node <span class="math inline">\(i\)</span>. Another similarity measure could be provided via the option <code>similarity</code>.</p>
@@ -254,7 +255,7 @@ More specifically, the data collection may be missing for some countries in the 
 <div class="sourceCode" id="cb15"><pre class="downlit">
 <span class="kw">collection_sbm_power_full</span><span class="op">$</span><span class="kw">bestModel</span><span class="op">$</span><span class="kw">fittedSBM</span><span class="op">$</span><span class="kw">covarParam</span>
 </pre></div>
-<pre><code>## [1] -0.2138825</code></pre>
+<pre><code>## [1] -7.06744</code></pre>
 <p>The covariate could be responsible for the sampling. The state with bigger military power are more likely to be fully observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit">
 <span class="kw">nWar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">belligerent_adjacency</span>)
@@ -297,22 +298,29 @@ More specifically, the data collection may be missing for some countries in the 
  Performing VEM inference for model with 2 blocks.
  Performing VEM inference for model with 3 blocks.
  Performing VEM inference for model with 4 blocks.</code></pre>
-<p>Then we can access the estimated sampling parameters:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit">
+<span class="fu"><a href="../reference/smooth.html">smooth</a></span>(<span class="kw">collection_sbm_power_miss</span>)
+</pre></div>
+<pre><code>## 
+##  Smoothing ICL
+##    Going forward +++
+                                                                                                    </code></pre>
+<p>Then we can access the estimated sampling parameters:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit">
 <span class="kw">collection_sbm_power_miss</span><span class="op">$</span><span class="kw">bestModel</span><span class="op">$</span><span class="kw">fittedSampling</span><span class="op">$</span><span class="kw">parameters</span>
 </pre></div>
-<pre><code>## [1]  -1.815746 595.186057</code></pre>
+<pre><code>## [1]  -1.918708 677.225575</code></pre>
 <p>and the parameters in the SBM associated with the covariate:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit">
+<div class="sourceCode" id="cb25"><pre class="downlit">
 <span class="kw">collection_sbm_power_miss</span><span class="op">$</span><span class="kw">bestModel</span><span class="op">$</span><span class="kw">fittedSBM</span><span class="op">$</span><span class="kw">covarParam</span>
 </pre></div>
-<pre><code>## [1] 0.308483</code></pre>
+<pre><code>## [1] -6.881921</code></pre>
 </div>
 <div id="trade-data" class="section level4">
 <h4 class="hasAnchor">
 <a href="#trade-data" class="anchor"></a>Trade data</h4>
 <p>Another covariate is the average trade exchange between the states. This covariate is related to pairs of states hence to the dyads. We first build a matrix of dissimilarity according to this covariate:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit">
+<div class="sourceCode" id="cb27"><pre class="downlit">
 <span class="kw">trade</span> <span class="op">&lt;-</span> <span class="kw">belligerent_trade</span> 
 <span class="kw">trade</span>[<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">trade</span>)] <span class="op">&lt;-</span> <span class="fl">0</span>
 <span class="kw">trade</span> <span class="op">&lt;-</span> <span class="kw">trade</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="kw">trade</span>)
@@ -321,7 +329,7 @@ More specifically, the data collection may be missing for some countries in the 
 </pre></div>
 <p>We then conduct a similar analysis as with the power to see how it can be accounted for in the SBM.</p>
 <p>We first sample according to it:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit">
+<div class="sourceCode" id="cb28"><pre class="downlit">
 <span class="kw">parameters_sample</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 <span class="kw">sampleNet_trade_miss</span> <span class="op">&lt;-</span> <span class="kw">missSBM</span>::<span class="fu"><a href="../reference/sample.html">sample</a></span>(<span class="kw">belligerent_adjacency</span>, sampling = <span class="st">"covar-dyad"</span>, parameters = <span class="kw">parameters_sample</span>, covariates = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">trade</span>), intercept = <span class="op">-</span><span class="fl">2</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span>(<span class="kw">sampleNet_trade_miss</span>, 
@@ -335,7 +343,7 @@ More specifically, the data collection may be missing for some countries in the 
 </pre></div>
 <p><img src="case_study_war_networks_files/figure-html/samptrade-1.png" width="480"></p>
 <p>The choice of the sampling parameters leads to more likely observe dyads with important trade exchange. We then perform estimation on the missing data drawn according to the trade covariate.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit">
+<div class="sourceCode" id="cb29"><pre class="downlit">
 <span class="kw">collection_sbm_trade_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampleNet_trade_miss</span> ,vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"covar-dyad"</span>, covariates = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">trade</span>))
 </pre></div>
 <pre><code>## 
@@ -352,14 +360,14 @@ More specifically, the data collection may be missing for some countries in the 
  Performing VEM inference for model with 2 blocks.
  Performing VEM inference for model with 3 blocks.
  Performing VEM inference for model with 4 blocks.</code></pre>
-<div class="sourceCode" id="cb29"><pre class="downlit">
+<div class="sourceCode" id="cb31"><pre class="downlit">
 <span class="kw">collection_sbm_trade_miss</span><span class="op">$</span><span class="kw">bestModel</span><span class="op">$</span><span class="kw">fittedSampling</span><span class="op">$</span><span class="kw">parameters</span>
 </pre></div>
-<pre><code>## [1] -1.7805356  0.9356245</code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit">
+<pre><code>## [1] -1.8014950  0.9364187</code></pre>
+<div class="sourceCode" id="cb33"><pre class="downlit">
 <span class="kw">collection_sbm_trade_miss</span><span class="op">$</span><span class="kw">bestModel</span><span class="op">$</span><span class="kw">fittedSBM</span><span class="op">$</span><span class="kw">covarParam</span>
 </pre></div>
-<pre><code>## [1] 0.1558777</code></pre>
+<pre><code>## [1] 0.1308156</code></pre>
 </div>
 </div>
 </div>
