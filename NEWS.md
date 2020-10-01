@@ -1,3 +1,7 @@
+# development version
+
+  - working on interfacing with package sbm
+
 # missSBM 0.2.2 [2019-09-30]
 
   - unexporting sampledNetwork, only use internally
