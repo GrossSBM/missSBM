@@ -73,7 +73,7 @@ This function samples observations in an adjacency matrix according to a given s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
       </span>
     </div>
 
@@ -214,11 +214,11 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
 <span class='kw'>directed</span> <span class='op'>&lt;-</span> <span class='fl'>FALSE</span>
 <span class='kw'>N</span> <span class='op'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of nodes</span>
 <span class='kw'>Q</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
-<span class='kw'>alpha</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameter</span>
-<span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>,<span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
+<span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameter</span>
+<span class='kw'>theta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>,<span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
 
 <span class='co'>## simulate a SBM without covariates</span>
-<span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='simulate.html'>simulate</a></span>(<span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>pi</span>, <span class='kw'>directed</span>)
+<span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='simulate.html'>simulate</a></span>(<span class='kw'>N</span>, <span class='kw'>pi</span>, <span class='kw'>theta</span>, <span class='kw'>directed</span>)
 
 <span class='co'>## Sample network data</span>
 
@@ -228,7 +228,7 @@ node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for compl
    <span class='st'>"node"</span> = <span class='fl'>.3</span>,
    <span class='st'>"double-standard"</span> = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.4</span>, <span class='fl'>0.8</span>),
    <span class='st'>"block-node"</span> = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>.3</span>, <span class='fl'>.8</span>, <span class='fl'>.5</span>),
-   <span class='st'>"block-dyad"</span> = <span class='kw'>pi</span>,
+   <span class='st'>"block-dyad"</span> = <span class='kw'>theta</span>,
    <span class='st'>"degree"</span> = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>.01</span>, <span class='fl'>.01</span>),
    <span class='st'>"snowball"</span> = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>.1</span>)
  )

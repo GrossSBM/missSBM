@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@
       <h1 data-toc-skip>missSBM: a case study with war networks</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">Last update: 2020-09-30</h4>
+            <h4 class="date">Last update: 2020-10-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/grossSBM/missSBM/blob/master/vignettes/case_study_war_networks.Rmd"><code>vignettes/case_study_war_networks.Rmd</code></a></small>
       <div class="hidden name"><code>case_study_war_networks.Rmd</code></div>
@@ -162,7 +162,7 @@ More specifically, the data collection may be missing for some countries in the 
 <span class="kw">collection_sbm</span> <span class="op">&lt;-</span> <span class="kw">missSBM</span>::<span class="fu"><a href="../reference/estimate.html">estimate</a></span>(<span class="kw">sampledNet_war</span>, vBlocks = <span class="kw">vBlocks</span>, sampling = <span class="st">"node"</span>)
 <span class="kw">res_unsmoothed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
   ICL     = <span class="kw">collection_sbm</span><span class="op">$</span><span class="kw">ICL</span>,
-  nBlocks = <span class="kw">vBlocks</span>, 
+  nbBlocks = <span class="kw">vBlocks</span>, 
   type    = <span class="st">"raw"</span>
 )
 </pre></div>
@@ -175,14 +175,14 @@ More specifically, the data collection may be missing for some countries in the 
 <span class="fu"><a href="../reference/smooth.html">smooth</a></span>(<span class="kw">collection_sbm</span>, <span class="st">"both"</span>)
 <span class="kw">res_smoothed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
   ICL     = <span class="kw">collection_sbm</span><span class="op">$</span><span class="kw">ICL</span>,
-  nBlocks = <span class="kw">vBlocks</span>, 
+  nbBlocks = <span class="kw">vBlocks</span>, 
   type    = <span class="st">"smoothed"</span>
 )
 </pre></div>
 <p>Let us now check that the smoothing did its job correctly:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="kw">res_unsmoothed</span>, <span class="kw">res_smoothed</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(x = <span class="kw">nBlocks</span>, y = <span class="kw">ICL</span>, group = <span class="kw">type</span>, color = <span class="kw">type</span>)) <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(x = <span class="kw">nbBlocks</span>, y = <span class="kw">ICL</span>, group = <span class="kw">type</span>, color = <span class="kw">type</span>)) <span class="op">+</span> 
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>() <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>()
 </pre></div>
 <p><img src="case_study_war_networks_files/figure-html/smoothing%20effect%20plot-1.png" width="672"></p>
@@ -206,11 +206,11 @@ More specifically, the data collection may be missing for some countries in the 
 <span class="kw">res_missing</span><span class="op">$</span><span class="kw">type</span> <span class="op">&lt;-</span> <span class="st">"missing"</span>
 <span class="kw">res_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
   ICL     = <span class="kw">collection_sbm_full</span><span class="op">$</span><span class="kw">ICL</span>,
-  nBlocks = <span class="kw">vBlocks</span>, 
+  nbBlocks = <span class="kw">vBlocks</span>, 
   type    = <span class="st">"full"</span>
 )
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="kw">res_missing</span>, <span class="kw">res_full</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(x = <span class="kw">nBlocks</span>, y = <span class="kw">ICL</span>, group = <span class="kw">type</span>, color = <span class="kw">type</span>)) <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(x = <span class="kw">nbBlocks</span>, y = <span class="kw">ICL</span>, group = <span class="kw">type</span>, color = <span class="kw">type</span>)) <span class="op">+</span> 
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>() <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>()
 </pre></div>
 <p><img src="case_study_war_networks_files/figure-html/plot%20comparison%20full-1.png" width="480"></p>

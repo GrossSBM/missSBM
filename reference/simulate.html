@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
       </span>
     </div>
 
@@ -139,23 +139,23 @@
     </div>
 
     <pre class="usage"><span class='fu'>simulate</span>(
-  <span class='kw'>nNodes</span>,
-  <span class='kw'>mixtureParam</span>,
+  <span class='kw'>nbNodes</span>,
+  <span class='kw'>blockProp</span>,
   <span class='kw'>connectParam</span>,
   directed = <span class='fl'>FALSE</span>,
-  covariates = <span class='kw'>NULL</span>,
-  covarParam = <span class='kw'>NULL</span>
+  covariates = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  covarParam = <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='kw'>covariates</span>))
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nNodes</th>
+      <th>nbNodes</th>
       <td><p>The number of nodes</p></td>
     </tr>
     <tr>
-      <th>mixtureParam</th>
+      <th>blockProp</th>
       <td><p>The mixture parameters</p></td>
     </tr>
     <tr>
@@ -189,23 +189,23 @@
 <span class='kw'>N</span> <span class='op'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of nodes</span>
 <span class='kw'>Q</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
 <span class='kw'>M</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='co'># two Gaussian covariates</span>
-<span class='kw'>alpha</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameters</span>
-<span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>, <span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
-<span class='kw'>eta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>M</span>, <span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>1</span>)  <span class='co'># covariate parametes</span>
-<span class='kw'>gamma</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>pi</span><span class='op'>/</span>(<span class='fl'>1</span><span class='op'>-</span><span class='kw'>pi</span>)) <span class='co'># logit transform of pi for the model with covariates</span>
+<span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameters</span>
+<span class='kw'>theta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>, <span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
+<span class='kw'>eta</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>M</span>, <span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>1</span>)  <span class='co'># covariate parametes</span>
+<span class='kw'>gamma</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>theta</span><span class='op'>/</span>(<span class='fl'>1</span><span class='op'>-</span><span class='kw'>theta</span>)) <span class='co'># logit transform of theta for the model with covariates</span>
 <span class='kw'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='kw'>M</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>N</span> <span class='op'>*</span> <span class='kw'>N</span> ,mean = <span class='fl'>0</span>, sd = <span class='fl'>1</span>), <span class='kw'>N</span>, <span class='kw'>N</span>), simplify = <span class='fl'>FALSE</span>)
 
 <span class='co'>## draw a SBM without covariates</span>
-<span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'>simulate</span>(<span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>pi</span>, <span class='kw'>directed</span>)
+<span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'>simulate</span>(<span class='kw'>N</span>, <span class='kw'>pi</span>, <span class='kw'>theta</span>, <span class='kw'>directed</span>)
 <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>sbm</span>, <span class='st'>"connectivity"</span>)
 </div><div class='output co'>#&gt;      [,1] [,2] [,3]
 #&gt; [1,] 0.50 0.05 0.05
 #&gt; [2,] 0.05 0.50 0.05
 #&gt; [3,] 0.05 0.05 0.50</div><div class='input'>
 <span class='co'>## draw a SBM model with node-centered covariates</span>
-<span class='kw'>sbm_cov</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'>simulate</span>(<span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>gamma</span>, <span class='kw'>directed</span>, <span class='kw'>X</span>, <span class='kw'>eta</span>)
+<span class='kw'>sbm_cov</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'>simulate</span>(<span class='kw'>N</span>, <span class='kw'>pi</span>, <span class='kw'>gamma</span>, <span class='kw'>directed</span>, <span class='kw'>X</span>, <span class='kw'>eta</span>)
 <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>sbm_cov</span>, <span class='st'>"covariates"</span>)
-</div><div class='output co'>#&gt; [1] -1.8330481 -0.8386608</div><div class='input'>
+</div><div class='output co'>#&gt; [1]  0.1167847 -0.5291073</div><div class='input'>
 <span class='kw'>old_param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(mfrow = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sbm</span>)
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>sbm_cov</span>)

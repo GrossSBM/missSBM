@@ -73,7 +73,7 @@ An R6 Class used for internal representation of sampled network data" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
       </span>
     </div>
 
@@ -150,9 +150,9 @@ An R6 Class used for internal representation of sampled network data" />
     <p><div class="r6-active-bindings"></p><dl>
 <dt><code>samplingRate</code></dt><dd><p>The percentage of observed dyads</p></dd>
 
-<dt><code>nNodes</code></dt><dd><p>The number of nodes</p></dd>
+<dt><code>nbNodes</code></dt><dd><p>The number of nodes</p></dd>
 
-<dt><code>nDyads</code></dt><dd><p>The number of dyads</p></dd>
+<dt><code>nbDyads</code></dt><dd><p>The number of dyads</p></dd>
 
 <dt><code>is_directed</code></dt><dd><p>logical indicating if the network is directed or not</p></dd>
 
@@ -211,13 +211,13 @@ An R6 Class used for internal representation of sampled network data" />
 <a id="method-clustering"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clustering()</code></h3>
 <p>method to cluster network data with missing value</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='kw'>sampledNetwork</span><span class='op'>$</span><span class='fu'>clustering</span>(
-  <span class='kw'>nBlocks</span>,
+  <span class='kw'>nbBlocks</span>,
   method = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>, <span class='st'>"kmeans"</span>)
 )</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>nBlocks</code></dt><dd><p>integer, the chosen number of blocks</p></dd>
+<dt><code>nbBlocks</code></dt><dd><p>integer, the chosen number of blocks</p></dd>
 
 <dt><code>method</code></dt><dd><p>character with a clustering method among "hierarchical", "spectral", "kmeans".</p></dd>
 
@@ -229,7 +229,7 @@ An R6 Class used for internal representation of sampled network data" />
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>clustering</code></dt><dd><p>a vector with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering with <code>nBlocks</code> levels.</p></dd>
+<dt><code>clustering</code></dt><dd><p>a vector with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering with <code>nbBlocks</code> levels.</p></dd>
 
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>

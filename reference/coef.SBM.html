@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class for defining a snowball sampler — snowballSampler • missSBM</title>
+<title>Extract model coefficients — coef.SBM • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Class for defining a snowball sampler — snowballSampler" />
-<meta property="og:description" content="Class for defining a snowball sampler
-Class for defining a snowball sampler" />
+<meta property="og:title" content="Extract model coefficients — coef.SBM" />
+<meta property="og:description" content="Extracts model coefficients from objects with class SBM and children" />
 
 
 
@@ -130,64 +129,39 @@ Class for defining a snowball sampler" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class for defining a snowball sampler</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/networkSampler-Class.R'><code>R/networkSampler-Class.R</code></a></small>
-    <div class="hidden name"><code>snowballSampler.Rd</code></div>
+    <h1>Extract model coefficients</h1>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/SBM-Class.R'><code>R/SBM-Class.R</code></a></small>
+    <div class="hidden name"><code>coef.SBM.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Class for defining a snowball sampler</p>
-<p>Class for defining a snowball sampler</p>
+    <p>Extracts model coefficients from objects with class <code><a href='SBM.html'>SBM</a></code> and children</p>
     </div>
 
+    <pre class="usage"><span class='co'># S3 method for SBM</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>object</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"connectivity"</span>, <span class='st'>"block"</span>, <span class='st'>"covariates"</span>), <span class='kw'>...</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>an R6 object inheriting from class SBM_fit</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>type of parameter that should be extracted. Either 'block' for $$\pi$$, 'connectivity' for $$\theta$$,
+or "covariates" for $$\beta$$. Default is 'connectivity'.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional parameters for S3 compatibility. Not used</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code><a href='networkSampler.html'>missSBM::networkSampler</a></code> -&gt; <code><a href='nodeSampler.html'>missSBM::nodeSampler</a></code> -&gt; <code>snowballSampler</code></p>
-    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
-
-    
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
-
-<ul>
-<li><p><a href='#method-new'><code>snowballSampler$new()</code></a></p></li>
-<li><p><a href='#method-clone'><code>snowballSampler$clone()</code></a></p></li>
-</ul>
-<p><details open ><summary>Inherited methods</summary>
-<ul>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-print'><code>missSBM::networkSampling$print()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-show'><code>missSBM::networkSampling$show()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></p></li>
-</ul>
-</details>
-
-<hr>
-<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
-<p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>snowballSampler</span><span class='op'>$</span><span class='fu'>new</span>(parameters = <span class='fl'>NA</span>, adjacencyMatrix = <span class='fl'>NA</span>, directed = <span class='fl'>FALSE</span>)</pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>parameters</code></dt><dd><p>the vector of parameters associated to the sampling at play</p></dd>
-
-<dt><code>adjacencyMatrix</code></dt><dd><p>the adjacency matrix of the network</p></dd>
-
-<dt><code>directed</code></dt><dd><p>logical, directed network of not</p></dd>
-
-</dl><p></div></p>
-<p><hr>
-<a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
-<p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>snowballSampler</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
-
-</dl><p></div></p>
-
-
+    <p>vector or list of parameters.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

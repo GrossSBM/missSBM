@@ -73,7 +73,7 @@ An R6 Class to represent a SBM" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
       </span>
     </div>
 
@@ -145,19 +145,17 @@ An R6 Class to represent a SBM" />
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
-<dt><code>nNodes</code></dt><dd><p>The number of nodes</p></dd>
+<dt><code>nbNodes</code></dt><dd><p>The number of nodes</p></dd>
 
-<dt><code>nBlocks</code></dt><dd><p>The number of blocks</p></dd>
+<dt><code>nbBlocks</code></dt><dd><p>The number of blocks</p></dd>
 
-<dt><code>nCovariates</code></dt><dd><p>The number of covariates</p></dd>
+<dt><code>nbCovariates</code></dt><dd><p>The number of covariates</p></dd>
 
-<dt><code>nDyads</code></dt><dd><p>The number of dyads</p></dd>
+<dt><code>nbDyads</code></dt><dd><p>The number of dyads</p></dd>
 
-<dt><code>direction</code></dt><dd><p>character indicating if the network is directed or not</p></dd>
+<dt><code>directed</code></dt><dd><p>is the network directed or not</p></dd>
 
-<dt><code>hasCovariates</code></dt><dd><p>boolean indicating if the SBM owns covariate(s)</p></dd>
-
-<dt><code>mixtureParam</code></dt><dd><p>the vector of mixture parameters (block proportions)</p></dd>
+<dt><code>blockProp</code></dt><dd><p>the vector of mixture parameters (block proportions)</p></dd>
 
 <dt><code>connectParam</code></dt><dd><p>the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.</p></dd>
 
@@ -167,7 +165,11 @@ An R6 Class to represent a SBM" />
 
 <dt><code>covarArray</code></dt><dd><p>the array of covariates</p></dd>
 
-<dt><code>df_mixtureParams</code></dt><dd><p>degrees of freedoms for the mixture parameters</p></dd>
+<dt><code>covarList</code></dt><dd><p>list of matrices of covariates</p></dd>
+
+<dt><code>covarEffect</code></dt><dd><p>effect of covariates</p></dd>
+
+<dt><code>df_blockProps</code></dt><dd><p>degrees of freedoms for the mixture parameters</p></dd>
 
 <dt><code>df_connectParams</code></dt><dd><p>degrees of freedoms for the connectivity parameters</p></dd>
 
@@ -191,26 +193,26 @@ An R6 Class to represent a SBM" />
 <p>Initialize an [`SBM`] object</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='kw'>SBM</span><span class='op'>$</span><span class='fu'>new</span>(
   directed = <span class='fl'>FALSE</span>,
-  nNodes = <span class='fl'>NA</span>,
-  mixtureParam = <span class='fl'>NA</span>,
+  nbNodes = <span class='fl'>NA</span>,
+  blockProp = <span class='fl'>NA</span>,
   connectParam = <span class='fl'>NA</span>,
-  covarParam = <span class='kw'>NULL</span>,
-  covarArray = <span class='kw'>NULL</span>
+  covarParam = <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='kw'>covarList</span>)),
+  covarList = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
 )</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
 <dt><code>directed</code></dt><dd><p>logical indicating if the network is directed or not</p></dd>
 
-<dt><code>nNodes</code></dt><dd><p>The number of nodes</p></dd>
+<dt><code>nbNodes</code></dt><dd><p>The number of nodes</p></dd>
 
-<dt><code>mixtureParam</code></dt><dd><p>the vector of mixture parameters</p></dd>
+<dt><code>blockProp</code></dt><dd><p>the vector of mixture parameters</p></dd>
 
 <dt><code>connectParam</code></dt><dd><p>the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.</p></dd>
 
 <dt><code>covarParam</code></dt><dd><p>the vector of parameters associated with the covariates</p></dd>
 
-<dt><code>covarArray</code></dt><dd><p>the array of covariates</p></dd>
+<dt><code>covarList</code></dt><dd><p>A list with M entries (the M covariates). Each entry of the list must be an N x N matrix</p></dd>
 
 </dl><p></div></p>
 <p><hr>

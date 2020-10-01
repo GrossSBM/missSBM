@@ -73,7 +73,7 @@ An R6 Class to represent a sampler for a SBM" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
       </span>
     </div>
 
@@ -147,7 +147,7 @@ An R6 Class to represent a sampler for a SBM" />
     <p>The function [`simulate`] produces an instance of an object with class [`SBM_sampler`].</p>
 <p>All fields of this class are only accessible for reading. This class comes with a set of methods,
 some of them being useful for the user (see examples)</p><ul>
-<li><p>R6 methods:$rBlocks(), $rAdjancencyMatrix()</p></li>
+<li><p>R6 methods:$rMemberships(), $rAdjacency()</p></li>
 <li><p>S3 methodsprint(), plot()</p></li>
 </ul>
 
@@ -161,11 +161,11 @@ some of them being useful for the user (see examples)</p><ul>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
-<dt><code>blocks</code></dt><dd><p>matrix for clustering memberships</p></dd>
+<dt><code>indMemberships</code></dt><dd><p>matrix for clustering memberships</p></dd>
 
 <dt><code>memberships</code></dt><dd><p>vector of clustering</p></dd>
 
-<dt><code>connectProb</code></dt><dd><p>expected values of connection under the current model</p></dd>
+<dt><code>expectation</code></dt><dd><p>expected values of connection under the current model</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -175,8 +175,8 @@ some of them being useful for the user (see examples)</p><ul>
 
 <ul>
 <li><p><a href='#method-new'><code>SBM_sampler$new()</code></a></p></li>
-<li><p><a href='#method-rBlocks'><code>SBM_sampler$rBlocks()</code></a></p></li>
-<li><p><a href='#method-rAdjMatrix'><code>SBM_sampler$rAdjMatrix()</code></a></p></li>
+<li><p><a href='#method-rMemberships'><code>SBM_sampler$rMemberships()</code></a></p></li>
+<li><p><a href='#method-rAdjacency'><code>SBM_sampler$rAdjacency()</code></a></p></li>
 <li><p><a href='#method-show'><code>SBM_sampler$show()</code></a></p></li>
 <li><p><a href='#method-print'><code>SBM_sampler$print()</code></a></p></li>
 <li><p><a href='#method-clone'><code>SBM_sampler$clone()</code></a></p></li>
@@ -192,37 +192,37 @@ some of them being useful for the user (see examples)</p><ul>
 <p>Initialize a [`SBM_sampler`] object</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='kw'>SBM_sampler</span><span class='op'>$</span><span class='fu'>new</span>(
   directed = <span class='fl'>FALSE</span>,
-  nNodes = <span class='fl'>NA</span>,
-  mixtureParam = <span class='fl'>NA</span>,
+  nbNodes = <span class='fl'>NA</span>,
+  blockProp = <span class='fl'>NA</span>,
   connectParam = <span class='fl'>NA</span>,
-  covarParam = <span class='kw'>NULL</span>,
-  covarArray = <span class='kw'>NULL</span>
+  covarParam = <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(<span class='fl'>0</span>),
+  covarList = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
 )</pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
 <dt><code>directed</code></dt><dd><p>logical indicating if the network is directed or not</p></dd>
 
-<dt><code>nNodes</code></dt><dd><p>The number of nodes</p></dd>
+<dt><code>nbNodes</code></dt><dd><p>The number of nodes</p></dd>
 
-<dt><code>mixtureParam</code></dt><dd><p>the vector of mixture parameters</p></dd>
+<dt><code>blockProp</code></dt><dd><p>the vector of mixture parameters</p></dd>
 
 <dt><code>connectParam</code></dt><dd><p>the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.</p></dd>
 
 <dt><code>covarParam</code></dt><dd><p>the vector of parameters associated with the covariates</p></dd>
 
-<dt><code>covarArray</code></dt><dd><p>the array of covariates</p></dd>
+<dt><code>covarList</code></dt><dd><p>A list with M entries (the M covariates). Each entry of the list must be an N x N matrix</p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-rBlocks"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>rBlocks()</code></h3>
+<a id="method-rMemberships"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>rMemberships()</code></h3>
 <p>a method to generate a vector of clusters indicators</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>SBM_sampler</span><span class='op'>$</span><span class='fu'>rBlocks</span>()</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>SBM_sampler</span><span class='op'>$</span><span class='fu'>rMemberships</span>()</pre><p></div></p>
 
 <p><hr>
-<a id="method-rAdjMatrix"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>rAdjMatrix()</code></h3>
+<a id="method-rAdjacency"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>rAdjacency()</code></h3>
 <p>a method to sample an adjacency matrix for the current SBM</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>SBM_sampler</span><span class='op'>$</span><span class='fu'>rAdjMatrix</span>()</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>SBM_sampler</span><span class='op'>$</span><span class='fu'>rAdjacency</span>()</pre><p></div></p>
 
 <p><hr>
 <a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
@@ -252,22 +252,18 @@ some of them being useful for the user (see examples)</p><ul>
 <span class='kw'>directed</span> <span class='op'>&lt;-</span> <span class='fl'>FALSE</span>
 <span class='kw'>N</span> <span class='op'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of nodes</span>
 <span class='kw'>Q</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
-<span class='kw'>alpha</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameter</span>
-<span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>,<span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
-<span class='kw'>gamma</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>pi</span><span class='op'>/</span>(<span class='fl'>1</span><span class='op'>-</span><span class='kw'>pi</span>)) <span class='co'># logit transform fo the model with covariates</span>
-<span class='kw'>M</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='co'># two Gaussian covariates</span>
-<span class='kw'>covarMatrix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>N</span><span class='op'>*</span><span class='kw'>M</span>,mean = <span class='fl'>0</span>, sd = <span class='fl'>1</span>), <span class='kw'>N</span>, <span class='kw'>M</span>)
-<span class='kw'>covarParam</span>  <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>M</span>, <span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>1</span>)
+<span class='kw'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='kw'>Q</span>)<span class='op'>/</span><span class='kw'>Q</span>     <span class='co'># mixture parameter</span>
+<span class='kw'>theta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>.45</span>,<span class='kw'>Q</span>) <span class='op'>+</span> <span class='fl'>.05</span> <span class='co'># connectivity matrix</span>
 
 <span class='co'>## draw a SBM without covariates through simulateSBM</span>
-<span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='simulate.html'>simulate</a></span>(<span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>pi</span>, <span class='kw'>directed</span>)
+<span class='kw'>sbm</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='simulate.html'>simulate</a></span>(<span class='kw'>N</span>, <span class='kw'>pi</span>, <span class='kw'>theta</span>, <span class='kw'>directed</span>)
 
 <span class='co'>## equivalent construction from the SBM_sampler class itslef</span>
-<span class='kw'>sbm_s</span> <span class='op'>&lt;-</span> <span class='kw'>SBM_sampler</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>directed</span>, <span class='kw'>N</span>, <span class='kw'>alpha</span>, <span class='kw'>pi</span>)
-<span class='kw'>sbm_s</span><span class='op'>$</span><span class='fu'>rBlocks</span>() <span class='co'># draw some blocks</span>
-<span class='kw'>sbm_s</span><span class='op'>$</span><span class='fu'>rAdjMatrix</span>() <span class='co'># draw some edges</span>
+<span class='kw'>sbm_s</span> <span class='op'>&lt;-</span> <span class='kw'>SBM_sampler</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>directed</span>, <span class='kw'>N</span>, <span class='kw'>pi</span>, <span class='kw'>theta</span>)
+<span class='kw'>sbm_s</span><span class='op'>$</span><span class='fu'>rMemberships</span>() <span class='co'># draw some blocks</span>
+<span class='kw'>sbm_s</span><span class='op'>$</span><span class='fu'>rAdjacency</span>() <span class='co'># draw some edges</span>
 
-<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>sbm_s</span>, <span class='st'>"mixture"</span>)
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>sbm_s</span>, <span class='st'>"block"</span>)
 </div><div class='output co'>#&gt; [1] 0.3333333 0.3333333 0.3333333</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>sbm_s</span>, <span class='st'>"connectivity"</span>)
 </div><div class='output co'>#&gt;      [,1] [,2] [,3]
 #&gt; [1,] 0.50 0.05 0.05
@@ -278,13 +274,13 @@ some of them being useful for the user (see examples)</p><ul>
 #&gt; Model undirected with 300 nodes, 3 blocks and no covariate(s).
 #&gt; ==================================================================
 #&gt; * Useful fields 
-#&gt;   $nNodes, $nBlocks, $nCovariates, $nDyads
-#&gt;   $mixtureParam, $connectParam
+#&gt;   $nbNodes, $nbBlocks, $nbCovariates, $nbDyads
+#&gt;   $blockProp, $connectParam
 #&gt;  $covarParam, $covarArray 
 #&gt; * Sampling methods 
-#&gt;   $rBlocks(), $rAdjmatrix()
+#&gt;   $rMemberships(), $rAdjacency()
 #&gt; * Additional fields 
-#&gt;   $blocks, $memberships, $adjMatrix, $connectProb
+#&gt;   $indMemberships, $memberships, $adjMatrix, $expectation
 #&gt; * S3 methods 
 #&gt;   plot, print, summary, coef</div></pre>
   </div>
