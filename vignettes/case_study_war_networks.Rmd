@@ -214,7 +214,7 @@ corrplot(sampleNet_power_miss,
 ```
 
 Then, we can estimate the model by setting the sampling to be `covar-node`. We can still choose whether to consider or not the covariate in the SBM.
-```{r fit power missing}
+```{r fit power missing,results = 'hide'}
 collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node", covariates = list(belligerent_power))
 smooth(collection_sbm_power_miss)
 ```
