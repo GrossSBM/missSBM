@@ -171,7 +171,7 @@ R6::R6Class(classname = "blockDyadSampler",
       Z <- matrix(0, nbNodes, Q)
       Z[cbind(1:private$N, private$clusters)] <- 1
       private$rho <- (Z %*% self$parameters %*% t(Z))[private$dyads]
-      self$nbBlocks <- Q
+      private$Q <- Q
     }
   ),
   active = list(
