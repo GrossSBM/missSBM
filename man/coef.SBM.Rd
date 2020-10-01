@@ -7,7 +7,7 @@
 \method{coef}{SBM}(object, type = c("connectivity", "block", "covariates"), ...)
 }
 \arguments{
-\item{object}{an R6 object inheriting from class SBM_fit (like SimpleSBM_fit or BipartiteSBM_fit)}
+\item{object}{an R6 object inheriting from class SBM_fit}
 
 \item{type}{type of parameter that should be extracted. Either 'block' for \deqn{\pi}, 'connectivity' for \deqn{\theta},
 or "covariates" for \deqn{\beta}. Default is 'connectivity'.}

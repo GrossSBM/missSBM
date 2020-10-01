@@ -20,14 +20,14 @@
 #' directed <- FALSE
 #' N <- 300 # number of nodes
 #' Q <- 3   # number of clusters
-#' alpha <- rep(1,Q)/Q     # mixture parameter
+#' pi <- rep(1,Q)/Q     # mixture parameter
 #' theta <- diag(.45,Q) + .05 # connectivity matrix
 #'
 #' ## draw a SBM without covariates through simulateSBM
-#' sbm <- missSBM::simulate(N, alpha, theta, directed)
+#' sbm <- missSBM::simulate(N, pi, theta, directed)
 #'
 #' ## equivalent construction from the SBM_sampler class itslef
-#' sbm_s <- SBM_sampler$new(directed, N, alpha, theta)
+#' sbm_s <- SBM_sampler$new(directed, N, pi, theta)
 #' sbm_s$rMemberships() # draw some blocks
 #' sbm_s$rAdjacency() # draw some edges
 #'
@@ -59,7 +59,7 @@ SBM_sampler <-
     },
     #' @description a method to generate a vector of clusters indicators
     rMemberships = function() {
-      private$Z <- t(rmultinom(private$N, size = 1, prob = private$alpha))
+      private$Z <- t(rmultinom(private$N, size = 1, prob = private$pi))
     },
     #' @description a method to sample an adjacency matrix for the current SBM
     rAdjacency = function() {

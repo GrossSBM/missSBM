@@ -9,7 +9,7 @@ source("utils_test.R")
 set.seed(178303)
 N <- 100
 Q <- 3
-alpha <- rep(1,Q)/Q                     # mixture parameter
+pi <- rep(1,Q)/Q                     # mixture parameter
 theta <- diag(.45,Q) + .05                 # connectivity matrix
 gamma <- missSBM:::.logit(theta)
 directed <- FALSE
@@ -18,7 +18,7 @@ directed <- FALSE
 M <- 1
 covariates <- replicate(M, matrix(rnorm(N*N,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, 0, 1)
-sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates, covarParam)
+sbm <- missSBM::simulate(N, pi, gamma, directed, covariates, covarParam)
 
 ### Draw a undirected SBM model
 cl_rand <- base::sample(sbm$memberships)
@@ -51,7 +51,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   set.seed(178304)
   N <- 40
   Q <- 2
-  alpha <- rep(1, Q)/Q                     # mixture parameter
+  pi <- rep(1, Q)/Q                     # mixture parameter
   theta <- diag(.45, Q) + .05                 # connectivity matrix
   directed <- FALSE
   gamma <- missSBM:::.logit(theta)
@@ -63,7 +63,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
   covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
   covarParam  <- rnorm(M, 0, 1)
-  sbm <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
+  sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
 
   ## Formatting covariates for blockmodels
   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjacencyMatrix, covariates_dyad, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)

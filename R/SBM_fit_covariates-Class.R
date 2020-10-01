@@ -23,7 +23,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
 
       ## Initialize parameters
       private$theta <- .logit(check_boundaries(quad_form(adjacencyMatrix, Z) / quad_form(1 - diag(self$nbNodes), Z)))
-      private$alpha <- check_boundaries(colMeans(Z))
+      private$pi <- check_boundaries(colMeans(Z))
       private$beta  <- numeric(self$nbCovariates)
       private$tau   <- Z
 
@@ -43,7 +43,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
         )
       private$beta  <- optim_out$solution[-(1:(self$nbBlocks^2))]
       private$theta <- matrix(optim_out$solution[1:(self$nbBlocks^2)], self$nbBlocks, self$nbBlocks)
-      private$alpha <- check_boundaries(colMeans(private$tau))
+      private$pi    <- check_boundaries(colMeans(private$tau))
     },
     update_blocks =   function(log_lambda = NULL) {
       private$tau <-
@@ -51,8 +51,8 @@ R6::R6Class(classname = "SBM_fit_covariates",
           private$Y,
           self$covarEffect,
           self$connectParam,
-          private$tau,
-          private$alpha
+          self$probMemberships,
+          self$blockProp
         )
     }
   ),
@@ -62,8 +62,8 @@ R6::R6Class(classname = "SBM_fit_covariates",
         private$Y,
         self$covarEffect,
         self$connectParam,
-        private$tau,
-        private$alpha
+        self$probMemberships,
+        self$blockProp
       )
     }
   )

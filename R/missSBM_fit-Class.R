@@ -116,7 +116,7 @@ missSBM_fit <-
         ## ______________________________________________________
         ## M-step
         #
-        # update the parameters of the SBM (a.k.a alpha and theta)
+        # update the parameters of the SBM (a.k.a pi and theta)
         private$SBM$update_parameters()
         # update the parameters of network sampling process (a.k.a psi)
         private$sampling$update_parameters(private$imputedNet, private$SBM$probMemberships)

@@ -26,7 +26,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
     },
     update_parameters = function() { # NA not allowed in adjMatrix (should be imputed)
       private$theta <- check_boundaries(quad_form(private$Y, private$tau) / quad_form(1 - diag(self$nbNodes), private$tau))
-      private$alpha <- check_boundaries(colMeans(private$tau))
+      private$pi <- check_boundaries(colMeans(private$tau))
     },
     update_blocks = function(log_lambda = 0) {
       if (self$nbBlocks > 1) {
@@ -37,9 +37,9 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
           ## Bernoulli directed
           tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$theta))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$theta)))
         }
-        # tau <- check_boundaries(t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax)), zero = 1e-4)
+        # tau <- check_boundaries(t(apply(sweep(tau, 2, log(private$pi), "+"), 1, .softmax)), zero = 1e-4)
         # private$tau <- tau / matrix(rowSums(tau), self$nbNodes, self$nbBlocks, byrow = FALSE)
-        private$tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
+        private$tau <- t(apply(sweep(tau, 2, log(private$pi), "+"), 1, .softmax))
       }
     }
   ),
@@ -49,7 +49,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       adjMat <- private$Y ; diag(adjMat) <- 0
       tmp <- factor * sum( adjMat * private$tau %*% log(private$theta) %*% t(private$tau) +
                              bar(private$Y)  *  private$tau %*% log(1 - private$theta) %*% t(private$tau))
-      sum(private$tau %*% log(private$alpha)) +  tmp
+      sum(private$tau %*% log(private$pi)) +  tmp
     }
   )
 )

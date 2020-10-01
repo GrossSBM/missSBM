@@ -7,12 +7,12 @@ set.seed(1890718)
 ### A SBM model : ###
 N <- 200
 Q <- 3
-alpha <- rep(1, Q)/Q           # block proprortion
+pi <- rep(1, Q)/Q           # block proportion
 theta <- diag(.45, Q, Q) + .05 # connectivity matrix
 directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
-sbm <- missSBM::simulate(N, alpha, theta, directed) # simulation of ad Bernoulli non-directed SBM
+sbm <- missSBM::simulate(N, pi, theta, directed) # simulation of ad Bernoulli non-directed SBM
 
 samplings <- list(
   list(name = "dyad", psi = 0.5, class = "dyadSampling_fit"),

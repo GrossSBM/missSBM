@@ -7,12 +7,12 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 100
 Q <- 3
-alpha <- rep(1, Q)/Q                     # mixture parameter
+pi <- rep(1, Q)/Q                     # mixture parameter
 theta <- diag(.45, Q, Q) + .05                 # connectivity matrix
 directed <- FALSE
 
 ### Draw a undirected SBM model
-mySBM <- missSBM::simulate(N, alpha, theta, directed)
+mySBM <- missSBM::simulate(N, pi, theta, directed)
 A <- mySBM$adjacencyMatrix
 cl_rand <- base::sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")

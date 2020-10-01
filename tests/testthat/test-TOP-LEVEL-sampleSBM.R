@@ -4,13 +4,13 @@ set.seed(178303)
 ### A SBM model : ###
 N <- 100
 Q <- 3
-alpha <- rep(1, Q)/Q           # block proportion
+pi <- rep(1, Q)/Q           # block proportion
 theta <- diag(.45, Q, Q) + .05 # connectivity matrix
 gamma <- missSBM:::.logit(theta)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
-sbm <- missSBM::simulate(N, alpha, theta, directed)
+sbm <- missSBM::simulate(N, pi, theta, directed)
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 2
@@ -20,8 +20,8 @@ covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
 covariates_dyad <- missSBM:::array2list(covarArray)
 
 covarParam  <- rnorm(M, 0, 1)
-sbm_cov_dyad <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
-sbm_cov_node <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)
+sbm_cov_dyad <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
+sbm_cov_node <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
 
 test_that("Consistency of dyad-centered sampling", {
 

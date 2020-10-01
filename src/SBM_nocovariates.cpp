@@ -14,7 +14,7 @@ Rcpp::NumericMatrix E_step_nocovariate(
     const arma::mat& Y_bar,
     const arma::mat&  theta,
     const arma::mat&  Tau,
-    const arma::vec&  alpha,
+    const arma::vec&  pi,
     const double& log_lambda,
     int fixPointIter) {
 

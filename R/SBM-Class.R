@@ -13,7 +13,7 @@ R6::R6Class(classname = "SBM",
     invlink = NULL, # the inverse link function (GLM-like)
     directed = NULL, # directed or undirected network
     N        = NULL, # number of nodes
-    alpha    = NULL, # vector of block parameters
+    pi    = NULL, # vector of block parameters
     theta    = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
     Y        = NULL, # the adjacency matrix
@@ -40,7 +40,7 @@ R6::R6Class(classname = "SBM",
 
       private$directed <- directed
       private$N        <- nbNodes
-      private$alpha    <- blockProp
+      private$pi    <- blockProp
       private$theta    <- connectParam
 
       private$model   <- "bernoulli"
@@ -98,7 +98,7 @@ R6::R6Class(classname = "SBM",
     #' @field direction character indicating if the network is directed or not
     direction     = function(value) {if (private$directed) "directed" else "undirected"}, # directed network or not
     #' @field blockProp the vector of mixture parameters (block proportions)
-    blockProp = function(value) {if (missing(value)) return(private$alpha) else private$alpha <- value},
+    blockProp = function(value) {if (missing(value)) return(private$pi) else private$pi <- value},
     #' @field connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
     connectParam     = function(value) {if (missing(value)) return(private$theta) else private$theta <- values},
     #' @field adjacencyMatrix  The adjacency matrix of the network
@@ -135,7 +135,7 @@ is_SBM <- function(Robject) {inherits(Robject, "SBM")}
 #'
 #' Extracts model coefficients from objects with class \code{\link[=SBM]{SBM}} and children
 #'
-#' @param object an R6 object inheriting from class SBM_fit (like SimpleSBM_fit or BipartiteSBM_fit)
+#' @param object an R6 object inheriting from class SBM_fit
 #' @param type type of parameter that should be extracted. Either 'block' for \deqn{\pi}, 'connectivity' for \deqn{\theta},
 #'  or "covariates" for \deqn{\beta}. Default is 'connectivity'.
 #' @param ... additional parameters for S3 compatibility. Not used

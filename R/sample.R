@@ -40,11 +40,11 @@
 #' directed <- FALSE
 #' N <- 300 # number of nodes
 #' Q <- 3   # number of clusters
-#' alpha <- rep(1,Q)/Q     # mixture parameter
+#' pi <- rep(1,Q)/Q     # mixture parameter
 #' theta <- diag(.45,Q) + .05 # connectivity matrix
 #'
 #' ## simulate a SBM without covariates
-#' sbm <- missSBM::simulate(N, alpha, theta, directed)
+#' sbm <- missSBM::simulate(N, pi, theta, directed)
 #'
 #' ## Sample network data
 #'

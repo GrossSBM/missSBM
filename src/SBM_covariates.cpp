@@ -26,7 +26,7 @@ double vExpec_covariates(
     Rcpp::NumericMatrix roundProd,
     Rcpp::NumericMatrix gamma,
     Rcpp::NumericMatrix Tau,
-    Rcpp::NumericVector alpha
+    Rcpp::NumericVector pi
   ) {
 
   int N = Y.ncol();
@@ -42,7 +42,7 @@ double vExpec_covariates(
           }
         }
       }
-      loglik = loglik + Tau(i,q) * std::log(alpha[q]);
+      loglik = loglik + Tau(i,q) * std::log(pi[q]);
     }
   }
   return loglik ;
@@ -54,7 +54,7 @@ Rcpp::NumericMatrix E_step_covariates(
     Rcpp::NumericMatrix roundProd,
     Rcpp::NumericMatrix gamma,
     Rcpp::NumericMatrix Tau,
-    Rcpp::NumericVector alpha) {
+    Rcpp::NumericVector pi) {
 
   int N = Y.ncol();
   int Q = gamma.ncol();
@@ -71,7 +71,7 @@ Rcpp::NumericMatrix E_step_covariates(
           }
         }
       }
-      Tau(i,q) = alpha[q] * std::exp(acc);
+      Tau(i,q) = pi[q] * std::exp(acc);
     }
     Tau(i,_) = Tau(i,_)/sum(Tau(i,_));
   }

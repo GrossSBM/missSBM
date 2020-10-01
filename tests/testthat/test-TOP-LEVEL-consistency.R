@@ -29,7 +29,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     )
     newAlgo <- missSBM_out$bestModel
 
-    ## mixture parameters (alpha)
+    ## mixture parameters (pi)
     err_new <- error(newAlgo$fittedSBM$blockProp, truth$mixtureParam, sort = TRUE)
     err_old <- error(refAlgo$mixtureParam       , truth$mixtureParam, sort = TRUE)
     gap_old <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
@@ -103,7 +103,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     )
     newAlgo <- missSBM_out$bestModel
 
-    ## mixture parameters (alpha)
+    ## mixture parameters (pi)
     err_new <- error(newAlgo$fittedSBM$blockProp, truth$mixtureParam, sort = TRUE)
     err_old <- error(refAlgo$mixtureParam       , truth$mixtureParam, sort = TRUE)
     gap_old <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
