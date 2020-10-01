@@ -30,7 +30,7 @@ test_that("Creation of a SBM_fit_nocovariate", {
   expect_equal(mySBM_fit$probMemberships, missSBM:::clustering_indicator(cl_rand))
   expect_equal(dim(mySBM_fit$connectParam), dim(mySBM$connectParam))
   expect_equal(length(mySBM_fit$blockProp), length(mySBM$blockProp))
-  expect_equal(mySBM_fit$direction, "undirected")
+  expect_equal(mySBM_fit$directed, FALSE)
 
 })
 

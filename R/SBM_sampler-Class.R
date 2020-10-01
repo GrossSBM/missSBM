@@ -64,7 +64,7 @@ SBM_sampler <-
     #' @description a method to sample an adjacency matrix for the current SBM
     rAdjacency = function() {
       Y <- matrix(rbinom(private$N^2, 1, self$expectation), private$N)
-      if (!private$directed) Y <- Y * lower.tri(Y) + t(Y * lower.tri(Y))
+      if (!private$directed_) Y <- Y * lower.tri(Y) + t(Y * lower.tri(Y))
       private$Y <- Y
     },
     #' @description show method

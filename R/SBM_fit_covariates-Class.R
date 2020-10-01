@@ -35,7 +35,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
           # starting parameters
           c(as.vector(private$theta),private$beta),
           # objective function + gradient
-          ifelse(private$directed, Mstep_covariates_directed, Mstep_covariates_undirected),
+          ifelse(private$directed_, Mstep_covariates_directed, Mstep_covariates_undirected),
           # optimizer parameters
           opts = list("algorithm" = "NLOPT_LD_MMA", "xtol_rel" = 1.0e-4),
           # additional argument for objective/gradient function

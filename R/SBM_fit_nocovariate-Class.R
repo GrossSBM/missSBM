@@ -33,7 +33,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
         adjMatrix_bar <- bar(private$Y)
         ## Bernoulli undirected
         tau <- private$Y %*% private$tau %*% t(log(private$theta)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$theta)) + log_lambda
-        if (private$directed) {
+        if (private$directed_) {
           ## Bernoulli directed
           tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$theta))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$theta)))
         }
@@ -45,7 +45,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
   ),
   active = list(
     vExpec = function(value) {
-      factor <- ifelse(private$directed, 1, .5)
+      factor <- ifelse(private$directed_, 1, .5)
       adjMat <- private$Y ; diag(adjMat) <- 0
       tmp <- factor * sum( adjMat * private$tau %*% log(private$theta) %*% t(private$tau) +
                              bar(private$Y)  *  private$tau %*% log(1 - private$theta) %*% t(private$tau))

@@ -19,7 +19,7 @@ An R6 Class to represent a SBM
 
 \item{\code{nbDyads}}{The number of dyads}
 
-\item{\code{direction}}{character indicating if the network is directed or not}
+\item{\code{directed}}{is the network directed or not}
 
 \item{\code{blockProp}}{the vector of mixture parameters (block proportions)}
 

@@ -8,16 +8,16 @@ R6::R6Class(classname = "SBM",
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## fields for internal use (referring to mathematical notations)
   private = list(
-    model   = NULL, # characters, the model name: distribution of the edges (bernoulli, poisson, gaussian)
-    link    = NULL, # the link function (GLM-like)
-    invlink = NULL, # the inverse link function (GLM-like)
-    directed = NULL, # directed or undirected network
+    model     = NULL, # characters, the model name: distribution of the edges (bernoulli, poisson, gaussian)
+    link      = NULL, # the link function (GLM-like)
+    invlink   = NULL, # the inverse link function (GLM-like)
+    directed_ = NULL, # is the network directed or not
     N        = NULL, # number of nodes
-    pi    = NULL, # vector of block parameters
-    theta    = NULL, # matrix of connectivity
-    beta     = NULL, # vector of covariates parameters
-    Y        = NULL, # the adjacency matrix
-    X        = NULL  # list of covariates (list of dim[1] x dim[2] matrices)
+    pi        = NULL, # vector of block parameters
+    theta     = NULL, # matrix of connectivity
+    beta      = NULL, # vector of covariates parameters
+    Y         = NULL, # the adjacency matrix
+    X         = NULL  # list of covariates (list of dim[1] x dim[2] matrices)
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -38,10 +38,10 @@ R6::R6Class(classname = "SBM",
 
       ## MODEL & PARAMETERS
 
-      private$directed <- directed
-      private$N        <- nbNodes
-      private$pi    <- blockProp
-      private$theta    <- connectParam
+      private$directed_ <- directed
+      private$N         <- nbNodes
+      private$pi        <- blockProp
+      private$theta     <- connectParam
 
       private$model   <- "bernoulli"
       private$X       <- covarList
@@ -54,7 +54,7 @@ R6::R6Class(classname = "SBM",
     show = function(type = "Stochastic Block Model\n") {
       cat(type)
       cat("==================================================================\n")
-      cat("Model", self$direction, "with",
+      cat("Model", ifelse(self$directed, "directed", "undirected"), "with",
           self$nbNodes,"nodes,",
           self$nbBlocks, "blocks and",
           ifelse(self$nbCovariates > 0, self$nbCovariates, "no"), "covariate(s).\n")
@@ -94,9 +94,9 @@ R6::R6Class(classname = "SBM",
     #' @field nbCovariates The number of covariates
     nbCovariates   = function(value) {length(private$X)}, # number of covariates
     #' @field nbDyads The number of dyads
-    nbDyads        = function(value) {ifelse(private$directed, self$nbNodes*(self$nbNodes - 1), self$nbNodes*(self$nbNodes - 1)/2)},
-    #' @field direction character indicating if the network is directed or not
-    direction     = function(value) {if (private$directed) "directed" else "undirected"}, # directed network or not
+    nbDyads        = function(value) {ifelse(private$directed_, self$nbNodes*(self$nbNodes - 1), self$nbNodes*(self$nbNodes - 1)/2)},
+    #' @field directed is the network directed or not
+    directed = function(value) {private$directed_},
     #' @field blockProp the vector of mixture parameters (block proportions)
     blockProp = function(value) {if (missing(value)) return(private$pi) else private$pi <- value},
     #' @field connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
@@ -114,7 +114,7 @@ R6::R6Class(classname = "SBM",
     #' @field df_blockProps degrees of freedoms for the mixture parameters
     df_blockProps = function(value) {self$nbBlocks - 1},
     #' @field df_connectParams degrees of freedoms for the connectivity parameters
-    df_connectParams = function(value) {ifelse(private$directed, self$nbBlocks^2, self$nbBlocks*(self$nbBlocks + 1)/2)},
+    df_connectParams = function(value) {ifelse(private$directed_, self$nbBlocks^2, self$nbBlocks*(self$nbBlocks + 1)/2)},
     #' @field df_covarParams degrees of freedoms for the covariate parameters
     df_covarParams   = function(value) {self$nbCovariates}
   )

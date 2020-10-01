@@ -20,7 +20,7 @@ test_that("SBM sampler without covariates", {
   expect_equal(mySBM$covarParam, numeric(0))
   expect_equal(mySBM$covarList, list())
   expect_false(mySBM$nbCovariates > 0)
-  expect_equal(mySBM$direction, "undirected")
+  expect_equal(mySBM$directed, FALSE)
 
   mySBM$rMemberships()
   expect_equal(length(mySBM$memberships), N)
@@ -57,7 +57,7 @@ test_that("SBM sampler with covariates", {
   expect_true(mySBM$nbCovariates > 0)
   expect_equal(mySBM$covarParam, covarParam)
   expect_equal(dim(mySBM$covarArray) , c(N, N, M))
-  expect_equal(mySBM$direction, "undirected")
+  expect_equal(mySBM$directed, FALSE)
 
   mySBM$rMemberships()
   expect_equal(length(mySBM$memberships), N)

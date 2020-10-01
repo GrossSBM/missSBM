@@ -93,7 +93,8 @@ missSBM_fit <-
       i <- 0; cond <- FALSE
       ## Starting the Variational EM algorithm
       if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-      if (control$trace) cat("\n\tDyads are distributed according to a '", private$SBM$direction,"' SBM.\n", sep = "")
+      if (control$trace) cat("\n\tDyads are distributed according to a '",
+                             ifelse(private$SBM$directed, "directed", "undirected"),"' SBM.\n", sep = "")
       if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
 
       while (!cond) {
