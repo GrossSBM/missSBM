@@ -29,7 +29,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
       private$alpha <- check_boundaries(colMeans(private$tau))
     },
     update_blocks = function(log_lambda = 0) {
-      if (private$Q > 1) {
+      if (self$nbBlocks > 1) {
         adjMatrix_bar <- bar(private$Y)
         ## Bernoulli undirected
         tau <- private$Y %*% private$tau %*% t(log(private$pi)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$pi)) + log_lambda
@@ -38,7 +38,7 @@ R6::R6Class(classname = "SBM_fit_nocovariate",
           tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$pi))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$pi)))
         }
         # tau <- check_boundaries(t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax)), zero = 1e-4)
-        # private$tau <- tau / matrix(rowSums(tau), self$nbNodes, private$Q, byrow = FALSE)
+        # private$tau <- tau / matrix(rowSums(tau), self$nbNodes, self$nbBlocks, byrow = FALSE)
         private$tau <- t(apply(sweep(tau, 2, log(private$alpha), "+"), 1, .softmax))
       }
     }

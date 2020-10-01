@@ -24,7 +24,7 @@ R6::R6Class(classname = "SBM_fit_covariates",
       ## Initialize parameters
       private$pi    <- .logit(check_boundaries(quad_form(adjacencyMatrix, Z) / quad_form(1 - diag(self$nbNodes), Z)))
       private$alpha <- check_boundaries(colMeans(Z))
-      private$beta  <- numeric(private$M)
+      private$beta  <- numeric(self$nbCovariates)
       private$tau   <- Z
 
       invisible(self)
