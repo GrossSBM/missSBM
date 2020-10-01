@@ -17,8 +17,8 @@ test_that("SBM sampler without covariates", {
   expect_error(mySBM$memberships)
   expect_equal(mySBM$connectParam, pi)
   expect_equal(mySBM$blockProp, alpha)
-  expect_null(mySBM$covarParam)
-  expect_null(mySBM$covarArray)
+  expect_equal(mySBM$covarParam, numeric(0))
+  expect_equal(mySBM$covarList, list())
   expect_false(mySBM$nbCovariates > 0)
   expect_equal(mySBM$direction, "undirected")
 
@@ -40,7 +40,7 @@ test_that("SBM sampler with covariates", {
   Q <- 3
   alpha <- rep(1,Q)/Q                     # mixture parameter
   pi <- diag(.45,Q) + .05                 # connectivity matrix
-  gamma <- missSBM:::logit(pi)
+  gamma <- missSBM:::.logit(pi)
   directed <- FALSE
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -52,7 +52,7 @@ test_that("SBM sampler with covariates", {
   expect_null(mySBM$adjacencyMatrix)
   expect_null(mySBM$indMemberships)
   expect_error(mySBM$memberships)
-  expect_equal(missSBM:::logistic(mySBM$connectParam), pi)
+  expect_equal(missSBM:::.logistic(mySBM$connectParam), pi)
   expect_equal(mySBM$blockProp, alpha)
   expect_true(mySBM$nbCovariates > 0)
   expect_equal(mySBM$covarParam, covarParam)

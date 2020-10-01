@@ -57,9 +57,9 @@ SBM_sampler <-
     #' @param blockProp the vector of mixture parameters
     #' @param connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
     #' @param covarParam the vector of parameters associated with the covariates
-    #' @param covarArray the array of covariates
-    initialize = function(directed = FALSE, nbNodes=NA, blockProp=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
-      super$initialize(directed, nbNodes, blockProp, connectParam, covarParam, covarArray)
+    #' @param covarList A list with M entries (the M covariates). Each entry of the list must be an N x N matrix
+    initialize = function(directed = FALSE, nbNodes=NA, blockProp=NA, connectParam=NA, covarParam=numeric(0), covarList=list()) {
+      super$initialize(directed, nbNodes, blockProp, connectParam, covarParam, covarList)
     },
     #' @description a method to generate a vector of clusters indicators
     rMemberships = function() {
@@ -96,7 +96,7 @@ SBM_sampler <-
     expectation = function(value) {
       PI <- private$Z %*% private$pi %*% t(private$Z)
       if (self$nbCovariates > 0) {
-        PI <- logistic(PI + roundProduct(private$X, private$beta))
+        PI <- .logistic(PI + self$covarEffect)
       }
       PI
     }

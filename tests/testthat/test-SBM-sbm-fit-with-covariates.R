@@ -11,7 +11,7 @@ N <- 100
 Q <- 3
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45,Q) + .05                 # connectivity matrix
-gamma <- missSBM:::logit(pi)
+gamma <- missSBM:::.logit(pi)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -42,41 +42,6 @@ test_that("Creation of a SBM_fit_covariates", {
 
 })
 
-# test_that("Consistency of VEM of a SBM_fit_covariates with the number of block given", {
-#
-#   tol <- 1e-3
-#
-#   ## testing just hierarchical clustering (best init)
-#   mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjMatrix, cl_spec, sbm$covarArray)
-#
-#   out <- mySBM_fit$doVEM(sbm$adjMatrix, trace = FALSE, threshold = tol, maxIter = 10, fixPointIter = 3)
-#
-#   ## A bit long, but it works: we do just as good as blockmodels, sometimes better
-#   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjMatrix, covariates, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
-#   BM$estimate()
-#
-#   ## similar estimation thant BM for connection parameters
-#   error_BM      <- error(sbm$connectParam, BM$model_parameters[[3]]$m)
-#   error_missSBM <- error(sbm$connectParam, mySBM_fit$connectParam)
-#   expect_lt(abs(error_missSBM - error_BM), 1e-2)
-#
-#   ## similar estimation thant BM for regression parameters
-#   error_BM      <- error(sbm$covarParam, as.numeric(BM$model_parameters[[3]]$beta))
-#   error_missSBM <- error(sbm$covarParam, mySBM_fit$covarParam)
-#   expect_lt(abs(error_missSBM - error_BM), 1e-2)
-#
-#   ## checking estimation consistency
-#   expect_lt(error(logistic(mySBM_fit$connectParam), pi), tol)
-#
-#   expect_lt(error(mySBM_fit$covarParam, covarParam), tol*10)
-#
-#   ## checking consistency of the clustering
-#   expect_lt(1 - ARI(mySBM_fit$memberships, sbm$memberships), tol)
-#
-#   tol <- 1e-3
-#
-# })
-
 ## CONSISTENCY WITH BLOCKMODELS
 
 test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nbBlocks", {
@@ -89,7 +54,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   alpha <- rep(1, Q)/Q                     # mixture parameter
   pi <- diag(.45, Q) + .05                 # connectivity matrix
   directed <- FALSE
-  gamma <- missSBM:::logit(pi)
+  gamma <- missSBM:::.logit(pi)
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
   M <- 1

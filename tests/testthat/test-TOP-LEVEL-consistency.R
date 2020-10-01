@@ -116,9 +116,9 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     }
 
     ## connectivity parameters (pi)
-    err_new <- error(logistic(newAlgo$fittedSBM$connectParam), logistic(truth$connectParam), sort = TRUE)
-    err_old <- error(logistic(refAlgo$connectParam)          , logistic(truth$connectParam), sort = TRUE)
-    err_gap <- error(logistic(newAlgo$fittedSBM$connectParam), logistic(refAlgo$connectParam), sort = TRUE)
+    err_new <- error(.logistic(newAlgo$fittedSBM$connectParam), .logistic(truth$connectParam), sort = TRUE)
+    err_old <- error(.logistic(refAlgo$connectParam)          , .logistic(truth$connectParam), sort = TRUE)
+    err_gap <- error(.logistic(newAlgo$fittedSBM$connectParam), .logistic(refAlgo$connectParam), sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth*3)
       cat(" new better on connectivity")

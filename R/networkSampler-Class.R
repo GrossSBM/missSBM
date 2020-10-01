@@ -114,7 +114,7 @@ R6::R6Class(classname = "simpleDyadSampler",
         sampling_prob <- rep(parameters, length(private$dyads))
       } else {
         stopifnot(length(parameters) == dim(covarArray)[3])
-        sampling_prob <- logistic(intercept + roundProduct(covarArray, parameters))[private$dyads]
+        sampling_prob <- .logistic(intercept + roundProduct(covarArray, parameters))[private$dyads]
       }
       private$rho <- sampling_prob
     }
@@ -204,7 +204,7 @@ R6::R6Class(classname = "simpleNodeSampler",
         sampling_prob <- rep(parameters, nbNodes)
       } else {
         stopifnot(length(parameters) == ncol(covarMatrix))
-        sampling_prob <- logistic(intercept + covarMatrix %*% parameters)
+        sampling_prob <- .logistic(intercept + covarMatrix %*% parameters)
       }
       super$initialize("node", parameters, nbNodes, directed)
       private$rho <- sampling_prob
@@ -243,7 +243,7 @@ R6::R6Class(classname = "degreeSampler",
     initialize = function(parameters = NA, degrees = NA, directed = FALSE) {
       stopifnot(length(parameters) == 2)
       super$initialize("degree", parameters, length(degrees), directed)
-      private$rho <- logistic(parameters[1] + self$parameters[2]*degrees)
+      private$rho <- .logistic(parameters[1] + self$parameters[2]*degrees)
     }
   )
 )

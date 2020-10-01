@@ -8,15 +8,16 @@ R6::R6Class(classname = "SBM",
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## fields for internal use (referring to mathematical notations)
   private = list(
+    model   = NULL, # characters, the model name: distribution of the edges (bernoulli, poisson, gaussian)
+    link    = NULL, # the link function (GLM-like)
+    invlink = NULL, # the inverse link function (GLM-like)
     directed = NULL, # directed or undirected network
     N        = NULL, # number of nodes
-    Q        = NULL, # number of blocks
-    M        = NULL, # number of covariates
     alpha    = NULL, # vector of block parameters
     pi       = NULL, # matrix of connectivity
     beta     = NULL, # vector of covariates parameters
     Y        = NULL, # the adjacency matrix
-    X        = NULL  # the array of covariates (N x N x M)
+    X        = NULL  # list of covariates (list of dim[1] x dim[2] matrices)
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -29,18 +30,24 @@ R6::R6Class(classname = "SBM",
     #' @param connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
     #' @param covarParam the vector of parameters associated with the covariates
     #' @param covarArray the array of covariates
-    initialize = function(directed=FALSE, nbNodes=NA, blockProp=NA, connectParam=NA, covarParam=NULL, covarArray=NULL) {
+    initialize = function(directed=FALSE, nbNodes=NA, blockProp=NA, connectParam=NA, covarParam=numeric(length(covarList)), covarList=list()) {
+
+      stopifnot(all.equal(length(covarParam), length(covarList)))
+      stopifnot(all(sapply(covarList, nrow) == nbNodes))
+      stopifnot(all(sapply(covarList, ncol) == nbNodes))
+
+      ## MODEL & PARAMETERS
+
       private$directed <- directed
       private$N        <- nbNodes
-      private$Q        <- length(blockProp)
-      private$M        <- ifelse(is.null(covarArray), 0, length(covarParam))
       private$alpha    <- blockProp
       private$pi       <- connectParam
-      if (!is.null(covarArray)) {
-        stopifnot(all.equal(dim(covarArray), c(private$N, private$N, private$M)))
-        private$X    <- covarArray
-        private$beta <- covarParam
-      }
+
+      private$model   <- "bernoulli"
+      private$X       <- covarList
+      private$beta    <- covarParam
+      private$link    <- .logit
+      private$invlink <- .logistic
     },
     #' @description show method
     #' @param type character used to specify the type of SBM
@@ -83,9 +90,9 @@ R6::R6Class(classname = "SBM",
     #' @field nbNodes The number of nodes
     nbNodes        = function(value) {private$N}, # number of nodes
     #' @field nbBlocks The number of blocks
-    nbBlocks       = function(value) {private$Q}, # number of blocks
+    nbBlocks       = function(value) {length(self$blockProp)}, # number of blocks
     #' @field nbCovariates The number of covariates
-    nbCovariates   = function(value) {private$M}, # number of covariates
+    nbCovariates   = function(value) {length(private$X)}, # number of covariates
     #' @field nbDyads The number of dyads
     nbDyads        = function(value) {ifelse(private$directed, self$nbNodes*(self$nbNodes - 1), self$nbNodes*(self$nbNodes - 1)/2)},
     #' @field direction character indicating if the network is directed or not
@@ -99,7 +106,11 @@ R6::R6Class(classname = "SBM",
     #' @field covarParam the vector of parameters associated with the covariates
     covarParam       = function(value) {if (missing(value)) return(private$beta) else private$beta <- value},
     #' @field covarArray the array of covariates
-    covarArray       = function(value) {private$X},
+    covarArray       = function(value) {simplify2array(private$X)},
+    #' @field covarList list of matrices of covariates
+    covarList    = function(value) {if (missing(value)) return(private$X) else private$X <- value},
+    #' @field covarEffect effect of covariates
+    covarEffect  = function(value) {if (self$nbCovariates > 0) return(roundProduct(self$covarArray, private$beta)) else return(numeric(0))},
     #' @field df_blockProps degrees of freedoms for the mixture parameters
     df_blockProps = function(value) {self$nbBlocks - 1},
     #' @field df_connectParams degrees of freedoms for the connectivity parameters
@@ -120,11 +131,21 @@ R6::R6Class(classname = "SBM",
 ## Auxiliary functions to check the given class of an objet
 is_SBM <- function(Robject) {inherits(Robject, "SBM")}
 
+#' Extract model coefficients
+#'
+#' Extracts model coefficients from objects with class \code{\link[=SBM]{SBM}} and children (\code{\link[=SimpleSBM_fit]{SimpleSBM_fit}},
+#' \code{\link[=BipartiteSBM_fit]{BipartiteSBM_fit}})
+#'
+#' @param object an R6 object inheriting from class SBM_fit (like SimpleSBM_fit or BipartiteSBM_fit)
+#' @param type type of parameter that should be extracted. Either 'block' for \deqn{\pi}, 'connectivity' for \deqn{\theta},
+#'  or "covariates" for \deqn{\beta}. Default is 'connectivity'.
+#' @param ... additional parameters for S3 compatibility. Not used
+#' @return vector or list of parameters.
 #' @export
-coef.SBM <- function(object, type = c("mixture", "connectivity", "covariates"), ...) {
+coef.SBM <- function(object, type = c( 'connectivity', 'block', 'covariates'), ...) {
   stopifnot(is_SBM(object))
   switch(match.arg(type),
-         mixture      = object$blockProp,
+         block        = object$blockProp,
          connectivity = object$connectParam,
          covariates   = object$covarParam)
 }

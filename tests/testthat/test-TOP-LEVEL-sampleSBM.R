@@ -6,7 +6,7 @@ N <- 100
 Q <- 3
 alpha <- rep(1, Q)/Q                     # mixture parameter
 pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
-gamma <- missSBM:::logit(pi)
+gamma <- missSBM:::.logit(pi)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
@@ -17,7 +17,7 @@ M <- 2
 covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
 covarMatrix <- simplify2array(covariates_node)
 covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
-covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
+covariates_dyad <- missSBM:::array2list(covarArray)
 
 covarParam  <- rnorm(M, 0, 1)
 sbm_cov_dyad <- missSBM::simulate(N, alpha, gamma, directed, covariates_dyad, covarParam)

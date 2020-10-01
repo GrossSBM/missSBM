@@ -111,7 +111,7 @@ sampledNetwork <-
           X <- cbind(1, apply(private$phi, 3, as.vector))
           NAs <- as.vector(private$nas)
           adjacencyMatrix <- matrix(NA, self$nbNodes, self$nbNodes)
-          adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
+          adjacencyMatrix[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
         }
         clustering <-
           switch(match.arg(method),
@@ -126,6 +126,7 @@ sampledNetwork <-
     #' @description basic imputation from existing clustering
     #' @param clustering a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
     #' @return an adjacency matrix with imputed values
+### TODO: include covariates in the imputation!!!
     imputation = function(clustering) {
       adjancency0 <- private$Y
       adjancency0[private$nas] <- 0

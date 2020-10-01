@@ -38,12 +38,13 @@ missSBM_collection <-
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
       adjacencyMatrix <- sampledNet$adjacencyMatrix
+### TODO: why not included in the basic imputatiton in sampledNet ???
       if (!is.null(sampledNet$covarArray)) {
         y <- as.vector(adjacencyMatrix)
         X <- apply(sampledNet$covarArray, 3, as.vector)
         adjacencyMatrix <- matrix(NA, sampledNet$nbNodes, sampledNet$nbNodes)
         NAs <- is.na(y)
-        adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
+        adjacencyMatrix[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
       }
 
       if (trace) cat("   Going forward ")

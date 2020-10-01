@@ -6,5 +6,5 @@ error <- function(beta1, beta2, sort = FALSE) {
   err
 }
 
-logistic <- missSBM:::logistic
-logit <- missSBM:::logit
+.logistic <- missSBM:::.logistic
+.logit <- missSBM:::.logit

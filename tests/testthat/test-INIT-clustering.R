@@ -125,7 +125,7 @@ N <- 40
 Q <- 2
 alpha <- rep(1,Q)/Q                     # mixture parameter
 pi <- diag(.45, Q, Q) + .05                 # connectivity matrix
-gamma <- missSBM:::logit(pi)
+gamma <- missSBM:::.logit(pi)
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates

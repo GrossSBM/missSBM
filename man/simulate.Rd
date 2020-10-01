@@ -9,8 +9,8 @@ simulate(
   blockProp,
   connectParam,
   directed = FALSE,
-  covariates = NULL,
-  covarParam = NULL
+  covariates = list(),
+  covarParam = numeric(length(covariates))
 )
 }
 \arguments{

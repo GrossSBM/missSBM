@@ -9,7 +9,7 @@ init_clustering <- function(adjacencyMatrix, nbBlocks, covarArray = NULL, cluste
       X <- cbind(1, apply(covarArray, 3, as.vector))
       adjacencyMatrix <- matrix(NA, N, N)
       NAs <- is.na(y)
-      adjacencyMatrix[!NAs] <- logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
+      adjacencyMatrix[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
     }
 
     if (is.character(clusterInit)) {

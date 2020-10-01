@@ -90,8 +90,8 @@ Initialize a [`SBM_sampler`] object
   nbNodes = NA,
   blockProp = NA,
   connectParam = NA,
-  covarParam = NULL,
-  covarArray = NULL
+  covarParam = numeric(0),
+  covarList = list()
 )}\if{html}{\out{</div>}}
 }
 
@@ -108,7 +108,7 @@ Initialize a [`SBM_sampler`] object
 
 \item{\code{covarParam}}{the vector of parameters associated with the covariates}
 
-\item{\code{covarArray}}{the array of covariates}
+\item{\code{covarList}}{A list with M entries (the M covariates). Each entry of the list must be an N x N matrix}
 }
 \if{html}{\out{</div>}}
 }

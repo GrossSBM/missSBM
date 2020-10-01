@@ -31,6 +31,10 @@ An R6 Class to represent a SBM
 
 \item{\code{covarArray}}{the array of covariates}
 
+\item{\code{covarList}}{list of matrices of covariates}
+
+\item{\code{covarEffect}}{effect of covariates}
+
 \item{\code{df_blockProps}}{degrees of freedoms for the mixture parameters}
 
 \item{\code{df_connectParams}}{degrees of freedoms for the connectivity parameters}
@@ -60,8 +64,8 @@ Initialize an [`SBM`] object
   nbNodes = NA,
   blockProp = NA,
   connectParam = NA,
-  covarParam = NULL,
-  covarArray = NULL
+  covarParam = numeric(length(covarList)),
+  covarList = list()
 )}\if{html}{\out{</div>}}
 }
 

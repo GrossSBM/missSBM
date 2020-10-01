@@ -76,9 +76,9 @@ R6::R6Class(classname = "SBM_fit",
     #' @field expectation expected values of connection under the current model
     expectation = function(value) {
       if (self$nbCovariates > 0) {## pi is gamma in covariate SBM
-        Prob <- check_boundaries(logistic(private$tau %*% private$pi %*% t(private$tau) + roundProduct(private$X, private$beta)))
+        Prob <- check_boundaries(.logistic(private$tau %*% private$pi %*% t(private$tau) + self$covarEffect))
       } else {
-        Prob <- check_boundaries(logistic(private$tau %*% logit(private$pi) %*% t(private$tau)))
+        Prob <- check_boundaries(.logistic(private$tau %*% .logit(private$pi) %*% t(private$tau)))
       }
       Prob
     }

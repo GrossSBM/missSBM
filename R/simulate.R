@@ -36,20 +36,17 @@
 #' par(old_param)
 #'
 #' @export
-simulate <- function(nbNodes, blockProp, connectParam, directed = FALSE, covariates = NULL, covarParam = NULL) {
-
-  ## Conversion of covariates to an array
-  if (!is.null(covariates)) covariates <- simplify2array(covariates)
+simulate <- function(nbNodes, blockProp, connectParam, directed = FALSE, covariates = list(), covarParam = numeric(length(covariates))) {
 
   ## Instantiation of the SBM sampler
   mySBM <-
     SBM_sampler$new(
       directed     = directed,
-      nbNodes       = nbNodes,
-      blockProp = blockProp,
+      nbNodes      = nbNodes,
+      blockProp    = blockProp,
       connectParam = connectParam,
       covarParam   = covarParam,
-      covarArray   = covariates
+      covarList    = covariates
     )
 
   ## draw blocks
