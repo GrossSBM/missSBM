@@ -48,7 +48,7 @@ test_that("SBM sampler with covariates", {
   covarMatrix <- matrix(rnorm(N*M,mean = 0, sd = 1), N, M)
   covarParam  <- rnorm(M,0,1)
   covarArray <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
-  mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, gamma, covarParam, covarArray)
+  mySBM <- missSBM:::SBM_sampler$new(directed, N, alpha, gamma, covarParam, missSBM:::array2list(covarArray))
   expect_null(mySBM$adjacencyMatrix)
   expect_null(mySBM$indMemberships)
   expect_error(mySBM$memberships)

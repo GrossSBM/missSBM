@@ -176,7 +176,7 @@ R6::R6Class(classname = "blockDyadSampler",
   ),
   active = list(
     #' @field df the number of parameters of this sampling
-    df = function(value) {ifelse(private$directed, self$nbBlocks^2, self$nbBlocks * (self$nbBlocks + 1) / 2) }
+    df = function(value) {ifelse(private$directed, private$Q^2, private$Q * (private$Q + 1) / 2) }
   )
 )
 
