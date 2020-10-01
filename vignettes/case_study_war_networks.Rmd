@@ -180,6 +180,7 @@ We first consider a covariate reflecting the military power of the country, henc
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:4
 collection_sbm_power_full <- estimate(belligerent_adjacency, vBlocks = vBlocks, sampling = "node", covariates = list(belligerent_power))
+smooth(collection_sbm_power_full)
 ```
 
 Note that by default, the distribution of edges depends on the covariate(s) in any are included in the model. 
@@ -215,6 +216,7 @@ corrplot(sampleNet_power_miss,
 Then, we can estimate the model by setting the sampling to be `covar-node`. We can still choose whether to consider or not the covariate in the SBM.
 ```{r fit power missing}
 collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node", covariates = list(belligerent_power))
+smooth(collection_sbm_power_miss)
 ```
 
 Then we can access the estimated sampling parameters:
