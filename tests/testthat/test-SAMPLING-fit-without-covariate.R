@@ -7,11 +7,11 @@ set.seed(178303)
 N <- 100
 Q <- 3
 pi <- rep(1, Q)/Q           # block proportion
-theta <- diag(.45, Q, Q) + .05 # connectivity matrix
+theta <- list(mean = diag(.45, Q, Q) + .05) # connectivity matrix
 directed <- FALSE              # if the network is directed or not
 
-sbm <- missSBM::simulate(N, pi, theta, directed) # simulation of ad Bernoulli non-directed SBM
-Z0  <- missSBM:::clustering_indicator(sbm$memberships)
+sbm <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
+Z0  <- sbm$indMemberships
 
 samplings <- list(
   list(name = "dyad", psi = 0.5, class = "dyadSampling_fit", k = log(N * (N-1)/2)),
@@ -37,13 +37,13 @@ test_that("Consistency of sampling fit", {
       "node"            = missSBM:::nodeSampling_fit$new(sampledNet),
       "double-standard" = missSBM:::doubleStandardSampling_fit$new(sampledNet),
       "block-node"      = missSBM:::blockSampling_fit$new(sampledNet, Z0),
-      "degree"          = missSBM:::degreeSampling_fit$new(sampledNet, Z0, sbm$connectParam)
+      "degree"          = missSBM:::degreeSampling_fit$new(sampledNet, Z0, sbm$connectParam$mean)
     )
 
     expect_is(fittedSampling, sampling$class)
     expect_equal(fittedSampling$df, length(sampling$psi))
     expect_equal(fittedSampling$penalty, sampling$k * length(sampling$psi))
-    expect_lt(fittedSampling$vExpec, 0)
+    expect_lte(fittedSampling$vExpec, 0)
 
     if (sampling$name %in% c("dyad", "node"))
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)

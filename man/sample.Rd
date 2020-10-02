@@ -62,14 +62,13 @@ node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete de
 }
 \examples{
 ## SBM parameters
-directed <- FALSE
 N <- 300 # number of nodes
 Q <- 3   # number of clusters
-pi <- rep(1,Q)/Q     # mixture parameter
-theta <- diag(.45,Q) + .05 # connectivity matrix
+pi <- rep(1,Q)/Q     # block proportion
+theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 
-## simulate a SBM without covariates
-sbm <- missSBM::simulate(N, pi, theta, directed)
+## simulate an unidrected binary SBM without covariate
+sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
 ## Sample network data
 
@@ -79,7 +78,7 @@ sampling_parameters <- list(
    "node" = .3,
    "double-standard" = c(0.4, 0.8),
    "block-node" = c(.3, .8, .5),
-   "block-dyad" = theta,
+   "block-dyad" = theta$mean,
    "degree" = c(.01, .01),
    "snowball" = c(2,.1)
  )
@@ -95,5 +94,4 @@ for (sampling in names(sampling_parameters)) {
        cluster         = sbm$memberships
      )
 }
-
 }

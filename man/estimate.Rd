@@ -72,18 +72,17 @@ node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete de
 }
 \examples{
 ## SBM parameters
-directed <- FALSE
 N <- 300 # number of nodes
 Q <- 3   # number of clusters
-pi <- rep(1,Q)/Q     # mixture parameter
-theta <- diag(.45,Q) + .05 # connectivity matrix
+pi <- rep(1,Q)/Q     # block proportion
+theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 
 ## Sampling parameters
 samplingParameters <- .5 # the sampling rate
 sampling  <- "dyad"       # the sampling design
 
-## simulate a SBM without covariate
-sbm <- missSBM::simulate(N, pi, theta, directed)
+## simulate a undirected binary SBM with no covariate
+sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
 ## Sample some dyads data + Infer SBM with missing data
 collection <-

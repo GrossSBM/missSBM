@@ -7,11 +7,10 @@ set.seed(1890719)
 N <- 80
 Q <- 3
 pi <- rep(1, Q)/Q           # block proportion
-theta <- diag(.45, Q, Q) + .05 # connectivity matrix
-directed <- FALSE         # if the network is directed or not
+theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 
 ### Draw a SBM model
-mySBM <- missSBM::simulate(N, pi, theta, directed) # simulation of ad Bernoulli non-directed SBM
+mySBM <- sbm::simulate(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$netMatrix # the adjacency matrix
 
 test_that("missSBM and class missSBM-fit are coherent", {

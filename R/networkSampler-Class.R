@@ -164,7 +164,6 @@ R6::R6Class(classname = "blockDyadSampler",
       stopifnot(
         all(parameters >= 0),
         all(parameters <= 1),
-        length(unique(clusters)) == Q,
         dim(parameters) == c(Q,Q)
       )
       super$initialize("block-dyad", parameters, nbNodes, directed)

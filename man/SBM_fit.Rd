@@ -15,8 +15,8 @@ The doVEM method performs inference via Variational EM.
 This class is virtual: inference is effective only for instance of one of the two child
 classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'
 }
-\section{Super class}{
-\code{\link[missSBM:SBM]{missSBM::SBM}} -> \code{SBM_fit}
+\section{Super classes}{
+\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SBM_fit]{sbm::SBM_fit}} -> \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}} -> \code{SBM_fit}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -25,15 +25,9 @@ classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'
 
 \item{\code{ICL}}{double: value of the integrated classification log-likelihood}
 
-\item{\code{probMemberships}}{matrix for clustering memberships}
-
-\item{\code{memberships}}{vector of clustering}
-
 \item{\code{penalty}}{double, value of the penalty term in ICL}
 
 \item{\code{entropy}}{double, value of the entropy due to the clustering distribution}
-
-\item{\code{expectation}}{expected values of connection under the current model}
 }
 \if{html}{\out{</div>}}
 }
@@ -41,16 +35,20 @@ classes 'SBM_fit_nocovariate' and 'SBM_fit_covariates'
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-doVEM}{\code{SBM_fit$doVEM()}}
-\item \href{#method-show}{\code{SBM_fit$show()}}
 \item \href{#method-clone}{\code{SBM_fit$clone()}}
 }
 }
 \if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
+\out{<details ><summary>Inherited methods</summary>}
 \itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="initialize">}\href{../../missSBM/html/SBM.html#method-initialize}{\code{missSBM::SBM$initialize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="plot">}\href{../../missSBM/html/SBM.html#method-plot}{\code{missSBM::SBM$plot()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SBM" data-id="print">}\href{../../missSBM/html/SBM.html#method-print}{\code{missSBM::SBM$print()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="plot">}\href{../../sbm/html/SBM.html#method-plot}{\code{sbm::SBM$plot()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print">}\href{../../sbm/html/SBM.html#method-print}{\code{sbm::SBM$print()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM_fit" data-id="setModel">}\href{../../sbm/html/SBM_fit.html#method-setModel}{\code{sbm::SBM_fit$setModel()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="initialize">}\href{../../sbm/html/SimpleSBM_fit.html#method-initialize}{\code{sbm::SimpleSBM_fit$initialize()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="optimize">}\href{../../sbm/html/SimpleSBM_fit.html#method-optimize}{\code{sbm::SimpleSBM_fit$optimize()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="predict">}\href{../../sbm/html/SimpleSBM_fit.html#method-predict}{\code{sbm::SimpleSBM_fit$predict()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="reorder">}\href{../../sbm/html/SimpleSBM_fit.html#method-reorder}{\code{sbm::SimpleSBM_fit$reorder()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="show">}\href{../../sbm/html/SimpleSBM_fit.html#method-show}{\code{sbm::SimpleSBM_fit$show()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -73,23 +71,6 @@ method to perform estimation via variational EM
 \item{\code{fixPointIter}}{number of fix-point iterations in the Variational E step. Default is 3.}
 
 \item{\code{trace}}{logical for verbosity. Default is \code{FALSE}.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-show"></a>}}
-\if{latex}{\out{\hypertarget{method-show}{}}}
-\subsection{Method \code{show()}}{
-show method
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SBM_fit$show(type = "Fit of a Stochastic Block Model\\n")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{type}}{character used to specify the type of SBM}
 }
 \if{html}{\out{</div>}}
 }

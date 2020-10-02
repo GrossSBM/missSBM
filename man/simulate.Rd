@@ -56,7 +56,6 @@ old_param <- par(mfrow = c(1,2))
 plot(sbm)
 plot(sbm_cov)
 par(old_param)
-
 }
 \seealso{
 The class \code{\link{SBM_sampler}}

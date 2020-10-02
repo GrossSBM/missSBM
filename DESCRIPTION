@@ -38,11 +38,9 @@ Remotes: GrossSBM/sbm
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'
-    'SBM-Class.R'
     'SBM_fit-Class.R'
     'SBM_fit_covariates-Class.R'
     'SBM_fit_nocovariate-Class.R'
-    'SBM_sampler-Class.R'
     'er_network.R'
     'estimate.R'
     'frenchblog2007.R'

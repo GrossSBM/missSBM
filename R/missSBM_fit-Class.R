@@ -16,7 +16,7 @@
 #' collection <- missSBM::estimate(adjMatrix, 3:5, sampling = "dyad")
 #' my_missSBM_fit <- collection$bestModel
 #' class(my_missSBM_fit)
-#' plot(my_missSBM_fit, "network")
+#' plot(my_missSBM_fit, "data")
 #'
 #' @include SBM_fit-Class.R
 #' @include networkSampling_fit-Class.R
