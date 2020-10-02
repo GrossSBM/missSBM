@@ -53,7 +53,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     expect_gt(diff(range(out$objective, na.rm = TRUE)), 0)
 
     ## SBM: parameters estimation
-    expect_lt(error(missSBM$fittedSBM$connectParam, sbm$connectParam), tol_truth)
+    expect_lt(error(missSBM$fittedSBM$connectParam$mean, sbm$connectParam), tol_truth)
     expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
     ## sampling design: parameters estimation

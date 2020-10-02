@@ -58,7 +58,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth*10)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta), tol_truth*10)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*3)
@@ -91,7 +91,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth*10)
+  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam$mean), theta), tol_truth*15)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*2)
@@ -127,7 +127,7 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta), tol_truth)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
@@ -159,7 +159,7 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam), theta), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta), tol_truth)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSampling$parameters, 0.9), 10 * tol_truth)

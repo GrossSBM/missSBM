@@ -39,7 +39,7 @@
 SBM_sampler <-
   R6::R6Class(classname = "SBM_sampler",
   inherit = SBM,
-  ## fields for internal use (refering to mathematical notations)
+  ## fields for internal use (referring to mathematical notations)
   private = list(
     Z     = NULL # the sampled indicator of blocks
   ),

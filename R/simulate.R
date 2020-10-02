@@ -34,7 +34,6 @@
 #' plot(sbm)
 #' plot(sbm_cov)
 #' par(old_param)
-#'
 #' @export
 simulate <- function(nbNodes, blockProp, connectParam, directed = FALSE, covariates = list(), covarParam = numeric(length(covariates))) {
 

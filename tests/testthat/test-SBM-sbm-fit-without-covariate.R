@@ -22,12 +22,12 @@ cl_kmns <- missSBM:::init_clustering(A, Q, NULL, "kmeans")
 test_that("Creation of a SBM_fit_nocovariate", {
 
   mySBM_fit <- missSBM:::SBM_fit_nocovariate$new(A, cl_rand)
-  expect_is(mySBM_fit, c("SBM_fit_nocovariate", "SBM_fit", "SBM", "R6"))
+  expect_is(mySBM_fit, c("SBM_fit_nocovariate", "SBM_fit", "SimpleSBM_fit", "SBM", "R6"))
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$nbConnectParam, Q * (Q + 1)/2)
   expect_equal(mySBM_fit$nbCovariates, 0)
   expect_equal(mySBM_fit$probMemberships, missSBM:::clustering_indicator(cl_rand))
-  expect_equal(dim(mySBM_fit$connectParam), dim(mySBM$connectParam))
+  expect_equal(dim(mySBM_fit$connectParam$mean), dim(mySBM$connectParam))
   expect_equal(length(mySBM_fit$blockProp), length(mySBM$blockProp))
   expect_equal(mySBM_fit$directed, FALSE)
 
@@ -51,14 +51,14 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
   theta_BM <- BM$model_parameters[[Q]]$pi
 
   ## checking estimation consistency
-  expect_lt(sum((mySBM_fit_spec$connectParam - mySBM$connectParam)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam - mySBM$connectParam)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam - mySBM$connectParam)^2), tol)
+  expect_lt(sum((mySBM_fit_spec$connectParam$mean - mySBM$connectParam)^2), tol)
+  expect_lt(sum((mySBM_fit_hier$connectParam$mean - mySBM$connectParam)^2), tol)
+  expect_lt(sum((mySBM_fit_kmns$connectParam$mean - mySBM$connectParam)^2), tol)
 
   ## checking estimation consistency with block model
-  expect_lt(sum((mySBM_fit_spec$connectParam - theta_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam - theta_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam - theta_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_spec$connectParam$mean - theta_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_hier$connectParam$mean - theta_BM)^2), tol)
+  expect_lt(sum((mySBM_fit_kmns$connectParam$mean - theta_BM)^2), tol)
 
   ## checking consistency of the clustering
   expect_lt(1 - ARI(mySBM_fit_hier$memberships, mySBM$memberships), tol)

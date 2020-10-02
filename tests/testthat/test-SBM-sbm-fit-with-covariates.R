@@ -32,10 +32,9 @@ test_that("Creation of a SBM_fit_covariates", {
   expect_is(mySBM_fit, "SBM_fit_covariates")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$nbConnectParam, Q * (Q + 1)/2)
-  expect_true(mySBM_fit$nbCovariates > 0)
   expect_equal(mySBM_fit$nbCovariates, M)
   expect_equal(mySBM_fit$probMemberships, missSBM:::clustering_indicator(cl_rand))
-  expect_equal(dim(mySBM_fit$connectParam), dim(sbm$connectParam))
+  expect_equal(dim(mySBM_fit$connectParam$mean), dim(sbm$connectParam))
   expect_equal(length(mySBM_fit$blockProp), length(sbm$blockProp))
   expect_equal(mySBM_fit$directed, FALSE)
 
@@ -85,8 +84,8 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   tol_truth <- 1e-2
   expect_lt(sum(((-.5 * ICLs - BM$ICL)/BM$ICL)^2), tol_ref)
 
-  error_missSBM <- error(.logistic(sbm$connectParam), .logistic(bestICL$connectParam))
-  error_BM      <- error(.logistic(bestICL$connectParam),
+  error_missSBM <- error(.logistic(sbm$connectParam), bestICL$connectParam$mean)
+  error_BM      <- error(bestICL$connectParam$mean,
                          .logistic(BM$model_parameters[[2]]$m))
   error_BM_beta <- error(bestICL$covarParam, BM$model_parameters[[2]]$beta)
 

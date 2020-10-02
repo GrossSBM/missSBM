@@ -32,7 +32,9 @@ Imports:
     corrplot,
     R6,
     rlang,
+    sbm,
     magrittr
+Remotes: GrossSBM/sbm
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'

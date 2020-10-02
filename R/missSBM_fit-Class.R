@@ -79,7 +79,7 @@ missSBM_fit <-
         "block-node"      = blockSampling_fit$new(private$sampledNet, clustering_indicator(clusterInit)),
         "double-standard" = doubleStandardSampling_fit$new(private$sampledNet),
         "block-dyad"      = blockDyadSampling_fit$new(private$sampledNet, clustering_indicator(clusterInit)),
-        "degree"          = degreeSampling_fit$new(private$sampledNet, clustering_indicator(clusterInit), private$SBM$connectParam),
+        "degree"          = degreeSampling_fit$new(private$sampledNet, clustering_indicator(clusterInit), private$SBM$connectParam$mean),
         "snowball"        = nodeSampling_fit$new(private$sampledNet) # estimated sampling parameter not relevant
       )
     },
@@ -123,7 +123,7 @@ missSBM_fit <-
         private$sampling$update_parameters(private$imputedNet, private$SBM$probMemberships)
 
         ## Check convergence
-        delta[i] <- sqrt(sum((private$SBM$connectParam - theta_old)^2)) / sqrt(sum((theta_old)^2))
+        delta[i] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
         cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
         objective[i] <- self$loglik
 
