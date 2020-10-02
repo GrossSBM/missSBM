@@ -37,7 +37,7 @@ missSBM_collection <-
       sampledNet  <- private$missSBM_fit[[1]]$sampledNetwork
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
-      adjacencyMatrix <- sampledNet$adjacencyMatrix
+      adjacencyMatrix <- sampledNet$netMatrix
 ### TODO: why not included in the basic imputatiton in sampledNet ???
       if (!is.null(sampledNet$covarArray)) {
         y <- as.vector(adjacencyMatrix)

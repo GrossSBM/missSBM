@@ -35,8 +35,8 @@ sampledNetwork <-
     },
     #' @field is_directed logical indicating if the network is directed or not
     is_directed = function(value) {private$directed},
-    #' @field adjacencyMatrix  The adjacency matrix of the network
-    adjacencyMatrix = function(value) {private$Y},
+    #' @field netMatrix  The adjacency matrix of the network
+    netMatrix = function(value) {private$Y},
     #' @field covarArray the array of covariates
     covarArray = function(value) {private$phi},
     #' @field covarMatrix the matrix of covariates
@@ -142,13 +142,13 @@ sampledNetwork <-
     #' @importFrom corrplot corrplot
     plot = function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {
       if (is.null(clustering)) {
-        adjMatrix <- self$adjacencyMatrix
+        adjMatrix <- self$netMatrix
       } else {
         Z <- missSBM:::clustering_indicator(as.factor(clustering))
         colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
         colorMat <- Z %*% colors %*% t(Z)
         colorMap <- colorMat[order(clustering),order(clustering)]
-        adjMatrix <- self$adjacencyMatrix[order(clustering), order(clustering)] * colorMap
+        adjMatrix <- self$netMatrix[order(clustering), order(clustering)] * colorMap
       }
       corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
     },
@@ -159,7 +159,7 @@ sampledNetwork <-
       cat("Structure for storing a sampled network in missSBM\n")
       cat("==================================================================\n")
       cat("* Useful fields \n")
-      cat("  $nbNodes, $nbDyads, $is_directed\n", "  $adjacencyMatrix, $covarMatrix, $covarArray\n",
+      cat("  $nbNodes, $nbDyads, $is_directed\n", "  $netMatrix, $covarMatrix, $covarArray\n",
           "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
       cat("* Useful method: plot(), summary() , print()  \n")
     },

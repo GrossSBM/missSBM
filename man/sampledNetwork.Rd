@@ -22,7 +22,7 @@ All fields of this class are only accessible for reading.
 
 \item{\code{is_directed}}{logical indicating if the network is directed or not}
 
-\item{\code{adjacencyMatrix}}{The adjacency matrix of the network}
+\item{\code{netMatrix}}{The adjacency matrix of the network}
 
 \item{\code{covarArray}}{the array of covariates}
 

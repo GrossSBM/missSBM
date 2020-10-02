@@ -13,7 +13,7 @@ directed <- FALSE
 
 ### Draw a undirected SBM model
 mySBM <- missSBM::simulate(N, pi, theta, directed)
-A <- mySBM$adjacencyMatrix
+A <- mySBM$netMatrix
 cl_rand <- base::sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
 cl_hier <- missSBM:::init_clustering(A, Q, NULL, "hierarchical")
@@ -81,8 +81,8 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for
 
   vBlocks <- 1:5
   models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_clustering(mySBM$adjacencyMatrix, nbBlocks, NULL, "hierarchical")
-    myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$adjacencyMatrix, cl0)
+    cl0 <- missSBM:::init_clustering(mySBM$netMatrix, nbBlocks, NULL, "hierarchical")
+    myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$netMatrix, cl0)
     myFit$doVEM()
     myFit
   })

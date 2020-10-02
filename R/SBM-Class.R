@@ -74,7 +74,7 @@ R6::R6Class(classname = "SBM",
         colors <- matrix(-ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
         colorMat <- Z %*% colors %*% t(Z)
         colorMap <- colorMat[order(self$memberships),order(self$memberships)]
-        adjMatrix <- self$adjacencyMatrix[order(self$memberships), order(self$memberships)] * colorMap
+        adjMatrix <- self$netMatrix[order(self$memberships), order(self$memberships)] * colorMap
         corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", mar = c(0,0,1,0))
       }
       if (type == "connectivity") {
@@ -101,8 +101,8 @@ R6::R6Class(classname = "SBM",
     blockProp = function(value) {if (missing(value)) return(private$pi) else private$pi <- value},
     #' @field connectParam the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.
     connectParam     = function(value) {if (missing(value)) return(private$theta) else private$theta <- values},
-    #' @field adjacencyMatrix  The adjacency matrix of the network
-    adjacencyMatrix  = function(value) {if (missing(value)) return(private$Y) else private$Y <- value},
+    #' @field netMatrix  The adjacency matrix of the network
+    netMatrix  = function(value) {if (missing(value)) return(private$Y) else private$Y <- value},
     #' @field covarParam the vector of parameters associated with the covariates
     covarParam       = function(value) {if (missing(value)) return(private$beta) else private$beta <- value},
     #' @field covarArray the array of covariates
@@ -110,7 +110,7 @@ R6::R6Class(classname = "SBM",
     #' @field covarList list of matrices of covariates
     covarList    = function(value) {if (missing(value)) return(private$X) else private$X <- value},
     #' @field covarEffect effect of covariates
-    covarEffect  = function(value) {if (self$nbCovariates > 0) return(roundProduct(self$covarArray, private$beta)) else return(numeric(0))},
+    covarEffect  = function(value) {if (self$nbCovariates > 0) return(roundProduct(self$covarList, private$beta)) else return(numeric(0))},
     #' @field df_blockProps degrees of freedoms for the mixture parameters
     df_blockProps = function(value) {self$nbBlocks - 1},
     #' @field df_connectParams degrees of freedoms for the connectivity parameters

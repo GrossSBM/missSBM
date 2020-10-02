@@ -13,7 +13,7 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
 mySBM <- missSBM::simulate(N, pi, theta, directed)
-A <- mySBM$adjacencyMatrix
+A <- mySBM$netMatrix
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
@@ -23,7 +23,7 @@ covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
 covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
 covarParam  <- rnorm(M, 0, 1)
 sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
-A_cov <- sbm$adjacencyMatrix
+A_cov <- sbm$netMatrix
 
 ## tolerance for tests
 tol <- 1e-2

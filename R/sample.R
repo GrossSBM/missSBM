@@ -64,7 +64,7 @@
 #' for (sampling in names(sampling_parameters)) {
 #'   sampled_networks[[sampling]] <-
 #'      missSBM::sample(
-#'        adjacencyMatrix = sbm$adjacencyMatrix,
+#'        adjacencyMatrix = sbm$netMatrix,
 #'        sampling        = sampling,
 #'        parameters      = sampling_parameters[[sampling]],
 #'        cluster         = sbm$memberships

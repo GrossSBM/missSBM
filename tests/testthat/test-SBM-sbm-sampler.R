@@ -12,7 +12,7 @@ test_that("SBM sampler without covariates", {
   directed <- FALSE
 
   mySBM <- missSBM:::SBM_sampler$new(directed, N, pi, theta)
-  expect_null(mySBM$adjacencyMatrix)
+  expect_null(mySBM$netMatrix)
   expect_null(mySBM$indMemberships)
   expect_error(mySBM$memberships)
   expect_equal(mySBM$connectParam, theta)
@@ -28,8 +28,8 @@ test_that("SBM sampler without covariates", {
   expect_equal(length(unique(mySBM$memberships)), Q)
 
   mySBM$rAdjacency()
-  expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
-  expect_true(isSymmetric(mySBM$adjacencyMatrix))
+  expect_equal(dim(mySBM$netMatrix), c(N, N))
+  expect_true(isSymmetric(mySBM$netMatrix))
 })
 
 test_that("SBM sampler with covariates", {
@@ -49,7 +49,7 @@ test_that("SBM sampler with covariates", {
   covarParam  <- rnorm(M,0,1)
   covarArray <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
   mySBM <- missSBM:::SBM_sampler$new(directed, N, pi, gamma, covarParam, missSBM:::array2list(covarArray))
-  expect_null(mySBM$adjacencyMatrix)
+  expect_null(mySBM$netMatrix)
   expect_null(mySBM$indMemberships)
   expect_error(mySBM$memberships)
   expect_equal(missSBM:::.logistic(mySBM$connectParam), theta)
@@ -65,7 +65,7 @@ test_that("SBM sampler with covariates", {
   expect_equal(length(unique(mySBM$memberships)), Q)
 
   mySBM$rAdjacency()
-  expect_equal(dim(mySBM$adjacencyMatrix), c(N, N))
-  expect_true(isSymmetric(mySBM$adjacencyMatrix))
+  expect_equal(dim(mySBM$netMatrix), c(N, N))
+  expect_true(isSymmetric(mySBM$netMatrix))
 
 })

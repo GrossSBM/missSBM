@@ -12,7 +12,7 @@ directed <- FALSE         # if the network is directed or not
 
 ### Draw a SBM model
 mySBM <- missSBM::simulate(N, pi, theta, directed) # simulation of ad Bernoulli non-directed SBM
-A <- mySBM$adjacencyMatrix # the adjacency matrix
+A <- mySBM$netMatrix # the adjacency matrix
 
 test_that("missSBM and class missSBM-fit are coherent", {
 

@@ -25,7 +25,7 @@ An R6 Class to represent a SBM
 
 \item{\code{connectParam}}{the matrix of connectivity: inter/intra probabilities of connection when the network does not have covariates, or a logit scaled version of it.}
 
-\item{\code{adjacencyMatrix}}{The adjacency matrix of the network}
+\item{\code{netMatrix}}{The adjacency matrix of the network}
 
 \item{\code{covarParam}}{the vector of parameters associated with the covariates}
 

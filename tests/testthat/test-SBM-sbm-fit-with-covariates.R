@@ -22,13 +22,13 @@ sbm <- missSBM::simulate(N, pi, gamma, directed, covariates, covarParam)
 
 ### Draw a undirected SBM model
 cl_rand <- base::sample(sbm$memberships)
-cl_spec <- missSBM:::init_clustering(sbm$adjacencyMatrix, Q, sbm$covarArray, "spectral")
-cl_hier <- missSBM:::init_clustering(sbm$adjacencyMatrix, Q, sbm$covarArray, "hierarchical")
-cl_kmns <- missSBM:::init_clustering(sbm$adjacencyMatrix, Q, sbm$covarArray, "kmeans")
+cl_spec <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "spectral")
+cl_hier <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "hierarchical")
+cl_kmns <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "kmeans")
 
 test_that("Creation of a SBM_fit_covariates", {
 
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$adjacencyMatrix, cl_rand, missSBM:::array2list(sbm$covarArray))
+  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$netMatrix, cl_rand, missSBM:::array2list(sbm$covarArray))
   expect_is(mySBM_fit, "SBM_fit_covariates")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$df_connectParams, Q * (Q + 1)/2)
@@ -66,13 +66,13 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
 
   ## Formatting covariates for blockmodels
-  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$adjacencyMatrix, covariates_dyad, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$netMatrix, covariates_dyad, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
   BM$estimate()
 
   vBlocks <- 1:3
   models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_clustering(sbm$adjacencyMatrix, nbBlocks, sbm$covarArray, "hierarchical")
-    myFit <- missSBM:::SBM_fit_covariates$new(sbm$adjacencyMatrix, cl0, missSBM:::array2list(sbm$covarArray))
+    cl0 <- missSBM:::init_clustering(sbm$netMatrix, nbBlocks, sbm$covarArray, "hierarchical")
+    myFit <- missSBM:::SBM_fit_covariates$new(sbm$netMatrix, cl0, missSBM:::array2list(sbm$covarArray))
     myFit$doVEM()
     myFit
   })

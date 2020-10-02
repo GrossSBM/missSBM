@@ -224,10 +224,10 @@ doubleStandardSampling_fit <-
     #' @param ... used for compatibility
     initialize = function(sampledNetwork, ...) {
       super$initialize(sampledNetwork, "double-standard")
-      private$So      <- sum(    sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
-      private$So.bar  <- sum(1 - sampledNetwork$adjacencyMatrix[sampledNetwork$observedDyads])
+      private$So      <- sum(    sampledNetwork$netMatrix[sampledNetwork$observedDyads])
+      private$So.bar  <- sum(1 - sampledNetwork$netMatrix[sampledNetwork$observedDyads])
       ## can we do better than that?
-      imputedNet      <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nbNodes, sampledNetwork$nbNodes)
+      imputedNet      <- matrix(mean(sampledNetwork$netMatrix, na.rm = TRUE), sampledNetwork$nbNodes, sampledNetwork$nbNodes)
       self$update_parameters(imputedNet)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
@@ -274,7 +274,7 @@ blockDyadSampling_fit <-
       private$NAs      <- sampledNetwork$NAs
       private$R        <- sampledNetwork$samplingMatrix
       private$directed <- sampledNetwork$is_directed
-      imputedNet       <- matrix(mean(sampledNetwork$adjacencyMatrix, na.rm = TRUE), sampledNetwork$nbNodes, sampledNetwork$nbNodes)
+      imputedNet       <- matrix(mean(sampledNetwork$netMatrix, na.rm = TRUE), sampledNetwork$nbNodes, sampledNetwork$nbNodes)
       self$update_parameters(imputedNet, blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
@@ -356,13 +356,13 @@ degreeSampling_fit <-
 
       private$NAs <- sampledNetwork$NAs
       ## will remain the same
-      private$D <- rowSums(sampledNetwork$adjacencyMatrix, na.rm = TRUE)
+      private$D <- rowSums(sampledNetwork$netMatrix, na.rm = TRUE)
 
       ## will fluctuate along the algorithm
       private$psi <- coefficients(glm(1*(private$N_obs) ~ private$D, family = binomial(link = "logit")))
 
       imputedNet <- blockInit %*% connectInit %*% t(blockInit)
-      imputedNet[!private$NAs] <- sampledNetwork$adjacencyMatrix[!private$NAs]
+      imputedNet[!private$NAs] <- sampledNetwork$netMatrix[!private$NAs]
       self$update_parameters(imputedNet)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)

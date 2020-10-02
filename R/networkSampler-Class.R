@@ -114,7 +114,7 @@ R6::R6Class(classname = "simpleDyadSampler",
         sampling_prob <- rep(parameters, length(private$dyads))
       } else {
         stopifnot(length(parameters) == dim(covarArray)[3])
-        sampling_prob <- .logistic(intercept + roundProduct(covarArray, parameters))[private$dyads]
+        sampling_prob <- .logistic(intercept + roundProduct(array2list(covarArray), parameters))[private$dyads]
       }
       private$rho <- sampling_prob
     }
