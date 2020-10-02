@@ -111,12 +111,8 @@ R6::R6Class(classname = "SBM",
     covarList    = function(value) {if (missing(value)) return(private$X) else private$X <- value},
     #' @field covarEffect effect of covariates
     covarEffect  = function(value) {if (self$nbCovariates > 0) return(roundProduct(self$covarList, private$beta)) else return(numeric(0))},
-    #' @field df_blockProps degrees of freedoms for the mixture parameters
-    df_blockProps = function(value) {self$nbBlocks - 1},
-    #' @field df_connectParams degrees of freedoms for the connectivity parameters
-    df_connectParams = function(value) {ifelse(private$directed_, self$nbBlocks^2, self$nbBlocks*(self$nbBlocks + 1)/2)},
-    #' @field df_covarParams degrees of freedoms for the covariate parameters
-    df_covarParams   = function(value) {self$nbCovariates}
+    #' @field nbConnectParam number of parameter used for the connectivity
+    nbConnectParam = function(value) {ifelse(private$directed_, self$nbBlocks^2, self$nbBlocks*(self$nbBlocks + 1)/2)}
   )
 )
 

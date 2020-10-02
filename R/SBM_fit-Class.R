@@ -70,7 +70,7 @@ R6::R6Class(classname = "SBM_fit",
     #' @field memberships vector of clustering
     memberships = function(value) {apply(private$tau, 1, which.max)},
     #' @field penalty double, value of the penalty term in ICL
-    penalty     = function(value) {(self$df_connectParams + self$df_covarParams) * log(self$nbDyads) + self$df_blockProps * log(self$nbNodes)},
+    penalty     = function(value) {(self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes)},
     #' @field entropy double, value of the entropy due to the clustering distribution
     entropy     = function(value) {-sum(xlogx(private$tau))},
     #' @field expectation expected values of connection under the current model

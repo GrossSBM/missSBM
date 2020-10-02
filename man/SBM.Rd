@@ -35,11 +35,7 @@ An R6 Class to represent a SBM
 
 \item{\code{covarEffect}}{effect of covariates}
 
-\item{\code{df_blockProps}}{degrees of freedoms for the mixture parameters}
-
-\item{\code{df_connectParams}}{degrees of freedoms for the connectivity parameters}
-
-\item{\code{df_covarParams}}{degrees of freedoms for the covariate parameters}
+\item{\code{nbConnectParam}}{number of parameter used for the connectivity}
 }
 \if{html}{\out{</div>}}
 }
