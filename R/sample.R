@@ -72,7 +72,7 @@
 #' @export
 sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity, intercept = 0) {
 
-
+### TEMPORARY FIX
   adjacencyMatrix[is.na(adjacencyMatrix)] <- 0
 
   ## Sanity check

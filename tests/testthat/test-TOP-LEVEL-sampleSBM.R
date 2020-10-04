@@ -6,7 +6,6 @@ N <- 100
 Q <- 3
 pi <- rep(1, Q)/Q           # block proportion
 theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
-gamma <- missSBM:::.logit(theta$mean)
 
 ### Draw a SBM model (Bernoulli, undirected)
 sbm <- sbm::sampleSimpleSBM(N, pi, theta)
@@ -19,8 +18,8 @@ covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
 covariates_dyad <- missSBM:::array2list(covarArray)
 
 covarParam  <- rnorm(M, 0, 1)
-sbm_cov_dyad <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
-sbm_cov_node <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
+sbm_cov_dyad <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
+sbm_cov_node <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
 
 test_that("Consistency of dyad-centered sampling", {
 
@@ -108,7 +107,7 @@ test_that("Consistency of block-node network sampling", {
 
 test_that("Consistency of block-node network sampling", {
 
-  adjMatrix <- missSBM::sample(sbm$netMatrix, "block-dyad", sbm$connectParam, clusters = sbm$memberships)
+  adjMatrix <- missSBM::sample(sbm$netMatrix, "block-dyad", sbm$connectParam$mean, clusters = sbm$memberships)
   block <- missSBM:::sampledNetwork$new(adjMatrix)
   expect_is(block, "sampledNetwork", "R6")
   expect_lte(block$samplingRate, 1)

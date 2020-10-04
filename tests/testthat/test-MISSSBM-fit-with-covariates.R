@@ -9,9 +9,8 @@ source("utils_test.R")
 set.seed(1827)
 N <- 100
 Q <- 2
-pi <- rep(1,Q)/Q                     # mixture parameter
-theta <- diag(.45, Q, Q) + .05                 # connectivity matrix
-gamma <- missSBM:::.logit(theta)
+pi <- rep(1,Q)/Q                            # mixture parameter
+theta <- list(mean = diag(.45, Q, Q) + .05) # connectivity matrix
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -31,7 +30,7 @@ tol_ARI   <- .9
 
 test_that("missSBM with covariates and dyad sampling works", {
 
-  sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
+  sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
 
   ## ACCOUNT FOR COVARIATES IN THE SAMPLING
 

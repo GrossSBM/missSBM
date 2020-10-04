@@ -8,12 +8,14 @@ set.seed(178303)
 N <- 100
 Q <- 3
 pi <- rep(1, Q)/Q                     # mixture parameter
-theta <- diag(.45, Q, Q) + .05                 # connectivity matrix
+theta <- list(mean = diag(.45, Q, Q) + .05)                 # connectivity matrix
 directed <- FALSE
 
 ### Draw a undirected SBM model
-mySBM <- missSBM::simulate(N, pi, theta, directed)
+mySBM <- sbm::sampleSimpleSBM(N, pi, theta)
 A <- mySBM$netMatrix
+### UGLY FIX - FIXME
+diag(A) <- 0
 cl_rand <- base::sample(mySBM$memberships)
 cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
 cl_hier <- missSBM:::init_clustering(A, Q, NULL, "hierarchical")
@@ -27,7 +29,7 @@ test_that("Creation of a SBM_fit_nocovariate", {
   expect_equal(mySBM_fit$nbConnectParam, Q * (Q + 1)/2)
   expect_equal(mySBM_fit$nbCovariates, 0)
   expect_equal(mySBM_fit$probMemberships, missSBM:::clustering_indicator(cl_rand))
-  expect_equal(dim(mySBM_fit$connectParam$mean), dim(mySBM$connectParam))
+  expect_equal(dim(mySBM_fit$connectParam$mean), dim(mySBM$connectParam$mean))
   expect_equal(length(mySBM_fit$blockProp), length(mySBM$blockProp))
   expect_equal(mySBM_fit$directed, FALSE)
 
@@ -51,9 +53,9 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
   theta_BM <- BM$model_parameters[[Q]]$pi
 
   ## checking estimation consistency
-  expect_lt(sum((mySBM_fit_spec$connectParam$mean - mySBM$connectParam)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam$mean - mySBM$connectParam)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam$mean - mySBM$connectParam)^2), tol)
+  expect_lt(sum((mySBM_fit_spec$connectParam$mean - mySBM$connectParam$mean)^2), tol)
+  expect_lt(sum((mySBM_fit_hier$connectParam$mean - mySBM$connectParam$mean)^2), tol)
+  expect_lt(sum((mySBM_fit_kmns$connectParam$mean - mySBM$connectParam$mean)^2), tol)
 
   ## checking estimation consistency with block model
   expect_lt(sum((mySBM_fit_spec$connectParam$mean - theta_BM)^2), tol)
@@ -80,8 +82,8 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for
 
   vBlocks <- 1:5
   models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_clustering(mySBM$netMatrix, nbBlocks, NULL, "hierarchical")
-    myFit <- missSBM:::SBM_fit_nocovariate$new(mySBM$netMatrix, cl0)
+    cl0 <- missSBM:::init_clustering(A, nbBlocks, NULL, "hierarchical")
+    myFit <- missSBM:::SBM_fit_nocovariate$new(A, cl0)
     myFit$doVEM()
     myFit
   })

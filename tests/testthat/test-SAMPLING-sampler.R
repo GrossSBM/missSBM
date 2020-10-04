@@ -7,12 +7,12 @@ set.seed(178303)
 N <- 200
 Q <- 3
 pi <- rep(1, Q)/Q            # block proportion
-theta <- diag(.45, Q, Q) + .05  # connectivity matrix
+theta <- list(mean = diag(.45, Q, Q) + .05)  # connectivity matrix
 gamma <- log(theta/(1 - theta)) # logit transform of theta for the model with covariates
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
-mySBM <- missSBM::simulate(N, pi, theta, directed)
+mySBM <- sbm::sampleSimpleSBM(N, pi, theta)
 A <- mySBM$netMatrix
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates

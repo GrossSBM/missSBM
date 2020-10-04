@@ -6,11 +6,11 @@ set.seed(178303)
 N <- 50
 Q <- 3
 pi <- rep(1, Q)/Q           # block proportion
-theta <- diag(.45, Q, Q) + .05 # connectivity matrix
+theta <- list(mean = diag(.45, Q, Q) + .05) # connectivity matrix
 directed <- FALSE              # if the network is directed or not
 
 ### Draw a SBM model
-sbm <- missSBM::simulate(N, pi, theta, directed) # simulation of a Bernoulli non-directed SBM
+sbm <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of a Bernoulli non-directed SBM
 
 A_full <- sbm$netMatrix             # the adjacency matrix
 
@@ -124,8 +124,7 @@ set.seed(178303)
 N <- 40
 Q <- 2
 pi <- rep(1,Q)/Q               # block proportion
-theta <- diag(.45, Q, Q) + .05    # connectivity matrix
-gamma <- missSBM:::.logit(theta)
+theta <- list(mean = diag(.45, Q, Q) + .05)    # connectivity matrix
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
@@ -134,7 +133,7 @@ covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
 covariates_dyad <- replicate(M, matrix(rnorm(N * N ,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, -1, 1)
 
-sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
+sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
 
 test_that("Init clustering with covariate is consistent", {
 

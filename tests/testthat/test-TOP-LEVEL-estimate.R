@@ -10,8 +10,10 @@ pi <- rep(1, Q)/Q           # block proportion
 theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 
 ### Draw a SBM model
-mySBM <- sbm::simulate(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
+mySBM <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
 A <- mySBM$netMatrix # the adjacency matrix
+### UGLY FIX - FIXME
+diag(A) <- 0
 
 test_that("missSBM and class missSBM-fit are coherent", {
 
@@ -20,7 +22,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     "node" = c(.6),
     "double-standard" = c(0.4, 0.8),
     "block-node" = c(.3, .8, .5),
-    "block-dyad" = mySBM$connectParam,
+    "block-dyad" = mySBM$connectParam$mean,
     "degree" = c(.01, .01)
   )
 
@@ -58,7 +60,7 @@ test_that("missSBM with a collection of models", {
     "node" = c(.75),
     "double-standard" = c(0.4, 0.8),
     "block-node" = c(.3, .8, .5),
-    "block-dyad" = mySBM$connectParam#,
+    "block-dyad" = mySBM$connectParam$mean#,
 #    "degree" = c(.01, .01)
   )
 
