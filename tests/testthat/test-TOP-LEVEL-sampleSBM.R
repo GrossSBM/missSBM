@@ -1,6 +1,6 @@
 context("testing network samplers (top-level function missSBM::sample)")
 
-set.seed(178303)
+set.seed(178304)
 ### A SBM model : ###
 N <- 100
 Q <- 3
@@ -32,7 +32,7 @@ test_that("Consistency of dyad-centered sampling", {
   expect_gte(dyad$samplingRate, 0)
   expect_gte(dyad$nbNodes, N)
   expect_gte(dyad$nbDyads, N * (N - 1)/2)
-  expect_equal(dyad$is_directed, directed)
+  expect_equal(dyad$is_directed, FALSE)
   expect_equal(dim(dyad$netMatrix), dim(sbm$netMatrix))
 
   ## expect error if psi is negative
@@ -66,7 +66,7 @@ test_that("Consistency of node-centered network sampling", {
   expect_gte(node$samplingRate, 0)
   expect_gte(node$nbNodes, N)
   expect_gte(node$nbDyads, N * (N-1)/2)
-  expect_equal(node$is_directed, directed)
+  expect_equal(node$is_directed, FALSE)
   expect_equal(dim(node$netMatrix), dim(sbm$netMatrix))
   expect_error(missSBM::sample(sbm$adjacency, "node", -.1))
 
@@ -96,7 +96,7 @@ test_that("Consistency of block-node network sampling", {
   expect_gte(block$samplingRate, 0)
   expect_gte(block$nbNodes, N)
   expect_gte(block$nbDyads, N * (N - 1)/2)
-  expect_equal(block$is_directed, directed)
+  expect_equal(block$is_directed, FALSE)
   expect_equal(dim(block$netMatrix), dim(sbm$netMatrix))
   ## error if psi is not of size Q
   expect_error(missSBM::sample(sbm$netMatrix, "block-node", c(.1, .2), clusters = sbm$memberships))
@@ -114,7 +114,7 @@ test_that("Consistency of block-node network sampling", {
   expect_gte(block$samplingRate, 0)
   expect_gte(block$nbNodes, N)
   expect_gte(block$nbDyads, N * (N - 1)/2)
-  expect_equal(block$is_directed, directed)
+  expect_equal(block$is_directed, FALSE)
   expect_equal(dim(block$netMatrix), dim(sbm$netMatrix))
   ## error if psi is not of size Q x Q
   expect_error(missSBM::sample(sbm$netMatrix, "block-dyad", c(.1, .2, .7), clusters = sbm$memberships))
@@ -134,7 +134,7 @@ test_that("Consistency of double-standard sampling", {
   expect_gte(double_standard$samplingRate, 0)
   expect_gte(double_standard$nbNodes, N)
   expect_gte(double_standard$nbDyads, N * (N - 1)/2)
-  expect_equal(double_standard$is_directed, directed)
+  expect_equal(double_standard$is_directed, FALSE)
   expect_equal(dim(double_standard$netMatrix), dim(sbm$netMatrix))
   expect_error(missSBM::sample(sbm$adjacency, "double-standard", c(-0.1, 0.5)))
   expect_error(missSBM::sample(sbm$adjacency, "double-standard", c(0.1, -0.5)))
@@ -151,7 +151,7 @@ test_that("Consistency of degree network sampling", {
   expect_gte(degree$samplingRate, 0)
   expect_gte(degree$nbNodes, N)
   expect_gte(degree$nbDyads, N * (N-1)/2)
-  expect_equal(degree$is_directed, directed)
+  expect_equal(degree$is_directed, FALSE)
   expect_equal(dim(degree$netMatrix), dim(sbm$netMatrix))
 
 })

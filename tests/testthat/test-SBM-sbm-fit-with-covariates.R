@@ -9,16 +9,15 @@ source("utils_test.R")
 set.seed(178303)
 N <- 100
 Q <- 3
-pi <- rep(1,Q)/Q                     # mixture parameter
-theta <- diag(.45,Q) + .05                 # connectivity matrix
-gamma <- missSBM:::.logit(theta)
+pi <- rep(1,Q)/Q                        # mixture parameter
+theta <- list(mean = diag(.45,Q) + .05) # connectivity matrix
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 1
 covariates <- replicate(M, matrix(rnorm(N*N,mean = 0, sd = 1), N, N), simplify = FALSE)
 covarParam  <- rnorm(M, 0, 1)
-sbm <- missSBM::simulate(N, pi, gamma, directed, covariates, covarParam)
+sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
 ### Draw a undirected SBM model
 cl_rand <- base::sample(sbm$memberships)
@@ -34,7 +33,7 @@ test_that("Creation of a SBM_fit_covariates", {
   expect_equal(mySBM_fit$nbConnectParam, Q * (Q + 1)/2)
   expect_equal(mySBM_fit$nbCovariates, M)
   expect_equal(mySBM_fit$probMemberships, missSBM:::clustering_indicator(cl_rand))
-  expect_equal(dim(mySBM_fit$connectParam$mean), dim(sbm$connectParam))
+  expect_equal(dim(mySBM_fit$connectParam$mean), dim(sbm$connectParam$mean))
   expect_equal(length(mySBM_fit$blockProp), length(sbm$blockProp))
   expect_equal(mySBM_fit$directed, FALSE)
 
@@ -46,31 +45,35 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
 
   ## ========================================================================
   ## A SBM model with covariates
-  set.seed(178304)
+  set.seed(178314)
   N <- 40
   Q <- 2
-  pi <- rep(1, Q)/Q                     # mixture parameter
-  theta <- diag(.45, Q) + .05                 # connectivity matrix
+  pi <- rep(1, Q)/Q                        # mixture parameter
+  theta <- list(mean = diag(.45, Q) + .05) # connectivity matrix
   directed <- FALSE
-  gamma <- missSBM:::.logit(theta)
 
   ### Draw a SBM model (Bernoulli, undirected) with covariates
   M <- 1
-  covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
-  covarMatrix <- simplify2array(covariates_node)
-  covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
-  covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
+  covariates <- replicate(M, {
+      cov <- matrix(rnorm(N*N,mean = 0, sd = 1), N, N)
+      cov + t(cov)
+    }, simplify = FALSE)
+
   covarParam  <- rnorm(M, 0, 1)
-  sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
+
+  covarParam  <- rnorm(M, 0, 1)
+  sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
+  adjMatrix <- sbm$netMatrix
+  diag(adjMatrix) <- 0
 
   ## Formatting covariates for blockmodels
-  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", sbm$netMatrix, covariates_dyad, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
+  BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", adjMatrix, covariates, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
   BM$estimate()
 
   vBlocks <- 1:3
   models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_clustering(sbm$netMatrix, nbBlocks, sbm$covarArray, "hierarchical")
-    myFit <- missSBM:::SBM_fit_covariates$new(sbm$netMatrix, cl0, missSBM:::array2list(sbm$covarArray))
+    cl0 <- missSBM:::init_clustering(adjMatrix, nbBlocks, sbm$covarArray, "hierarchical")
+    myFit <- missSBM:::SBM_fit_covariates$new(adjMatrix, cl0, covariates)
     myFit$doVEM()
     myFit
   })
@@ -84,7 +87,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   tol_truth <- 1e-2
   expect_lt(sum(((-.5 * ICLs - BM$ICL)/BM$ICL)^2), tol_ref)
 
-  error_missSBM <- error(.logistic(sbm$connectParam), bestICL$connectParam$mean)
+  error_missSBM <- error(sbm$connectParam$mean, bestICL$connectParam$mean)
   error_BM      <- error(bestICL$connectParam$mean,
                          .logistic(BM$model_parameters[[2]]$m))
   error_BM_beta <- error(bestICL$covarParam, BM$model_parameters[[2]]$beta)

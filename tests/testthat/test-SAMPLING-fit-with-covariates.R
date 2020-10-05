@@ -1,12 +1,11 @@
 context("test network sampling fit (Class networkSampling_fit and chidren)")
 
-set.seed(178303)
+set.seed(1234)
 ### A SBM model : ###
 N <- 200
 Q <- 3
 pi <- rep(1, Q)/Q                        # block proportion parameter
 theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
-directed <- FALSE                        # if the network is directed or not
 
 test_that("Parameter estimation in dyad-centered sampling with covariates", {
 
@@ -71,8 +70,8 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
   expect_is(fittedSampling, "covarNodeSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
-  tolerance <- .05
-  expect_lt(sum((fittedSampling$parameters - c(intercept, covarParam))^2)/(M + 1), tolerance)
+  tolerance <- .25
+  expect_lt(error(fittedSampling$parameters,c(intercept, covarParam)), tolerance)
   expect_equal(fittedSampling$df, 1 + length(covarParam))
   expect_equal(fittedSampling$penalty, log(N) * (1 + length(covarParam)))
   expect_lt(fittedSampling$vExpec, 0)
@@ -112,7 +111,7 @@ test_that("Parameter estimation in degree sampling", {
   sampledNet <- missSBM:::sampledNetwork$new(adjMatrix)
 
   Z0 <- missSBM:::clustering_indicator(sbm$memberships)
-  fittedSampling <- missSBM:::degreeSampling_fit$new(sampledNet, Z0, sbm$connectParam$mean)
+  fittedSampling <- suppressWarnings(missSBM:::degreeSampling_fit$new(sampledNet, Z0, sbm$connectParam$mean))
 
   # tolerance <- 1 ## not expected good after one iterate
   # expect_lt(sum((fittedSampling$parameters - psi)^2), tolerance)

@@ -11,7 +11,6 @@ N <- 100
 Q <- 2
 pi <- rep(1,Q)/Q                            # mixture parameter
 theta <- list(mean = diag(.45, Q, Q) + .05) # connectivity matrix
-directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 1
@@ -57,7 +56,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta), tol_truth*10)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth*10)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*3)
@@ -90,7 +89,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(.logistic(missSBM$fittedSBM$connectParam$mean), theta), tol_truth*15)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth*15)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*2)
@@ -102,10 +101,10 @@ test_that("missSBM with covariates and dyad sampling works", {
 
 test_that("miss SBM with covariates and node sampling works", {
 
-  sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
+  sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
 
   ## sampled the network
-  adjMatrix <- missSBM::sample(sbm$netMatrix, "covar-node", covarParam, covariates = covariates_node)
+  adjMatrix <- missSBM::sample(sbm$netMatrix, "covar-node", covarParam, covariates = covariates_node, similarity = missSBM:::l1_similarity)
 
   ## Prepare network data for estimation with missing data
   sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
@@ -126,29 +125,30 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*10)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
 
-  ## do not account for covariate in the sampling (just in SBM)
+  ## do not account for covariate in the SBM (just in the sampling)
+  sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
   ## sampled the network
-  adjMatrix <- missSBM::sample(sbm$netMatrix, "node", 0.9)
+  adjMatrix <- missSBM::sample(sbm$netMatrix, "node", 0.9, covariates = covariates_node, similarity = missSBM:::l1_similarity)
 
   ## Prepare network data for estimation with missing data
   sampledNet <- missSBM:::sampledNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "node", clusterInit = "spectral", TRUE)
+  missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "node", clusterInit = "spectral", FALSE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
-  expect_is(missSBM$fittedSBM, "SBM_fit_covariates")
+  expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
   expect_is(missSBM$fittedSampling, "nodeSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
 
@@ -158,7 +158,7 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSampling$parameters, 0.9), 10 * tol_truth)

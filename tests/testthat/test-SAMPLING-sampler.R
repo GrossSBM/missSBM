@@ -8,7 +8,6 @@ N <- 200
 Q <- 3
 pi <- rep(1, Q)/Q            # block proportion
 theta <- list(mean = diag(.45, Q, Q) + .05)  # connectivity matrix
-gamma <- log(theta/(1 - theta)) # logit transform of theta for the model with covariates
 directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
@@ -22,7 +21,7 @@ covarMatrix <- simplify2array(covariates_node)
 covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
 covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
 covarParam  <- rnorm(M, 0, 1)
-sbm <- missSBM::simulate(N, pi, gamma, directed, covariates_dyad, covarParam)
+sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
 A_cov <- sbm$netMatrix
 
 ## tolerance for tests
