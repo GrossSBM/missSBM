@@ -1,7 +1,7 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 0.2.2-9100
+Version: 0.2.2-9800
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
@@ -53,7 +53,6 @@ Collate:
     'networkSampler-Class.R'
     'sample.R'
     'sampledNetwork-Class.R'
-    'simulate.R'
     'utils-pipe.R'
     'utils_initialization.R'
     'war.R'
