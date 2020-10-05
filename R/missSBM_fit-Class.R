@@ -16,7 +16,7 @@
 #' collection <- missSBM::estimate(adjMatrix, 3:5, sampling = "dyad")
 #' my_missSBM_fit <- collection$bestModel
 #' class(my_missSBM_fit)
-#' plot(my_missSBM_fit, "data")
+#' plot(my_missSBM_fit, "connectivity")
 #'
 #' @include SBM_fit-Class.R
 #' @include networkSampling_fit-Class.R
@@ -246,9 +246,9 @@ plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampled", "
   stopifnot(is_missSBMfit(x))
   type <- match.arg(type)
   if (type == "network")
-    x$fittedSBM$plot("network")
+    x$fittedSBM$plot("data")
   if (type == "connectivity")
-    x$fittedSBM$plot("connectivity")
+    x$fittedSBM$plot("expected")
   if (type == "sampled")
     x$sampledNetwork$plot(x$fittedSBM$memberships)
   if (type == "monitoring")
