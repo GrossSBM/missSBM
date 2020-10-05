@@ -194,6 +194,7 @@ is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 #' @param ... additional parameters for S3 compatibility.
 #' @return a matrix of estimated probability of connection
 #'
+#' @importFrom stats fitted
 #' @export
 fitted.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -210,6 +211,7 @@ fitted.missSBM_fit <- function(object, ...) {
 #' @return an adjacency matrix between pairs of nodes. Missing dyads are imputed with
 #' their expected values, i.e. by there estimated probabilities of connection under the missing SBM.
 #'
+#' @importFrom stats predict
 #' @export
 predict.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))

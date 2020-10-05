@@ -20,7 +20,7 @@ adjMatrix <- missSBM::frenchblog2007 \%>\%
 collection <- missSBM::estimate(adjMatrix, 3:5, sampling = "dyad")
 my_missSBM_fit <- collection$bestModel
 class(my_missSBM_fit)
-plot(my_missSBM_fit, "data")
+plot(my_missSBM_fit, "connectivity")
 
 }
 \section{Active bindings}{
