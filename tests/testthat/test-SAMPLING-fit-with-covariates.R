@@ -18,9 +18,9 @@ test_that("Parameter estimation in dyad-centered sampling with covariates", {
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
   adjMatrix  <- missSBM::sample(sbm$netMatrix, "covar-dyad", covarParam, covariates = covariates, intercept = intercept)
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
 
-  fittedSampling <- missSBM:::covarDyadSampling_fit$new(partiallyObservedNet, sbm$covarArray)
+  fittedSampling <- missSBM:::covarDyadSampling_fit$new(partlyObservedNet, sbm$covarArray)
   expect_is(fittedSampling, "covarDyadSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
@@ -40,9 +40,9 @@ test_that("Parameter estimation in dyad-centered sampling with covariates but ig
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
   adjMatrix <- missSBM::sample(sbm$netMatrix, "dyad", parameters = .9, covariates = covariates)
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
 
-  fittedSampling <- missSBM:::dyadSampling_fit$new(partiallyObservedNet, sbm$covarArray)
+  fittedSampling <- missSBM:::dyadSampling_fit$new(partlyObservedNet, sbm$covarArray)
   expect_is(fittedSampling, "dyadSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
@@ -64,9 +64,9 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
 
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
   adjMatrix <- missSBM::sample(sbm$netMatrix, "covar-node", covarParam, covariates = covariates_node, intercept = intercept, similarity = missSBM:::l1_similarity)
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
-  fittedSampling <- missSBM:::covarNodeSampling_fit$new(partiallyObservedNet, simplify2array(covariates_node))
+  fittedSampling <- missSBM:::covarNodeSampling_fit$new(partlyObservedNet, simplify2array(covariates_node))
   expect_is(fittedSampling, "covarNodeSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
@@ -88,9 +88,9 @@ test_that("Parameter estimation in node-centered sampling with covariates but ig
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
   adjMatrix <- missSBM::sample(sbm$netMatrix, "node", .9, covariates = covariates_node)
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
-  fittedSampling <- missSBM:::nodeSampling_fit$new(partiallyObservedNet, simplify2array(covariates_node))
+  fittedSampling <- missSBM:::nodeSampling_fit$new(partlyObservedNet, simplify2array(covariates_node))
   expect_is(fittedSampling, "nodeSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
@@ -108,10 +108,10 @@ test_that("Parameter estimation in degree sampling", {
 
   psi <- c(-.5,0.01)
   adjMatrix <- missSBM::sample(sbm$netMatrix, "degree", psi)
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
 
   Z0 <- missSBM:::clustering_indicator(sbm$memberships)
-  fittedSampling <- suppressWarnings(missSBM:::degreeSampling_fit$new(partiallyObservedNet, Z0, sbm$connectParam$mean))
+  fittedSampling <- suppressWarnings(missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sbm$connectParam$mean))
 
   # tolerance <- 1 ## not expected good after one iterate
   # expect_lt(sum((fittedSampling$parameters - psi)^2), tolerance)

@@ -16,12 +16,12 @@ networkSamplingDyads_fit <-
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   public = list(
     #' @description constructor for networkSampling_fit
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
-    #' @param name a character for the name of sampling to fit on the partiallyObservedNetwork
-    initialize = function(partiallyObservedNetwork, name) {
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
+    #' @param name a character for the name of sampling to fit on the partlyObservedNetwork
+    initialize = function(partlyObservedNetwork, name) {
       private$name    <- name
-      private$D_miss  <- partiallyObservedNetwork$missingDyads
-      private$card_D  <- partiallyObservedNetwork$nbDyads
+      private$D_miss  <- partlyObservedNetwork$missingDyads
+      private$card_D  <- partlyObservedNetwork$nbDyads
     },
     #' @description show method
     show = function() {
@@ -58,12 +58,12 @@ networkSamplingNodes_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
-    #' @param name a character for the name of sampling to fit on the partiallyObservedNetwork
-    initialize = function(partiallyObservedNetwork, name) {
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
+    #' @param name a character for the name of sampling to fit on the partlyObservedNetwork
+    initialize = function(partlyObservedNetwork, name) {
       private$name   <- name
-      private$N_obs  <- partiallyObservedNetwork$observedNodes
-      private$card_N <- partiallyObservedNetwork$nbNodes
+      private$N_obs  <- partlyObservedNetwork$observedNodes
+      private$card_N <- partlyObservedNetwork$nbNodes
     },
     #' @description show method
     show = function() {
@@ -95,12 +95,12 @@ dyadSampling_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param ... used for compatibility
-    initialize = function(partiallyObservedNetwork, ...) {
-      super$initialize(partiallyObservedNetwork, "dyad")
-      private$card_D_o <- length(partiallyObservedNetwork$observedDyads)
-      private$card_D_m <- length(partiallyObservedNetwork$missingDyads )
+    initialize = function(partlyObservedNetwork, ...) {
+      super$initialize(partlyObservedNetwork, "dyad")
+      private$card_D_o <- length(partlyObservedNetwork$observedDyads)
+      private$card_D_m <- length(partlyObservedNetwork$missingDyads )
       private$psi      <- check_boundaries(private$card_D_o / (private$card_D_m + private$card_D_o))
       private$rho      <- rep(private$psi, private$card_D)
     }
@@ -125,16 +125,16 @@ covarDyadSampling_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param ... used for compatibility
-    initialize = function(partiallyObservedNetwork, ...) {
-      super$initialize(partiallyObservedNetwork, "covar-dyad")
-      X <- cbind(1, apply(partiallyObservedNetwork$covarArray, 3, as.vector))
-      y <- 1 * as.vector(!partiallyObservedNetwork$NAs)
+    initialize = function(partlyObservedNetwork, ...) {
+      super$initialize(partlyObservedNetwork, "covar-dyad")
+      X <- cbind(1, apply(partlyObservedNetwork$covarArray, 3, as.vector))
+      y <- 1 * as.vector(!partlyObservedNetwork$NAs)
       glm_out       <- glm.fit(X, y, family = binomial())
       private$psi   <- coefficients(glm_out)
       private$rho   <- fitted(glm_out)
-      private$D_obs <- partiallyObservedNetwork$D_obs
+      private$D_obs <- partlyObservedNetwork$D_obs
     }
   ),
   active = list(
@@ -159,12 +159,12 @@ nodeSampling_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param ... used for compatibility
-    initialize = function(partiallyObservedNetwork, ...) {
-      super$initialize(partiallyObservedNetwork, "node")
-      private$card_N_o <- sum( partiallyObservedNetwork$observedNodes)
-      private$card_N_m <- sum(!partiallyObservedNetwork$observedNodes)
+    initialize = function(partlyObservedNetwork, ...) {
+      super$initialize(partlyObservedNetwork, "node")
+      private$card_N_o <- sum( partlyObservedNetwork$observedNodes)
+      private$card_N_m <- sum(!partlyObservedNetwork$observedNodes)
       private$psi <- private$card_N_o / (private$card_N_o + private$card_N_m)
     }
   ),
@@ -186,13 +186,13 @@ covarNodeSampling_fit <-
     rho = NULL # vector of predicted probabilities of observation
   ),
   #' @description constructor
-  #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+  #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
   #' @param ... used for compatibility
   public = list(
-    initialize = function(partiallyObservedNetwork, ...) {
-      super$initialize(partiallyObservedNetwork, "covar-node")
-      y <- 1 * (partiallyObservedNetwork$observedNodes)
-      glm_out     <- glm.fit(cbind(1, partiallyObservedNetwork$covarMatrix), y, family = binomial())
+    initialize = function(partlyObservedNetwork, ...) {
+      super$initialize(partlyObservedNetwork, "covar-node")
+      y <- 1 * (partlyObservedNetwork$observedNodes)
+      glm_out     <- glm.fit(cbind(1, partlyObservedNetwork$covarMatrix), y, family = binomial())
       private$psi <- coefficients(glm_out)
       private$rho <- fitted(glm_out)
     }
@@ -220,14 +220,14 @@ doubleStandardSampling_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param ... used for compatibility
-    initialize = function(partiallyObservedNetwork, ...) {
-      super$initialize(partiallyObservedNetwork, "double-standard")
-      private$So      <- sum(    partiallyObservedNetwork$netMatrix[partiallyObservedNetwork$observedDyads])
-      private$So.bar  <- sum(1 - partiallyObservedNetwork$netMatrix[partiallyObservedNetwork$observedDyads])
+    initialize = function(partlyObservedNetwork, ...) {
+      super$initialize(partlyObservedNetwork, "double-standard")
+      private$So      <- sum(    partlyObservedNetwork$netMatrix[partlyObservedNetwork$observedDyads])
+      private$So.bar  <- sum(1 - partlyObservedNetwork$netMatrix[partlyObservedNetwork$observedDyads])
       ## can we do better than that?
-      imputedNet      <- matrix(mean(partiallyObservedNetwork$netMatrix, na.rm = TRUE), partiallyObservedNetwork$nbNodes, partiallyObservedNetwork$nbNodes)
+      imputedNet      <- matrix(mean(partlyObservedNetwork$netMatrix, na.rm = TRUE), partlyObservedNetwork$nbNodes, partlyObservedNetwork$nbNodes)
       self$update_parameters(imputedNet)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
@@ -267,14 +267,14 @@ blockDyadSampling_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param blockInit n x Q matrix of initial block indicators
-    initialize = function(partiallyObservedNetwork, blockInit) {
-      super$initialize(partiallyObservedNetwork, "block-dyad")
-      private$NAs      <- partiallyObservedNetwork$NAs
-      private$R        <- partiallyObservedNetwork$samplingMatrix
-      private$directed <- partiallyObservedNetwork$is_directed
-      imputedNet       <- matrix(mean(partiallyObservedNetwork$netMatrix, na.rm = TRUE), partiallyObservedNetwork$nbNodes, partiallyObservedNetwork$nbNodes)
+    initialize = function(partlyObservedNetwork, blockInit) {
+      super$initialize(partlyObservedNetwork, "block-dyad")
+      private$NAs      <- partlyObservedNetwork$NAs
+      private$R        <- partlyObservedNetwork$samplingMatrix
+      private$directed <- partlyObservedNetwork$is_directed
+      imputedNet       <- matrix(mean(partlyObservedNetwork$netMatrix, na.rm = TRUE), partlyObservedNetwork$nbNodes, partlyObservedNetwork$nbNodes)
       self$update_parameters(imputedNet, blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
@@ -307,10 +307,10 @@ blockSampling_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param blockInit n x Q matrix of initial block indicators
-    initialize = function(partiallyObservedNetwork, blockInit) {
-      super$initialize(partiallyObservedNetwork, "block-node")
+    initialize = function(partlyObservedNetwork, blockInit) {
+      super$initialize(partlyObservedNetwork, "block-node")
       self$update_parameters(NA, blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
@@ -348,21 +348,21 @@ degreeSampling_fit <-
   ),
   public = list(
     #' @description constructor
-    #' @param partiallyObservedNetwork a object with class partiallyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param blockInit n x Q matrix of initial block indicators
     #' @param connectInit Q x Q matrix of initial block probabilities of connection
-    initialize = function(partiallyObservedNetwork, blockInit, connectInit) {
-      super$initialize(partiallyObservedNetwork, "degree")
+    initialize = function(partlyObservedNetwork, blockInit, connectInit) {
+      super$initialize(partlyObservedNetwork, "degree")
 
-      private$NAs <- partiallyObservedNetwork$NAs
+      private$NAs <- partlyObservedNetwork$NAs
       ## will remain the same
-      private$D <- rowSums(partiallyObservedNetwork$netMatrix, na.rm = TRUE)
+      private$D <- rowSums(partlyObservedNetwork$netMatrix, na.rm = TRUE)
 
       ## will fluctuate along the algorithm
       private$psi <- coefficients(glm(1*(private$N_obs) ~ private$D, family = binomial(link = "logit")))
 
       imputedNet <- blockInit %*% connectInit %*% t(blockInit)
-      imputedNet[!private$NAs] <- partiallyObservedNetwork$netMatrix[!private$NAs]
+      imputedNet[!private$NAs] <- partlyObservedNetwork$netMatrix[!private$NAs]
       self$update_parameters(imputedNet)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)

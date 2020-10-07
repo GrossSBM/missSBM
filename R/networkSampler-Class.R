@@ -2,11 +2,11 @@
 #'
 #' This class is use to define a sampling model for a network. Inherits from 'networkSampling'.
 #' Owns a rSampling method which takes an adjacency matrix as an input and send back an object
-#' with class partiallyObservedNetwork.
+#' with class partlyObservedNetwork.
 #'
 #' @include networkSampling-Class.R
 #' @include utils_missSBM.R
-#' @seealso \code{\link{partiallyObservedNetwork}}
+#' @seealso \code{\link{partlyObservedNetwork}}
 #' @import R6
 networkSampler <-
   R6::R6Class(classname = "networkSampler",

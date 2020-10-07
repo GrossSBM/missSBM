@@ -30,14 +30,14 @@ test_that("Consistency of sampling fit", {
 
     ## sampled the network
     adjMatrix  <- missSBM::sample(sbm$netMatrix, sampling$name, sampling$psi, sbm$memberships)
-    partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix)
+    partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
     fittedSampling <- switch(
       sampling$name,
-      "dyad"            = missSBM:::dyadSampling_fit$new(partiallyObservedNet),
-      "node"            = missSBM:::nodeSampling_fit$new(partiallyObservedNet),
-      "double-standard" = missSBM:::doubleStandardSampling_fit$new(partiallyObservedNet),
-      "block-node"      = missSBM:::blockSampling_fit$new(partiallyObservedNet, Z0),
-      "degree"          = missSBM:::degreeSampling_fit$new(partiallyObservedNet, Z0, sbm$connectParam$mean)
+      "dyad"            = missSBM:::dyadSampling_fit$new(partlyObservedNet),
+      "node"            = missSBM:::nodeSampling_fit$new(partlyObservedNet),
+      "double-standard" = missSBM:::doubleStandardSampling_fit$new(partlyObservedNet),
+      "block-node"      = missSBM:::blockSampling_fit$new(partlyObservedNet, Z0),
+      "degree"          = missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sbm$connectParam$mean)
     )
 
     expect_is(fittedSampling, sampling$class)

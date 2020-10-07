@@ -30,7 +30,7 @@ plot(my_missSBM_fit, "connectivity")
 
 \item{\code{fittedSampling}}{the fitted sampling, inheriting from class [`networkSampling_fit`]}
 
-\item{\code{partiallyObservedNetwork}}{The original network data used for the fit, with class [`partiallyObservedNetwork`]}
+\item{\code{partlyObservedNetwork}}{The original network data used for the fit, with class [`partlyObservedNetwork`]}
 
 \item{\code{imputedNetwork}}{The network data with NAs values imputed with the model.}
 
@@ -66,19 +66,13 @@ plot(my_missSBM_fit, "connectivity")
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(
-  partiallyObservedNet,
-  nbBlocks,
-  netSampling,
-  clusterInit,
-  useCov
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(partlyObservedNet, nbBlocks, netSampling, clusterInit, useCov)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{partiallyObservedNet}}{An object with class [`partiallyObservedNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
+\item{\code{partlyObservedNet}}{An object with class [`partlyObservedNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
 
 \item{\code{nbBlocks}}{integer, the number of blocks in the SBM}
 
@@ -86,7 +80,7 @@ constructor for networkSampling
 
 \item{\code{clusterInit}}{Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".}
 
-\item{\code{useCov}}{logical. If covariates are present in partiallyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 }
 \if{html}{\out{</div>}}
 }

@@ -48,7 +48,7 @@
 #'     \item{"degree": parameter = c(a,b) and \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
 #'   }
 #' }
-#' @seealso \code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
+#' @seealso \code{\link{sample}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
 #' ## SBM parameters
 #' N <- 300 # number of nodes
@@ -103,11 +103,11 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, cont
   ctrl[names(control)] <- control
 
   ## Prepare network data for estimation with missing data
-  partiallyObservedNet <- partiallyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
+  partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
-      partiallyObservedNet  = partiallyObservedNet,
+      partlyObservedNet  = partlyObservedNet,
       vBlocks     = vBlocks,
       sampling    = sampling,
       clusterInit = ctrl$clusterInit,

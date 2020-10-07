@@ -100,5 +100,5 @@ head(fitted(myModel))
 
 }
 \seealso{
-\code{\link{sample}}, \code{\link{simulate}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
+\code{\link{sample}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 }

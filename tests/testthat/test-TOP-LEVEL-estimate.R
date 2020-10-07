@@ -30,12 +30,12 @@ test_that("missSBM and class missSBM-fit are coherent", {
 
     sampling <- names(l_psi)[k]
     adjMatrix <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
-    partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix)
+    partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
     ## control parameter for the VEM
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0, clusterInit = "spectral")
 
     ## Perform inference with internal classes
-    missSBM <- missSBM:::missSBM_fit$new(partiallyObservedNet, Q, sampling, "spectral", TRUE)
+    missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, sampling, "spectral", TRUE)
     out_missSBM <- missSBM$doVEM(control)
 
     ## Perform inference with the top level function

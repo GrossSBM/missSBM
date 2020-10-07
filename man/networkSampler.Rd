@@ -11,10 +11,10 @@ Definition of R6 Class 'networkSampling_sampler'
 \details{
 This class is use to define a sampling model for a network. Inherits from 'networkSampling'.
 Owns a rSampling method which takes an adjacency matrix as an input and send back an object
-with class partiallyObservedNetwork.
+with class partlyObservedNetwork.
 }
 \seealso{
-\code{\link{partiallyObservedNetwork}}
+\code{\link{partlyObservedNetwork}}
 }
 \section{Super class}{
 \code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{networkSampler}

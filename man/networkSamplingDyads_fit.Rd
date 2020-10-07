@@ -43,15 +43,15 @@ Virtual class used to define a family of networkSamplingDyads_fit
 \subsection{Method \code{new()}}{
 constructor for networkSampling_fit
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSamplingDyads_fit$new(partiallyObservedNetwork, name)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{networkSamplingDyads_fit$new(partlyObservedNetwork, name)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{partiallyObservedNetwork}}{a object with class partiallyObservedNetwork representing the observed data with possibly missing entries}
+\item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
 
-\item{\code{name}}{a character for the name of sampling to fit on the partiallyObservedNetwork}
+\item{\code{name}}{a character for the name of sampling to fit on the partlyObservedNetwork}
 }
 \if{html}{\out{</div>}}
 }

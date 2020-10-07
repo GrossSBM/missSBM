@@ -37,17 +37,17 @@ test_that("missSBM with covariates and dyad sampling works", {
   adjMatrix <- missSBM::sample(sbm$netMatrix, "covar-dyad", covarParam, covariates = covariates_dyad)
 
   ## Prepare network data for estimation with missing data
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partiallyObservedNet, Q, "covar-dyad", "spectral", TRUE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "covar-dyad", "spectral", TRUE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "covarDyadSampling_fit")
-  expect_is(missSBM$partiallyObservedNetwork, "partiallyObservedNetwork")
+  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
   expect_equal(out, missSBM$monitoring)
 
   ## Optimization success
@@ -70,17 +70,17 @@ test_that("missSBM with covariates and dyad sampling works", {
   adjMatrix <- missSBM::sample(sbm$netMatrix, "dyad", 0.9)
 
   ## Prepare network data for estimation with missing data
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partiallyObservedNet, Q, "dyad", "spectral", TRUE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "dyad", "spectral", TRUE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "dyadSampling_fit")
-  expect_is(missSBM$partiallyObservedNetwork, "partiallyObservedNetwork")
+  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
   expect_equal(out, missSBM$monitoring)
 
   ## Optimization success
@@ -107,17 +107,17 @@ test_that("miss SBM with covariates and node sampling works", {
   adjMatrix <- missSBM::sample(sbm$netMatrix, "covar-node", covarParam, covariates = covariates_node, similarity = missSBM:::l1_similarity)
 
   ## Prepare network data for estimation with missing data
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partiallyObservedNet, Q, "covar-node", clusterInit = "spectral", TRUE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "covar-node", clusterInit = "spectral", TRUE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "covarNodeSampling_fit")
-  expect_is(missSBM$partiallyObservedNetwork, "partiallyObservedNetwork")
+  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
 
   ## Optimization success
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
@@ -140,17 +140,17 @@ test_that("miss SBM with covariates and node sampling works", {
   adjMatrix <- missSBM::sample(sbm$netMatrix, "node", 0.9, covariates = covariates_node, similarity = missSBM:::l1_similarity)
 
   ## Prepare network data for estimation with missing data
-  partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partiallyObservedNet, Q, "node", clusterInit = "spectral", FALSE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "node", clusterInit = "spectral", FALSE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "nodeSampling_fit")
-  expect_is(missSBM$partiallyObservedNetwork, "partiallyObservedNetwork")
+  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
 
   ## Optimization success
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
