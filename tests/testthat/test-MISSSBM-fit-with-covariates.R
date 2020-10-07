@@ -34,7 +34,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## ACCOUNT FOR COVARIATES IN THE SAMPLING
 
   ## sampled the network
-  adjMatrix <- missSBM::sample(sbm$netMatrix, "covar-dyad", covarParam, covariates = covariates_dyad)
+  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "covar-dyad", covarParam, covariates = covariates_dyad)
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
@@ -67,7 +67,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## DO NOT ACCOUNT FOR COVARIATES IN THE SAMPLING (JUST IN THE SBM)
 
   ## sampled the network
-  adjMatrix <- missSBM::sample(sbm$netMatrix, "dyad", 0.9)
+  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "dyad", 0.9)
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
@@ -104,7 +104,7 @@ test_that("miss SBM with covariates and node sampling works", {
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
 
   ## sampled the network
-  adjMatrix <- missSBM::sample(sbm$netMatrix, "covar-node", covarParam, covariates = covariates_node, similarity = missSBM:::l1_similarity)
+  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "covar-node", covarParam, covariates = covariates_node, similarity = missSBM:::l1_similarity)
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
@@ -137,7 +137,7 @@ test_that("miss SBM with covariates and node sampling works", {
   sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
   ## sampled the network
-  adjMatrix <- missSBM::sample(sbm$netMatrix, "node", 0.9, covariates = covariates_node, similarity = missSBM:::l1_similarity)
+  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "node", 0.9, covariates = covariates_node, similarity = missSBM:::l1_similarity)
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)

@@ -14,7 +14,7 @@ A <- mySBM$netMatrix             # the adjacency matrix
 
 test_that("missSBMcollection works", {
 
-  adjMatrix  <- missSBM::sample(A, "dyad", .5, clusters = mySBM$memberships)
+  adjMatrix  <- missSBM::observeNetwork(A, "dyad", .5, clusters = mySBM$memberships)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
 
   ## Instantiate the collection of missSBM_fit
@@ -43,7 +43,7 @@ test_that("missSBMcollection works", {
 
 test_that("More smoothing tests", {
 
-  adjMatrix  <- missSBM::sample(A, "dyad", .5, clusters = mySBM$memberships)
+  adjMatrix  <- missSBM::observeNetwork(A, "dyad", .5, clusters = mySBM$memberships)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
 
 

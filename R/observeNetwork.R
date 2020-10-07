@@ -1,7 +1,6 @@
-#' Sampling of network data
+#' Observe partially a network according to a given sampling design
 #'
-#' An internal class use to represent conveniently network data with missing entries.
-#' This function samples observations in an adjacency matrix according to a given sampling design.
+#' This function samples observations in an adjacency matrix according to a given network sampling design.
 #'
 #' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
 #' we assume an undirected network with no loop; otherwise the network is assumed directed.
@@ -62,7 +61,7 @@
 #'
 #' for (sampling in names(sampling_parameters)) {
 #'   sampled_networks[[sampling]] <-
-#'      missSBM::sample(
+#'      missSBM::observeNetwork(
 #'        adjacencyMatrix = sbm$netMatrix,
 #'        sampling        = sampling,
 #'        parameters      = sampling_parameters[[sampling]],
@@ -70,7 +69,7 @@
 #'      )
 #' }
 #' @export
-sample <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity, intercept = 0) {
+observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = l1_similarity, intercept = 0) {
 
 ### TEMPORARY FIX
   adjacencyMatrix[is.na(adjacencyMatrix)] <- 0

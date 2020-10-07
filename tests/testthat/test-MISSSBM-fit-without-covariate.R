@@ -35,7 +35,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 ##    cat("\n -", sampling$name)
 
     ## sampled the network
-    adjMatrix  <- missSBM::sample(sbm$netMatrix, sampling$name, sampling$psi, sbm$memberships)
+    adjMatrix  <- missSBM::observeNetwork(sbm$netMatrix, sampling$name, sampling$psi, sbm$memberships)
     partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
 
     ## Perform inference

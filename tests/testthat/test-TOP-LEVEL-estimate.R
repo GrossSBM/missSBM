@@ -29,7 +29,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
   for (k in seq_along(l_psi)) {
 
     sampling <- names(l_psi)[k]
-    adjMatrix <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
+    adjMatrix <- missSBM::observeNetwork(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
     partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
     ## control parameter for the VEM
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0, clusterInit = "spectral")
@@ -67,7 +67,7 @@ test_that("missSBM with a collection of models", {
   for (k in seq_along(l_psi)) {
 
     sampling <- names(l_psi)[k]
-    adjMatrix <- missSBM::sample(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
+    adjMatrix <- missSBM::observeNetwork(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
 
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0)
 

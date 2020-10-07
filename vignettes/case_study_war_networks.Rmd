@@ -68,10 +68,10 @@ belligerent_trade     <- war$belligerent$trade
 ### Generating missing data
 
 Even though the dataset was complete, we can assume that some data may be missing for the sake of illustration.  
-More specifically, the data collection may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. Thus, the sampling is node-centered and collects edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `sample` in **missSBM**:
+More specifically, the data collection may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. Thus, the sampling is node-centered and collects edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `observeNetwork` in **missSBM**:
 
 ```{r sampling node}
-partlyObservedNet_war <- missSBM::sample(belligerent_adjacency, sampling = "node", parameters = .8)
+partlyObservedNet_war <- missSBM::observeNetwork(belligerent_adjacency, sampling = "node", parameters = .8)
 corrplot(partlyObservedNet_war, 
   is.corr      = FALSE,
   tl.pos       = "n",
@@ -196,7 +196,7 @@ The covariate could be responsible for the sampling. The state with bigger milit
 ```{r power_sampling}
 nWar <- nrow(belligerent_adjacency)
 parameters_sample <- 600
-sampleNet_power_miss <- missSBM::sample(
+sampleNet_power_miss <- missSBM::observeNetwork(
    belligerent_adjacency,
    sampling = "covar-node",
    parameters = parameters_sample, covariates = list(belligerent_power), intercept = -2
@@ -247,7 +247,7 @@ We then conduct a similar analysis as with the power to see how it can be accoun
 We first sample according to it:
 ```{r samptrade}
 parameters_sample <- 1
-sampleNet_trade_miss <- missSBM::sample(belligerent_adjacency, sampling = "covar-dyad", parameters = parameters_sample, covariates = list(trade), intercept = -2)
+sampleNet_trade_miss <- missSBM::observeNetwork(belligerent_adjacency, sampling = "covar-dyad", parameters = parameters_sample, covariates = list(trade), intercept = -2)
 corrplot(sampleNet_trade_miss, 
   is.corr      = FALSE,
   tl.pos       = "n",

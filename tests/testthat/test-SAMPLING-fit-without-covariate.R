@@ -29,7 +29,7 @@ test_that("Consistency of sampling fit", {
     cat("\n -", sampling$name)
 
     ## sampled the network
-    adjMatrix  <- missSBM::sample(sbm$netMatrix, sampling$name, sampling$psi, sbm$memberships)
+    adjMatrix  <- missSBM::observeNetwork(sbm$netMatrix, sampling$name, sampling$psi, sbm$memberships)
     partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
     fittedSampling <- switch(
       sampling$name,

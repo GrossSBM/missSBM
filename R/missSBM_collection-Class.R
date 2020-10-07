@@ -14,7 +14,7 @@
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
 #' adjMatrix <- missSBM::frenchblog2007 %>%
 #'   igraph::as_adj (sparse = FALSE) %>%
-#'   missSBM::sample(sampling = "dyad", parameters = 0.25)
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.25)
 #' collection <- missSBM::estimate(adjMatrix, 3:5, sampling = "dyad")
 #' class(collection)
 #'
