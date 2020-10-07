@@ -1,7 +1,7 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 0.2.2-9800
+Version: 0.2.2-9900
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
@@ -38,9 +38,6 @@ Remotes: GrossSBM/sbm
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'RcppExports.R'
-    'SBM_fit-Class.R'
-    'SBM_fit_covariates-Class.R'
-    'SBM_fit_nocovariate-Class.R'
     'er_network.R'
     'estimate.R'
     'frenchblog2007.R'
@@ -48,6 +45,7 @@ Collate:
     'utils_missSBM.R'
     'networkSampling-Class.R'
     'networkSampling_fit-Class.R'
+    'simpleSBM_fit_missSBM-Class.R'
     'missSBM_fit-Class.R'
     'missSBM_collection-Class.R'
     'networkSampler-Class.R'

@@ -44,7 +44,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 
     ## Sanity check
     expect_is(missSBM, "missSBM_fit")
-    expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
+    expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
     expect_is(missSBM$fittedSampling, sampling$class)
     expect_is(missSBM$sampledNetwork, "sampledNetwork")
     expect_equal(out, missSBM$monitoring)
@@ -75,7 +75,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 #
 #   ## Sanity check
 #   expect_is(missSBM, "missSBM_fit")
-#   expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
+#   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
 #   expect_is(missSBM$fittedSampling, "degreeSampling_fit")
 #   expect_is(missSBM$sampledNetwork, "sampledNetwork")
 #

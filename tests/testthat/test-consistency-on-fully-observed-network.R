@@ -2,7 +2,7 @@ context("test-consistency-on-fully-observed-network")
 
 library(igraph)
 
-test_that("SBM_fit and missSBMfit are coherent", {
+test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   data("war")
 
   ## adjacency matrix without missing values
@@ -24,7 +24,7 @@ test_that("SBM_fit and missSBMfit are coherent", {
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 1)
 
   ## using SBM_fit class
-  my_SBM <- missSBM:::SBM_fit_nocovariate$new(adjacencyMatrix = A, clusterInit = cl0)
+  my_SBM <- missSBM:::SimpleSBM_fit_missSBM$new(adjacencyMatrix = A, clusterInit = cl0)
   my_SBM$doVEM(control$threshold, control$maxIter, control$fixPointIter, control$trace)
   my_SBM$ICL
 

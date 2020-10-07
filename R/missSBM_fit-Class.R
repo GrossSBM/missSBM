@@ -18,7 +18,7 @@
 #' class(my_missSBM_fit)
 #' plot(my_missSBM_fit, "connectivity")
 #'
-#' @include SBM_fit-Class.R
+#' @include simpleSBM_fit_missSBM-Class.R
 #' @include networkSampling_fit-Class.R
 #' @export
 missSBM_fit <-
@@ -64,11 +64,9 @@ missSBM_fit <-
       private$sampledNet <- sampledNet
 
       ## Initialize the SBM fit
-      if (is.null(sampledNet$covarArray) | !useCov) {
-        private$SBM <- SBM_fit_nocovariate$new(private$imputedNet, clusterInit)
-      } else {
-        private$SBM <- SBM_fit_covariates$new(private$imputedNet, clusterInit, array2list(sampledNet$covarArray))
-      }
+      covariates <- array2list(sampledNet$covarArray)
+      if (!useCov) covariates <- list()
+      private$SBM <- SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates)
 
       ## Initialize the sampling fit
       private$sampling <- switch(netSampling,
@@ -169,12 +167,14 @@ missSBM_fit <-
       res <- -sum(xlogx(nu) + xlogx(1 - nu))
       res
     },
-    #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
-    loglik  = function(value) {private$SBM$loglik + self$entropyImputed + private$sampling$vExpec},
+    #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
+   entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {private$SBM$vExpec + private$sampling$vExpec},
     #' @field penalty double, value of the penalty term in ICL
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
+    #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
+    loglik  = function(value) {self$vExpec + self$entropy},
     #' @field ICL double: value of the integrated classification log-likelihood
     ICL    = function(value) {-2 * self$vExpec + self$penalty}
   )

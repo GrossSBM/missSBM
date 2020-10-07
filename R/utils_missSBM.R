@@ -12,9 +12,13 @@ bar <- function(X) {
 }
 
 array2list <-function(X) {
-  D <- dim(X)[3]
-  L <- vector("list", length = D)
-  for (i in 1:D) L[[i]] <- X[,,i]
+  if (is.null(X)) {
+    L <- list()
+  } else {
+    D <- dim(X)[3]
+    L <- vector("list", length = D)
+    for (i in 1:D) L[[i]] <- X[,,i]
+  }
   L
 }
 

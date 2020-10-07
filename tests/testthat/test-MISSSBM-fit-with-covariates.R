@@ -45,7 +45,7 @@ test_that("missSBM with covariates and dyad sampling works", {
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
-  expect_is(missSBM$fittedSBM, "SBM_fit_covariates")
+  expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "covarDyadSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
   expect_equal(out, missSBM$monitoring)
@@ -78,7 +78,7 @@ test_that("missSBM with covariates and dyad sampling works", {
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
-  expect_is(missSBM$fittedSBM, "SBM_fit_covariates")
+  expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "dyadSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
   expect_equal(out, missSBM$monitoring)
@@ -115,7 +115,7 @@ test_that("miss SBM with covariates and node sampling works", {
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
-  expect_is(missSBM$fittedSBM, "SBM_fit_covariates")
+  expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "covarNodeSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
 
@@ -148,7 +148,7 @@ test_that("miss SBM with covariates and node sampling works", {
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
-  expect_is(missSBM$fittedSBM, "SBM_fit_nocovariate")
+  expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "nodeSampling_fit")
   expect_is(missSBM$sampledNetwork, "sampledNetwork")
 

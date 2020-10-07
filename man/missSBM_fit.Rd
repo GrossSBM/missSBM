@@ -38,11 +38,13 @@ plot(my_missSBM_fit, "connectivity")
 
 \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
 
-\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
+\item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
 
 \item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
 
 \item{\code{penalty}}{double, value of the penalty term in ICL}
+
+\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
 \item{\code{ICL}}{double: value of the integrated classification log-likelihood}
 }
