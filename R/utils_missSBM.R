@@ -78,27 +78,15 @@ check_boundaries <- function(x, zero = .Machine$double.eps) {
   x[x <     zero] <-     zero
   x
 }
+
+#' Pipe operator
 #'
-#' #' @importFrom graphics box image par
-#' image_NA <- function(z,  zlim = c(0,1), col = c("white", "midnightblue"), na.color = 'gray', outside.below.color = 'black', outside.above.color = 'white', ...)
-#' {
-#'   zstep <- (zlim[2] - zlim[1]) / length(col); # step in the color palette
-#'   newz.below.outside <- zlim[1] - 2 * zstep # new z for values below zlim
-#'   newz.above.outside <- zlim[2] + zstep # new z for values above zlim
-#'   newz.na <- zlim[2] + 2 * zstep # new z for NA
+#' See \code{magrittr::\link[magrittr]{\%>\%}} for details.
 #'
-#'   z[which(z < zlim[1])] <- newz.below.outside # we affect newz.below.outside
-#'   z[which(z > zlim[2])] <- newz.above.outside # we affect newz.above.outside
-#'   z[which(is.na(z > zlim[2]))] <- newz.na # same for newz.na
-#'
-#'   zlim[1] <- zlim[1] - 2 * zstep # extend lower limit to include below value
-#'   zlim[2] <- zlim[2] + 2 * zstep # extend top limit to include the two new values above and na
-#'
-#'   col <- c(outside.below.color, col[1], col, outside.above.color, na.color) #correct by including col[1] at bottom of range
-#'
-#'   par(mar = c(2.1,8.1,3.1,3.1))
-#'   image(z[nrow(z):1,],  zlim = zlim, col = col, xaxt = "n", yaxt = "n", ...) # we finally call image(...)
-#'   box()
-#'   # par(mar=c(5.1,4.1,4.1,2.1))
-#' }
-#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL

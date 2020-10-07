@@ -31,12 +31,7 @@ test_that("Spectral clustering is consistent", {
     expect_equal(length(cl_spectral_internal), N)
 
     ## top level function
-    cl_spectral <-
-      missSBM:::init_clustering(
-        adjacencyMatrix = A,
-        nbBlocks = Q,
-        clusterInit = "spectral"
-      )
+    cl_spectral <- missSBM:::init_spectral(A, Q)
     expect_is(cl_spectral, "integer")
     expect_equal(length(cl_spectral), N)
 
@@ -56,12 +51,7 @@ test_that("Kmeans clustering is consistent", {
     expect_equal(length(cl_kmeans_internal), N)
 
     ## top level function
-    cl_kmeans <-
-      missSBM:::init_clustering(
-        adjacencyMatrix = A,
-        nbBlocks = Q,
-        clusterInit = "kmeans"
-      )
+    cl_kmeans <- missSBM:::init_kmeans(A, Q)
     expect_is(cl_kmeans, "integer")
     expect_equal(length(cl_kmeans), N)
 
@@ -80,12 +70,7 @@ test_that("Hierarchical clustering is consistent", {
     expect_equal(length(cl_hierarchical_internal), N)
 
     ## top level function
-    cl_hierarchical <-
-      missSBM:::init_clustering(
-        adjacencyMatrix = A,
-        nbBlocks = Q,
-        clusterInit = "hierarchical"
-      )
+    cl_hierarchical <- missSBM:::init_hierarchical(A,Q)
     expect_is(cl_hierarchical, "integer")
     expect_equal(length(cl_hierarchical), N)
 
@@ -102,12 +87,11 @@ test_that("Clustering initializations are relevant", {
     for (method in c("spectral", "kmeans", "hierarchical")) {
 
       ## top level function
-      cl <-
-        missSBM:::init_clustering(
-          adjacencyMatrix = A,
-          nbBlocks = Q,
-          clusterInit = method
-        )
+      cl <- switch(method,
+                   "spectral"     = missSBM:::init_spectral(A, Q),
+                   "kmeans"       = missSBM:::init_kmeans(A, Q),
+                   "hierarchical" = missSBM:::init_hierarchical(A, Q)
+              )
 
       relevance <- .5
       expect_gt(ARI(cl, sbm$memberships), relevance)
@@ -142,15 +126,22 @@ test_that("Init clustering with covariate is consistent", {
   A_dyad <- missSBM::observeNetwork(A_full, "covar-dyad", psi, covariates = covariates_dyad)
   A_node <- missSBM::observeNetwork(A_full, "covar-node", psi, covariates = covariates_node)
 
+  X <- cbind(1, apply(sbm$covarArray, 3, as.vector))
+
   for (A in list(A_full, A_dyad, A_node)) {
     for (method in c("hierarchical", "spectral", "kmeans")) {
-    cl <-
-      missSBM:::init_clustering(
-        adjacencyMatrix = A,
-        nbBlocks = Q,
-        covarArray = sbm$covarArray,
-        clusterInit = method
-      )
+
+    y <- as.vector(A)
+    NAs <- as.vector(is.na(A))
+    A_ <- matrix(NA, nrow(A), ncol(A))
+    A_[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], A[!NAs], family = binomial())))
+
+     cl <- switch(method,
+                 "spectral"     = missSBM:::init_spectral(A_, Q),
+                 "kmeans"       = missSBM:::init_kmeans(A_, Q),
+                 "hierarchical" = missSBM:::init_hierarchical(A_, Q)
+     )
+
       relevance <- .4
       expect_is(cl, "integer")
       expect_equal(length(cl), N)

@@ -103,6 +103,7 @@ partlyObservedNetwork <-
     #' @description method to cluster network data with missing value
     #' @param nbBlocks integer, the chosen number of blocks
     #' @param method character with a clustering method among "hierarchical", "spectral", "kmeans".
+    #' @importFrom stats binomial glm.fit residuals
     clustering = function(nbBlocks, method = c("hierarchical", "spectral", "kmeans")) {
 
       if (nbBlocks > 1) {

@@ -21,9 +21,17 @@ sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesPar
 
 ### Draw a undirected SBM model
 cl_rand <- base::sample(sbm$memberships)
-cl_spec <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "spectral")
-cl_hier <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "hierarchical")
-cl_kmns <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "kmeans")
+
+A <- sbm$netMatrix
+y <- as.vector(A)
+X <- cbind(1, apply(sbm$covarArray, 3, as.vector))
+NAs <- as.vector(is.na(A))
+A_ <- matrix(NA, nrow(A), ncol(A))
+A_[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], A[!NAs], family = binomial())))
+
+cl_spec <- missSBM:::init_spectral(A_, Q)
+cl_hier <- missSBM:::init_hierarchical(A_, Q)
+cl_kmns <- missSBM:::init_kmeans(A_, Q)
 
 test_that("Creation of a SimpleSBM_fit_missSBM", {
 
@@ -70,9 +78,16 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", adjMatrix, covariates, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
   BM$estimate()
 
+  A <- sbm$netMatrix
+  y <- as.vector(A)
+  X <- cbind(1, apply(sbm$covarArray, 3, as.vector))
+  NAs <- as.vector(is.na(A))
+  A_ <- matrix(NA, nrow(A), ncol(A))
+  A_[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], A[!NAs], family = binomial())))
+
   vBlocks <- 1:3
   models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_clustering(adjMatrix, nbBlocks, sbm$covarArray, "hierarchical")
+    cl0 <- missSBM:::init_hierarchical(A_, nbBlocks)
     myFit <- missSBM:::SimpleSBM_fit_missSBM$new(adjMatrix, cl0, covariates)
     myFit$doVEM()
     myFit

@@ -51,7 +51,6 @@ Collate:
     'frenchblog2007.R'
     'missSBM-package.R'
     'observeNetwork.R'
-    'utils-pipe.R'
     'utils_initialization.R'
     'war.R'
 Suggests: 

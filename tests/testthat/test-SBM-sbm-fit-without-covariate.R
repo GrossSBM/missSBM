@@ -17,9 +17,9 @@ A <- mySBM$netMatrix
 ### UGLY FIX - FIXME
 diag(A) <- 0
 cl_rand <- base::sample(mySBM$memberships)
-cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
-cl_hier <- missSBM:::init_clustering(A, Q, NULL, "hierarchical")
-cl_kmns <- missSBM:::init_clustering(A, Q, NULL, "kmeans")
+cl_spec <- missSBM:::init_spectral(A, Q)
+cl_hier <- missSBM:::init_hierarchical(A, Q)
+cl_kmns <- missSBM:::init_kmeans(A, Q)
 
 test_that("Creation of a SimpleSBM_fit_missSBM", {
 
@@ -82,7 +82,7 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
 
   vBlocks <- 1:5
   models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_clustering(A, nbBlocks, NULL, "hierarchical")
+    cl0 <- missSBM:::init_hierarchical(A, nbBlocks)
     myFit <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl0)
     myFit$doVEM()
     myFit
