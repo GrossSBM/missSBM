@@ -1,4 +1,4 @@
-context("test sbm fit without covariate (class SBM_fit_nocovariate)")
+context("test sbm fit without covariate (class SimpleSBM_fit_missSBM)")
 
 library(aricode)
 library(blockmodels)
@@ -21,10 +21,10 @@ cl_spec <- missSBM:::init_clustering(A, Q, NULL, "spectral")
 cl_hier <- missSBM:::init_clustering(A, Q, NULL, "hierarchical")
 cl_kmns <- missSBM:::init_clustering(A, Q, NULL, "kmeans")
 
-test_that("Creation of a SBM_fit_nocovariate", {
+test_that("Creation of a SimpleSBM_fit_missSBM", {
 
-  mySBM_fit <- missSBM:::SBM_fit_nocovariate$new(A, cl_rand)
-  expect_is(mySBM_fit, c("SBM_fit_nocovariate", "SBM_fit", "SimpleSBM_fit", "SBM", "R6"))
+  mySBM_fit <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl_rand)
+  expect_is(mySBM_fit, c("SimpleSBM_fit_missSBM", "SimpleSBM_fit", "SBM", "R6"))
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$nbConnectParam, Q * (Q + 1)/2)
   expect_equal(mySBM_fit$nbCovariates, 0)
@@ -35,14 +35,14 @@ test_that("Creation of a SBM_fit_nocovariate", {
 
 })
 
-test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block is given", {
+test_that("Consistency of VEM of a SimpleSBM_fit_missSBM when the number of block is given", {
 
   tol <- 2e-3
 
   ## testing all initialization
-  mySBM_fit_hier <- missSBM:::SBM_fit_nocovariate$new(A, cl_hier)
-  mySBM_fit_spec <- missSBM:::SBM_fit_nocovariate$new(A, cl_spec)
-  mySBM_fit_kmns <- missSBM:::SBM_fit_nocovariate$new(A, cl_kmns)
+  mySBM_fit_hier <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl_hier)
+  mySBM_fit_spec <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl_spec)
+  mySBM_fit_kmns <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl_kmns)
 
   out_hier <- mySBM_fit_hier$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
   out_spec <- mySBM_fit_spec$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
@@ -75,7 +75,7 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate when the number of block 
 })
 
 
-test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for nbBlocks", {
+test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values for nbBlocks", {
 
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 5, explore_max = 5, plotting = "", ncores = 1)
   BM$estimate()
@@ -83,7 +83,7 @@ test_that("Consistency of VEM of a SBM_fit_nocovariate on a series of values for
   vBlocks <- 1:5
   models <- lapply(vBlocks, function(nbBlocks) {
     cl0 <- missSBM:::init_clustering(A, nbBlocks, NULL, "hierarchical")
-    myFit <- missSBM:::SBM_fit_nocovariate$new(A, cl0)
+    myFit <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl0)
     myFit$doVEM()
     myFit
   })

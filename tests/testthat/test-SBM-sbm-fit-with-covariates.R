@@ -1,4 +1,4 @@
-context("test sbm fit with covariates (class SBM_fit_covariates)")
+context("test sbm fit with covariates (class simpleSBM_fit_missSBM)")
 
 library(aricode)
 library(blockmodels)
@@ -25,10 +25,10 @@ cl_spec <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "spectral
 cl_hier <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "hierarchical")
 cl_kmns <- missSBM:::init_clustering(sbm$netMatrix, Q, sbm$covarArray, "kmeans")
 
-test_that("Creation of a SBM_fit_covariates", {
+test_that("Creation of a SimpleSBM_fit_missSBM", {
 
-  mySBM_fit <- missSBM:::SBM_fit_covariates$new(sbm$netMatrix, cl_rand, missSBM:::array2list(sbm$covarArray))
-  expect_is(mySBM_fit, "SBM_fit_covariates")
+  mySBM_fit <- missSBM:::SimpleSBM_fit_missSBM$new(sbm$netMatrix, cl_rand, missSBM:::array2list(sbm$covarArray))
+  expect_is(mySBM_fit, "SimpleSBM_fit_missSBM")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$nbConnectParam, Q * (Q + 1)/2)
   expect_equal(mySBM_fit$nbCovariates, M)
@@ -41,7 +41,7 @@ test_that("Creation of a SBM_fit_covariates", {
 
 ## CONSISTENCY WITH BLOCKMODELS
 
-test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for nbBlocks", {
+test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values for nbBlocks", {
 
   ## ========================================================================
   ## A SBM model with covariates
@@ -73,7 +73,7 @@ test_that("Consistency of VEM of a SBM_fit_covariates on a series of values for 
   vBlocks <- 1:3
   models <- lapply(vBlocks, function(nbBlocks) {
     cl0 <- missSBM:::init_clustering(adjMatrix, nbBlocks, sbm$covarArray, "hierarchical")
-    myFit <- missSBM:::SBM_fit_covariates$new(adjMatrix, cl0, covariates)
+    myFit <- missSBM:::SimpleSBM_fit_missSBM$new(adjMatrix, cl0, covariates)
     myFit$doVEM()
     myFit
   })

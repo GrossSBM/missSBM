@@ -31,7 +31,7 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
 
       invisible(self)
     },
-    #' @description method to perform e stimation via variational EM
+    #' @description method to perform estimation via variational EM
     #' @param threshold stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.
     #' @param maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10
     #' @param fixPointIter number of fix-point iterations in the Variational E step. Default is 3.
