@@ -4,7 +4,7 @@
 #' Owns a rSampling method which takes an adjacency matrix as an input and send back an object
 #' with class partlyObservedNetwork.
 #'
-#' @include networkSampling-Class.R
+#' @include R6Class-networkSampling.R
 #' @include utils_missSBM.R
 #' @seealso \code{\link{partlyObservedNetwork}}
 #' @import R6

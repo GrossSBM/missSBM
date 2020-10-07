@@ -20,7 +20,7 @@
 #'
 #' @rdname missSBM_collection
 #'
-#' @include missSBM_fit-Class.R
+#' @include R6Class-missSBM_fit.R
 #' @export
 missSBM_collection <-
   R6::R6Class(classname = "missSBM_collection",

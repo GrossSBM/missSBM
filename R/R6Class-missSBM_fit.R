@@ -18,8 +18,8 @@
 #' class(my_missSBM_fit)
 #' plot(my_missSBM_fit, "connectivity")
 #'
-#' @include simpleSBM_fit_missSBM-Class.R
-#' @include networkSampling_fit-Class.R
+#' @include R6Class-simpleSBM_fit_missSBM.R
+#' @include R6Class-networkSampling_fit.R
 #' @export
 missSBM_fit <-
   R6::R6Class(classname = "missSBM_fit",

@@ -1,5 +1,5 @@
 #' Virtual class used to define a family of networkSamplingDyads_fit
-#' @include networkSampling-Class.R
+#' @include R6Class-networkSampling.R
 #' @import R6
 networkSamplingDyads_fit <-
   R6::R6Class(classname = "networkSamplingDyads_fit",
@@ -47,7 +47,7 @@ networkSamplingDyads_fit <-
 )
 
 #' Virtual class used to define a family of networkSamplingNodes_fit
-#' @include networkSampling-Class.R
+#' @include R6Class-networkSampling.R
 #' @import R6
 networkSamplingNodes_fit <-
   R6::R6Class(classname = "networkSamplingNodes_fit",
