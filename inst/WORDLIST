@@ -7,7 +7,6 @@ covar
 CQ
 doi
 DOI
-doVEM
 dyad
 Dyad
 dyads
@@ -28,12 +27,9 @@ networkSampling
 networkSamplingDyads
 networkSamplingNodes
 NMAR
-nocovariate
 Observatoire
 PPI
 Présidentielle
-rAdjacency
-rMemberships
 rSampling
 sampledNet
 sampledNetwork
@@ -41,11 +37,13 @@ Sarkees
 sbm
 SBM
 SBMs
+simpleSBM
 subtypes
 undirected
 unexporting
 useCovSBM
 variational
 Variational
+VE
 Wayman
 www

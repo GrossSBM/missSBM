@@ -73,7 +73,7 @@ constructor for simpleSBM_fit for missSBM purpose
 \if{html}{\out{<a id="method-doVEM"></a>}}
 \if{latex}{\out{\hypertarget{method-doVEM}{}}}
 \subsection{Method \code{doVEM()}}{
-method to perform e stimation via variational EM
+method to perform estimation via variational EM
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_missSBM$doVEM(
   threshold = 1e-04,
