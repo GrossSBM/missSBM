@@ -11,7 +11,7 @@ Definition of R6 Class 'networkSampling'
 \details{
 this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
 It is used to define a sampling model for a network.
-It has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.
+It has a rSampling method which takes an adjacency matrix as an input and send back an object with class partiallyObservedNetwork.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}

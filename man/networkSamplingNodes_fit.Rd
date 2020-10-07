@@ -43,15 +43,15 @@ Virtual class used to define a family of networkSamplingNodes_fit
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSamplingNodes_fit$new(sampledNetwork, name)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{networkSamplingNodes_fit$new(partiallyObservedNetwork, name)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{sampledNetwork}}{a object with class sampledNetwork representing the observed data with possibly missing entries}
+\item{\code{partiallyObservedNetwork}}{a object with class partiallyObservedNetwork representing the observed data with possibly missing entries}
 
-\item{\code{name}}{a character for the name of sampling to fit on the sampledNetwork}
+\item{\code{name}}{a character for the name of sampling to fit on the partiallyObservedNetwork}
 }
 \if{html}{\out{</div>}}
 }

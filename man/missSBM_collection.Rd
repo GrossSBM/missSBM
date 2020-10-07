@@ -56,7 +56,7 @@ class(collection)
 constructor for networkSampling
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$new(
-  sampledNet,
+  partiallyObservedNet,
   vBlocks,
   sampling,
   clusterInit,
@@ -69,7 +69,7 @@ constructor for networkSampling
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{sampledNet}}{An object with class [`sampledNetwork`].}
+\item{\code{partiallyObservedNet}}{An object with class [`partiallyObservedNetwork`].}
 
 \item{\code{vBlocks}}{vector of integer with the number of blocks in the successively fitted models}
 
@@ -81,7 +81,7 @@ constructor for networkSampling
 
 \item{\code{trace}}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 
-\item{\code{useCov}}{logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{\code{useCov}}{logical. If covariates are present in partiallyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 }
 \if{html}{\out{</div>}}
 }

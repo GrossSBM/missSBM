@@ -36,17 +36,17 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 
     ## sampled the network
     adjMatrix  <- missSBM::sample(sbm$netMatrix, sampling$name, sampling$psi, sbm$memberships)
-    sampledNet <- missSBM:::sampledNetwork$new(adjMatrix)
+    partiallyObservedNet <- missSBM:::partiallyObservedNetwork$new(adjMatrix)
 
     ## Perform inference
-    missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, sampling$name, "hierarchical", FALSE)
+    missSBM <- missSBM:::missSBM_fit$new(partiallyObservedNet, Q, sampling$name, "hierarchical", FALSE)
     out <- missSBM$doVEM(control)
 
     ## Sanity check
     expect_is(missSBM, "missSBM_fit")
     expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
     expect_is(missSBM$fittedSampling, sampling$class)
-    expect_is(missSBM$sampledNetwork, "sampledNetwork")
+    expect_is(missSBM$partiallyObservedNetwork, "partiallyObservedNetwork")
     expect_equal(out, missSBM$monitoring)
 
     ## Optimization success
@@ -68,16 +68,16 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 # test_that("miss SBM with degree sampling works", {
 #
 #   psi <- c(-5, .1)
-#   sampledNet <- sampleNetwork(A, "degree", psi)
+#   partiallyObservedNet <- sampleNetwork(A, "degree", psi)
 #   ## Perform inference
-#   missSBM <- missSBM:::missSBM_fit$new(sampledNet, Q, "degree", "hierarchical)
+#   missSBM <- missSBM:::missSBM_fit$new(partiallyObservedNet, Q, "degree", "hierarchical)
 #   out <- missSBM$doVEM(control)
 #
 #   ## Sanity check
 #   expect_is(missSBM, "missSBM_fit")
 #   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
 #   expect_is(missSBM$fittedSampling, "degreeSampling_fit")
-#   expect_is(missSBM$sampledNetwork, "sampledNetwork")
+#   expect_is(missSBM$partiallyObservedNetwork, "partiallyObservedNetwork")
 #
 #   ## Consistency
 #   tol <- 1e-2

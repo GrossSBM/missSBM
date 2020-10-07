@@ -103,11 +103,11 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, cont
   ctrl[names(control)] <- control
 
   ## Prepare network data for estimation with missing data
-  sampledNet <- sampledNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
+  partiallyObservedNet <- partiallyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
-      sampledNet  = sampledNet,
+      partiallyObservedNet  = partiallyObservedNet,
       vBlocks     = vBlocks,
       sampling    = sampling,
       clusterInit = ctrl$clusterInit,

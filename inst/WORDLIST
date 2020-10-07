@@ -28,10 +28,11 @@ networkSamplingDyads
 networkSamplingNodes
 NMAR
 Observatoire
+partiallyObservedNet
+partiallyObservedNetwork
 PPI
 Présidentielle
 rSampling
-sampledNet
 sampledNetwork
 Sarkees
 sbm

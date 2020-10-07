@@ -71,8 +71,8 @@ Even though the dataset was complete, we can assume that some data may be missin
 More specifically, the data collection may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. Thus, the sampling is node-centered and collects edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function `sample` in **missSBM**:
 
 ```{r sampling node}
-sampledNet_war <- missSBM::sample(belligerent_adjacency, sampling = "node", parameters = .8)
-corrplot(sampledNet_war, 
+partiallyObservedNet_war <- missSBM::sample(belligerent_adjacency, sampling = "node", parameters = .8)
+corrplot(partiallyObservedNet_war, 
   is.corr      = FALSE,
   tl.pos       = "n",
   method       = "color", 
@@ -88,7 +88,7 @@ We can now adjust a Stochastic Block Model with the function `estimate` under th
 
 ```{r inference node, results='hide'}
 vBlocks <- 1:5
-collection_sbm <- missSBM::estimate(sampledNet_war, vBlocks = vBlocks, sampling = "node")
+collection_sbm <- missSBM::estimate(partiallyObservedNet_war, vBlocks = vBlocks, sampling = "node")
 res_unsmoothed <- data.frame(
   ICL     = collection_sbm$ICL,
   nbBlocks = vBlocks, 

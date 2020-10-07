@@ -43,13 +43,13 @@ Class for fitting a dyad sampling with covariates
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{covarDyadSampling_fit$new(sampledNetwork, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{covarDyadSampling_fit$new(partiallyObservedNetwork, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{sampledNetwork}}{a object with class sampledNetwork representing the observed data with possibly missing entries}
+\item{\code{partiallyObservedNetwork}}{a object with class partiallyObservedNetwork representing the observed data with possibly missing entries}
 
 \item{\code{...}}{used for compatibility}
 }

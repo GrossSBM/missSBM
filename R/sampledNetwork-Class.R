@@ -3,8 +3,8 @@
 #' All fields of this class are only accessible for reading.
 #'
 #' @importFrom R6 R6Class
-sampledNetwork <-
-  R6::R6Class(classname = "sampledNetwork",
+partiallyObservedNetwork <-
+  R6::R6Class(classname = "partiallyObservedNetwork",
   ## FIELDS : encode network with missing edges
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PRIVATE MEMBERS
@@ -137,7 +137,7 @@ sampledNetwork <-
       imputation[private$nas] <- (Z %*% theta0 %*% t(Z))[private$nas]
       imputation
     },
-    #' @description plot method for sampledNetwork
+    #' @description plot method for partiallyObservedNetwork
     #' @param clustering an optional vector of clustering memberships, default to \code{NULL}.
     #' @param main a character for the title of the plot
     #' @importFrom corrplot corrplot
@@ -171,8 +171,8 @@ sampledNetwork <-
 
 
 
-## PUBLIC S3 METHODS FOR sampledNetwork
+## PUBLIC S3 METHODS FOR partiallyObservedNetwork
 ## =========================================================================================
 
 ## Auxiliary functions to check the given class of an objet
-is_sampledNetwork <- function(Robject) {inherits(Robject, "sampledNetwork")}
+is_partiallyObservedNetwork <- function(Robject) {inherits(Robject, "partiallyObservedNetwork")}
