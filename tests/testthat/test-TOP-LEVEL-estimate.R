@@ -39,7 +39,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     out_missSBM <- missSBM$doVEM(control)
 
     ## Perform inference with the top level function
-    collection <- missSBM::estimate(
+    collection <- estimateMissSBM(
       adjacencyMatrix = adjMatrix,
       vBlocks     = Q,
       sampling    = sampling,
@@ -74,7 +74,7 @@ test_that("missSBM with a collection of models", {
     cat("\nSampling:", sampling)
 
     ## Perform inference with the top level function
-    collection <- missSBM::estimate(
+    collection <- estimateMissSBM(
       adjacencyMatrix = adjMatrix,
       vBlocks     = 1:5,
       sampling    = sampling,

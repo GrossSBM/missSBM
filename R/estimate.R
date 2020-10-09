@@ -1,4 +1,4 @@
-#' Estimation of SBMs with missing data
+#' Estimation of simple SBMs with missing data
 #'
 #' Variational inference from sampled network data on a collection of
 #' Stochastic Block Models indexed by block number.
@@ -48,7 +48,7 @@
 #'     \item{"degree": parameter = c(a,b) and \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
 #'   }
 #' }
-#' @seealso \code{\link{sample}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
+#' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
 #' ## SBM parameters
 #' N <- 300 # number of nodes
@@ -58,15 +58,15 @@
 #'
 #' ## Sampling parameters
 #' samplingParameters <- .5 # the sampling rate
-#' sampling  <- "dyad"       # the sampling design
+#' sampling  <- "dyad"      # the sampling design
 #'
 #' ## simulate a undirected binary SBM with no covariate
 #' sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 #'
 #' ## Sample some dyads data + Infer SBM with missing data
 #' collection <-
-#'    missSBM::observeNetwork(sbm$netMatrix, sampling, samplingParameters) %>%
-#'    missSBM::estimate(vBlocks = 1:5, sampling = sampling)
+#'    observeNetwork(sbm$netMatrix, sampling, samplingParameters) %>%
+#'    estimateMissSBM(vBlocks = 1:5, sampling = sampling)
 #' collection$ICL
 #' coef(collection$bestModel$fittedSBM, "connectivity")
 #'
@@ -79,8 +79,7 @@
 #'
 #' @import R6 parallel
 #' @export
-
-estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, control = list()) {
+estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, control = list()) {
 
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
@@ -108,18 +107,18 @@ estimate <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, cont
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
       partlyObservedNet  = partlyObservedNet,
-      vBlocks     = vBlocks,
-      sampling    = sampling,
-      clusterInit = ctrl$clusterInit,
-      cores       = ctrl$cores,
-      trace       = (ctrl$trace > 0),
-      useCov      = ctrl$useCovSBM
+      vBlocks            = vBlocks,
+      sampling           = sampling,
+      clusterInit        = ctrl$clusterInit,
+      cores              = ctrl$cores,
+      trace              = (ctrl$trace > 0),
+      useCov             = ctrl$useCovSBM
   )
 
   ## Launch estimation of each missSBM_fit
   myCollection$estimate(ctrl)
 
-  ## Return the collection of optimized missSBM_fit
+  ## Return the collection of adjusted missSBM_fit
   myCollection
 }
 

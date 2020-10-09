@@ -88,7 +88,7 @@ We can now adjust a Stochastic Block Model with the function `estimate` under th
 
 ```{r inference node, results='hide'}
 vBlocks <- 1:5
-collection_sbm <- missSBM::estimate(partlyObservedNet_war, vBlocks = vBlocks, sampling = "node")
+collection_sbm <- estimateMissSBM(partlyObservedNet_war, vBlocks = vBlocks, sampling = "node")
 res_unsmoothed <- data.frame(
   ICL     = collection_sbm$ICL,
   nbBlocks = vBlocks, 
@@ -124,7 +124,7 @@ We would like to compare our results with the clustering obtained on the fully o
 
 ```{r inference full, results='hide'}
 collection_sbm_full <- 
-  missSBM::estimate(
+  estimateMissSBM(
     adjacencyMatrix = belligerent_adjacency, 
     vBlocks     = vBlocks, 
     sampling    = "node"
@@ -179,7 +179,7 @@ We first consider a covariate reflecting the military power of the country, henc
 
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:4
-collection_sbm_power_full <- estimate(belligerent_adjacency, vBlocks = vBlocks, sampling = "node", covariates = list(belligerent_power))
+collection_sbm_power_full <-estimateMissSBM(belligerent_adjacency, vBlocks = vBlocks, sampling = "node", covariates = list(belligerent_power))
 smooth(collection_sbm_power_full)
 ```
 
@@ -215,7 +215,7 @@ corrplot(sampleNet_power_miss,
 
 Then, we can estimate the model by setting the sampling to be `covar-node`. We can still choose whether to consider or not the covariate in the SBM.
 ```{r fit power missing,results = 'hide'}
-collection_sbm_power_miss <- estimate(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node", covariates = list(belligerent_power))
+collection_sbm_power_miss <-estimateMissSBM(sampleNet_power_miss, vBlocks = vBlocks, sampling = "covar-node", covariates = list(belligerent_power))
 smooth(collection_sbm_power_miss)
 ```
 
@@ -262,7 +262,7 @@ The choice of the sampling parameters leads to more likely observe dyads with im
 We then perform estimation on the missing data drawn according to the trade covariate.
 
 ```{r estimate trade}
-collection_sbm_trade_miss <- estimate(sampleNet_trade_miss ,vBlocks = vBlocks, sampling = "covar-dyad", covariates = list(trade))
+collection_sbm_trade_miss <-estimateMissSBM(sampleNet_trade_miss ,vBlocks = vBlocks, sampling = "covar-dyad", covariates = list(trade))
 collection_sbm_trade_miss$bestModel$fittedSampling$parameters
 collection_sbm_trade_miss$bestModel$fittedSBM$covarParam
 ```

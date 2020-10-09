@@ -10,7 +10,7 @@ diag(matsumpower) = 0 # diagonal has to be set to 0
 sampleNet_cov <- prepare_data(belligerent_adjacency, covariates = list(matsumpower))
 
 vBlocks <- 1:5
-collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "dyad")
+collection_sbm_cov_full <-estimateMissSBM(sampleNet_cov, vBlocks = vBlocks, sampling = "dyad")
 res_unsmoothed <- data.frame(
   ICL     = collection_sbm_cov_full$ICL,
   nbBlocks = vBlocks,
@@ -30,7 +30,7 @@ rbind(res_unsmoothed, res_smoothed) %>%
 
 
 # because the covariates are a matrix, a node sampling is not accepted
-collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling = "node")
+collection_sbm_cov_full <-estimateMissSBM(sampleNet_cov, vBlocks = vBlocks, sampling = "node")
 
 
 # other solution
@@ -38,7 +38,7 @@ collection_sbm_cov_full <- estimate(sampleNet_cov, vBlocks = vBlocks, sampling =
 sampleNet_cov2 <- prepare_data(belligerent_adjacency, covariates = list(war$belligerent$power),similarity = function(v1,v2) {
   v1+v2})
 sampleNet_cov2$covarArray
-collection_sbm_cov_full2 <- estimate(sampleNet_cov2, vBlocks = vBlocks, sampling = "node")
+collection_sbm_cov_full2 <-estimateMissSBM(sampleNet_cov2, vBlocks = vBlocks, sampling = "node")
 smooth(collection_sbm_cov_full2)
 collection_sbm_cov_full2$bestModel$fittedSBM$covarParam
 
