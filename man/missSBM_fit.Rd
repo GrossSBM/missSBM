@@ -99,7 +99,7 @@ a method to perform inference of the current missSBM fit with variational EM
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]}
 }
 \if{html}{\out{</div>}}
 }

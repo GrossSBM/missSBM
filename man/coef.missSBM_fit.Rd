@@ -21,5 +21,5 @@
 A vector or matrix of coefficients extracted from the missSBM_fit model.
 }
 \description{
-Extracts model coefficients from objects [`missSBM_fit`] returned by [estimate()]
+Extracts model coefficients from objects [`missSBM_fit`] returned by [estimateMissSBM()]
 }

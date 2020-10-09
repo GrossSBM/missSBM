@@ -82,7 +82,7 @@ missSBM_fit <-
       )
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     doVEM = function(control = list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 1)) {
 
       ## Initialization of quantities that monitor convergence
@@ -186,7 +186,7 @@ missSBM_fit <-
 ## Auxiliary functions to check the given class of an objet
 is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 
-#' Extract model fitted values from object  ['missSBM_fit'], return by [estimate()]
+#' Extract model fitted values from object  ['missSBM_fit'], return by [estimateMissSBM()]
 #'
 #' @name fitted.missSBM_fit
 #'
@@ -259,7 +259,7 @@ plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampled", "
 
 #' Extract model coefficients
 #'
-#' @description Extracts model coefficients from objects [`missSBM_fit`] returned by [estimate()]
+#' @description Extracts model coefficients from objects [`missSBM_fit`] returned by [estimateMissSBM()]
 #'
 #' @name coef.missSBM_fit
 #'
