@@ -3,7 +3,7 @@
 #' The missSBM package provides five functions:
 #' \itemize{
 #'   \item{\code{\link{observeNetwork}}}{a function to sample an existing network according to a variety of sampling designs}
-#'   \item{\code{\link{estimate}}}{a function to perform inference of SBM from network data with missing entries under various sampling designs.}
+#'   \item{\code{\link{estimateMissSBM}}}{a function to perform inference of SBM from network data with missing entries under various sampling designs.}
 #'   \item{\code{\link{smooth}}}{a function to smooth an existing collection of SBM estimation, to avoid being trapped in local maxima.}
 #' }
 #'
