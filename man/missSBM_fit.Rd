@@ -4,7 +4,7 @@
 \alias{missSBM_fit}
 \title{An R6 class to represent an SBM fit with missing data}
 \description{
-The function [estimate()] fits a collection of SBM for varying number of block.
+The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
 Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
 
 Fields are accessed via active binding and cannot be changed by the user.

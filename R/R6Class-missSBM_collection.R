@@ -1,6 +1,6 @@
 #' An R6 class to represent a collection of SBM fits with missing data
 #'
-#' @description The function [estimate()] fits a collection of SBM for varying number
+#' @description The function [estimateMissSBM()] fits a collection of SBM for varying number
 #' of block, which are stored in an instance of an object with class [`missSBM_collection`],
 #' described here.
 #'
@@ -217,7 +217,7 @@ missSBM_collection <-
 #' of SBM ordered by number of block. The goal is to find better initialization. This results
 #' in a "smoothing" of the ICL, that should be close to concave.
 #'
-#' @param Robject an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}
+#' @param Robject an object with class missSBM_collection, i.e. an output from [estimateMissSBM()]
 #' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "forward".
 #' @param control a list controlling the variational EM algorithm. See details.
 #'

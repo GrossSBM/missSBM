@@ -7,7 +7,7 @@
 smooth(Robject, type = c("forward", "backward", "both"), control = list())
 }
 \arguments{
-\item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link{estimate}}}
+\item{Robject}{an object with class missSBM_collection, i.e. an output from [estimateMissSBM()]}
 
 \item{type}{character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "forward".}
 

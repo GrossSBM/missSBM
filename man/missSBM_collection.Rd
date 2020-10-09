@@ -4,7 +4,7 @@
 \alias{missSBM_collection}
 \title{An R6 class to represent a collection of SBM fits with missing data}
 \description{
-The function [estimate()] fits a collection of SBM for varying number
+The function [estimateMissSBM()] fits a collection of SBM for varying number
 of block, which are stored in an instance of an object with class [`missSBM_collection`],
 described here.
 
