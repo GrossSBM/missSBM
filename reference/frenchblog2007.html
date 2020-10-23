@@ -74,7 +74,7 @@ the &quot;Observatoire Présidentielle&quot; project. Originally part of the 'mi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9900</span>
       </span>
     </div>
 
@@ -142,7 +142,7 @@ over 200 political blogs automatically extracted the 14 October 2006 and manuall
 the "Observatoire Présidentielle" project. Originally part of the 'mixer' package</p>
     </div>
 
-    <pre class="usage"><span class='kw'>frenchblog2007</span></pre>
+    <pre class="usage"><span class='va'>frenchblog2007</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -154,8 +154,8 @@ clustering of the nodes.</p>
     <p><a href='https://www.linkfluence.com/'>https://www.linkfluence.com/</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>frenchblog2007</span>)
-<span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span>(<span class='kw'>frenchblog2007</span>)<span class='op'>$</span><span class='kw'>party</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>frenchblog2007</span><span class='op'>)</span>
+<span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span><span class='op'>(</span><span class='va'>frenchblog2007</span><span class='op'>)</span><span class='op'>$</span><span class='va'>party</span>
 </div><div class='output co'>#&gt;   [1] "green"        "green"        "green"        "green"        "green"       
 #&gt;   [6] "green"        "green"        "right"        "right"        "right"       
 #&gt;  [11] "right"        "right"        "right"        "right"        "right"       
@@ -195,10 +195,10 @@ clustering of the nodes.</p>
 #&gt; [181] "green"        "liberal"      "liberal"      "liberal"      "liberal"     
 #&gt; [186] "liberal"      "liberal"      "liberal"      "liberal"      "liberal"     
 #&gt; [191] "liberal"      "liberal"      "liberal"      "liberal"      "liberal"     
-#&gt; [196] "liberal"     </div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/plot.igraph.html'>plot.igraph</a></span>(<span class='kw'>frenchblog2007</span>,
-  vertex.color = <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span>(<span class='kw'>frenchblog2007</span>)<span class='op'>$</span><span class='kw'>party</span>),
-  vertex.label = <span class='fl'>NA</span>
- )
+#&gt; [196] "liberal"     </div><div class='input'><span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/plot.igraph.html'>plot.igraph</a></span><span class='op'>(</span><span class='va'>frenchblog2007</span>,
+  vertex.color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/V.html'>V</a></span><span class='op'>(</span><span class='va'>frenchblog2007</span><span class='op'>)</span><span class='op'>$</span><span class='va'>party</span><span class='op'>)</span>,
+  vertex.label <span class='op'>=</span> <span class='cn'>NA</span>
+ <span class='op'>)</span>
 </div><div class='img'><img src='frenchblog2007-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

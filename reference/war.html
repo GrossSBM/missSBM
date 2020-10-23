@@ -77,7 +77,7 @@ means that the two countries have had a formal alliance between years 1816 to 20
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9900</span>
       </span>
     </div>
 
@@ -148,7 +148,7 @@ means that the two countries have had a formal alliance between years 1816 to 20
  war are not considered.</p>
     </div>
 
-    <pre class="usage"><span class='kw'>war</span></pre>
+    <pre class="usage"><span class='va'>war</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -165,11 +165,11 @@ Each graph have three attributes: 'name' (the country name), 'power' (a score re
 <p>Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>war</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span>)
-</div><div class='output co'>#&gt; [1] "igraph"</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>alliance</span>)
-</div><div class='output co'>#&gt; [1] 171</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>belligerent</span>)
-</div><div class='output co'>#&gt; [1] 83</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/edge.html'>edges</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>alliance</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>war</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>war</span><span class='op'>$</span><span class='va'>belligerent</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "igraph"</div><div class='input'><span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span><span class='op'>(</span><span class='va'>war</span><span class='op'>$</span><span class='va'>alliance</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 171</div><div class='input'><span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/gorder.html'>gorder</a></span><span class='op'>(</span><span class='va'>war</span><span class='op'>$</span><span class='va'>belligerent</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 83</div><div class='input'><span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/edge.html'>edges</a></span><span class='op'>(</span><span class='va'>war</span><span class='op'>$</span><span class='va'>alliance</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [[1]]
 #&gt; IGRAPH 00c3a83 UN-- 171 1654 -- 
 #&gt; + attr: trade (g/n), power (g/n), name (v/c)
@@ -185,7 +185,7 @@ Each graph have three attributes: 'name' (the country name), 'power' (a score re
 #&gt; + ... omitted several edges
 #&gt; 
 #&gt; attr(,"class")
-#&gt; [1] "igraph.edge"</div><div class='input'><span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_attr.html'>get.graph.attribute</a></span>(<span class='kw'>war</span><span class='op'>$</span><span class='kw'>alliance</span>)
+#&gt; [1] "igraph.edge"</div><div class='input'><span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_attr.html'>get.graph.attribute</a></span><span class='op'>(</span><span class='va'>war</span><span class='op'>$</span><span class='va'>alliance</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $trade
 #&gt;                                  United States of America    Canada     Bahamas
 #&gt; United States of America                         11838636 83309.874 29769.84735

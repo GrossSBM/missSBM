@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="An R6 class to represent an SBM fit with missing data — missSBM_fit" />
-<meta property="og:description" content="The function [estimate()] fits a collection of SBM for varying number of block.
+<meta property="og:description" content="The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
 Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
 Fields are accessed via active binding and cannot be changed by the user.
 This class comes with a set of R6 methods, some of them being useful for the user and exported
@@ -76,7 +76,7 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9900</span>
       </span>
     </div>
 
@@ -134,12 +134,12 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>An R6 class to represent an SBM fit with missing data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/missSBM_fit-Class.R'><code>R/missSBM_fit-Class.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-missSBM_fit.R'><code>R/R6Class-missSBM_fit.R</code></a></small>
     <div class="hidden name"><code>missSBM_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function [estimate()] fits a collection of SBM for varying number of block.
+    <p>The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
 Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.</p>
 <p>Fields are accessed via active binding and cannot be changed by the user.</p>
 <p>This class comes with a set of R6 methods, some of them being useful for the user and exported
@@ -155,7 +155,7 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
 <dt><code>fittedSampling</code></dt><dd><p>the fitted sampling, inheriting from class [`networkSampling_fit`]</p></dd>
 
-<dt><code>sampledNetwork</code></dt><dd><p>The original network data used for the fit, with class [`sampledNetwork`]</p></dd>
+<dt><code>partlyObservedNetwork</code></dt><dd><p>The original network data used for the fit, with class [`partlyObservedNetwork`]</p></dd>
 
 <dt><code>imputedNetwork</code></dt><dd><p>The network data with NAs values imputed with the model.</p></dd>
 
@@ -163,11 +163,13 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
 <dt><code>entropyImputed</code></dt><dd><p>the entropy of the distribution of the imputed dyads</p></dd>
 
-<dt><code>loglik</code></dt><dd><p>double: approximation of the log-likelihood (variational lower bound) reached</p></dd>
+<dt><code>entropy</code></dt><dd><p>the entropy due to the distribution of the imputed dyads and of the clustering</p></dd>
 
 <dt><code>vExpec</code></dt><dd><p>double: variational expectation of the complete log-likelihood</p></dd>
 
 <dt><code>penalty</code></dt><dd><p>double, value of the penalty term in ICL</p></dd>
+
+<dt><code>loglik</code></dt><dd><p>double: approximation of the log-likelihood (variational lower bound) reached</p></dd>
 
 <dt><code>ICL</code></dt><dd><p>double: value of the integrated classification log-likelihood</p></dd>
 
@@ -187,11 +189,11 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 <p><hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
 <p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>sampledNet</span>, <span class='kw'>nbBlocks</span>, <span class='kw'>netSampling</span>, <span class='kw'>clusterInit</span>, <span class='kw'>useCov</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>missSBM_fit</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>partlyObservedNet</span>, <span class='va'>nbBlocks</span>, <span class='va'>netSampling</span>, <span class='va'>clusterInit</span>, <span class='va'>useCov</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>sampledNet</code></dt><dd><p>An object with class [`sampledNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).</p></dd>
+<dt><code>partlyObservedNet</code></dt><dd><p>An object with class [`partlyObservedNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).</p></dd>
 
 <dt><code>nbBlocks</code></dt><dd><p>integer, the number of blocks in the SBM</p></dd>
 
@@ -199,35 +201,35 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
 <dt><code>clusterInit</code></dt><dd><p>Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering with <code>nbBlocks</code> levels. Default is "hierarchical".</p></dd>
 
-<dt><code>useCov</code></dt><dd><p>logical. If covariates are present in sampledNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></dd>
+<dt><code>useCov</code></dt><dd><p>logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-doVEM"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>doVEM()</code></h3>
 <p>a method to perform inference of the current missSBM fit with variational EM</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'>doVEM</span>(
-  control = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(threshold = <span class='fl'>0.001</span>, maxIter = <span class='fl'>100</span>, fixPointIter = <span class='fl'>5</span>, trace = <span class='fl'>1</span>)
-)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>missSBM_fit</span><span class='op'>$</span><span class='fu'>doVEM</span><span class='op'>(</span>
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='fl'>0.001</span>, maxIter <span class='op'>=</span> <span class='fl'>100</span>, fixPointIter <span class='op'>=</span> <span class='fl'>5</span>, trace <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
+<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
 <p>show method for missSBM_fit</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'>show</span>()</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>missSBM_fit</span><span class='op'>$</span><span class='fu'>show</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
 
 <p><hr>
 <a id="method-print"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code></h3>
 <p>User friendly print method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>()</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>missSBM_fit</span><span class='op'>$</span><span class='fu'>print</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
 
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>missSBM_fit</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>missSBM_fit</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -239,10 +241,10 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## Sample 75% of dyads in  French political Blogosphere's network data</span>
-<span class='kw'>adjMatrix</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='kw'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
-  <span class='kw'>igraph</span>::<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> (sparse = <span class='fl'>FALSE</span>) <span class='op'>%&gt;%</span>
-  <span class='kw'>missSBM</span>::<span class='fu'><a href='sample.html'>sample</a></span>(sampling = <span class='st'>"dyad"</span>, parameters = <span class='fl'>0.25</span>)
-<span class='kw'>collection</span> <span class='op'>&lt;-</span> <span class='kw'>missSBM</span>::<span class='fu'><a href='estimate.html'>estimate</a></span>(<span class='kw'>adjMatrix</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span>, sampling = <span class='st'>"dyad"</span>)
+<span class='va'>adjMatrix</span> <span class='op'>&lt;-</span> <span class='fu'>missSBM</span><span class='fu'>::</span><span class='va'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
+  <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> <span class='op'>(</span>sparse <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span>sampling <span class='op'>=</span> <span class='st'>"dyad"</span>, parameters <span class='op'>=</span> <span class='fl'>0.25</span><span class='op'>)</span>
+<span class='va'>collection</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimateMissSBM.html'>estimateMissSBM</a></span><span class='op'>(</span><span class='va'>adjMatrix</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='st'>"dyad"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; 
 #&gt;  Adjusting Variational EM for Stochastic Block Model
@@ -250,10 +252,10 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
 #&gt;  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='kw'>my_missSBM_fit</span> <span class='op'>&lt;-</span> <span class='kw'>collection</span><span class='op'>$</span><span class='kw'>bestModel</span>
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='kw'>my_missSBM_fit</span>)
-</div><div class='output co'>#&gt; [1] "missSBM_fit" "R6"         </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>my_missSBM_fit</span>, <span class='st'>"network"</span>)
-</div><div class='img'><img src='missSBM_fit-1.png' alt='' width='700' height='433' /></div><div class='input'>
+#&gt;  Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='va'>my_missSBM_fit</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>my_missSBM_fit</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "missSBM_fit" "R6"         </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>my_missSBM_fit</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

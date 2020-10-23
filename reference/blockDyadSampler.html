@@ -73,7 +73,7 @@ Class for defining a block dyad sampler" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9900</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@ Class for defining a block dyad sampler" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Class for defining a block dyad sampler</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/networkSampler-Class.R'><code>R/networkSampler-Class.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampler.R'><code>R/R6Class-networkSampler.R</code></a></small>
     <div class="hidden name"><code>blockDyadSampler.Rd</code></div>
     </div>
 
@@ -171,12 +171,12 @@ Class for defining a block dyad sampler" />
 <hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
 <p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>blockDyadSampler</span><span class='op'>$</span><span class='fu'>new</span>(
-  parameters = <span class='fl'>NA</span>,
-  nbNodes = <span class='fl'>NA</span>,
-  directed = <span class='fl'>FALSE</span>,
-  clusters = <span class='fl'>NA</span>
-)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>blockDyadSampler</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
+  parameters <span class='op'>=</span> <span class='cn'>NA</span>,
+  nbNodes <span class='op'>=</span> <span class='cn'>NA</span>,
+  directed <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  clusters <span class='op'>=</span> <span class='cn'>NA</span>
+<span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -192,7 +192,7 @@ Class for defining a block dyad sampler" />
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>blockDyadSampler</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>blockDyadSampler</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

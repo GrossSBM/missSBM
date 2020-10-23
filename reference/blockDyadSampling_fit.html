@@ -73,7 +73,7 @@ Class for fitting a block-dyad sampling" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9900</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@ Class for fitting a block-dyad sampling" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Class for fitting a block-dyad sampling</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/networkSampling_fit-Class.R'><code>R/networkSampling_fit-Class.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampling_fit.R'><code>R/R6Class-networkSampling_fit.R</code></a></small>
     <div class="hidden name"><code>blockDyadSampling_fit.Rd</code></div>
     </div>
 
@@ -172,11 +172,11 @@ Class for fitting a block-dyad sampling" />
 <hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
 <p>constructor</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>sampledNetwork</span>, <span class='kw'>blockInit</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>partlyObservedNetwork</span>, <span class='va'>blockInit</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>sampledNetwork</code></dt><dd><p>a object with class sampledNetwork representing the observed data with possibly missing entries</p></dd>
+<dt><code>partlyObservedNetwork</code></dt><dd><p>a object with class partlyObservedNetwork representing the observed data with possibly missing entries</p></dd>
 
 <dt><code>blockInit</code></dt><dd><p>n x Q matrix of initial block indicators</p></dd>
 
@@ -184,7 +184,7 @@ Class for fitting a block-dyad sampling" />
 <p><hr>
 <a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
 <p>a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>update_parameters</span>(<span class='kw'>imputedNet</span>, <span class='kw'>Z</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span><span class='va'>imputedNet</span>, <span class='va'>Z</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -196,7 +196,7 @@ Class for fitting a block-dyad sampling" />
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

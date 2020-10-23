@@ -73,7 +73,7 @@ Definition of R6 Class 'networkSampling_sampler'" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9900</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@ Definition of R6 Class 'networkSampling_sampler'" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Definition of R6 Class 'networkSampling_sampler'</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/networkSampler-Class.R'><code>R/networkSampler-Class.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampler.R'><code>R/R6Class-networkSampler.R</code></a></small>
     <div class="hidden name"><code>networkSampler.Rd</code></div>
     </div>
 
@@ -146,10 +146,10 @@ Definition of R6 Class 'networkSampling_sampler'" />
 
     <p>This class is use to define a sampling model for a network. Inherits from 'networkSampling'.
 Owns a rSampling method which takes an adjacency matrix as an input and send back an object
-with class sampledNetwork.</p>
+with class partlyObservedNetwork.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='sampledNetwork.html'>sampledNetwork</a></code></p></div>
+    <div class='dont-index'><p><code><a href='partlyObservedNetwork.html'>partlyObservedNetwork</a></code></p></div>
     <h2 class="hasAnchor" id="super-class"><a class="anchor" href="#super-class"></a>Super class</h2>
 
     <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code>networkSampler</code></p>
@@ -179,7 +179,7 @@ with class sampledNetwork.</p>
 <hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
 <p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>networkSampler</span><span class='op'>$</span><span class='fu'>new</span>(type = <span class='fl'>NA</span>, parameters = <span class='fl'>NA</span>, nbNodes = <span class='fl'>NA</span>, directed = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>networkSampler</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>type <span class='op'>=</span> <span class='cn'>NA</span>, parameters <span class='op'>=</span> <span class='cn'>NA</span>, nbNodes <span class='op'>=</span> <span class='cn'>NA</span>, directed <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -195,12 +195,12 @@ with class sampledNetwork.</p>
 <p><hr>
 <a id="method-rSamplingMatrix"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>rSamplingMatrix()</code></h3>
 <p>a method for drawing a sampling matrix according to the current sampling design</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>networkSampler</span><span class='op'>$</span><span class='fu'>rSamplingMatrix</span>()</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>networkSampler</span><span class='op'>$</span><span class='fu'>rSamplingMatrix</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
 
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>networkSampler</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>networkSampler</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

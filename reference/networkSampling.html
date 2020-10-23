@@ -73,7 +73,7 @@ Definition of R6 Class 'networkSampling'" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2-9900</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@ Definition of R6 Class 'networkSampling'" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Definition of R6 Class 'networkSampling'</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/networkSampling-Class.R'><code>R/networkSampling-Class.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampling.R'><code>R/R6Class-networkSampling.R</code></a></small>
     <div class="hidden name"><code>networkSampling.Rd</code></div>
     </div>
 
@@ -146,7 +146,7 @@ Definition of R6 Class 'networkSampling'" />
 
     <p>this virtual class is the mother of all subtypes of networkSampling (either sampler or fit)
 It is used to define a sampling model for a network.
-It has a rSampling method which takes an adjacency matrix as an input and send back an object with class sampledNetwork.</p>
+It has a rSampling method which takes an adjacency matrix as an input and send back an object with class partlyObservedNetwork.</p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
@@ -173,7 +173,7 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 <p><hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
 <p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>networkSampling</span><span class='op'>$</span><span class='fu'>new</span>(type = <span class='fl'>NA</span>, parameters = <span class='fl'>NA</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>networkSampling</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>type <span class='op'>=</span> <span class='cn'>NA</span>, parameters <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -185,9 +185,9 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 <p><hr>
 <a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
 <p>show method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>networkSampling</span><span class='op'>$</span><span class='fu'>show</span>(
-  type = <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='kw'>private</span><span class='op'>$</span><span class='kw'>name</span>, <span class='st'>"-model for network sampling\n"</span>)
-)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>networkSampling</span><span class='op'>$</span><span class='fu'>show</span><span class='op'>(</span>
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>private</span><span class='op'>$</span><span class='va'>name</span>, <span class='st'>"-model for network sampling\n"</span><span class='op'>)</span>
+<span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -197,12 +197,12 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 <p><hr>
 <a id="method-print"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code></h3>
 <p>User friendly print method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>networkSampling</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>()</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>networkSampling</span><span class='op'>$</span><span class='fu'>print</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
 
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>networkSampling</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>networkSampling</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
