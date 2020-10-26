@@ -26,6 +26,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   ## using SBM_fit class
   my_SBM <- missSBM:::SimpleSBM_fit_missSBM$new(adjacencyMatrix = A, clusterInit = cl0)
   my_SBM$doVEM(control$threshold, control$maxIter, control$fixPointIter, control$trace)
+  my_SBM$reorder()
   my_SBM$ICL
 
   ## using missSBM_fit class

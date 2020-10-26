@@ -126,6 +126,7 @@ missSBM_fit <-
         objective[i] <- self$loglik
 
       }
+      private$SBM$reorder()
       if (control$trace) cat("\n")
       private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
       invisible(private$optStatus)
@@ -236,6 +237,8 @@ summary.missSBM_fit <- function(object, ...) {
 #' @description Plot function for the various fields of a [`missSBM_fit`]: the fitted SBM (network or connectivity),
 #' the original sampled network data, and a plot monitoring the optimization.
 #'
+#' @return a ggplot object
+#'
 #' @name plot.missSBM_fit
 #'
 #' @param x an object with class [`missSBM_fit`]
@@ -246,15 +249,13 @@ summary.missSBM_fit <- function(object, ...) {
 #' @importFrom rlang .data
 plot.missSBM_fit <- function(x, type = c("network", "connectivity", "sampled", "monitoring"), ...) {
   stopifnot(is_missSBMfit(x))
-  type <- match.arg(type)
-  if (type == "network")
-    x$fittedSBM$plot("data")
-  if (type == "connectivity")
-    x$fittedSBM$plot("expected")
-  if (type == "sampled")
-    x$partlyObservedNetwork$plot(x$fittedSBM$memberships)
-  if (type == "monitoring")
-    ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
+  gg_obj <- switch(match.arg(type),
+    "network"      = x$fittedSBM$plot("data"),
+    "connectivity" = x$fittedSBM$plot("expected"),
+    "sampled"      = x$partlyObservedNetwork$plot(x$fittedSBM$memberships),
+    "monitoring"   = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
+  )
+  gg_obj
 }
 
 #' Extract model coefficients
