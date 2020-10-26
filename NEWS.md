@@ -1,8 +1,8 @@
-# development version
+# missSBM 0.3.0 [2020-10-26]
 
-  - working on interfacing with package sbm
+  - interfacing with package sbm
 
-# missSBM 0.2.2 [2019-09-30]
+# missSBM 0.2.2 [2020-09-30]
 
   - unexporting sampledNetwork, only use internally
   - merging prepare_data with estimate
@@ -12,7 +12,6 @@
 # missSBM 0.2.1 [2019-09-16]
  
   - added S3 methods for missSBM_fit, SBM_fit
-  - 
 
 # missSBM 0.2.0 [2019-06-06]
 

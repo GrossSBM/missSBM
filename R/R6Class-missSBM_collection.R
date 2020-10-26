@@ -38,7 +38,7 @@ missSBM_collection <-
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
       adjacencyMatrix <- partlyObservedNet$netMatrix
-### TODO: why not included in the basic imputation in partlyObservedNet ???
+### TODO: why not include the basic imputation in partlyObservedNet ???
       if (!is.null(partlyObservedNet$covarArray)) {
         y <- as.vector(adjacencyMatrix)
         X <- apply(partlyObservedNet$covarArray, 3, as.vector)
