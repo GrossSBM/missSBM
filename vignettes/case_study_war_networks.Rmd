@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
   message = FALSE, 
   warning = FALSE,
   fig.width = 5, fig.height = 4)
-set.seed(9877) # set seed for reproducibility
+set.seed(777) # set seed for reproducibility
 ```
 
 ## Prerequisites
