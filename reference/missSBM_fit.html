@@ -76,7 +76,7 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9100</span>
       </span>
     </div>
 
@@ -155,8 +155,6 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
 <dt><code>fittedSampling</code></dt><dd><p>the fitted sampling, inheriting from class [`networkSampling_fit`]</p></dd>
 
-<dt><code>partlyObservedNetwork</code></dt><dd><p>The original network data used for the fit, with class [`partlyObservedNetwork`]</p></dd>
-
 <dt><code>imputedNetwork</code></dt><dd><p>The network data with NAs values imputed with the model.</p></dd>
 
 <dt><code>monitoring</code></dt><dd><p>a list carrying information about the optimization process</p></dd>
@@ -193,7 +191,7 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>partlyObservedNet</code></dt><dd><p>An object with class [`partlyObservedNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).</p></dd>
+<dt><code>partlyObservedNet</code></dt><dd><p>An object with class [`partlyObservedNetwork`].</p></dd>
 
 <dt><code>nbBlocks</code></dt><dd><p>integer, the number of blocks in the SBM</p></dd>
 
