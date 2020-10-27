@@ -137,6 +137,8 @@ show method for missSBM_collection
 \if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 User friendly print method
+#' @field partlyObservedNetwork The original network data used for the fit, with class [`partlyObservedNetwork`]
+partlyObservedNetwork = function(value) {private$partlyObservedNet},
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$print()}\if{html}{\out{</div>}}
 }

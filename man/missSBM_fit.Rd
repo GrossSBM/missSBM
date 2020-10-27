@@ -30,8 +30,6 @@ plot(my_missSBM_fit, "connectivity")
 
 \item{\code{fittedSampling}}{the fitted sampling, inheriting from class [`networkSampling_fit`]}
 
-\item{\code{partlyObservedNetwork}}{The original network data used for the fit, with class [`partlyObservedNetwork`]}
-
 \item{\code{imputedNetwork}}{The network data with NAs values imputed with the model.}
 
 \item{\code{monitoring}}{a list carrying information about the optimization process}
@@ -72,7 +70,7 @@ constructor for networkSampling
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{partlyObservedNet}}{An object with class [`partlyObservedNetwork`], typically obtained with the function [`prepare_data`] (real-word data) or [`sample`] (simulation).}
+\item{\code{partlyObservedNet}}{An object with class [`partlyObservedNetwork`].}
 
 \item{\code{nbBlocks}}{integer, the number of blocks in the SBM}
 

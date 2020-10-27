@@ -4,14 +4,17 @@
 \alias{plot.missSBM_fit}
 \title{Visualization for an object [`missSBM_fit`]}
 \usage{
-\method{plot}{missSBM_fit}(x, type = c("network", "connectivity", "sampled", "monitoring"), ...)
+\method{plot}{missSBM_fit}(x, type = c("network", "connectivity", "monitoring"), ...)
 }
 \arguments{
 \item{x}{an object with class [`missSBM_fit`]}
 
-\item{type}{the type specifies the field to plot, either "network", "connectivity", "sampled" of "monitoring"}
+\item{type}{the type specifies the field to plot, either "network", "connectivity" or "monitoring"}
 
 \item{...}{additional parameters for S3 compatibility. Not used}
+}
+\value{
+a ggplot object
 }
 \description{
 Plot function for the various fields of a [`missSBM_fit`]: the fitted SBM (network or connectivity),

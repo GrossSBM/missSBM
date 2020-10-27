@@ -43,8 +43,8 @@ initialization, how covariates are handled in the model, and the variational EM 
         or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
         \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "hierarchical".}
  \item{"similarity"}{An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
- \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
- \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
+ \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-3.}
+ \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 100}
  \item{"fixPointIter"}{number of fix-point iterations in the Variational E step. Default is 5.}
  \item{"cores"}{integer for number of cores used. Default is 1.}
  \item{"trace"}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
