@@ -179,7 +179,7 @@ We first consider a covariate reflecting the military power of the country, henc
 
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:4
-collection_sbm_power_full <-estimateMissSBM(belligerent_adjacency, vBlocks = vBlocks, sampling = "node", covariates = list(belligerent_power))
+collection_sbm_power_full <- estimateMissSBM(belligerent_adjacency, vBlocks = vBlocks, sampling = "node", covariates = list(belligerent_power))
 smooth(collection_sbm_power_full)
 ```
 

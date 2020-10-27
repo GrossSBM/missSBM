@@ -94,7 +94,7 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
           E_step_covariates(
             private$Y,
             self$covarEffect,
-            .logit(self$connectParam$mean),
+            matrix(.logit(self$connectParam$mean),self$nbBlocks, self$nbBlocks),
             self$probMemberships,
             self$blockProp
           )
@@ -119,7 +119,7 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
         res <- vExpec_covariates(
           private$Y,
           self$covarEffect,
-          .logit(self$connectParam$mean),
+          matrix(.logit(self$connectParam$mean),self$nbBlocks, self$nbBlocks),
           self$probMemberships,
           self$blockProp
         )
