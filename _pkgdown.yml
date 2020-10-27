@@ -25,41 +25,27 @@ navbar:
 reference:
 - title: 'Top-level fitting functions'
   desc: >
-    Main functions for simulating, sampling and estimating an SBM with missing data
+    Main functions for estimating and sampling from an SBM with missing data
   contents:
-    - '`simulate`'
-    - '`sample`'
-    - '`estimate`'
-    - '`smooth`'
-- title: 'Class missSBM fit'
+    - '`estimateMissSBM`'
+    - '`observeNetwork`'
+- title: 'Main classes of objects'
   desc: >
-    Description of the missSBM_fit object and methods for its manipulation. This is the more central
-    class of object in the package, embedding fits for both the SBM and the sampling model.
+    Description of objects missSBM_fit and missSBM_collection. The class missSBM_fit
+    is the more central class of object, embedding fits for both the SBM and the sampling model.
+    The class missSBM_collection defines objects for storing a collection of missSBM_fit,
+    resulting from the the top-level function estimateMissSBM().
   contents:
     - '`missSBM_fit`'
     - '`coef.missSBM_fit`'
     - '`fitted.missSBM_fit`'
     - '`predict.missSBM_fit`'
     - '`plot.missSBM_fit`'
-- title: 'Class missSBM collection'
-  desc: >
-    Description of the missSBM_collection object and methods for its manipulation.
-    Ouput of the top-level function estimate(), storing a collection of missSBM_fit.
-  contents:
     - '`missSBM_collection`'
     - '`smooth`'
-- title: 'Other classes of objects'
-  desc: >
-    Description of the classes of objects used in missSBM to manipulate network data, model and sampling design.
-  contents:
-    - '`SBM_fit`'
-    - '`SBM_fit_covariates`'
-    - '`SBM_fit_nocovariate`'
-    - '`SBM_sampler`'
 - title: Data sets
   desc: ~
   contents:
     - '`war`'
     - '`frenchblog2007`'
     - '`er_network`'
-
