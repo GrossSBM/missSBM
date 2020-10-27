@@ -46,11 +46,10 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     expect_is(missSBM, "missSBM_fit")
     expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
     expect_is(missSBM$fittedSampling, sampling$class)
-    expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
     expect_equal(out, missSBM$monitoring)
 
     ## Optimization success
-    expect_gt(diff(range(out$objective, na.rm = TRUE)), 0)
+    expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
     ## SBM: parameters estimation
     expect_lt(error(missSBM$fittedSBM$connectParam$mean, sbm$connectParam$mean), tol_truth)

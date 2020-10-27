@@ -29,20 +29,20 @@ missSBM_collection <-
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## fields for internal use (referring to mathematical notations)
   private = list(
+    partlyObservedNet = NULL, # network data with convenient encoding (object of class 'partlyObservedNetwork')
     missSBM_fit = NULL, # a list of models
     # method for performing forward smoothing of the ICL
     # a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
     smoothing_forward = function(control) {
       trace <- control$trace > 0; control$trace <- FALSE
-      partlyObservedNet  <- private$missSBM_fit[[1]]$partlyObservedNetwork
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
-      adjacencyMatrix <- partlyObservedNet$netMatrix
+      adjacencyMatrix <- private$partlyObservedNet$netMatrix
 ### TODO: why not include the basic imputation in partlyObservedNet ???
-      if (!is.null(partlyObservedNet$covarArray)) {
+      if (!is.null(private$partlyObservedNet$covarArray)) {
         y <- as.vector(adjacencyMatrix)
-        X <- apply(partlyObservedNet$covarArray, 3, as.vector)
-        adjacencyMatrix <- matrix(NA, partlyObservedNet$nbNodes, partlyObservedNet$nbNodes)
+        X <- apply(private$partlyObservedNet$covarArray, 3, as.vector)
+        adjacencyMatrix <- matrix(NA, private$partlyObservedNet$nbNodes, private$partlyObservedNet$nbNodes)
         NAs <- is.na(y)
         adjacencyMatrix[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
       }
@@ -59,7 +59,7 @@ missSBM_collection <-
               J1 <- base::sample(J, floor(length(J)/2))
               J2 <- setdiff(J, J1)
               cl[J1] <- j; cl[J2] <- i + 1
-              model <- missSBM_fit$new(partlyObservedNet, i + 1, sampling, cl, useCov)
+              model <- missSBM_fit$new(private$partlyObservedNet, i + 1, sampling, cl, useCov)
               model$doVEM(control)
             } else {
               model <- private$missSBM_fit[[i + 1]]$clone()
@@ -88,7 +88,6 @@ missSBM_collection <-
     smoothing_backward = function(control) {
 
       trace <- control$trace > 0; control$trace <- FALSE
-      partlyObservedNet  <- private$missSBM_fit[[1]]$partlyObservedNetwork
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
@@ -101,7 +100,7 @@ missSBM_collection <-
             cl_fusion <- cl0
             levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
             levels(cl_fusion) <- as.character(1:(i - 1))
-            model <- missSBM_fit$new(partlyObservedNet, i - 1, sampling, cl_fusion, useCov)
+            model <- missSBM_fit$new(private$partlyObservedNet, i - 1, sampling, cl_fusion, useCov)
             model$doVEM(control)
             model
           }, mc.cores = control$cores)
@@ -143,6 +142,9 @@ missSBM_collection <-
       if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
       if (trace) cat("\n")
       if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
+
+      stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
+      private$partlyObservedNet <- partlyObservedNet
 
       private$missSBM_fit <- mcmapply(
         function(nBlock, cl0) {
@@ -190,6 +192,8 @@ missSBM_collection <-
     print = function() { self$show() }
   ),
   active = list(
+    #' #' @field partlyObservedNetwork The original network data used for the fit, with class [`partlyObservedNetwork`]
+    #' partlyObservedNetwork = function(value) {private$partlyObservedNet},
     #' @field models a list of models
     models = function(value) (private$missSBM_fit),
     #' @field ICL the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)

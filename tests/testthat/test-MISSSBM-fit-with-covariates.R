@@ -47,7 +47,6 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "covarDyadSampling_fit")
-  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
   expect_equal(out, missSBM$monitoring)
 
   ## Optimization success
@@ -59,7 +58,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth*10)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*3)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), 0.25)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
@@ -80,7 +79,6 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "dyadSampling_fit")
-  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
   expect_equal(out, missSBM$monitoring)
 
   ## Optimization success
@@ -89,10 +87,10 @@ test_that("missSBM with covariates and dyad sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth*15)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*2)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), 0.25)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
@@ -117,7 +115,6 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "covarNodeSampling_fit")
-  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
 
   ## Optimization success
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
@@ -128,7 +125,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), tol_truth*10)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), .5)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
@@ -150,7 +147,6 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_is(missSBM, "missSBM_fit")
   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
   expect_is(missSBM$fittedSampling, "nodeSampling_fit")
-  expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
 
   ## Optimization success
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)

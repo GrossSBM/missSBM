@@ -7,16 +7,13 @@ referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", packa
 
 test_that("check consistency against Tim's code for dyad, node, double standard and block sampling", {
 
-  tol_ref   <- 1e-2
+  tol_ref   <- 2e-2
   tol_truth <- 1e-2
   tol_ARI   <- .8
   truth   <- referenceResults$true_sbm
 
   cat("\nsampling: ")
   for (sampling in c("dyad", "node", "double-standard", "block-node")) {
-
-    # tol_ref   <- 1e-3 ok for double standard
-    # tol_truth <- 1e-3
 
     refAlgo <- referenceResults[[sampling]]
     cat(sampling)
@@ -106,7 +103,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     ## mixture parameters (pi)
     err_new <- error(newAlgo$fittedSBM$blockProp, truth$mixtureParam, sort = TRUE)
     err_old <- error(refAlgo$mixtureParam       , truth$mixtureParam, sort = TRUE)
-    gap_old <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
+    err_gap <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth)
       cat(" new better on mixture")
