@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Observe a network partially according to a given sampling design — observeNetwork" />
-<meta property="og:description" content="This function samples observations in an adjacency matrix according to a given network sampling design." />
+<meta property="og:description" content="This function draws observations in an adjacency matrix according to a given network sampling design." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9150</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9200</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@
     </div>
 
     <div class="ref-description">
-    <p>This function samples observations in an adjacency matrix according to a given network sampling design.</p>
+    <p>This function draws observations in an adjacency matrix according to a given network sampling design.</p>
     </div>
 
     <pre class="usage"><span class='fu'>observeNetwork</span><span class='op'>(</span>
@@ -212,17 +212,17 @@ Default is 5 with no covariate, 2 otherwise.</p></li>
 <p>The different sampling designs are split into two families in which we find dyad-centered and
 node-centered samplings. See <a href='doi:10.1080/01621459.2018.1562934'>doi:10.1080/01621459.2018.1562934</a> for a complete description.</p><ul>
 <li><p>Missing at Random (MAR)</p><ul>
-<li><p>"dyad": parameter = p = Prob(Dyad(i,j) is sampled)</p></li>
-<li><p>"node": parameter = p = Prob(Node i is sampled)</p></li>
-<li><p>"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))</p></li>
-<li><p>"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)</p></li>
-<li><p>"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)</p></li>
+<li><p>"dyad": parameter = p = Prob(Dyad(i,j) is observed)</p></li>
+<li><p>"node": parameter = p = Prob(Node i is observed)</p></li>
+<li><p>"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))</p></li>
+<li><p>"covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)</p></li>
+<li><p>"snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)</p></li>
 </ul></li>
 <li><p>Not Missing At Random (NMAR)</p><ul>
-<li><p>"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
-<li><p>"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)</p></li>
-<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)</p></li>
-<li><p>"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))</p></li>
+<li><p>"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)</p></li>
+<li><p>"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)</p></li>
+<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)</p></li>
+<li><p>"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))</p></li>
 </ul></li>
 </ul>
 
@@ -250,10 +250,10 @@ node-centered samplings. See <a href='doi:10.1080/01621459.2018.1562934'>doi:10.
    <span class='st'>"snowball"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>.1</span><span class='op'>)</span>
  <span class='op'>)</span>
 
-<span class='va'>sampled_networks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>observed_networks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='kw'>for</span> <span class='op'>(</span><span class='va'>sampling</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>sampling_parameters</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>sampled_networks</span><span class='op'>[[</span><span class='va'>sampling</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span>
+  <span class='va'>observed_networks</span><span class='op'>[[</span><span class='va'>sampling</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span>
      <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'>observeNetwork</span><span class='op'>(</span>
        adjacencyMatrix <span class='op'>=</span> <span class='va'>sbm</span><span class='op'>$</span><span class='va'>netMatrix</span>,
        sampling        <span class='op'>=</span> <span class='va'>sampling</span>,
