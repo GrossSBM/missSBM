@@ -40,12 +40,12 @@
 
 
 <meta property="og:title" content="An R6 class to represent a collection of SBM fits with missing data — missSBM_collection" />
-<meta property="og:description" content="The function [estimateMissSBM()] fits a collection of SBM for varying number
-of block, which are stored in an instance of an object with class [`missSBM_collection`],
-described here.
+<meta property="og:description" content="The function estimateMissSBM() fits a collection of SBM with missing data for
+a varying number of block. These models with class missSBM_fit  are stored in an instance
+of an object with class missSBM_collection, described here.
 Fields are accessed via active binding and cannot be changed by the user.
 This class comes with a set of R6 methods, some of them being useful for the user and exported
-as S3 methods. See the documentation for [show()], [print()] and [smooth()], the latter being
+as S3 methods. See the documentation for show(), print() and smooth(), the latter being
 used to smooth the ICL on a collection of model, as post-treatment." />
 
 
@@ -78,7 +78,7 @@ used to smooth the ICL on a collection of model, as post-treatment." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9150</span>
       </span>
     </div>
 
@@ -141,12 +141,12 @@ used to smooth the ICL on a collection of model, as post-treatment." />
     </div>
 
     <div class="ref-description">
-    <p>The function [estimateMissSBM()] fits a collection of SBM for varying number
-of block, which are stored in an instance of an object with class [`missSBM_collection`],
-described here.</p>
+    <p>The function <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code> fits a collection of SBM with missing data for
+a varying number of block. These models with class <code><a href='missSBM_fit.html'>missSBM_fit</a></code>  are stored in an instance
+of an object with class <code>missSBM_collection</code>, described here.</p>
 <p>Fields are accessed via active binding and cannot be changed by the user.</p>
 <p>This class comes with a set of R6 methods, some of them being useful for the user and exported
-as S3 methods. See the documentation for [show()], [print()] and [smooth()], the latter being
+as S3 methods. See the documentation for <code>show()</code>, <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code> and <code><a href='smooth.html'>smooth()</a></code>, the latter being
 used to smooth the ICL on a collection of model, as post-treatment.</p>
     </div>
 
@@ -194,7 +194,7 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>partlyObservedNet</code></dt><dd><p>An object with class [`partlyObservedNetwork`].</p></dd>
+<dt><code>partlyObservedNet</code></dt><dd><p>An object with class <code><a href='partlyObservedNetwork.html'>partlyObservedNetwork</a></code>.</p></dd>
 
 <dt><code>vBlocks</code></dt><dd><p>vector of integer with the number of blocks in the successively fitted models</p></dd>
 
@@ -216,7 +216,7 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]</p></dd>
+<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code></p></dd>
 
 </dl><p></div></p>
 <p><hr>
@@ -228,7 +228,7 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 <p><div class="arguments"></p><dl>
 <dt><code>type</code></dt><dd><p>character, the type of smoothing: forward, backward, both</p></dd>
 
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the smoothing. See details of regular function [`smooth`]</p></dd>
+<dt><code>control</code></dt><dd><p>a list of parameters controlling the smoothing. See details of regular function <code><a href='smooth.html'>smooth()</a></code></p></dd>
 
 </dl><p></div></p>
 <p><hr>
@@ -238,9 +238,7 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 
 <p><hr>
 <a id="method-print"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code></h3>
-<p>User friendly print method
-#' @field partlyObservedNetwork The original network data used for the fit, with class [`partlyObservedNetwork`]
-partlyObservedNetwork = function(value) private$partlyObservedNet,</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>User friendly print method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>print</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
 
 <p><hr>
@@ -258,10 +256,10 @@ partlyObservedNetwork = function(value) private$partlyObservedNet,</p><h4 class=
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## Sample 75% of dyads in  French political Blogosphere's network data</span>
-<span class='va'>adjMatrix</span> <span class='op'>&lt;-</span> <span class='fu'>missSBM</span><span class='fu'>::</span><span class='va'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
+<span class='va'>adjacencyMatrix</span> <span class='op'>&lt;-</span> <span class='fu'>missSBM</span><span class='fu'>::</span><span class='va'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
   <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> <span class='op'>(</span>sparse <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span>sampling <span class='op'>=</span> <span class='st'>"dyad"</span>, parameters <span class='op'>=</span> <span class='fl'>0.25</span><span class='op'>)</span>
-<span class='va'>collection</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimateMissSBM.html'>estimateMissSBM</a></span><span class='op'>(</span><span class='va'>adjMatrix</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='st'>"dyad"</span><span class='op'>)</span>
+<span class='va'>collection</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimateMissSBM.html'>estimateMissSBM</a></span><span class='op'>(</span><span class='va'>adjacencyMatrix</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='st'>"dyad"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; 
 #&gt;  Adjusting Variational EM for Stochastic Block Model

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Observe partially a network according to a given sampling design — observeNetwork • missSBM</title>
+<title>Observe a network partially according to a given sampling design — observeNetwork • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Observe partially a network according to a given sampling design — observeNetwork" />
+<meta property="og:title" content="Observe a network partially according to a given sampling design — observeNetwork" />
 <meta property="og:description" content="This function samples observations in an adjacency matrix according to a given network sampling design." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9150</span>
       </span>
     </div>
 
@@ -129,7 +129,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Observe partially a network according to a given sampling design</h1>
+    <h1>Observe a network partially according to a given sampling design</h1>
     <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/observeNetwork.R'><code>R/observeNetwork.R</code></a></small>
     <div class="hidden name"><code>observeNetwork.Rd</code></div>
     </div>
@@ -153,30 +153,30 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>adjacencyMatrix</th>
-      <td><p>The N x N adjacency matrix of the network to sample. If <code>adjacencyMatrix</code> is symmetric,
-we assume an undirected network with no loop; otherwise the network is assumed directed.</p></td>
+      <td><p>The N x N adjacency matrix of the network to sample.</p></td>
     </tr>
     <tr>
       <th>sampling</th>
-      <td><p>The sampling design used to sample the adjacency matrix, see details</p></td>
+      <td><p>The sampling design used to observe the adjacency matrix, see details.</p></td>
     </tr>
     <tr>
       <th>parameters</th>
-      <td><p>The sampling parameters adapted to each sampling</p></td>
+      <td><p>The sampling parameters (adapted to each sampling, see details).</p></td>
     </tr>
     <tr>
       <th>clusters</th>
-      <td><p>An optional clustering membership vector of the nodes, only necessary for block samplings</p></td>
+      <td><p>An optional clustering membership vector of the nodes. Only necessary for block samplings.</p></td>
     </tr>
     <tr>
       <th>covariates</th>
-      <td><p>A list with M entries (the M covariates). If the covariates are node-centered, each entry of <code>covariates</code>
-must be a size-N vector;  if the covariates are dyad-centered, each entry of <code>covariates</code> must be N x N matrix.</p></td>
+      <td><p>An optional list with M entries (the M covariates). If the covariates are node-centered,
+each entry of <code>covariates</code>. must be a size-N vector;  if the covariates are dyad-centered, each entry
+of <code>covariates</code> must be N x N matrix.</p></td>
     </tr>
     <tr>
       <th>similarity</th>
-      <td><p>An optional function to compute similarities between node covariates. Default is <code>l1_similarity</code>, that is, -abs(x-y).
-Only relevant when the covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></td>
+      <td><p>An optional function to compute similarities between node covariates. Default is
+<code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered.</p></td>
     </tr>
     <tr>
       <th>intercept</th>
@@ -186,23 +186,23 @@ Only relevant when the covariates are node-centered (i.e. <code>covariates</code
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an adjacency matrix with the dimension as the input, yet with additional NAs.</p>
+    <p>an adjacency matrix with the same dimension as the input, yet with additional NAs.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See &lt;doi:10.1080/01621459.2018.1562934&gt; for complete description.</p><ul>
+node-centered samplings. See <a href='doi:10.1080/01621459.2018.1562934'>doi:10.1080/01621459.2018.1562934</a> for complete description.</p><ul>
 <li><p>Missing at Random (MAR)</p><ul>
-<li><p>"dyad": parameter = p $$p = P(Dyad (i,j) is sampled)$$</p></li>
-<li><p>"node": parameter = p and $$p = P(Node i is sampled)$$</p></li>
-<li><p>"covar-dyad": parameter = beta in R^M and $$P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))$$</p></li>
-<li><p>"covar-node": parameter = nu in R^M and $$P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)$$</p></li>
-<li><p>"snowball": parameter = number of waves and $$P(Node i is sampled in the 1st Wave)$$</p></li>
+<li><p>"dyad": parameter = p = Prob(Dyad(i,j) is sampled)</p></li>
+<li><p>"node": parameter = p = Prob(Node i is sampled)</p></li>
+<li><p>"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))</p></li>
+<li><p>"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)</p></li>
+<li><p>"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)</p></li>
 </ul></li>
 <li><p>Not Missing At Random (NMAR)</p><ul>
-<li><p>"double-standard": parameter = (p0,p1) and $$p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=$$, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
-<li><p>"block-node": parameter = c(p(1),...,p(Q)) and $$p(q) = P(Node i is sampled | node i is in cluster q)$$</p></li>
-<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and $$p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)$$</p></li>
-<li><p>"degree": parameter = c(a,b) and $$logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))$$</p></li>
+<li><p>"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
+<li><p>"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)</p></li>
+<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)</p></li>
+<li><p>"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))</p></li>
 </ul></li>
 </ul>
 

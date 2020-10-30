@@ -74,7 +74,7 @@ in a &quot;smoothing&quot; of the ICL, that should be close to concave." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9150</span>
       </span>
     </div>
 
@@ -149,7 +149,7 @@ in a "smoothing" of the ICL, that should be close to concave.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>Robject</th>
-      <td><p>an object with class missSBM_collection, i.e. an output from [estimateMissSBM()]</p></td>
+      <td><p>an object with class missSBM_collection, i.e. an output from <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code></p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -163,16 +163,19 @@ in a "smoothing" of the ICL, that should be close to concave.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an invisible missSBM_collection, in which the ICL has been smoothed</p>
+    <p>An invisible missSBM_collection, in which the ICL has been smoothed</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The list of parameters <code>control</code> controls the optimization process and the variational EM algorithm, with the following entries</p><ul>
-<li><p>"iterates"integer for the number of iteration of smoothing. Default is 1.</p></li>
-<li><p>"threshold"stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.</p></li>
-<li><p>"maxIter"V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200</p></li>
-<li><p>"fixPointIter"number of fix-point iteration for the Variational E step. Default is 5.</p></li>
-<li><p>"cores"integer for number of cores used. Default is 1.</p></li>
-<li><p>"trace"integer for verbosity. Useless when <code>cores</code> &gt; 1</p></li>
+<li><p>"iterates": integer for the number of iterations of smoothing. Default is 1.</p></li>
+<li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function
+by less than threshold. Default is 1e-3.</p></li>
+<li><p>"maxIter": V-EM algorithm stops when the number of iteration exceeds maxIter.
+Default is 100 with no covariate, 50 otherwise.</p></li>
+<li><p>"fixPointIter": number of fix-point iterations in the V-E step.
+Default is 5 with no covariate, 2 otherwise.</p></li>
+<li><p>"cores": integer for number of cores used. Default is 1.</p></li>
+<li><p>"trace": integer for verbosity. Useless when <code>cores</code> &gt; 1</p></li>
 </ul>
 
 

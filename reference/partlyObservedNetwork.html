@@ -73,7 +73,7 @@ An R6 Class used for internal representation of sampled network data" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9150</span>
       </span>
     </div>
 
@@ -144,7 +144,7 @@ An R6 Class used for internal representation of sampled network data" />
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>All fields of this class are only accessible for reading.</p>
+    <p>This class is not exported to the user</p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
@@ -184,9 +184,6 @@ An R6 Class used for internal representation of sampled network data" />
 <li><p><a href='#method-new'><code>partlyObservedNetwork$new()</code></a></p></li>
 <li><p><a href='#method-clustering'><code>partlyObservedNetwork$clustering()</code></a></p></li>
 <li><p><a href='#method-imputation'><code>partlyObservedNetwork$imputation()</code></a></p></li>
-<li><p><a href='#method-plot'><code>partlyObservedNetwork$plot()</code></a></p></li>
-<li><p><a href='#method-show'><code>partlyObservedNetwork$show()</code></a></p></li>
-<li><p><a href='#method-print'><code>partlyObservedNetwork$print()</code></a></p></li>
 <li><p><a href='#method-clone'><code>partlyObservedNetwork$clone()</code></a></p></li>
 </ul>
 <p><hr>
@@ -234,31 +231,6 @@ An R6 Class used for internal representation of sampled network data" />
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
 <p>an adjacency matrix with imputed values</p>
-<p><hr>
-<a id="method-plot"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot()</a></code></h3>
-<p>plot method for partlyObservedNetwork</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>partlyObservedNetwork</span><span class='op'>$</span><span class='fu'>plot</span><span class='op'>(</span>
-  clustering <span class='op'>=</span> <span class='cn'>NULL</span>,
-  main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"Network with sampling rate:"</span>, <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>signif</a></span><span class='op'>(</span><span class='va'>self</span><span class='op'>$</span><span class='va'>samplingRate</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>)</span></pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>clustering</code></dt><dd><p>an optional vector of clustering memberships, default to <code>NULL</code>.</p></dd>
-
-<dt><code>main</code></dt><dd><p>a character for the title of the plot</p></dd>
-
-</dl><p></div></p>
-<p><hr>
-<a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
-<p>show method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>partlyObservedNetwork</span><span class='op'>$</span><span class='fu'>show</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
-
-<p><hr>
-<a id="method-print"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code></h3>
-<p>User friendly print method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>partlyObservedNetwork</span><span class='op'>$</span><span class='fu'>print</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
-
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>

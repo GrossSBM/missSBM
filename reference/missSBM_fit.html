@@ -40,11 +40,11 @@
 
 
 <meta property="og:title" content="An R6 class to represent an SBM fit with missing data — missSBM_fit" />
-<meta property="og:description" content="The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
-Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
+<meta property="og:description" content="The function estimateMissSBM() fits a collection of SBM for varying number of block.
+Each fitted SBM is an instance of an R6 object with class missSBM_fit, described here.
 Fields are accessed via active binding and cannot be changed by the user.
 This class comes with a set of R6 methods, some of them being useful for the user and exported
-as S3 methods. See the documentation for  [show()], [print()], [fitted()], [predict()], [plot()]." />
+as S3 methods. See the documentation for  show(), print(), fitted(), predict(), plot()." />
 
 
 
@@ -76,7 +76,7 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9150</span>
       </span>
     </div>
 
@@ -139,11 +139,11 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
     </div>
 
     <div class="ref-description">
-    <p>The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
-Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.</p>
+    <p>The function <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code> fits a collection of SBM for varying number of block.
+Each fitted SBM is an instance of an R6 object with class <code>missSBM_fit</code>, described here.</p>
 <p>Fields are accessed via active binding and cannot be changed by the user.</p>
 <p>This class comes with a set of R6 methods, some of them being useful for the user and exported
-as S3 methods. See the documentation for  [show()], [print()], [fitted()], [predict()], [plot()].</p>
+as S3 methods. See the documentation for  <code>show()</code>, <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code>, <code><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted()</a></code>, <code><a href='https://rdrr.io/r/stats/predict.html'>predict()</a></code>, <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot()</a></code>.</p>
     </div>
 
 
@@ -151,11 +151,11 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
-<dt><code>fittedSBM</code></dt><dd><p>the fitted SBM, inheriting from class [`SBM_fit`]</p></dd>
+<dt><code>fittedSBM</code></dt><dd><p>the fitted SBM with class <code><a href='SimpleSBM_fit_missSBM.html'>SimpleSBM_fit_missSBM</a></code>, inheriting from class <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM_fit.html'>sbm::SimpleSBM_fit</a></code></p></dd>
 
-<dt><code>fittedSampling</code></dt><dd><p>the fitted sampling, inheriting from class [`networkSampling_fit`]</p></dd>
+<dt><code>fittedSampling</code></dt><dd><p>the fitted sampling, inheriting from class <code><a href='networkSampling.html'>networkSampling</a></code> and corresponding fits</p></dd>
 
-<dt><code>imputedNetwork</code></dt><dd><p>The network data with NAs values imputed with the model.</p></dd>
+<dt><code>imputedNetwork</code></dt><dd><p>The network data as a matrix with NAs values imputed with the current model</p></dd>
 
 <dt><code>monitoring</code></dt><dd><p>a list carrying information about the optimization process</p></dd>
 
@@ -191,7 +191,7 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>partlyObservedNet</code></dt><dd><p>An object with class [`partlyObservedNetwork`].</p></dd>
+<dt><code>partlyObservedNet</code></dt><dd><p>An object with class <code><a href='partlyObservedNetwork.html'>partlyObservedNetwork</a></code>.</p></dd>
 
 <dt><code>nbBlocks</code></dt><dd><p>integer, the number of blocks in the SBM</p></dd>
 
@@ -211,7 +211,7 @@ as S3 methods. See the documentation for  [show()], [print()], [fitted()], [pred
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]</p></dd>
+<dt><code>control</code></dt><dd><p>a list of parameters controlling the variational EM algorithm. See details of function <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code></p></dd>
 
 </dl><p></div></p>
 <p><hr>

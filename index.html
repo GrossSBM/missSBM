@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9150</span>
       </span>
     </div>
 
@@ -95,8 +95,9 @@
 <a href="#misssbm-handling-missing-data-in-stochastic-block-models" class="anchor"></a>missSBM: Handling missing data in Stochastic Block Models</h1></div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <blockquote>
-<p>When a network is partially observed (here, NAs in the adjacency matrix rather than 1 or 0 due to missing information between node pairs), it is possible to account for the underlying process that generates those NAs. ‘missSBM’ adjusts the popular stochastic block model from network data sampled under various missing data conditions, as described in Tabouy, Barbillon and Chiquet (2019) <a href="https://doi.org/10.1080/01621459.2018.1562934">10.1080/01621459.2018.1562934</a>.</p>
+<p>When a network is partly observed (here, NAs in the adjacency matrix rather than 1 or 0 due to missing information between node pairs), it is possible to account for the underlying process that generates those NAs. ‘missSBM’ adjusts the popular stochastic block model from network data sampled under various missing data conditions, as described in Tabouy, Barbillon and Chiquet (2019) <a href="https://doi.org/10.1080/01621459.2018.1562934">10.1080/01621459.2018.1562934</a>.</p>
 </blockquote>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -106,7 +107,7 @@
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"missSBM"</span><span class="op">)</span></pre></div>
 <p>The development version is available via</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jchiquet/missSBM"</span><span class="op">)</span></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"grossSBM/missSBM"</span><span class="op">)</span></pre></div>
 </div>
 <div id="reference" class="section level2">
 <h2 class="hasAnchor">
@@ -155,9 +156,11 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/jchiquet/missSBM/actions"><img src="https://github.com/jchiquet/missSBM/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://codecov.io/github/jchiquet/missSBM?branch=master"><img src="https://codecov.io/gh/jchiquet/missSBM/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
+<li><a href="https://grosssbm.github.io/missSBM/"><img src="https://github.com/GrossSBM/missSBM/workflows/pkgdown/badge.svg" alt="website"></a></li>
+<li><a href="https://github.com/grosssbm/missSBM/actions"><img src="https://github.com/grosssbm/missSBM/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://cran.r-project.org/package=missSBM"><img src="http://www.r-pkg.org/badges/version/missSBM" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://github.com/GrossSBM/missSBM/commits/master"><img src="https://img.shields.io/github/last-commit/grossSBM/missSBM.svg"></a></li>
+<li><a href="https://codecov.io/gh/GrossSBM/missSBM?branch=master"><img src="https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 </div>
