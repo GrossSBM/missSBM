@@ -148,7 +148,7 @@ rbind(res_missing, res_full) %>%
 
 ```
 
-Indeed, two classes found on the fully observed network fuse in the SBM fitted on the partly observed network.
+Indeed, two classes found on the fully observed network fuse in the SBM fitted on the partially observed network.
 
 
 ```{r clustering comparison}
