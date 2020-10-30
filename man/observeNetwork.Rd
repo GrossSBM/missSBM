@@ -39,8 +39,29 @@ an adjacency matrix with the same dimension as the input, yet with additional NA
 This function samples observations in an adjacency matrix according to a given network sampling design.
 }
 \details{
+The list of parameters \code{control} tunes more advanced features, such as the
+initialization, how covariates are handled in the model, and the variational EM algorithm:
+\itemize{
+\item{"useCovSBM": }{logical. If \code{covariates} is not null, should they be used for the
+for the SBM inference (or just for the sampling)? Default is TRUE.}
+\item{"clusterInit": }{Initial method for clustering: either a character in "hierarchical", "spectral"
+or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
+\code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "spectral".}
+\item{"similarity": }{An R x R -> R function to compute similarities between node covariates. Default is
+\code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
+(i.e. \code{covariates} is a list of size-N vectors).}
+\item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function
+by less than threshold. Default is 1e-3.}
+\item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
+Default is 100 with no covariate, 50 otherwise.}
+\item{"fixPointIter": }{number of fix-point iterations in the V-E step.
+Default is 5 with no covariate, 2 otherwise.}
+\item{"cores": }{integer for number of cores used. Default is 1.}
+\item{"trace": }{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
+}
+
 The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See \url{doi:10.1080/01621459.2018.1562934} for complete description.
+node-centered samplings. See \url{doi:10.1080/01621459.2018.1562934} for a complete description.
 \itemize{
 \item Missing at Random (MAR)
 \itemize{

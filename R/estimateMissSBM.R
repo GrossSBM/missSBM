@@ -36,22 +36,22 @@
 #' }
 #'
 #' @details The different sampling designs are split into two families in which we find dyad-centered and
-#' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
+#' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for a complete description.
 #' \itemize{
 #' \item Missing at Random (MAR)
 #'   \itemize{
-#'     \item{"dyad": parameter = p and \deqn{p = P(Dyad (i,j) is sampled)}}
-#'     \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
-#'     \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
-#'     \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
-#'     \item{"snowball": parameter estimation is not relevant for this sampling}
+#'     \item{"dyad": parameter = p = Prob(Dyad(i,j) is sampled)}
+#'     \item{"node": parameter = p = Prob(Node i is sampled)}
+#'     \item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))}
+#'     \item{"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}
+#'     \item{"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)}
 #'   }
 #' \item Not Missing At Random (NMAR)
 #'   \itemize{
-#'     \item{"double-standard": parameter = (p0,p1) and \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
-#'     \item{"block-node": parameter = c(p(1),...,p(Q)) and \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
-#'     \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and \deqn{p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}}
-#'     \item{"degree": parameter = c(a,b) and \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
+#'     \item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)}
+#'     \item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)}
+#'     \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}
+#'     \item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))}
 #'   }
 #' }
 #' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.

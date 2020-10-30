@@ -13,27 +13,10 @@
 #' \code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered.
 #' @param intercept An optional intercept term to be added in case of the presence of covariates. Default is 0.
 #'
+#' @inherit estimateMissSBM details
+#'
 #' @return an adjacency matrix with the same dimension as the input, yet with additional NAs.
 #'
-#' @details The different sampling designs are split into two families in which we find dyad-centered and
-#' node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
-#' \itemize{
-#' \item Missing at Random (MAR)
-#'   \itemize{
-#'     \item{"dyad": parameter = p = Prob(Dyad(i,j) is sampled)}
-#'     \item{"node": parameter = p = Prob(Node i is sampled)}
-#'     \item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))}
-#'     \item{"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}
-#'     \item{"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)}
-#'   }
-#' \item Not Missing At Random (NMAR)
-#'   \itemize{
-#'     \item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)}
-#'     \item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)}
-#'     \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}
-#'     \item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))}
-#'   }
-#' }
 #' @examples
 #' ## SBM parameters
 #' N <- 300 # number of nodes

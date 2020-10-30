@@ -246,7 +246,7 @@ summary.missSBM_fit <- function(object, ...) {
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
-plot.missSBM_fit <- function(x, type = c("network", "connectivity", "monitoring"), ...) {
+plot.missSBM_fit <- function(x, type = c("network", "connectivity", "monitoring"), label = 'nodes', ...) {
   stopifnot(is_missSBMfit(x))
   gg_obj <- switch(match.arg(type),
     "network"      = x$fittedSBM$plot("data"),
