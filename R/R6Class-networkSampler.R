@@ -37,7 +37,7 @@ networkSampler <-
     }
   ),
   active = list(
-    #' @field samplingMatrix a matrix of booleans indicating sampled entries
+    #' @field samplingMatrix a matrix of logical indicating observed entries
     samplingMatrix = function(value) {private$R}
   )
 )

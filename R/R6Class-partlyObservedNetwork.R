@@ -1,4 +1,4 @@
-#' An R6 Class used for internal representation of sampled network data
+#' An R6 Class used for internal representation of a partially observed network
 #'
 #' This class is not exported to the user
 #'
@@ -138,34 +138,5 @@ partlyObservedNetwork <-
       imputation[private$nas] <- (Z %*% theta0 %*% t(Z))[private$nas]
       imputation
     }
-    # #' @description plot method for partlyObservedNetwork
-    # #' @param clustering an optional vector of clustering memberships, default to \code{NULL}.
-    # #' @param main a character for the title of the plot
-    # #' @importFrom corrplot corrplot
-    # plot = function(clustering = NULL, main = paste("Network with sampling rate:", signif(self$samplingRate,3))) {
-    #   if (is.null(clustering)) {
-    #     adjMatrix <- self$netMatrix
-    #   } else {
-    #     Z <- missSBM:::clustering_indicator(as.factor(clustering))
-    #     colors <- matrix(- ncol(Z), ncol(Z), ncol(Z)); diag(colors) <- floor(ncol(Z)/2) + (1:ncol(Z)) # discriminate intra/inter cols
-    #     colorMat <- Z %*% colors %*% t(Z)
-    #     colorMap <- colorMat[order(clustering),order(clustering)]
-    #     adjMatrix <- self$netMatrix[order(clustering), order(clustering)] * colorMap
-    #   }
-    #   corrplot(adjMatrix, is.corr = F, tl.pos = "n", method = "color", cl.pos = "n", na.label.col = "grey", main = main, mar = c(0,0,1,0))
-    # },
-    # #' @description show method
-    # show = function() {
-    #   cat("Sampled Network\n")
-    #   cat("==================================================================\n")
-    #   cat("Structure for storing a sampled network in missSBM\n")
-    #   cat("==================================================================\n")
-    #   cat("* Useful fields \n")
-    #   cat("  $nbNodes, $nbDyads, $is_directed\n", "  $netMatrix, $covarMatrix, $covarArray\n",
-    #       "  $dyads, $missingDyads, $observedDyads, $observedNodes\n",  "  $samplingRate, $samplingMatrix, $NAs\n")
-    #   cat("* Useful method: plot(), summary() , print()  \n")
-    # },
-    # #' @description User friendly print method
-    # print = function() { self$show() }
   )
 )

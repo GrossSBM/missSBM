@@ -22,7 +22,7 @@ with class partlyObservedNetwork.
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{samplingMatrix}}{a matrix of booleans indicating sampled entries}
+\item{\code{samplingMatrix}}{a matrix of logical indicating observed entries}
 }
 \if{html}{\out{</div>}}
 }

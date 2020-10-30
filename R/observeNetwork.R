@@ -1,6 +1,6 @@
 #' Observe a network partially according to a given sampling design
 #'
-#' This function samples observations in an adjacency matrix according to a given network sampling design.
+#' This function draws observations in an adjacency matrix according to a given network sampling design.
 #'
 #' @param adjacencyMatrix The N x N adjacency matrix of the network to sample.
 #' @param sampling The sampling design used to observe the adjacency matrix, see details.
@@ -40,10 +40,10 @@
 #'    "snowball" = c(2,.1)
 #'  )
 #'
-#' sampled_networks <- list()
+#' observed_networks <- list()
 #'
 #' for (sampling in names(sampling_parameters)) {
-#'   sampled_networks[[sampling]] <-
+#'   observed_networks[[sampling]] <-
 #'      missSBM::observeNetwork(
 #'        adjacencyMatrix = sbm$netMatrix,
 #'        sampling        = sampling,
@@ -88,13 +88,13 @@ observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NUL
       "degree"     = degreeSampler$new(
         parameters = parameters, degrees = rowSums(adjacencyMatrix), directed = directed),
       "snowball" = snowballSampler$new(
-        parameters = parameters, adjacencyMatrix = adjacencyMatrix ,directed=directed)
+        parameters = parameters, adjacencyMatrix = adjacencyMatrix, directed = directed)
   )
 
   ## draw a sampling matrix R
   mySampler$rSamplingMatrix()
 
-  ## turn this matrix to a sampled Network object
+  ## code the observed networrk as a matrix possibly with NA
   adjacencyMatrix[mySampler$samplingMatrix == 0] <- NA
   adjacencyMatrix
 }

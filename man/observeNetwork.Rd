@@ -36,7 +36,7 @@ of \code{covariates} must be N x N matrix.}
 an adjacency matrix with the same dimension as the input, yet with additional NAs.
 }
 \description{
-This function samples observations in an adjacency matrix according to a given network sampling design.
+This function draws observations in an adjacency matrix according to a given network sampling design.
 }
 \details{
 The list of parameters \code{control} tunes more advanced features, such as the
@@ -65,18 +65,18 @@ node-centered samplings. See \url{doi:10.1080/01621459.2018.1562934} for a compl
 \itemize{
 \item Missing at Random (MAR)
 \itemize{
-\item{"dyad": parameter = p = Prob(Dyad(i,j) is sampled)}
-\item{"node": parameter = p = Prob(Node i is sampled)}
-\item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))}
-\item{"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}
-\item{"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)}
+\item{"dyad": parameter = p = Prob(Dyad(i,j) is observed)}
+\item{"node": parameter = p = Prob(Node i is observed)}
+\item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))}
+\item{"covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)}
+\item{"snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)}
 }
 \item Not Missing At Random (NMAR)
 \itemize{
-\item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)}
-\item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)}
-\item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}
-\item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))}
+\item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)}
+\item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)}
+\item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)}
+\item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))}
 }
 }
 }
@@ -103,10 +103,10 @@ sampling_parameters <- list(
    "snowball" = c(2,.1)
  )
 
-sampled_networks <- list()
+observed_networks <- list()
 
 for (sampling in names(sampling_parameters)) {
-  sampled_networks[[sampling]] <-
+  observed_networks[[sampling]] <-
      missSBM::observeNetwork(
        adjacencyMatrix = sbm$netMatrix,
        sampling        = sampling,

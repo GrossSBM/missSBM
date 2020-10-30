@@ -19,6 +19,7 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
         adjacencyMatrix = adjacencyMatrix,
         model           = "bernoulli",
         directed        = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
+        dimLabels       = list(row = "row", col = "column"),
         covarList       = covarList
       )
 

@@ -1,13 +1,13 @@
 #' Estimation of simple SBMs with missing data
 #'
-#' Variational inference from sampled network data on a collection of
-#' Stochastic Block Models indexed by block number.
+#' Variational EM inference of Stochastic Block Models indexed by block number from a partially observed network.
 #'
 #' @param adjacencyMatrix The N x N adjacency matrix of the network data. If \code{adjacencyMatrix} is symmetric,
 #' we assume an undirected network with no loop; otherwise the network is assumed to be directed.
 #' @param vBlocks The vector of number of blocks considered in the collection.
-#' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node","covar-dyad","covar-node","snowball")
-#' and NMAR designs ("double-standard", "block-dyad", "block-node" , "degree") are available. See details.
+#' @param sampling The model used to described the process that originates the missing data:
+#' MAR designs ("dyad", "node","covar-dyad","covar-node","snowball") and NMAR designs
+#' ("double-standard", "block-dyad", "block-node" , "degree") are available. See details.
 #' @param covariates A list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.
 #' @param control a list of parameters controlling advanced features. See details.
@@ -40,18 +40,18 @@
 #' \itemize{
 #' \item Missing at Random (MAR)
 #'   \itemize{
-#'     \item{"dyad": parameter = p = Prob(Dyad(i,j) is sampled)}
-#'     \item{"node": parameter = p = Prob(Node i is sampled)}
-#'     \item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))}
-#'     \item{"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}
-#'     \item{"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)}
+#'     \item{"dyad": parameter = p = Prob(Dyad(i,j) is observed)}
+#'     \item{"node": parameter = p = Prob(Node i is observed)}
+#'     \item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))}
+#'     \item{"covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)}
+#'     \item{"snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)}
 #'   }
 #' \item Not Missing At Random (NMAR)
 #'   \itemize{
-#'     \item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)}
-#'     \item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)}
-#'     \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}
-#'     \item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))}
+#'     \item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)}
+#'     \item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)}
+#'     \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)}
+#'     \item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))}
 #'   }
 #' }
 #' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
@@ -66,7 +66,7 @@
 #' samplingParameters <- .5 # the sampling rate
 #' sampling  <- "dyad"      # the sampling design
 #'
-#' ## simulate a undirected binary SBM with no covariate
+#' ## generate a undirected binary SBM with no covariate
 #' sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 #'
 #' ## Sample some dyads data + Infer SBM with missing data

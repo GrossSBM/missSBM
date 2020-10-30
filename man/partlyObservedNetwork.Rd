@@ -2,11 +2,11 @@
 % Please edit documentation in R/R6Class-partlyObservedNetwork.R
 \name{partlyObservedNetwork}
 \alias{partlyObservedNetwork}
-\title{An R6 Class used for internal representation of sampled network data}
+\title{An R6 Class used for internal representation of a partially observed network}
 \description{
-An R6 Class used for internal representation of sampled network data
+An R6 Class used for internal representation of a partially observed network
 
-An R6 Class used for internal representation of sampled network data
+An R6 Class used for internal representation of a partially observed network
 }
 \details{
 This class is not exported to the user
