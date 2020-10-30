@@ -28,7 +28,7 @@ plot(my_missSBM_fit, "connectivity")
 \describe{
 \item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_missSBM}}, inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
 
-\item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling_fit}}}
+\item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
 
 \item{\code{imputedNetwork}}{The network data as a matrix with NAs values imputed with the current model}
 

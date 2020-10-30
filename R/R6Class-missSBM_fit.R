@@ -151,7 +151,7 @@ missSBM_fit <-
   active = list(
     #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_missSBM`], inheriting from class [`sbm::SimpleSBM_fit`]
     fittedSBM = function(value) {private$SBM},
-    #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling_fit`]
+    #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
     fittedSampling = function(value) {private$sampling},
     #' @field imputedNetwork The network data as a matrix with NAs values imputed with the current model
     imputedNetwork = function(value) {private$imputedNet},
