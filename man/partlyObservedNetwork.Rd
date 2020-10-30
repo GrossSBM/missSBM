@@ -9,7 +9,7 @@ An R6 Class used for internal representation of sampled network data
 An R6 Class used for internal representation of sampled network data
 }
 \details{
-This class is not exported to the uset
+This class is not exported to the user
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}

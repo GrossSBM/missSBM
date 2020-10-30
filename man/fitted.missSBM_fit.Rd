@@ -2,7 +2,7 @@
 % Please edit documentation in R/R6Class-missSBM_fit.R
 \name{fitted.missSBM_fit}
 \alias{fitted.missSBM_fit}
-\title{Extract model fitted values from object  \link{'missSBM_fit'}, return by \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+\title{Extract model fitted values from object  \code{\link{missSBM_fit}}, return by \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
 \usage{
 \method{fitted}{missSBM_fit}(object, ...)
 }
@@ -15,5 +15,5 @@
 A matrix of estimated probabilities of connection
 }
 \description{
-Extract model fitted values from object  \link{'missSBM_fit'}, return by \code{\link[=estimateMissSBM]{estimateMissSBM()}}
+Extract model fitted values from object  \code{\link{missSBM_fit}}, return by \code{\link[=estimateMissSBM]{estimateMissSBM()}}
 }

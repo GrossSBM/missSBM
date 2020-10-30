@@ -98,7 +98,7 @@ method to launch the estimation of the collection of models
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link{estimate}}}
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
 }
 \if{html}{\out{</div>}}
 }
@@ -117,7 +117,7 @@ method for performing smoothing of the ICL
 \describe{
 \item{\code{type}}{character, the type of smoothing: forward, backward, both}
 
-\item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function \code{\link{smooth}}}
+\item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function \code{\link[=smooth]{smooth()}}}
 }
 \if{html}{\out{</div>}}
 }
@@ -137,8 +137,6 @@ show method for missSBM_collection
 \if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 User friendly print method
-#' @field partlyObservedNetwork The original network data used for the fit, with class \code{\link{partlyObservedNetwork}}
-partlyObservedNetwork = function(value) {private$partlyObservedNet},
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$print()}\if{html}{\out{</div>}}
 }

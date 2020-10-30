@@ -1,7 +1,7 @@
 #' An R6 class to represent an SBM fit with missing data
 #'
 #' @description The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
-#' Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
+#' Each fitted SBM is an instance of an R6 object with class [`missSBM_fit`], described here.
 #'
 #' Fields are accessed via active binding and cannot be changed by the user.
 #'
@@ -183,7 +183,7 @@ missSBM_fit <-
 ## Auxiliary functions to check the given class of an objet
 is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 
-#' Extract model fitted values from object  ['missSBM_fit'], return by [estimateMissSBM()]
+#' Extract model fitted values from object  [`missSBM_fit`], return by [estimateMissSBM()]
 #'
 #' @name fitted.missSBM_fit
 #'
@@ -199,7 +199,7 @@ fitted.missSBM_fit <- function(object, ...) {
   fitted(object$fittedSBM)
 }
 
-#' Prediction of a ['missSBM_fit'] (i.e. network with imputed missing dyads)
+#' Prediction of a [`missSBM_fit`] (i.e. network with imputed missing dyads)
 #'
 #' @name predicted.missSBM_fit
 #'
@@ -216,7 +216,7 @@ predict.missSBM_fit <- function(object, ...) {
   object$imputedNetwork
 }
 
-#' Summary method for a ['missSBM_fit']
+#' Summary method for a [`missSBM_fit`]
 #'
 #' @name summary.missSBM_fit
 #'

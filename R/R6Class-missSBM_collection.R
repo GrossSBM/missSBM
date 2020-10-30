@@ -32,7 +32,7 @@ missSBM_collection <-
     partlyObservedNet = NULL, # network data with convenient encoding (object of class 'partlyObservedNetwork')
     missSBM_fit = NULL, # a list of models
     # method for performing forward smoothing of the ICL
-    # a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    # a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     smoothing_forward = function(control) {
       trace <- control$trace > 0; control$trace <- FALSE
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
@@ -154,7 +154,7 @@ missSBM_collection <-
       )
     },
     #' @description method to launch the estimation of the collection of models
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     estimate = function(control) {
       trace_main <- control$trace > 0
       control$trace <- ifelse (control$trace > 1, TRUE, FALSE)
@@ -170,7 +170,7 @@ missSBM_collection <-
     },
     #' @description method for performing smoothing of the ICL
     #' @param type character, the type of smoothing: forward, backward, both
-    #' @param control a list of parameters controlling the smoothing. See details of regular function [`smooth`]
+    #' @param control a list of parameters controlling the smoothing. See details of regular function [smooth()]
     smooth = function(type, control) {
       if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
       if (control$trace) cat("\n Smoothing ICL\n")
@@ -192,8 +192,6 @@ missSBM_collection <-
     print = function() { self$show() }
   ),
   active = list(
-    #' #' @field partlyObservedNetwork The original network data used for the fit, with class [`partlyObservedNetwork`]
-    #' partlyObservedNetwork = function(value) {private$partlyObservedNet},
     #' @field models a list of models
     models = function(value) (private$missSBM_fit),
     #' @field ICL the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)

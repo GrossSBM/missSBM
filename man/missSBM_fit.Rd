@@ -5,7 +5,7 @@
 \title{An R6 class to represent an SBM fit with missing data}
 \description{
 The function \code{\link[=estimateMissSBM]{estimateMissSBM()}} fits a collection of SBM for varying number of block.
-Each fitted SBM is an instance of an R6 object with class \link{'missSBM_fit'}, described here.
+Each fitted SBM is an instance of an R6 object with class \code{\link{missSBM_fit}}, described here.
 
 Fields are accessed via active binding and cannot be changed by the user.
 

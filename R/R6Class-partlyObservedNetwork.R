@@ -1,6 +1,6 @@
 #' An R6 Class used for internal representation of sampled network data
 #'
-#' This class is not exported to the uset
+#' This class is not exported to the user
 #'
 #' @importFrom R6 R6Class
 partlyObservedNetwork <-

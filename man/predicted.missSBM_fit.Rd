@@ -3,7 +3,7 @@
 \name{predicted.missSBM_fit}
 \alias{predicted.missSBM_fit}
 \alias{predict.missSBM_fit}
-\title{Prediction of a \link{'missSBM_fit'} (i.e. network with imputed missing dyads)}
+\title{Prediction of a \code{\link{missSBM_fit}} (i.e. network with imputed missing dyads)}
 \usage{
 \method{predict}{missSBM_fit}(object, ...)
 }
@@ -17,5 +17,5 @@ an adjacency matrix between pairs of nodes. Missing dyads are imputed with
 their expected values, i.e. by there estimated probabilities of connection under the missing SBM.
 }
 \description{
-Prediction of a \link{'missSBM_fit'} (i.e. network with imputed missing dyads)
+Prediction of a \code{\link{missSBM_fit}} (i.e. network with imputed missing dyads)
 }
