@@ -10,7 +10,7 @@ Each graph have three attributes: 'name' (the country name), 'power' (a score re
 'trade' (a score related to the trade effort between pairs of countries).
 }
 \source{
-networks were extracted from <http://www.correlatesofwar.org/>
+networks were extracted from \url{http://www.correlatesofwar.org/}
 }
 \usage{
 war
@@ -20,8 +20,8 @@ This dataset contains two networks where the nodes are countries and an
 edge in network "belligerent" means that the two countries have been at
 least once at war between years 1816 to 2007 while an edge in network "alliance"
 means that the two countries have had a formal alliance between years 1816 to 2012.
- The network `belligerent` have less nodes since countries which have not been at
- war are not considered.
+The network \code{belligerent} have less nodes since countries which have not been at
+war are not considered.
 }
 \examples{
 data(war)

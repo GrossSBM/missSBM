@@ -149,11 +149,11 @@ missSBM_fit <-
   ## ACTIVE BINDING
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
-    #' @field fittedSBM the fitted SBM, inheriting from class [`SBM_fit`]
+    #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_missSBM`], inheriting from class [`sbm::SimpleSBM_fit`]
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling_fit`]
     fittedSampling = function(value) {private$sampling},
-    #' @field imputedNetwork The network data with NAs values imputed with the model.
+    #' @field imputedNetwork The network data as a matrix with NAs values imputed with the current model
     imputedNetwork = function(value) {private$imputedNet},
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
@@ -189,7 +189,8 @@ is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 #'
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param ... additional parameters for S3 compatibility.
-#' @return a matrix of estimated probability of connection
+#'
+#' @return A matrix of estimated probabilities of connection
 #'
 #' @importFrom stats fitted
 #' @export
@@ -222,6 +223,8 @@ predict.missSBM_fit <- function(object, ...) {
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param ... additional parameters for S3 compatibility.
 #'
+#' @return a basic printing output
+#'
 #' @export
 summary.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -230,8 +233,8 @@ summary.missSBM_fit <- function(object, ...) {
 
 #' Visualization for an object [`missSBM_fit`]
 #'
-#' @description Plot function for the various fields of a [`missSBM_fit`]: the fitted SBM (network or connectivity),
-#' the original sampled network data, and a plot monitoring the optimization.
+#' @description Plot function for the various fields of a [`missSBM_fit`]: the fitted
+#' SBM (network or connectivity), and a plot monitoring the optimization.
 #'
 #' @return a ggplot object
 #'

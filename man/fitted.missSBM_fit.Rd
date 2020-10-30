@@ -2,18 +2,18 @@
 % Please edit documentation in R/R6Class-missSBM_fit.R
 \name{fitted.missSBM_fit}
 \alias{fitted.missSBM_fit}
-\title{Extract model fitted values from object  ['missSBM_fit'], return by [estimateMissSBM()]}
+\title{Extract model fitted values from object  \link{'missSBM_fit'}, return by \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
 \usage{
 \method{fitted}{missSBM_fit}(object, ...)
 }
 \arguments{
-\item{object}{an R6 object with class [`missSBM_fit`]}
+\item{object}{an R6 object with class \code{\link{missSBM_fit}}}
 
 \item{...}{additional parameters for S3 compatibility.}
 }
 \value{
-a matrix of estimated probability of connection
+A matrix of estimated probabilities of connection
 }
 \description{
-Extract model fitted values from object  ['missSBM_fit'], return by [estimateMissSBM()]
+Extract model fitted values from object  \link{'missSBM_fit'}, return by \code{\link[=estimateMissSBM]{estimateMissSBM()}}
 }

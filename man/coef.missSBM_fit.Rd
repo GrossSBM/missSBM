@@ -11,7 +11,7 @@
 )
 }
 \arguments{
-\item{object}{an R6 object with class [`missSBM_fit`]}
+\item{object}{an R6 object with class \code{\link{missSBM_fit}}}
 
 \item{type}{type of parameter that should be extracted. Either "mixture" (default), "connectivity", "covariates" or "sampling"}
 
@@ -21,5 +21,5 @@
 A vector or matrix of coefficients extracted from the missSBM_fit model.
 }
 \description{
-Extracts model coefficients from objects [`missSBM_fit`] returned by [estimateMissSBM()]
+Extracts model coefficients from objects \code{\link{missSBM_fit}} returned by \code{\link[=estimateMissSBM]{estimateMissSBM()}}
 }

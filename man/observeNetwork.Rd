@@ -2,7 +2,7 @@
 % Please edit documentation in R/observeNetwork.R
 \name{observeNetwork}
 \alias{observeNetwork}
-\title{Observe partially a network according to a given sampling design}
+\title{Observe a network partially according to a given sampling design}
 \usage{
 observeNetwork(
   adjacencyMatrix,
@@ -15,48 +15,48 @@ observeNetwork(
 )
 }
 \arguments{
-\item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample. If \code{adjacencyMatrix} is symmetric,
-we assume an undirected network with no loop; otherwise the network is assumed directed.}
+\item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample.}
 
-\item{sampling}{The sampling design used to sample the adjacency matrix, see details}
+\item{sampling}{The sampling design used to observe the adjacency matrix, see details.}
 
-\item{parameters}{The sampling parameters adapted to each sampling}
+\item{parameters}{The sampling parameters (adapted to each sampling, see details).}
 
-\item{clusters}{An optional clustering membership vector of the nodes, only necessary for block samplings}
+\item{clusters}{An optional clustering membership vector of the nodes. Only necessary for block samplings.}
 
-\item{covariates}{A list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
-must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.}
+\item{covariates}{An optional list with M entries (the M covariates). If the covariates are node-centered,
+each entry of \code{covariates}. must be a size-N vector;  if the covariates are dyad-centered, each entry
+of \code{covariates} must be N x N matrix.}
 
-\item{similarity}{An optional function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
-Only relevant when the covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).}
+\item{similarity}{An optional function to compute similarities between node covariates. Default is
+\code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered.}
 
 \item{intercept}{An optional intercept term to be added in case of the presence of covariates. Default is 0.}
 }
 \value{
-an adjacency matrix with the dimension as the input, yet with additional NAs.
+an adjacency matrix with the same dimension as the input, yet with additional NAs.
 }
 \description{
 This function samples observations in an adjacency matrix according to a given network sampling design.
 }
 \details{
 The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See <doi:10.1080/01621459.2018.1562934> for complete description.
+node-centered samplings. See \url{doi:10.1080/01621459.2018.1562934} for complete description.
 \itemize{
 \item Missing at Random (MAR)
-  \itemize{
-    \item{"dyad": parameter = p \deqn{p = P(Dyad (i,j) is sampled)}}
-    \item{"node": parameter = p and \deqn{p = P(Node i is sampled)}}
-    \item{"covar-dyad": parameter = beta in R^M and \deqn{P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))}}
-    \item{"covar-node": parameter = nu in R^M and \deqn{P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}}
-    \item{"snowball": parameter = number of waves and \deqn{P(Node i is sampled in the 1st Wave)}}
-  }
+\itemize{
+\item{"dyad": parameter = p = Prob(Dyad(i,j) is sampled)}
+\item{"node": parameter = p = Prob(Node i is sampled)}
+\item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))}
+\item{"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)}
+\item{"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)}
+}
 \item Not Missing At Random (NMAR)
-  \itemize{
-    \item{"double-standard": parameter = (p0,p1) and \deqn{p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=}, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)}
-    \item{"block-node": parameter = c(p(1),...,p(Q)) and \deqn{p(q) = P(Node i is sampled | node i is in cluster q)}}
-    \item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and \deqn{p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}}
-    \item{"degree": parameter = c(a,b) and \deqn{logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))}}
-  }
+\itemize{
+\item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)}
+\item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)}
+\item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)}
+\item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))}
+}
 }
 }
 \examples{

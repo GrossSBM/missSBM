@@ -2,15 +2,18 @@
 % Please edit documentation in R/R6Class-missSBM_fit.R
 \name{summary.missSBM_fit}
 \alias{summary.missSBM_fit}
-\title{Summary method for a ['missSBM_fit']}
+\title{Summary method for a \link{'missSBM_fit'}}
 \usage{
 \method{summary}{missSBM_fit}(object, ...)
 }
 \arguments{
-\item{object}{an R6 object with class [`missSBM_fit`]}
+\item{object}{an R6 object with class \code{\link{missSBM_fit}}}
 
 \item{...}{additional parameters for S3 compatibility.}
 }
+\value{
+a basic printing output
+}
 \description{
-Summary method for a ['missSBM_fit']
+Summary method for a \link{'missSBM_fit'}
 }

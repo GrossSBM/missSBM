@@ -9,7 +9,7 @@ An R6 Class used for internal representation of sampled network data
 An R6 Class used for internal representation of sampled network data
 }
 \details{
-All fields of this class are only accessible for reading.
+This class is not exported to the uset
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -48,9 +48,6 @@ All fields of this class are only accessible for reading.
 \item \href{#method-new}{\code{partlyObservedNetwork$new()}}
 \item \href{#method-clustering}{\code{partlyObservedNetwork$clustering()}}
 \item \href{#method-imputation}{\code{partlyObservedNetwork$imputation()}}
-\item \href{#method-plot}{\code{partlyObservedNetwork$plot()}}
-\item \href{#method-show}{\code{partlyObservedNetwork$show()}}
-\item \href{#method-print}{\code{partlyObservedNetwork$print()}}
 \item \href{#method-clone}{\code{partlyObservedNetwork$clone()}}
 }
 }
@@ -120,48 +117,6 @@ basic imputation from existing clustering
 \subsection{Returns}{
 an adjacency matrix with imputed values
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-plot"></a>}}
-\if{latex}{\out{\hypertarget{method-plot}{}}}
-\subsection{Method \code{plot()}}{
-plot method for partlyObservedNetwork
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$plot(
-  clustering = NULL,
-  main = paste("Network with sampling rate:", signif(self$samplingRate, 3))
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{clustering}}{an optional vector of clustering memberships, default to \code{NULL}.}
-
-\item{\code{main}}{a character for the title of the plot}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-show"></a>}}
-\if{latex}{\out{\hypertarget{method-show}{}}}
-\subsection{Method \code{show()}}{
-show method
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$show()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
-\subsection{Method \code{print()}}{
-User friendly print method
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$print()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

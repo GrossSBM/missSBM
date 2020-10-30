@@ -2,12 +2,12 @@
 % Please edit documentation in R/R6Class-missSBM_fit.R
 \name{plot.missSBM_fit}
 \alias{plot.missSBM_fit}
-\title{Visualization for an object [`missSBM_fit`]}
+\title{Visualization for an object \code{\link{missSBM_fit}}}
 \usage{
 \method{plot}{missSBM_fit}(x, type = c("network", "connectivity", "monitoring"), ...)
 }
 \arguments{
-\item{x}{an object with class [`missSBM_fit`]}
+\item{x}{an object with class \code{\link{missSBM_fit}}}
 
 \item{type}{the type specifies the field to plot, either "network", "connectivity" or "monitoring"}
 
@@ -17,6 +17,6 @@
 a ggplot object
 }
 \description{
-Plot function for the various fields of a [`missSBM_fit`]: the fitted SBM (network or connectivity),
-the original sampled network data, and a plot monitoring the optimization.
+Plot function for the various fields of a \code{\link{missSBM_fit}}: the fitted
+SBM (network or connectivity), and a plot monitoring the optimization.
 }

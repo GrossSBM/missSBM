@@ -7,9 +7,9 @@
 \description{
 The missSBM package provides five functions:
 \itemize{
-  \item{\code{\link{observeNetwork}}}{a function to sample an existing network according to a variety of sampling designs}
-  \item{\code{\link{estimateMissSBM}}}{a function to perform inference of SBM from network data with missing entries under various sampling designs.}
-  \item{\code{\link{smooth}}}{a function to smooth an existing collection of SBM estimation, to avoid being trapped in local maxima.}
+\item{\code{\link{observeNetwork}}}{a function to sample an existing network according to a variety of sampling designs}
+\item{\code{\link{estimateMissSBM}}}{a function to perform inference of SBM from network data with missing entries under various sampling designs.}
+\item{\code{\link{smooth}}}{a function to smooth an existing collection of SBM estimation, to avoid being trapped in local maxima.}
 }
 }
 \details{
@@ -24,7 +24,7 @@ These function leads to the manipulation of a variety of R object, with their re
 missSBM extends some functionality of the package sbm, by inheriting from classes and methods associated to simple stochastic block models.
 }
 \references{
-Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, <doi:10.1080/01621459.2018.1562934>
+Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, \url{doi:10.1080/01621459.2018.1562934}
 }
 \author{
 Timothée Tabouy, Pierre Barbillon, Julien Chiquet

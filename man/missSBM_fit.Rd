@@ -4,13 +4,13 @@
 \alias{missSBM_fit}
 \title{An R6 class to represent an SBM fit with missing data}
 \description{
-The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
-Each fitted SBM is an instance of an R6 object with class ['missSBM_fit'], described here.
+The function \code{\link[=estimateMissSBM]{estimateMissSBM()}} fits a collection of SBM for varying number of block.
+Each fitted SBM is an instance of an R6 object with class \link{'missSBM_fit'}, described here.
 
 Fields are accessed via active binding and cannot be changed by the user.
 
 This class comes with a set of R6 methods, some of them being useful for the user and exported
-as S3 methods. See the documentation for  [show()], [print()], [fitted()], [predict()], [plot()].
+as S3 methods. See the documentation for  \code{\link[=show]{show()}}, \code{\link[=print]{print()}}, \code{\link[=fitted]{fitted()}}, \code{\link[=predict]{predict()}}, \code{\link[=plot]{plot()}}.
 }
 \examples{
 ## Sample 75\% of dyads in  French political Blogosphere's network data
@@ -26,11 +26,11 @@ plot(my_missSBM_fit, "connectivity")
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{fittedSBM}}{the fitted SBM, inheriting from class [`SBM_fit`]}
+\item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_missSBM}}, inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
 
-\item{\code{fittedSampling}}{the fitted sampling, inheriting from class [`networkSampling_fit`]}
+\item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling_fit}}}
 
-\item{\code{imputedNetwork}}{The network data with NAs values imputed with the model.}
+\item{\code{imputedNetwork}}{The network data as a matrix with NAs values imputed with the current model}
 
 \item{\code{monitoring}}{a list carrying information about the optimization process}
 
@@ -70,7 +70,7 @@ constructor for networkSampling
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{partlyObservedNet}}{An object with class [`partlyObservedNetwork`].}
+\item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
 
 \item{\code{nbBlocks}}{integer, the number of blocks in the SBM}
 
@@ -97,7 +97,7 @@ a method to perform inference of the current missSBM fit with variational EM
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]}
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
 }
 \if{html}{\out{</div>}}
 }

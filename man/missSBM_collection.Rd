@@ -4,22 +4,22 @@
 \alias{missSBM_collection}
 \title{An R6 class to represent a collection of SBM fits with missing data}
 \description{
-The function [estimateMissSBM()] fits a collection of SBM for varying number
-of block, which are stored in an instance of an object with class [`missSBM_collection`],
-described here.
+The function \code{\link[=estimateMissSBM]{estimateMissSBM()}} fits a collection of SBM with missing data for
+a varying number of block. These models with class \code{\link{missSBM_fit}}  are stored in an instance
+of an object with class \code{\link{missSBM_collection}}, described here.
 
 Fields are accessed via active binding and cannot be changed by the user.
 
 This class comes with a set of R6 methods, some of them being useful for the user and exported
-as S3 methods. See the documentation for [show()], [print()] and [smooth()], the latter being
+as S3 methods. See the documentation for \code{\link[=show]{show()}}, \code{\link[=print]{print()}} and \code{\link[=smooth]{smooth()}}, the latter being
 used to smooth the ICL on a collection of model, as post-treatment.
 }
 \examples{
 ## Sample 75\% of dyads in  French political Blogosphere's network data
-adjMatrix <- missSBM::frenchblog2007 \%>\%
+adjacencyMatrix <- missSBM::frenchblog2007 \%>\%
   igraph::as_adj (sparse = FALSE) \%>\%
   missSBM::observeNetwork(sampling = "dyad", parameters = 0.25)
-collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
+collection <- estimateMissSBM(adjacencyMatrix, 3:5, sampling = "dyad")
 class(collection)
 
 }
@@ -69,7 +69,7 @@ constructor for networkSampling
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{partlyObservedNet}}{An object with class [`partlyObservedNetwork`].}
+\item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
 
 \item{\code{vBlocks}}{vector of integer with the number of blocks in the successively fitted models}
 
@@ -98,7 +98,7 @@ method to launch the estimation of the collection of models
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]}
+\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link{estimate}}}
 }
 \if{html}{\out{</div>}}
 }
@@ -117,7 +117,7 @@ method for performing smoothing of the ICL
 \describe{
 \item{\code{type}}{character, the type of smoothing: forward, backward, both}
 
-\item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function [`smooth`]}
+\item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function \code{\link{smooth}}}
 }
 \if{html}{\out{</div>}}
 }
@@ -137,7 +137,7 @@ show method for missSBM_collection
 \if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 User friendly print method
-#' @field partlyObservedNetwork The original network data used for the fit, with class [`partlyObservedNetwork`]
+#' @field partlyObservedNetwork The original network data used for the fit, with class \code{\link{partlyObservedNetwork}}
 partlyObservedNetwork = function(value) {private$partlyObservedNet},
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$print()}\if{html}{\out{</div>}}

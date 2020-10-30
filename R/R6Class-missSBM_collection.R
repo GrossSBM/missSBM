@@ -1,8 +1,8 @@
 #' An R6 class to represent a collection of SBM fits with missing data
 #'
-#' @description The function [estimateMissSBM()] fits a collection of SBM for varying number
-#' of block, which are stored in an instance of an object with class [`missSBM_collection`],
-#' described here.
+#' @description The function [estimateMissSBM()] fits a collection of SBM with missing data for
+#' a varying number of block. These models with class [`missSBM_fit`]  are stored in an instance
+#' of an object with class [`missSBM_collection`], described here.
 #'
 #' Fields are accessed via active binding and cannot be changed by the user.
 #'
@@ -12,10 +12,10 @@
 #'
 #' @examples
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
-#' adjMatrix <- missSBM::frenchblog2007 %>%
+#' adjacencyMatrix <- missSBM::frenchblog2007 %>%
 #'   igraph::as_adj (sparse = FALSE) %>%
 #'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.25)
-#' collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
+#' collection <- estimateMissSBM(adjacencyMatrix, 3:5, sampling = "dyad")
 #' class(collection)
 #'
 #' @rdname missSBM_collection
@@ -227,14 +227,17 @@ missSBM_collection <-
 #'
 #' @details The list of parameters \code{control} controls the optimization process and the variational EM algorithm, with the following entries
 #'  \itemize{
-#'  \item{"iterates"}{integer for the number of iteration of smoothing. Default is 1.}
-#'  \item{"threshold"}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
-#'  \item{"maxIter"}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 200}
-#'  \item{"fixPointIter"}{number of fix-point iteration for the Variational E step. Default is 5.}
-#'  \item{"cores"}{integer for number of cores used. Default is 1.}
-#'  \item{"trace"}{integer for verbosity. Useless when \code{cores} > 1}
+#'  \item{"iterates": }{integer for the number of iterations of smoothing. Default is 1.}
+#'  \item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function
+#'         by less than threshold. Default is 1e-3.}
+#'  \item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
+#'        Default is 100 with no covariate, 50 otherwise.}
+#'  \item{"fixPointIter": }{number of fix-point iterations in the V-E step.
+#'        Default is 5 with no covariate, 2 otherwise.}
+#'  \item{"cores": }{integer for number of cores used. Default is 1.}
+#'  \item{"trace": }{integer for verbosity. Useless when \code{cores} > 1}
 #' }
-#' @return an invisible missSBM_collection, in which the ICL has been smoothed
+#' @return An invisible missSBM_collection, in which the ICL has been smoothed
 #' @export
 smooth <- function(Robject, type = c("forward", "backward", "both"), control = list()) {
 
