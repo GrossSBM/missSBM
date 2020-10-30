@@ -202,19 +202,19 @@ Default is 5 with no covariate, 2 otherwise.</p></li>
 </ul>
 
 <p>The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See <a href='doi:10.1080/01621459.2018.1562934'>doi:10.1080/01621459.2018.1562934</a> for complete description.</p><ul>
+node-centered samplings. See <a href='doi:10.1080/01621459.2018.1562934'>doi:10.1080/01621459.2018.1562934</a> for a complete description.</p><ul>
 <li><p>Missing at Random (MAR)</p><ul>
-<li><p>"dyad": parameter = p and $$p = P(Dyad (i,j) is sampled)$$</p></li>
-<li><p>"node": parameter = p and $$p = P(Node i is sampled)$$</p></li>
-<li><p>"covar-dyad": parameter = beta in R^M and $$P(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, ))$$</p></li>
-<li><p>"covar-node": parameter = nu in R^M and $$P(Node i is sampled)  = logistic(parameter' covarMatrix (i,)$$</p></li>
-<li><p>"snowball": parameter estimation is not relevant for this sampling</p></li>
+<li><p>"dyad": parameter = p = Prob(Dyad(i,j) is sampled)</p></li>
+<li><p>"node": parameter = p = Prob(Node i is sampled)</p></li>
+<li><p>"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is sampled) = logistic(parameter' covarArray (i,j, .))</p></li>
+<li><p>"covar-node": parameter = nu in R^M such that Prob(Node i is sampled)  = logistic(parameter' covarMatrix (i,)</p></li>
+<li><p>"snowball": parameter = number of waves with Prob(Node i is sampled in the 1st wave)</p></li>
 </ul></li>
 <li><p>Not Missing At Random (NMAR)</p><ul>
-<li><p>"double-standard": parameter = (p0,p1) and $$p0 = P(Dyad (i,j) is sampled | the dyad is equal to 0)=$$, p1 = P(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
-<li><p>"block-node": parameter = c(p(1),...,p(Q)) and $$p(q) = P(Node i is sampled | node i is in cluster q)$$</p></li>
-<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and $$p(q,l) = P(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)$$</p></li>
-<li><p>"degree": parameter = c(a,b) and $$logit(a+b*Degree(i)) = P(Node i is sampled | Degree(i))$$</p></li>
+<li><p>"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is sampled | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is sampled | the dyad is equal to 1)</p></li>
+<li><p>"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is sampled | node i is in cluster q)</p></li>
+<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is sampled | node i is in cluster q and node j is in cluster l)</p></li>
+<li><p>"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is sampled | Degree(i))</p></li>
 </ul></li>
 </ul>
 

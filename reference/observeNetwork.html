@@ -189,8 +189,28 @@ of <code>covariates</code> must be N x N matrix.</p></td>
     <p>an adjacency matrix with the same dimension as the input, yet with additional NAs.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See <a href='doi:10.1080/01621459.2018.1562934'>doi:10.1080/01621459.2018.1562934</a> for complete description.</p><ul>
+    <p>The list of parameters <code>control</code> tunes more advanced features, such as the
+initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul>
+<li><p>"useCovSBM": logical. If <code>covariates</code> is not null, should they be used for the
+for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
+<li><p>"clusterInit": Initial method for clustering: either a character in "hierarchical", "spectral"
+or "kmeans", or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size
+<code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>,  providing a user-defined clustering. Default is "spectral".</p></li>
+<li><p>"similarity": An R x R -&gt; R function to compute similarities between node covariates. Default is
+<code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
+(i.e. <code>covariates</code> is a list of size-N vectors).</p></li>
+<li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function
+by less than threshold. Default is 1e-3.</p></li>
+<li><p>"maxIter": V-EM algorithm stops when the number of iteration exceeds maxIter.
+Default is 100 with no covariate, 50 otherwise.</p></li>
+<li><p>"fixPointIter": number of fix-point iterations in the V-E step.
+Default is 5 with no covariate, 2 otherwise.</p></li>
+<li><p>"cores": integer for number of cores used. Default is 1.</p></li>
+<li><p>"trace": integer for verbosity (0, 1, 2). Default is 1. Useless when <code>cores</code> &gt; 1</p></li>
+</ul>
+
+<p>The different sampling designs are split into two families in which we find dyad-centered and
+node-centered samplings. See <a href='doi:10.1080/01621459.2018.1562934'>doi:10.1080/01621459.2018.1562934</a> for a complete description.</p><ul>
 <li><p>Missing at Random (MAR)</p><ul>
 <li><p>"dyad": parameter = p = Prob(Dyad(i,j) is sampled)</p></li>
 <li><p>"node": parameter = p = Prob(Node i is sampled)</p></li>
