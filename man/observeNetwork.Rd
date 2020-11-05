@@ -10,7 +10,7 @@ observeNetwork(
   parameters,
   clusters = NULL,
   covariates = NULL,
-  similarity = l1_similarity,
+  similarity = missSBM:::l1_similarity,
   intercept = 0
 )
 }
