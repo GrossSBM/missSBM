@@ -98,10 +98,10 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
   else if (is.null(control$useCovSBM)) control$useCovSBM <- TRUE
 
   ## Defaut control parameters overwritten by user specification
-  ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, clusterInit = "hierarchical")
+  ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, clusterInit = "hierarchical", similarity = l1_similarity)
   if (control$useCovSBM) {
     stopifnot(sampling %in% available_samplings_covariates)
-    ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2, similarity = l1_similarity))
+    ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2))
   } else {
     ctrl <- c(ctrl, list(maxIter = 100, fixPointIter = 5))
   }
