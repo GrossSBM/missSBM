@@ -1,7 +1,7 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 0.3.0-9300
+Version: 0.3.0-9310
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
@@ -15,7 +15,7 @@ Description: When a network is partially observed (here, NAs in the adjacency ma
   due to missing information between node pairs), it is possible to account for the underlying process
   that generates those NAs. 'missSBM' adjusts the popular stochastic block model from network data 
   sampled under various missing data conditions, as described in Tabouy, Barbillon and Chiquet (2019) <doi:10.1080/01621459.2018.1562934>.
-URL: https://grosssbm.github.io/missSBM
+URL: https://grosssbm.github.io/missSBM/
 BugReports: https://github.com/grossSBM/missSBM/issues
 License: GPL-3
 Encoding: UTF-8
@@ -46,6 +46,7 @@ Collate:
     'R6Class-networkSampler.R'
     'R6Class-partlyObservedNetwork.R'
     'RcppExports.R'
+    'defunct.R'
     'er_network.R'
     'estimateMissSBM.R'
     'frenchblog2007.R'

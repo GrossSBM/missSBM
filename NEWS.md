@@ -1,7 +1,14 @@
 # missSBM 0.3.0 [2020-10-26]
 
   - interfacing with package sbm
-
+  - change interface after suggestion from JSS
+    - changed estimate to estimateMissSBM
+    - changed sample to observedNetwork
+    - used sbm::sampleSimpleSBM instead of missSBM::simulate
+    - use several R6 classes only internally for simplication
+  - some bug fixes
+  - changed maintainer addresss
+  
 # missSBM 0.2.2 [2020-09-30]
 
   - unexporting sampledNetwork, only use internally
