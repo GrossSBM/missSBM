@@ -57,7 +57,7 @@
 #' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
 #' ## SBM parameters
-#' N <- 300 # number of nodes
+#' N <- 150 # number of nodes
 #' Q <- 3   # number of clusters
 #' pi <- rep(1,Q)/Q     # block proportion
 #' theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix

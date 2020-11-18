@@ -77,7 +77,7 @@ node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete 
 }
 \examples{
 ## SBM parameters
-N <- 300 # number of nodes
+N <- 150 # number of nodes
 Q <- 3   # number of clusters
 pi <- rep(1,Q)/Q     # block proportion
 theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix

@@ -45,7 +45,7 @@ data("war")
 
 This data set contains a list of two networks (`belligerent` and `alliance`) where the nodes are countries; an edge in the network `belligerent` means that the two countries have been at war at least once between years 1816 to 2007; an edge in network `alliance` means that the two countries have had a formal alliance between years 1816 and 2012.  The network `belligerent` have less nodes since countries which have not been at war at all are not considered.
 
-These two networks were extracted from [http://www.correlatesofwar.org/](http://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance). Version 4.0 was used for war data and version 4.1 for formal alliance. 
+These two networks were extracted from [https://www.correlatesofwar.org/](https://www.correlatesofwar.org/) (see @sarkees2010resort for war data, and  @gibler2008international for formal alliance). Version 4.0 was used for war data and version 4.1 for formal alliance. 
 On the top of the two networks, two covariates were considered. One covariate is concerned with military power of the states (see @singer1972capability, version 5.0 was used) and the other is concerned with trade exchanges between country (see @barbieri2012correlates and @barbieri2009trading, version 4.0 was used).
 In the following, we focus on the network `war$belligerent`, which is provided as an igraph object:
 
