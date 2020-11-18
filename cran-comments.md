@@ -7,9 +7,9 @@
     - change estimate to estimateMissSBM
     - change sample to observedNetwork
     - use sbm::sampleSimpleSBM instead of missSBM::simulate
-    - unexport several R6 classes for simplification (internal use only)
+    - export less R6 classes for simplification (internal use only)
   - some bug fixes
-  - updated maintainer's address (julien.chiquet@inra.fr -> julien.chiquet@inrae.fr)
+  - updated maintainer (julien.chiquet@inra.fr -> julien.chiquet@inrae.fr)
 
 ## Tested environments
 
