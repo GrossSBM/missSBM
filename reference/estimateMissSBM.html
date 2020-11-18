@@ -224,7 +224,7 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## SBM parameters</span>
-<span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of nodes</span>
+<span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>150</span> <span class='co'># number of nodes</span>
 <span class='va'>Q</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
 <span class='va'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>Q</span><span class='op'>)</span><span class='op'>/</span><span class='va'>Q</span>     <span class='co'># block proportion</span>
 <span class='va'>theta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>.45</span>,<span class='va'>Q</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>.05</span> <span class='op'>)</span> <span class='co'># connectivity matrix</span>
@@ -248,35 +248,35 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 #&gt; 
 #&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
 #&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
-</div><div class='output co'>#&gt; [1] 100031.17  95376.75  92364.18  92545.07  92754.89</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 24760.88 23654.28 23213.19 23335.65 23436.51</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.37011435 0.03509577 0.03946719
-#&gt; [2,] 0.03509577 0.38027733 0.03945229
-#&gt; [3,] 0.03946719 0.03945229 0.36080598
+#&gt; [1,] 0.36897498 0.03559688 0.03250710
+#&gt; [2,] 0.03559688 0.37844953 0.05380972
+#&gt; [3,] 0.03250710 0.05380972 0.30215621
 #&gt; </div><div class='input'>
 <span class='va'>myModel</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"network"</span><span class='op'>)</span>
 </div><div class='img'><img src='estimateMissSBM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"sampling"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.5019175</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.4922595</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.37011435 0.03509577 0.03946719
-#&gt; [2,] 0.03509577 0.38027733 0.03945229
-#&gt; [3,] 0.03946719 0.03945229 0.36080598
+#&gt; [1,] 0.36897498 0.03559688 0.03250710
+#&gt; [2,] 0.03559688 0.37844953 0.05380972
+#&gt; [3,] 0.03250710 0.05380972 0.30215621
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
-</div><div class='output co'>#&gt;            [,1]      [,2]       [,3]      [,4]       [,5]
-#&gt; [1,] 0.00000000 0.0000000 0.00000000 0.0000000 0.02345562
-#&gt; [2,] 0.00000000 0.0000000 0.23952955 0.2395295 0.00000000
-#&gt; [3,] 0.00000000 0.2395295 0.00000000 0.2395295 0.02644332
-#&gt; [4,] 0.00000000 0.2395295 0.23952955 0.0000000 0.00000000
-#&gt; [5,] 0.02345562 0.0000000 0.02644332 0.0000000 0.00000000</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
-</div><div class='output co'>#&gt;            [,1]       [,2]       [,3]       [,4]       [,5]
-#&gt; [1,] 0.38027733 0.03945229 0.03945229 0.03945229 0.03509577
-#&gt; [2,] 0.03945229 0.36080598 0.36080598 0.36080598 0.03946719
-#&gt; [3,] 0.03945229 0.36080598 0.36080598 0.36080598 0.03946719
-#&gt; [4,] 0.03945229 0.36080598 0.36080598 0.36080598 0.03946719
-#&gt; [5,] 0.03509577 0.03946719 0.03946719 0.03946719 0.37011435</div><div class='input'>
+</div><div class='output co'>#&gt;            [,1]      [,2]      [,3]       [,4]       [,5]
+#&gt; [1,] 0.00000000 0.1939605 0.1939605 0.19396051 0.02179177
+#&gt; [2,] 0.19396051 0.0000000 0.0000000 0.19396051 0.00000000
+#&gt; [3,] 0.19396051 0.0000000 0.0000000 0.19396051 0.00000000
+#&gt; [4,] 0.19396051 0.1939605 0.1939605 0.00000000 0.02179177
+#&gt; [5,] 0.02179177 0.0000000 0.0000000 0.02179177 0.00000000</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
+</div><div class='output co'>#&gt;            [,1]      [,2]      [,3]      [,4]       [,5]
+#&gt; [1,] 0.21103251 0.2366801 0.2366801 0.2366801 0.03332171
+#&gt; [2,] 0.23668013 0.3021562 0.3021562 0.3021562 0.03250710
+#&gt; [3,] 0.23668013 0.3021562 0.3021562 0.3021562 0.03250710
+#&gt; [4,] 0.23668013 0.3021562 0.3021562 0.3021562 0.03250710
+#&gt; [5,] 0.03332171 0.0325071 0.0325071 0.0325071 0.36897498</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
