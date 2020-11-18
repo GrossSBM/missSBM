@@ -61,7 +61,7 @@ Default is 5 with no covariate, 2 otherwise.}
 }
 
 The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See \url{doi:10.1080/01621459.2018.1562934} for a complete description.
+node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete description.
 \itemize{
 \item Missing at Random (MAR)
 \itemize{
