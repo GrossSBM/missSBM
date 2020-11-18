@@ -1,23 +1,33 @@
 
-## missSBM 0.2.1
+## missSBM 0.3.0
 
-- minor release adding S3 methods to objects missSBM-fit and SBM
+  - changing interface after suggestion from JSS reviewers
+  - updated documentation
+  - interfacing with package sbm
+    - change estimate to estimateMissSBM
+    - change sample to observedNetwork
+    - use sbm::sampleSimpleSBM instead of missSBM::simulate
+    - unexport several R6 classes for simplification (internal use only)
+  - some bug fixes
+  - updated maintainer's address (julien.chiquet@inra.fr -> julien.chiquet@inrae.fr)
 
 ## Tested environments
 
-- Debian Linux, R-devel, GCC (R-HUB)
-- local ubuntu 18.04 install, R 3.6.1
-- ubuntu 14.04 (on travis-ci), R 3.6.1
-- ubuntu 14.04 (on travis-ci), R devel
-- Mac OS X (on travis-ci), R 3.6.1
-- windows (on appveyor), R 3.6.1
-- win-builder, R-devel and R current release
+- tested remotely with github action (macOS, ubuntu, Windows release, unbuntu devel)
+- tested remotely with win-builder (devel)
+- tested remotely with R-hub (release Ubuntu, Fedora)
+- tested locally on Ubuntu 20.04, R 4.0.2
 
 ## R CMD check results
 
-── R CMD check results ────────────────────────────────────── missSBM 0.2.1 ────
-Duration: 1m 37.6s
+── R CMD check results ────────────────────────────────────── missSBM 0.3.1 ────
+Duration: 1m 15.5s
 
-0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+> checking installed package size ... NOTE
+    installed size is  6.2Mb
+    sub-directories of 1Mb or more:
+      libs   4.1Mb
+
+0 errors ✓ | 0 warnings ✓ | 1 note x
 
 R CMD check succeeded
