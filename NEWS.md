@@ -1,3 +1,7 @@
+# missSBM dev version
+
+  - nothing new
+
 # missSBM 0.3.0 [2020-11-18]
 
   - changing interface after suggestion from JSS reviewers
