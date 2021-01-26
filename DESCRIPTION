@@ -35,6 +35,7 @@ Imports:
     rlang,
     sbm,
     magrittr
+Remotes: grosssbm/sbm
 LinkingTo: Rcpp, RcppArmadillo
 Collate:
     'utils_missSBM.R'
