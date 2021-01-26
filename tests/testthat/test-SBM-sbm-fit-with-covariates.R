@@ -22,7 +22,7 @@ sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesPar
 ### Draw a undirected SBM model
 cl_rand <- base::sample(sbm$memberships)
 
-A <- sbm$netMatrix
+A <- sbm$networkData
 y <- as.vector(A)
 X <- cbind(1, apply(sbm$covarArray, 3, as.vector))
 NAs <- as.vector(is.na(A))
@@ -35,7 +35,7 @@ cl_kmns <- missSBM:::init_kmeans(A_, Q)
 
 test_that("Creation of a SimpleSBM_fit_missSBM", {
 
-  mySBM_fit <- missSBM:::SimpleSBM_fit_missSBM$new(sbm$netMatrix, cl_rand, missSBM:::array2list(sbm$covarArray))
+  mySBM_fit <- missSBM:::SimpleSBM_fit_missSBM$new(sbm$networkData, cl_rand, missSBM:::array2list(sbm$covarArray))
   expect_is(mySBM_fit, "SimpleSBM_fit_missSBM")
   expect_equal(mySBM_fit$memberships, cl_rand)
   expect_equal(mySBM_fit$nbConnectParam, Q * (Q + 1)/2)
@@ -71,14 +71,14 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
 
   covarParam  <- rnorm(M, 0, 1)
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
-  adjMatrix <- sbm$netMatrix
+  adjMatrix <- sbm$networkData
   diag(adjMatrix) <- 0
 
   ## Formatting covariates for blockmodels
   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", adjMatrix, covariates, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
   BM$estimate()
 
-  A <- sbm$netMatrix
+  A <- sbm$networkData
   y <- as.vector(A)
   X <- cbind(1, apply(sbm$covarArray, 3, as.vector))
   NAs <- as.vector(is.na(A))

@@ -13,7 +13,7 @@ directed <- FALSE
 
 ### Draw a undirected SBM model
 mySBM <- sbm::sampleSimpleSBM(N, pi, theta)
-A <- mySBM$netMatrix
+A <- mySBM$networkData
 ### UGLY FIX - FIXME
 diag(A) <- 0
 cl_rand <- base::sample(mySBM$memberships)

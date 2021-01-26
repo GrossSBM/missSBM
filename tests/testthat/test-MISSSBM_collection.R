@@ -10,7 +10,7 @@ directed <- FALSE              # if the network is directed or not
 
 ### Draw a SBM model
 mySBM <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
-A <- mySBM$netMatrix             # the adjacency matrix
+A <- mySBM$networkData             # the adjacency matrix
 
 test_that("missSBMcollection works", {
 

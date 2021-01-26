@@ -35,8 +35,8 @@ partlyObservedNetwork <-
     },
     #' @field is_directed logical indicating if the network is directed or not
     is_directed = function(value) {private$directed},
-    #' @field netMatrix  The adjacency matrix of the network
-    netMatrix = function(value) {private$Y},
+    #' @field networkData  The adjacency matrix of the network
+    networkData = function(value) {private$Y},
     #' @field covarArray the array of covariates
     covarArray = function(value) {private$phi},
     #' @field covarMatrix the matrix of covariates

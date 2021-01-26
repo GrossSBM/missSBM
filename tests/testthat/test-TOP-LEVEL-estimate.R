@@ -11,7 +11,7 @@ theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 
 ### Draw a SBM model
 mySBM <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
-A <- mySBM$netMatrix # the adjacency matrix
+A <- mySBM$networkData # the adjacency matrix
 ### UGLY FIX - FIXME
 diag(A) <- 0
 

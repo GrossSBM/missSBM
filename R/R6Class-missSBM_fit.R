@@ -105,7 +105,7 @@ missSBM_fit <-
           nu <- private$sampling$update_imputation(private$SBM$expectation)
           private$imputedNet[private$NAs] <- nu[private$NAs]
           # update the variational parameters for block memberships (a.k.a tau)
-          private$SBM$netMatrix <- private$imputedNet
+          private$SBM$networkData <- private$imputedNet
           private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
         }
 

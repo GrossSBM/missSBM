@@ -71,7 +71,7 @@
 #'
 #' ## Sample some dyads data + Infer SBM with missing data
 #' collection <-
-#'    observeNetwork(sbm$netMatrix, sampling, samplingParameters) %>%
+#'    observeNetwork(sbm$networkData, sampling, samplingParameters) %>%
 #'    estimateMissSBM(vBlocks = 1:5, sampling = sampling)
 #' collection$ICL
 #' coef(collection$bestModel$fittedSBM, "connectivity")
@@ -81,8 +81,8 @@
 #' coef(myModel, "sampling")
 #' coef(myModel, "connectivity")
 #' predict(myModel)[1:5, 1:5]
-#' fitted(myModel)[1:5, 1:5]
 #'
+#' @import R6 parallel
 #' @import R6 parallel
 #' @export
 estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, control = list()) {

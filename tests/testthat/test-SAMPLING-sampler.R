@@ -12,7 +12,7 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected)
 mySBM <- sbm::sampleSimpleSBM(N, pi, theta)
-A <- mySBM$netMatrix
+A <- mySBM$networkData
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 M <- 10
@@ -22,7 +22,7 @@ covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
 covariates_dyad <- lapply(seq(dim(covarArray)[3]), function(x) covarArray[ , , x])
 covarParam  <- rnorm(M, 0, 1)
 sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates_dyad, covariatesParam = covarParam)
-A_cov <- sbm$netMatrix
+A_cov <- sbm$networkData
 
 ## tolerance for tests
 tol <- 1e-2

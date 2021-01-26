@@ -10,7 +10,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
 
   ## coherence of partlyObservedNetwork object
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(A)
-  expect_equal(A, partlyObservedNet$netMatrix)
+  expect_equal(A, partlyObservedNet$networkData)
   expect_equal(ncol(A), partlyObservedNet$nbNodes)
   expect_equal(ncol(A) * (ncol(A) - 1)/2, partlyObservedNet$nbDyads)
   expect_equal(length(partlyObservedNet$missingDyads), 0)

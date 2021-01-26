@@ -37,7 +37,7 @@ missSBM_collection <-
       trace <- control$trace > 0; control$trace <- FALSE
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
-      adjacencyMatrix <- private$partlyObservedNet$netMatrix
+      adjacencyMatrix <- private$partlyObservedNet$networkData
 ### TODO: why not include the basic imputation in partlyObservedNet ???
       if (!is.null(private$partlyObservedNet$covarArray)) {
         y <- as.vector(adjacencyMatrix)

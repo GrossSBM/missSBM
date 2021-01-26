@@ -22,7 +22,7 @@ This class is not exported to the user
 
 \item{\code{is_directed}}{logical indicating if the network is directed or not}
 
-\item{\code{netMatrix}}{The adjacency matrix of the network}
+\item{\code{networkData}}{The adjacency matrix of the network}
 
 \item{\code{covarArray}}{the array of covariates}
 

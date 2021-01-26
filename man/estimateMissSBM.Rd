@@ -91,7 +91,7 @@ sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
 ## Sample some dyads data + Infer SBM with missing data
 collection <-
-   observeNetwork(sbm$netMatrix, sampling, samplingParameters) \%>\%
+   observeNetwork(sbm$networkData, sampling, samplingParameters) \%>\%
    estimateMissSBM(vBlocks = 1:5, sampling = sampling)
 collection$ICL
 coef(collection$bestModel$fittedSBM, "connectivity")
@@ -101,7 +101,6 @@ plot(myModel, "network")
 coef(myModel, "sampling")
 coef(myModel, "connectivity")
 predict(myModel)[1:5, 1:5]
-fitted(myModel)[1:5, 1:5]
 
 }
 \seealso{

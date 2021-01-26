@@ -6,7 +6,7 @@
 #' @import nloptr
 SimpleSBM_fit_missSBM <-
 R6::R6Class(classname = "SimpleSBM_fit_missSBM",
-  inherit = sbm::SimpleSBM_fit,
+  inherit = sbm::SimpleSBM,
   public = list(
     #' @description constructor for simpleSBM_fit for missSBM purpose
     #' @param adjacencyMatrix a matrix encoding the graph
@@ -14,21 +14,30 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
     #' @param covarList An option list with M entries (the M covariates).
     initialize = function(adjacencyMatrix, clusterInit, covarList = list()) {
 
-      # Basic fields intialization and call to super constructor
-      super$initialize(
-        adjacencyMatrix = adjacencyMatrix,
-        model           = "bernoulli",
-        directed        = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
-        dimLabels       = list(row = "row", col = "column"),
-        covarList       = covarList
-      )
+      ## SANITY CHECKS (on data)
+      stopifnot(is.matrix(adjacencyMatrix))                   # must be a matrix
+      stopifnot(all.equal(nrow(adjacencyMatrix),
+                          ncol(adjacencyMatrix)))             # matrix must be square
+      stopifnot(all(sapply(covarList, nrow) == nrow(adjacencyMatrix))) # consistency of the covariates
+      stopifnot(all(sapply(covarList, ncol) == ncol(adjacencyMatrix))) # with the network data
+
+      # Basic fields initialization and call to super constructor
+      super$initialize(model        = "bernoulli",
+                       directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
+                       nbNodes      = nrow(adjacencyMatrix),
+                       blockProp    = vector("numeric", 0),
+                       connectParam = list(mean = matrix(0, 0, 0)),
+                       covarList    = covarList)
+
+      # Storing data
+      private$Y <- adjacencyMatrix
 
       ## Initial Clustering
-      private$tau <- clustering_indicator(clusterInit)
+      private$Z <- clustering_indicator(clusterInit)
 
       ## Initialize estimation of the model parameters
-      private$theta <- list(mean = check_boundaries(quad_form(adjacencyMatrix, private$tau) / quad_form(1 - diag(self$nbNodes), private$tau)))
-      private$pi    <- check_boundaries(colMeans(private$tau))
+      private$theta <- list(mean = check_boundaries(quad_form(adjacencyMatrix, private$Z) / quad_form(1 - diag(self$nbNodes), private$Z)))
+      private$pi    <- check_boundaries(colMeans(private$Z))
 
       invisible(self)
     },
@@ -78,20 +87,20 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
             # optimizer parameters
             opts = list("algorithm" = "NLOPT_LD_MMA", "xtol_rel" = 1.0e-4),
             # additional argument for objective/gradient function
-            Y = private$Y, cov = self$covarArray, Tau = private$tau,
+            Y = private$Y, cov = self$covarArray, Tau = private$Z,
           )
         private$beta  <- optim_out$solution[-(1:(self$nbBlocks^2))]
         private$theta <- list(mean = matrix(.logistic(optim_out$solution[1:(self$nbBlocks^2)]), self$nbBlocks, self$nbBlocks))
       } else {
-        private$theta <- list(mean = check_boundaries(quad_form(private$Y, private$tau) / quad_form(1 - diag(self$nbNodes), private$tau)))
+        private$theta <- list(mean = check_boundaries(quad_form(private$Y, private$Z) / quad_form(1 - diag(self$nbNodes), private$Z)))
       }
-      private$pi    <- check_boundaries(colMeans(private$tau))
+      private$pi    <- check_boundaries(colMeans(private$Z))
     },
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda double use to adjust the parameter estimation according to the sampling design
     update_blocks =   function(log_lambda = 0) {
       if (self$nbCovariates > 0) {
-        private$tau <-
+        private$Z <-
           E_step_covariates(
             private$Y,
             self$covarEffect,
@@ -103,14 +112,21 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
         if (self$nbBlocks > 1) {
           adjMatrix_bar <- bar(private$Y)
           ## Bernoulli undirected
-          tau <- private$Y %*% private$tau %*% t(log(private$theta$mean)) + adjMatrix_bar %*% private$tau %*% t(log(1 - private$theta$mean)) + log_lambda
+          tau <- private$Y %*% private$Z %*% t(log(private$theta$mean)) + adjMatrix_bar %*% private$Z %*% t(log(1 - private$theta$mean)) + log_lambda
           if (private$directed_) {
             ## Bernoulli directed
-            tau <- tau + t(private$Y) %*% private$tau %*% t(log(t(private$theta$mean))) + t(adjMatrix_bar) %*% private$tau %*% t(log(1 - t(private$theta$mean)))
+            tau <- tau + t(private$Y) %*% private$Z %*% t(log(t(private$theta$mean))) + t(adjMatrix_bar) %*% private$Z %*% t(log(1 - t(private$theta$mean)))
           }
-          private$tau <- t(apply(sweep(tau, 2, log(private$pi), "+"), 1, .softmax))
+          private$Z <- t(apply(sweep(tau, 2, log(private$pi), "+"), 1, .softmax))
         }
       }
+    },
+    #' @description permute group labels by order of decreasing probability
+    reorder = function(){
+      o <- order(private$theta$mean %*% private$pi, decreasing = TRUE)
+      private$pi <- private$pi[o]
+      private$theta$mean <- private$theta$mean[o,o]
+      private$Z <- private$Z[, o, drop = FALSE]
     }
   ),
   active = list(
@@ -127,15 +143,19 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
       } else {
         factor <- ifelse(private$directed_, 1, .5)
         adjMat <- private$Y ; diag(adjMat) <- 0
-        tmp <- factor * sum( adjMat * private$tau %*% log(private$theta$mean) %*% t(private$tau) +
-                               bar(private$Y)  *  private$tau %*% log(1 - private$theta$mean) %*% t(private$tau))
-        res <- sum(private$tau %*% log(private$pi)) +  tmp
+        tmp <- factor * sum( adjMat * private$Z %*% log(private$theta$mean) %*% t(private$Z) +
+                               bar(private$Y)  *  private$Z %*% log(1 - private$theta$mean) %*% t(private$Z))
+        res <- sum(private$Z %*% log(private$pi)) +  tmp
       }
       res
     },
+    #' @field penalty double, value of the penalty term in ICL
+    penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
+    #' @field entropy double, value of the entropy due to the clustering distribution
+    entropy  = function(value) {-sum(.xlogx(private$Z))},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
-    loglik      = function(value) {self$vExpec + self$entropy},
+    loglik = function(value) {self$vExpec + self$entropy},
     #' @field ICL double: value of the integrated classification log-likelihood
-    ICL        = function(value) {-2 * self$vExpec + self$penalty}
+    ICL    = function(value) {-2 * self$vExpec + self$penalty}
   )
 )

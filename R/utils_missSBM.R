@@ -63,6 +63,7 @@ quad_form <- function(A,x) {t(x) %*% A %*% x}
 
 .logistic <- function(x) {1/(1 + exp(-x))}
 .logit    <- function(x) {log(x/(1 - x))}
+.xlogx    <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
 
 .softmax <- function(x) {
   b <- max(x)

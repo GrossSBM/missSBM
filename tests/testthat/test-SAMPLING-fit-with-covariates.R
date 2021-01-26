@@ -17,7 +17,7 @@ test_that("Parameter estimation in dyad-centered sampling with covariates", {
 
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
-  adjMatrix  <- missSBM::observeNetwork(sbm$netMatrix, "covar-dyad", covarParam, covariates = covariates, intercept = intercept)
+  adjMatrix  <- missSBM::observeNetwork(sbm$networkData, "covar-dyad", covarParam, covariates = covariates, intercept = intercept)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::covarDyadSampling_fit$new(partlyObservedNet, sbm$covarArray)
@@ -39,7 +39,7 @@ test_that("Parameter estimation in dyad-centered sampling with covariates but ig
   covarParam  <- rnorm(M, 0, 1)
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
-  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "dyad", parameters = .9, covariates = covariates)
+  adjMatrix <- missSBM::observeNetwork(sbm$networkData, "dyad", parameters = .9, covariates = covariates)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::dyadSampling_fit$new(partlyObservedNet, sbm$covarArray)
@@ -63,7 +63,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
   intercept  <- .5
 
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
-  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "covar-node", covarParam, covariates = covariates_node, intercept = intercept, similarity = missSBM:::l1_similarity)
+  adjMatrix <- missSBM::observeNetwork(sbm$networkData, "covar-node", covarParam, covariates = covariates_node, intercept = intercept, similarity = missSBM:::l1_similarity)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::covarNodeSampling_fit$new(partlyObservedNet, simplify2array(covariates_node))
@@ -87,7 +87,7 @@ test_that("Parameter estimation in node-centered sampling with covariates but ig
 
   sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
-  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "node", .9, covariates = covariates_node)
+  adjMatrix <- missSBM::observeNetwork(sbm$networkData, "node", .9, covariates = covariates_node)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
 
   fittedSampling <- missSBM:::nodeSampling_fit$new(partlyObservedNet, simplify2array(covariates_node))
@@ -107,7 +107,7 @@ test_that("Parameter estimation in degree sampling", {
   sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
   psi <- c(-.5,0.01)
-  adjMatrix <- missSBM::observeNetwork(sbm$netMatrix, "degree", psi)
+  adjMatrix <- missSBM::observeNetwork(sbm$networkData, "degree", psi)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
 
   Z0 <- missSBM:::clustering_indicator(sbm$memberships)

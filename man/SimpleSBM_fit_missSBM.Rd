@@ -12,12 +12,16 @@ This internal class is designed to adjust a binary Stochastic Block Model in the
 It is not designed not be call by the user
 }
 \section{Super classes}{
-\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SBM_fit]{sbm::SBM_fit}} -> \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}} -> \code{SimpleSBM_fit_missSBM}
+\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{SimpleSBM_fit_missSBM}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
+
+\item{\code{penalty}}{double, value of the penalty term in ICL}
+
+\item{\code{entropy}}{double, value of the entropy due to the clustering distribution}
 
 \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
@@ -32,19 +36,20 @@ It is not designed not be call by the user
 \item \href{#method-doVEM}{\code{SimpleSBM_fit_missSBM$doVEM()}}
 \item \href{#method-update_parameters}{\code{SimpleSBM_fit_missSBM$update_parameters()}}
 \item \href{#method-update_blocks}{\code{SimpleSBM_fit_missSBM$update_blocks()}}
+\item \href{#method-reorder}{\code{SimpleSBM_fit_missSBM$reorder()}}
 \item \href{#method-clone}{\code{SimpleSBM_fit_missSBM$clone()}}
 }
 }
 \if{html}{
 \out{<details ><summary>Inherited methods</summary>}
 \itemize{
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="plot">}\href{../../sbm/html/SBM.html#method-plot}{\code{sbm::SBM$plot()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print">}\href{../../sbm/html/SBM.html#method-print}{\code{sbm::SBM$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM_fit" data-id="setModel">}\href{../../sbm/html/SBM_fit.html#method-setModel}{\code{sbm::SBM_fit$setModel()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="optimize">}\href{../../sbm/html/SimpleSBM_fit.html#method-optimize}{\code{sbm::SimpleSBM_fit$optimize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="predict">}\href{../../sbm/html/SimpleSBM_fit.html#method-predict}{\code{sbm::SimpleSBM_fit$predict()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="reorder">}\href{../../sbm/html/SimpleSBM_fit.html#method-reorder}{\code{sbm::SimpleSBM_fit$reorder()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM_fit" data-id="show">}\href{../../sbm/html/SimpleSBM_fit.html#method-show}{\code{sbm::SimpleSBM_fit$show()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork">}\href{../../sbm/html/SBM.html#method-rNetwork}{\code{sbm::SBM$rNetwork()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot">}\href{../../sbm/html/SimpleSBM.html#method-plot}{\code{sbm::SimpleSBM$plot()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict">}\href{../../sbm/html/SimpleSBM.html#method-predict}{\code{sbm::SimpleSBM$predict()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges">}\href{../../sbm/html/SimpleSBM.html#method-rEdges}{\code{sbm::SimpleSBM$rEdges()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships">}\href{../../sbm/html/SimpleSBM.html#method-rMemberships}{\code{sbm::SimpleSBM$rMemberships()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show">}\href{../../sbm/html/SimpleSBM.html#method-show}{\code{sbm::SimpleSBM$show()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -123,6 +128,16 @@ update variational estimation of blocks (VE-step)
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-reorder"></a>}}
+\if{latex}{\out{\hypertarget{method-reorder}{}}}
+\subsection{Method \code{reorder()}}{
+permute group labels by order of decreasing probability
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_missSBM$reorder()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
