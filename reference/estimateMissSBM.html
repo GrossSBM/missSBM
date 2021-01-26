@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9010</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a>
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -109,7 +109,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a>
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -238,7 +238,7 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 
 <span class='co'>## Sample some dyads data + Infer SBM with missing data</span>
 <span class='va'>collection</span> <span class='op'>&lt;-</span>
-   <span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span><span class='va'>sbm</span><span class='op'>$</span><span class='va'>netMatrix</span>, <span class='va'>sampling</span>, <span class='va'>samplingParameters</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+   <span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span><span class='va'>sbm</span><span class='op'>$</span><span class='va'>networkData</span>, <span class='va'>sampling</span>, <span class='va'>samplingParameters</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
    <span class='fu'>estimateMissSBM</span><span class='op'>(</span>vBlocks <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='va'>sampling</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; 
@@ -248,35 +248,29 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 #&gt; 
 #&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
 #&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
-</div><div class='output co'>#&gt; [1] 24760.88 23654.28 23213.19 23335.65 23436.51</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 24924.59 23982.07 23379.39 23486.16 23594.63</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.36897498 0.03559688 0.03250710
-#&gt; [2,] 0.03559688 0.37844953 0.05380972
-#&gt; [3,] 0.03250710 0.05380972 0.30215621
+#&gt; [1,] 0.35785416 0.03629987 0.05114642
+#&gt; [2,] 0.03629987 0.36282613 0.03898758
+#&gt; [3,] 0.05114642 0.03898758 0.36870980
 #&gt; </div><div class='input'>
 <span class='va'>myModel</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"network"</span><span class='op'>)</span>
 </div><div class='img'><img src='estimateMissSBM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"sampling"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.4922595</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.4924385</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.36897498 0.03559688 0.03250710
-#&gt; [2,] 0.03559688 0.37844953 0.05380972
-#&gt; [3,] 0.03250710 0.05380972 0.30215621
+#&gt; [1,] 0.35785416 0.03629987 0.05114642
+#&gt; [2,] 0.03629987 0.36282613 0.03898758
+#&gt; [3,] 0.05114642 0.03898758 0.36870980
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
-</div><div class='output co'>#&gt;            [,1]      [,2]      [,3]       [,4]       [,5]
-#&gt; [1,] 0.00000000 0.1939605 0.1939605 0.19396051 0.02179177
-#&gt; [2,] 0.19396051 0.0000000 0.0000000 0.19396051 0.00000000
-#&gt; [3,] 0.19396051 0.0000000 0.0000000 0.19396051 0.00000000
-#&gt; [4,] 0.19396051 0.1939605 0.1939605 0.00000000 0.02179177
-#&gt; [5,] 0.02179177 0.0000000 0.0000000 0.02179177 0.00000000</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/fitted.values.html'>fitted</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
-</div><div class='output co'>#&gt;            [,1]      [,2]      [,3]      [,4]       [,5]
-#&gt; [1,] 0.21103251 0.2366801 0.2366801 0.2366801 0.03332171
-#&gt; [2,] 0.23668013 0.3021562 0.3021562 0.3021562 0.03250710
-#&gt; [3,] 0.23668013 0.3021562 0.3021562 0.3021562 0.03250710
-#&gt; [4,] 0.23668013 0.3021562 0.3021562 0.3021562 0.03250710
-#&gt; [5,] 0.03332171 0.0325071 0.0325071 0.0325071 0.36897498</div><div class='input'>
+</div><div class='output co'>#&gt;            [,1]       [,2]       [,3]     [,4]       [,5]
+#&gt; [1,] 0.00000000 0.02668760 0.00000000 0.000000 0.02501646
+#&gt; [2,] 0.02668760 0.00000000 0.24561404 1.000000 0.03639371
+#&gt; [3,] 0.00000000 0.24561404 0.00000000 0.245614 0.03639371
+#&gt; [4,] 0.00000000 1.00000000 0.24561404 0.000000 0.00000000
+#&gt; [5,] 0.02501646 0.03639371 0.03639371 0.000000 0.00000000</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
