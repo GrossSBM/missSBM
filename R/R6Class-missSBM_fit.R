@@ -102,7 +102,7 @@ missSBM_fit <-
         #
         for (k in seq.int(control$fixPointIter)) {
           # update the variational parameters for missing entries (a.k.a nu)
-          nu <- private$sampling$update_imputation(private$SBM$expectation)
+          nu <- private$sampling$update_imputation(private$SBM$expectation,private$SBM$probMemberships)
           private$imputedNet[private$NAs] <- nu[private$NAs]
           # update the variational parameters for block memberships (a.k.a tau)
           private$SBM$networkData <- private$imputedNet

@@ -15,6 +15,8 @@ Class for fitting a block-dyad sampling
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{vExpec}}{variational expectation of the sampling}
+
+\item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
 }
 \if{html}{\out{</div>}}
 }
@@ -23,6 +25,7 @@ Class for fitting a block-dyad sampling
 \itemize{
 \item \href{#method-new}{\code{blockDyadSampling_fit$new()}}
 \item \href{#method-update_parameters}{\code{blockDyadSampling_fit$update_parameters()}}
+\item \href{#method-update_imputation}{\code{blockDyadSampling_fit$update_imputation()}}
 \item \href{#method-clone}{\code{blockDyadSampling_fit$clone()}}
 }
 }
@@ -31,7 +34,6 @@ Class for fitting a block-dyad sampling
 \itemize{
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show">}\href{../../missSBM/html/networkSamplingDyads_fit.html#method-show}{\code{missSBM::networkSamplingDyads_fit$show()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_imputation">}\href{../../missSBM/html/networkSamplingDyads_fit.html#method-update_imputation}{\code{missSBM::networkSamplingDyads_fit$update_imputation()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -68,7 +70,26 @@ a method to update the estimation of the parameters. By default, nothing to do (
 \describe{
 \item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
 
-\item{\code{Z}}{indicator of blocks}
+\item{\code{Z}}{matrix of posterior probabilities of belonging to blocks}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-update_imputation"></a>}}
+\if{latex}{\out{\hypertarget{method-update_imputation}{}}}
+\subsection{Method \code{update_imputation()}}{
+a method to update the imputation of the missing entries.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampling_fit$update_imputation(PI, Z)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{PI}}{the matrix of inter/intra class probability of connection}
+
+\item{\code{Z}}{matrix of posterior probabilities of belonging to blocks}
 }
 \if{html}{\out{</div>}}
 }

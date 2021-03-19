@@ -33,7 +33,8 @@ networkSamplingDyads_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param PI the matrix of inter/intra class probability of connection
-    update_imputation = function(PI) {PI} ## good for MCAR on node, dyads and NMAR with blocks
+    #' @param ... use for compatibility
+    update_imputation = function(PI,...) {PI} ## good for MCAR on node, dyads and NMAR with blocks
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -75,7 +76,8 @@ networkSamplingNodes_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param PI the matrix of inter/intra class probability of connection
-    update_imputation = function(PI) {PI} ## good for MCAR on node, dyads and NMAR with blocks
+    #' @param ... use for compatibility
+    update_imputation = function(PI,...) {PI} ## good for MCAR on node, dyads and NMAR with blocks
   ),
   active = list(
     #' @field penalty double, value of the penalty term in ICL
@@ -240,7 +242,8 @@ doubleStandardSampling_fit <-
     },
     #' @description a method to update the imputation of the missing entries.
     #' @param PI the matrix of inter/intra class probability of connection
-    update_imputation = function(PI) {
+    #' @param ... use for compatibility
+    update_imputation = function(PI,...) {
       nu <- check_boundaries(.logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + .logit(PI) ))
       nu
     }
@@ -263,7 +266,8 @@ blockDyadSampling_fit <-
     prob     = NULL,  ## for calculation of the log-likelihood
     NAs      = NULL,  ## localisation of NAs
     R        = NULL,  ## sampling matrix
-    directed = NULL   ##
+    directed = NULL,  ##
+    Taus     = NULL  ## matrix of posterior probabilities of belonging to blocks
   ),
   public = list(
     #' @description constructor
@@ -275,15 +279,23 @@ blockDyadSampling_fit <-
       private$R        <- partlyObservedNetwork$samplingMatrix
       private$directed <- partlyObservedNetwork$is_directed
       imputedNet       <- matrix(mean(partlyObservedNetwork$networkData, na.rm = TRUE), partlyObservedNetwork$nbNodes, partlyObservedNetwork$nbNodes)
+      private$Taus     <- blockInit
       self$update_parameters(imputedNet, blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
     #' @param imputedNet an adjacency matrix where missing values have been imputed
-    #' @param Z indicator of blocks
+    #' @param Z matrix of posterior probabilities of belonging to blocks
     update_parameters = function(imputedNet, Z) {
       private$psi    <- check_boundaries((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z))
       private$prob   <- check_boundaries(Z %*% private$psi %*% t(Z))
-    }
+    },
+    #' @description a method to update the imputation of the missing entries.
+    #' @param PI the matrix of inter/intra class probability of connection
+    #' @param Z matrix of posterior probabilities of belonging to blocks
+    update_imputation = function(PI,Z) {
+      private$Taus <- Z
+      PI # could be corrected
+      }
   ),
   active = list(
     #' @field vExpec variational expectation of the sampling
@@ -292,6 +304,17 @@ blockDyadSampling_fit <-
       sampMat      <- private$R ; diag(sampMat) <- 0
       sampMat_bar  <- 1 - private$R ; diag(sampMat_bar) <- 0
       res          <- factor * sum(sampMat * log(private$prob) + sampMat_bar *  log(1 - private$prob))
+      res
+    },
+    #' @field log_lambda double, term for adjusting the imputation step which depends on the type of sampling
+    log_lambda = function(value) {
+      tau <- private$Taus #tau=missSBM$fittedSBM$probMemberships
+      psi <- private$psi #psi = missSBM$fittedSampling$parameters
+      D_obs <- private$NAs  # D_obs=partlyObservedNet$NAs*1
+      D_miss <- 1-D_obs  #D_obs=(1-partlyObservedNet$NAs*1)
+      diag(D_miss) <- 0
+      res <- D_obs%*%tau%*%t(log(psi)) + D_miss%*%tau%*%t(log(1-psi))
+      if (private$directed) res <- res + t(D_obs)%*%tau%*%(log(psi)) + t(D_miss)%*%tau%*%(log(1-psi))
       res
     }
   )
@@ -388,7 +411,8 @@ degreeSampling_fit <-
     },
     #' @description a method to update the imputation of the missing entries.
     #' @param PI the matrix of inter/intra class probability of connection
-    update_imputation = function(PI) {
+    #' @param ... use for compatibility
+    update_imputation = function(PI,...) {
       C <- 2 * h(private$ksi) * (private$psi[1] * private$psi[2] + private$psi[2]^2 * (1 + private$Dij))
       nu <- check_boundaries((.logit(PI) - private$psi[2] + C + t(C) ))
       nu
