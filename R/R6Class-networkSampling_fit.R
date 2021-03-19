@@ -310,7 +310,7 @@ blockDyadSampling_fit <-
     log_lambda = function(value) {
       tau <- private$Taus #tau=missSBM$fittedSBM$probMemberships
       psi <- private$psi #psi = missSBM$fittedSampling$parameters
-      D_obs <- private$NAs  # D_obs=partlyObservedNet$NAs*1
+      D_obs <- private$NAs*1  # D_obs=partlyObservedNet$NAs*1
       D_miss <- 1-D_obs  #D_obs=(1-partlyObservedNet$NAs*1)
       diag(D_miss) <- 0
       res <- D_obs%*%tau%*%t(log(psi)) + D_miss%*%tau%*%t(log(1-psi))
