@@ -16,8 +16,8 @@ partlyObservedNetwork <-
     directed = NULL, # directed network of not
     D        = NULL, # list of potential dyads in the network
     nas      = NULL, # all NA in Y
-    D_obs    = NULL, # array indices of missing dyads
-    D_miss   = NULL, # array indices of observed dyads
+    D_obs    = NULL, # array indices of observed dyads
+    D_miss   = NULL, # array indices of missing dyads
     R        = NULL, # matrix of observed and non-observed edges
     S        = NULL  # vector of observed and non-observed nodes
   ),

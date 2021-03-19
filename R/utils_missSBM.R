@@ -12,6 +12,10 @@ bar <- function(X) {
   X.bar
 }
 
+quad_form <- function(A,x) {t(x) %*% A %*% x}
+
+t_quad_form <- function(A,x) {x %*% A %*% t(x)}
+
 array2list <-function(X) {
   if (is.null(X)) {
     L <- list()
@@ -59,7 +63,19 @@ getCovarArray <- function(X, s) {
   phi
 }
 
-quad_form <- function(A,x) {t(x) %*% A %*% x}
+#'
+#' @importFrom Matrix drop0
+dropNA <- function(x) {
+    if(!is(x, "matrix")) stop("x needs to be a matrix!")
+
+    zeros <- which(x==0, arr.ind=TRUE)
+    ## keep zeros
+    x[is.na(x)] <- 0
+    x[zeros] <- NA
+    x <- drop0(x)
+    x[zeros] <- 0
+    x
+}
 
 .logistic <- function(x) {1/(1 + exp(-x))}
 .logit    <- function(x) {log(x/(1 - x))}

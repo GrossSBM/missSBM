@@ -26,3 +26,4 @@ Rcpp::NumericMatrix E_step_nocovariate(
 
   return Rcpp::wrap(Tau_new);
 }
+
