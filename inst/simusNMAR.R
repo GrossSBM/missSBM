@@ -55,36 +55,37 @@ RES = mclapply(1:50,function(i){
 
   A=sbm::sampleSimpleSBM(nbNodes = n,blockProp = alpha,connectParam = list(mean=pi),model = "bernoulli",directed = F)
 
-Aobs = missSBM::observeNetwork(A$networkData,sampling="block-dyad",clusters = A$memberships,parameters = sampPar)
-# Aobs
-# sum(is.na(Aobs))/prod(dim(Aobs))
-# a comparer a
-#3*.33^2 *.9 + 6*.33^2 *.1^2
+  Aobs = missSBM::observeNetwork(A$networkData,sampling="block-dyad",clusters = A$memberships,parameters = sampPar)
+  # Aobs
+  # sum(is.na(Aobs))/prod(dim(Aobs))
+  # a comparer a
+  #3*.33^2 *.9 + 6*.33^2 *.1^2
 
-#class(A$networkData)
+  #class(A$networkData)
 
-ResNMAR = missSBM::estimateMissSBM(Aobs,1:10,sampling="block-dyad")
-missSBM::smooth(ResNMAR,"both")
-#plot(ResNMAR$ICL)
-# ResNMAR$bestModel$fittedSBM$blockProp
-# ResNMAR$bestModel$fittedSBM$connectParam
-# ResNMAR$bestModel$fittedSampling$parameters
-
-
-a=aricode::ARI(ResNMAR$models[[3]]$fittedSBM$memberships,A$memberships)
-b=sqrt(sum((ResNMAR$models[[3]]$fittedSBM$connectParam$mean-pi)^2))
+  ResNMAR = missSBM::estimateMissSBM(Aobs,1:10,sampling="block-dyad")
+  missSBM::smooth(ResNMAR,"both")
+  #plot(ResNMAR$ICL)
+  # ResNMAR$bestModel$fittedSBM$blockProp
+  # ResNMAR$bestModel$fittedSBM$connectParam
+  # ResNMAR$bestModel$fittedSampling$parameters
 
 
-ResMAR = missSBM::estimateMissSBM(Aobs,1:10,sampling="dyad")
-missSBM::smooth(ResMAR,"both")
-#plot(ResMAR$ICL)
-# ResMAR$bestModel$fittedSBM$blockProp
-# ResMAR$bestModel$fittedSBM$connectParam
-# ResMAR$bestModel$fittedSampling$parameters
-c=aricode::ARI(ResMAR$models[[3]]$fittedSBM$memberships,A$memberships)
-d=sqrt(sum((ResMAR$models[[3]]$fittedSBM$connectParam$mean-pi)^2))
-return(c(a,c,b,d))
-},mc.cores = 10)
+  a=aricode::ARI(ResNMAR$models[[3]]$fittedSBM$memberships,A$memberships)
+  b=sqrt(sum((ResNMAR$models[[3]]$fittedSBM$connectParam$mean-pi)^2))
+
+
+  ResMAR = missSBM::estimateMissSBM(Aobs,1:10,sampling="dyad")
+  missSBM::smooth(ResMAR,"both")
+  #plot(ResMAR$ICL)
+  # ResMAR$bestModel$fittedSBM$blockProp
+  # ResMAR$bestModel$fittedSBM$connectParam
+  # ResMAR$bestModel$fittedSampling$parameters
+  c=aricode::ARI(ResMAR$models[[3]]$fittedSBM$memberships,A$memberships)
+  d=sqrt(sum((ResMAR$models[[3]]$fittedSBM$connectParam$mean-pi)^2))
+  return(c(a,c,b,d))
+},mc.cores = 4)
+
 RES2 = do.call("rbind",RES)
 RES2 = as.data.frame(RES2)
 names(RES2) = rep(c("block-dyad","dyad"),2)

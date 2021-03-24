@@ -1,5 +1,7 @@
 # missSBM dev version
 
+  - bug fixed in blockDyad-sampling
+  - bug fixed in blockDyad-sampling
   - missSBM::SimpleSBM_fit_missSBM now inherits from from sbm::SimpleSBM rather than sbm::SimpleSBM_fit
   - change field '$netMatrix' to '$networkData' to comply with new interface in sbm
 
