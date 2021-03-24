@@ -22,7 +22,7 @@ init_spectral <- function(X, K) {
       U <- eigen(L, symmetric = TRUE)$vectors[,1:K]
 
       ## Applying the K-means in the eigenspace
-      cl <- as.integer(kmeans(U, K, iter.max = 100, nstart = 100)$cl)
+      cl <- as.integer(kmeans(U, K, iter.max = 100, nstart = 10)$cl)
 
       ## handing lonely souls
       cl0[connected] <- cl

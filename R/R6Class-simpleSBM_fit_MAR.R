@@ -8,6 +8,7 @@ SimpleSBM_fit_MAR <-
 R6::R6Class(classname = "SimpleSBM_fit_MAR",
   inherit = sbm::SimpleSBM,
   private = list(
+    R   = NULL, # the sampling matrix (sparse encoding)
     one = NULL, # indexes of ones in Y
     obs = NULL  # indexes of observed dyads in Y
   ),
@@ -34,17 +35,14 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
                        covarList    = covarList)
 
       # Storing data
-      private$Y <- adjacencyMatrix
-      ## sets of observed / unobserved dyads
+      ## where are my observations?
+      diag(adjacencyMatrix) <- NA
+      obs <- which(!is.na(adjacencyMatrix), arr.ind = TRUE)
+      private$R <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
 
-      ## remove diagonal (no loops)
-#      if (directed) {
-        private$one <- which(adjacencyMatrix == 1    & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) , arr.ind = TRUE)
-        private$obs <- which(!is.na(adjacencyMatrix) & (upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)) , arr.ind = TRUE)
- #     } else {
-#        private$one <- which(adjacencyMatrix == 1    & upper.tri(adjacencyMatrix), arr.ind = TRUE)
-#        private$obs <- which(!is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix), arr.ind = TRUE)
-  #    }
+      ## where are my non-zero entries?
+      one <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0, arr.ind = TRUE)
+      private$Y   <- Matrix::sparseMatrix(one[,1], one[,2], x = 1, dims = dim(adjacencyMatrix))
 
       ## Initial Clustering
       private$Z <- clustering_indicator(clusterInit)
@@ -89,30 +87,23 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
       res
     },
     #' @description update parameters estimation (M-step)
-    update_parameters = function() { # NA not allowed in adjMatrix (should be imputed)
-      N <- crossprod(private$Z[private$one[,1], ], private$Z[private$one[,2], ])
-      D <- crossprod(private$Z[private$obs[,1], ], private$Z[private$obs[,2], ])
-      private$theta <- list(mean =  ((N + t(N)) / (D + t(D))))
-      private$pi    <- check_boundaries(colMeans(private$Z))
+    update_parameters = function() {
+        private$theta$mean <- as.matrix(t(private$Z) %*% private$Y %*% private$Z / t(private$Z) %*% private$R %*% private$Z)
+        private$pi         <- check_boundaries(colMeans(private$Z))
     },
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda double use to adjust the parameter estimation according to the sampling design
     update_blocks =   function(log_lambda = 0) {
       if (self$nbBlocks > 1) {
-        log_piql_2 <- log(1 - private$theta$mean)
-        log_piql_1 <- log(private$theta$mean) - log_piql_2
+        Z_log_piql_2 <- tcrossprod(private$Z, log(1 - private$theta$mean))
+        Z_log_piql_1 <- tcrossprod(private$Z, log(private$theta$mean/(1 - private$theta$mean)))
         log_tau <- matrix(log_lambda + log(private$pi), self$nbNodes, self$nbBlocks, byrow = TRUE)
         ## Bernoulli undirected
-        i_one <- unique(private$one[, 1])
-        log_tau[i_one, ] <- log_tau[i_one, ] + rowsum(private$Z[private$one[, 2], ] %*% t(log_piql_1), private$one[, 1], reorder = FALSE)
-        i_obs <- unique(private$obs[, 1])
-        log_tau[i_obs, ] <- log_tau[i_obs, ] + rowsum(private$Z[private$obs[, 2], ] %*% t(log_piql_2), private$obs[, 1], reorder = FALSE)
+        log_tau <- log_tau + private$Y %*% Z_log_piql_1 + private$R %*% Z_log_piql_2
         if (private$directed_) {
           ## Bernoulli directed
-          i_one <- unique(private$one[, 2])
-          log_tau[i_one, ] <- log_tau[i_one, ] + rowsum(private$Z[private$one[, 1], ] %*% t(log_piql_1), private$one[, 2], reorder = TRUE)
-          i_obs <- unique(private$obs[, 2])
-          log_tau[i_obs, ] <- log_tau[i_obs, ] + rowsum(private$Z[private$obs[, 1], ] %*% t(log_piql_2), private$obs[, 2], reorder = TRUE)
+          ## log_tau <- log_tau + t(private$Y) %*% private$Z %*% t(log_piql_1) + t(private$R) %*% private$Z %*% t(log_piql_2)
+          log_tau <- log_tau + Matrix::crossprod(private$Y, Z_log_piql_1) +  Matrix::crossprod(private$R, Z_log_piql_2)
         }
         private$Z <- t(apply(log_tau, 1, .softmax))
       }
@@ -130,9 +121,9 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
     vExpec = function(value) {
       log_piql_2 <- log(1 - private$theta$mean)
       log_piql_1 <- log(private$theta$mean) - log_piql_2
-      res <- sum( t(private$Z[private$one[,1], ]) %*% private$Z[private$one[,2], ] * log_piql_1 ) +
-             sum( t(private$Z[private$obs[,1], ]) %*% private$Z[private$obs[,2], ] * log_piql_2 )
-             sum(private$Z %*% log(private$pi))
+      res <- sum(t(private$Z) %*% private$Y %*% private$Z * log_piql_1) +
+             sum(t(private$Z) %*% private$R %*% private$Z * log_piql_2)
+      res <- ifelse(private$directed_, 1, .5) * res + sum(private$Z %*% log(private$pi))
       res
     },
     #' @field penalty double, value of the penalty term in ICL

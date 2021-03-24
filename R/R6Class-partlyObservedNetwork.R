@@ -104,7 +104,7 @@ partlyObservedNetwork <-
     #' @param nbBlocks integer, the chosen number of blocks
     #' @param method character with a clustering method among "hierarchical", "spectral", "kmeans".
     #' @importFrom stats binomial glm.fit residuals
-    clustering = function(nbBlocks, method = c("hierarchical", "spectral", "kmeans")) {
+    clustering = function(nbBlocks, method = c("spectral", "hierarchical", "kmeans")) {
 
       if (nbBlocks > 1) {
         adjacencyMatrix <- private$Y
