@@ -84,7 +84,7 @@ method to cluster network data with missing value
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(
   nbBlocks,
-  method = c("hierarchical", "spectral", "kmeans")
+  method = c("spectral", "hierarchical", "kmeans")
 )}\if{html}{\out{</div>}}
 }
 

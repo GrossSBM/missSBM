@@ -3,7 +3,7 @@ library(missSBM)
 
 set.seed(178303)
 ### A SBM model : ###
-N <- 2000
+N <- 1000
 Q <- 3
 pi <- rep(1, Q)/Q           # block proportion
 theta <- list(mean = diag(.45, Q, Q) + .05) # connectivity matrix

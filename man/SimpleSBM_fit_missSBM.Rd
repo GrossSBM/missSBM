@@ -12,20 +12,12 @@ This internal class is designed to adjust a binary Stochastic Block Model in the
 It is not designed not be call by the user
 }
 \section{Super classes}{
-\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{SimpleSBM_fit_missSBM}
+\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{missSBM::SimpleSBM_fit}} -> \code{SimpleSBM_fit_missSBM}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
-
-\item{\code{penalty}}{double, value of the penalty term in ICL}
-
-\item{\code{entropy}}{double, value of the entropy due to the clustering distribution}
-
-\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
-
-\item{\code{ICL}}{double: value of the integrated classification log-likelihood}
 }
 \if{html}{\out{</div>}}
 }
@@ -33,10 +25,8 @@ It is not designed not be call by the user
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SimpleSBM_fit_missSBM$new()}}
-\item \href{#method-doVEM}{\code{SimpleSBM_fit_missSBM$doVEM()}}
 \item \href{#method-update_parameters}{\code{SimpleSBM_fit_missSBM$update_parameters()}}
 \item \href{#method-update_blocks}{\code{SimpleSBM_fit_missSBM$update_blocks()}}
-\item \href{#method-reorder}{\code{SimpleSBM_fit_missSBM$reorder()}}
 \item \href{#method-clone}{\code{SimpleSBM_fit_missSBM$clone()}}
 }
 }
@@ -50,6 +40,8 @@ It is not designed not be call by the user
 \item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges">}\href{../../sbm/html/SimpleSBM.html#method-rEdges}{\code{sbm::SimpleSBM$rEdges()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships">}\href{../../sbm/html/SimpleSBM.html#method-rMemberships}{\code{sbm::SimpleSBM$rMemberships()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show">}\href{../../sbm/html/SimpleSBM.html#method-show}{\code{sbm::SimpleSBM$show()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM">}\href{../../missSBM/html/SimpleSBM_fit.html#method-doVEM}{\code{missSBM::SimpleSBM_fit$doVEM()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder">}\href{../../missSBM/html/SimpleSBM_fit.html#method-reorder}{\code{missSBM::SimpleSBM_fit$reorder()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -70,34 +62,6 @@ constructor for simpleSBM_fit for missSBM purpose
 \item{\code{clusterInit}}{Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".}
 
 \item{\code{covarList}}{An option list with M entries (the M covariates).}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-doVEM"></a>}}
-\if{latex}{\out{\hypertarget{method-doVEM}{}}}
-\subsection{Method \code{doVEM()}}{
-method to perform estimation via variational EM
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_missSBM$doVEM(
-  threshold = 1e-04,
-  maxIter = 10,
-  fixPointIter = 3,
-  trace = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{threshold}}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
-
-\item{\code{maxIter}}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10}
-
-\item{\code{fixPointIter}}{number of fix-point iterations in the Variational E step. Default is 3.}
-
-\item{\code{trace}}{logical for verbosity. Default is \code{FALSE}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -128,16 +92,6 @@ update variational estimation of blocks (VE-step)
 }
 \if{html}{\out{</div>}}
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reorder"></a>}}
-\if{latex}{\out{\hypertarget{method-reorder}{}}}
-\subsection{Method \code{reorder()}}{
-permute group labels by order of decreasing probability
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_missSBM$reorder()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

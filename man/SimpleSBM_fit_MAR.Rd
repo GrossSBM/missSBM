@@ -59,7 +59,12 @@ It is not designed not be call by the user
 \subsection{Method \code{new()}}{
 constructor for simpleSBM_fit for missSBM purpose
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MAR$new(adjacencyMatrix, clusterInit, covarList = list())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MAR$new(
+  adjacencyMatrix,
+  clusterInit,
+  covarList = list(),
+  model = "bernoulli"
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

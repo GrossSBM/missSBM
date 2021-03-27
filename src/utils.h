@@ -17,4 +17,9 @@ inline double u(double x) {
   return (1/(1+std::exp(x)));
 }
 
+inline arma::vec softmax(arma::vec &x) {
+  double b = max(x) ;
+  return(exp(x - b) / sum(exp(x - b))) ;
+}
+
 #endif
