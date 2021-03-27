@@ -12,7 +12,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
     R      = NULL, # the sampling matrix (sparse encoding)
     M_step = NULL, # pointing to the appropriate M_step function
     E_step = NULL, # pointing to the appropriate E_step function
-    vbound = NULL  # pointing to the appropriate E_step function
+    vLL_complete = NULL # pointing to the appropriate Expected complete LL function
   ),
   public = list(
     #' @description constructor for simpleSBM_fit for missSBM purpose
@@ -35,6 +35,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
 
       private$M_step <- M_step_sparse_bernoulli_undirected_nocovariate
       private$E_step <- E_step_sparse_bernoulli_undirected_nocovariate
+      private$vLL_complete <- vLL_complete_sparse_bernoulli_undirected_nocovariate
 
       ## Initialize estimation of the model parameters
       self$update_parameters()
@@ -57,12 +58,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
   active = list(
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
-      log_piql_2 <- log(1 - private$theta$mean)
-      log_piql_1 <- log(private$theta$mean) - log_piql_2
-      res <- sum(t(private$Z) %*% private$Y %*% private$Z * log_piql_1) +
-             sum( t(private$Z) %*% private$R %*% private$Z * log_piql_2)
-      res <- ifelse(private$directed_, 1, .5) * res + sum(private$Z %*% log(private$pi))
-      res
+      private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
     }
   )
 )
