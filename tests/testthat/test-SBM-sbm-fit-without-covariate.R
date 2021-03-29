@@ -83,7 +83,7 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
   vBlocks <- 1:5
   models <- lapply(vBlocks, function(nbBlocks) {
     cl0 <- missSBM:::init_hierarchical(A, nbBlocks)
-    myFit <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl0)
+    myFit <- missSBM:::SimpleSBM_fit_MAR$new(A, cl0)
     myFit$doVEM()
     myFit
   })
@@ -95,4 +95,7 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
 
   expect_lt(sum((-.5 * ICLs - BM$ICL)/BM$ICL^2), 5e-6)
 })
+
+
+
 

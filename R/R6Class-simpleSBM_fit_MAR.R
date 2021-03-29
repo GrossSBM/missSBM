@@ -9,6 +9,7 @@ SimpleSBM_fit_MAR <-
 R6::R6Class(classname = "SimpleSBM_fit_MAR",
   inherit = SimpleSBM_fit,
   private = list(
+    variant= NULL, # model variant
     R      = NULL, # the sampling matrix (sparse encoding)
     M_step = NULL, # pointing to the appropriate M_step function
     E_step = NULL, # pointing to the appropriate E_step function
@@ -33,9 +34,13 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
       nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0, arr.ind = TRUE)
       private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
 
-      private$M_step <- M_step_sparse_bernoulli_undirected_nocovariate
-      private$E_step <- E_step_sparse_bernoulli_undirected_nocovariate
-      private$vLL_complete <- vLL_complete_sparse_bernoulli_undirected_nocovariate
+      private$variant <-
+        paste(model,
+          ifelse(self$directed, "directed", "undirected"),
+          ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep="_")
+      private$M_step       <- get(paste("M_step_sparse"      , private$variant, sep = "_"))
+      private$E_step       <- get(paste("E_step_sparse"      , private$variant, sep = "_"))
+      private$vLL_complete <- get(paste("vLL_complete_sparse", private$variant, sep = "_"))
 
       ## Initialize estimation of the model parameters
       self$update_parameters()

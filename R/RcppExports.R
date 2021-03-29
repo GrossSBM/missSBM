@@ -9,6 +9,14 @@ vLL_complete_sparse_bernoulli_directed_nocovariate <- function(Y, R, Z, theta, p
     .Call('_missSBM_vLL_complete_sparse_bernoulli_directed_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi)
 }
 
+vLL_complete_sparse_bernoulli_undirected_covariates <- function(Y, R, M, Z, Gamma, pi) {
+    .Call('_missSBM_vLL_complete_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi)
+}
+
+vLL_complete_sparse_bernoulli_directed_covariates <- function(Y, R, M, Z, Gamma, pi) {
+    .Call('_missSBM_vLL_complete_sparse_bernoulli_directed_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi)
+}
+
 M_step_sparse_bernoulli_undirected_nocovariate <- function(Y, R, Z) {
     .Call('_missSBM_M_step_sparse_bernoulli_undirected_nocovariate', PACKAGE = 'missSBM', Y, R, Z)
 }
@@ -29,8 +37,8 @@ E_step_sparse_bernoulli_undirected_nocovariate <- function(Y, R, Z, theta, pi, l
     .Call('_missSBM_E_step_sparse_bernoulli_undirected_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi, log_lambda)
 }
 
-E_step_nocovariate <- function(Y, Y_bar, theta, Tau, pi, log_lambda, fixPointIter) {
-    .Call('_missSBM_E_step_nocovariate', PACKAGE = 'missSBM', Y, Y_bar, theta, Tau, pi, log_lambda, fixPointIter)
+E_step_sparse_bernoulli_directed_nocovariate <- function(Y, R, Z, theta, pi, log_lambda = 0) {
+    .Call('_missSBM_E_step_sparse_bernoulli_directed_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi, log_lambda)
 }
 
 vExpec_covariates <- function(Y, roundProd, gamma, Tau, pi) {
