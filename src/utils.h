@@ -5,6 +5,10 @@ inline double logistic(double x) {
   return (1/(1+std::exp(-x)));
 }
 
+inline arma::mat logistic(arma::mat & x) {
+  return (1/(1+exp(-x)));
+}
+
 inline double g(double x) {
   return (-std::log(1+std::exp(-x)));
 }

@@ -46,10 +46,24 @@ Y_sp   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacency
 microbenchmark::microbenchmark(
  spmat = missSBM:::vLL_complete_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, T, Gamma, pi),
  dense = missSBM:::vExpec_covariates(Y, M, Gamma, T, pi)
-) -> res
+) -> res_vLL
 
-ggplot2::autoplot(res)
+ggplot2::autoplot(res_vLL)
 
+microbenchmark::microbenchmark(
+ spmat = missSBM:::E_step_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, T, Gamma, pi),
+ dense = missSBM:::E_step_covariates(Y, M, Gamma, T, pi)
+) -> res_Estep
+
+ggplot2::autoplot(res_Estep)
+
+param <- c(Gamma,covarParam)
+microbenchmark::microbenchmark(
+ spmat = missSBM:::M_step_sparse_bernoulli_undirected_covariates(param, Y_sp, R_sp, mySampler$covarArray, T),
+ dense = missSBM:::Mstep_covariates_undirected(param, Y, mySampler$covarArray, T)
+) -> res_Mstep
+
+ggplot2::autoplot(res_Mstep)
 
 
 
