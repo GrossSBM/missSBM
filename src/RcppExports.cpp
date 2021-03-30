@@ -175,6 +175,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// E_step_sparse_bernoulli_directed_covariates
+Rcpp::NumericMatrix E_step_sparse_bernoulli_directed_covariates(const arma::sp_mat& Y, const arma::sp_mat& R, const arma::mat& M, const arma::mat& Z, const arma::mat& Gamma, const arma::rowvec& pi, const double& log_lambda);
+RcppExport SEXP _missSBM_E_step_sparse_bernoulli_directed_covariates(SEXP YSEXP, SEXP RSEXP, SEXP MSEXP, SEXP ZSEXP, SEXP GammaSEXP, SEXP piSEXP, SEXP log_lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type R(RSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Gamma(GammaSEXP);
+    Rcpp::traits::input_parameter< const arma::rowvec& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< const double& >::type log_lambda(log_lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(E_step_sparse_bernoulli_directed_covariates(Y, R, M, Z, Gamma, pi, log_lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vExpec_covariates
 double vExpec_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector pi);
 RcppExport SEXP _missSBM_vExpec_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP piSEXP) {
@@ -278,6 +295,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_E_step_sparse_bernoulli_undirected_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_undirected_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_directed_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_directed_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_undirected_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_undirected_covariates, 7},
+    {"_missSBM_E_step_sparse_bernoulli_directed_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_directed_covariates, 7},
     {"_missSBM_vExpec_covariates", (DL_FUNC) &_missSBM_vExpec_covariates, 5},
     {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 5},
     {"_missSBM_Mstep_covariates_undirected", (DL_FUNC) &_missSBM_Mstep_covariates_undirected, 4},

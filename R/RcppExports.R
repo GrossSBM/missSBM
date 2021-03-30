@@ -45,6 +45,10 @@ E_step_sparse_bernoulli_undirected_covariates <- function(Y, R, M, Z, Gamma, pi,
     .Call('_missSBM_E_step_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, log_lambda)
 }
 
+E_step_sparse_bernoulli_directed_covariates <- function(Y, R, M, Z, Gamma, pi, log_lambda = 0) {
+    .Call('_missSBM_E_step_sparse_bernoulli_directed_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, log_lambda)
+}
+
 vExpec_covariates <- function(Y, roundProd, gamma, Tau, pi) {
     .Call('_missSBM_vExpec_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, pi)
 }

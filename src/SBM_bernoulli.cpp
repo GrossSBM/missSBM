@@ -19,8 +19,8 @@ double vLL_complete_sparse_bernoulli_undirected_nocovariate(
     const arma::sp_mat& Y,
     const arma::sp_mat& R,
     const arma::mat& Z,
-    const arma::mat&  theta,
-    const arma::vec&  pi
+    const arma::mat& theta,
+    const arma::vec& pi
 ) {
   return(
     .5 * accu(Z.t() * Y * Z % log(theta/(1-theta))) +
@@ -33,8 +33,8 @@ double vLL_complete_sparse_bernoulli_directed_nocovariate(
     const arma::sp_mat& Y,
     const arma::sp_mat& R,
     const arma::mat& Z,
-    const arma::mat&  theta,
-    const arma::vec&  pi
+    const arma::mat& theta,
+    const arma::vec& pi
 ) {
   return(
     accu(Z.t() * Y * Z % log(theta/(1-theta))) +
@@ -244,7 +244,7 @@ Rcpp::List M_step_sparse_bernoulli_directed_covariates (
 
      // Conversion from R, prepare optimization
     const auto init_Gamma = Rcpp::as<arma::mat>(init_param["Gamma"]); // (Q,Q)
-    const auto init_beta  = Rcpp::as<arma::mat>(init_param["beta"]);  // (M,1)
+    const auto init_beta  = Rcpp::as<arma::vec>(init_param["beta"]);  // (M,1)
 
     const auto metadata = tuple_metadata(init_Gamma, init_beta);
     enum { GAMMA_ID, BETA_ID }; // Names for metadata indexes
@@ -259,7 +259,7 @@ Rcpp::List M_step_sparse_bernoulli_directed_covariates (
     auto objective_and_grad = [&metadata, &Y, &R, &X, &Z](const double * params, double * grad) -> double {
 
       const arma::mat gamma = metadata.map<GAMMA_ID>(params);
-      const arma::mat beta = metadata.map<BETA_ID>(params);
+      const arma::vec beta = metadata.map<BETA_ID>(params);
 
       uword N = Z.n_rows;
       uword Q = Z.n_cols;
@@ -267,7 +267,7 @@ Rcpp::List M_step_sparse_bernoulli_directed_covariates (
       double loglik = 0;
 
       arma::mat gr_gamma = zeros<mat>(Q,Q);
-      arma::mat gr_beta  = zeros<mat>(K,1);
+      arma::vec gr_beta  = zeros<vec>(K);
 
       sp_mat::const_iterator Yij     = Y.begin();
       sp_mat::const_iterator Yij_end = Y.end();
@@ -292,7 +292,7 @@ Rcpp::List M_step_sparse_bernoulli_directed_covariates (
     OptimizerResult result = minimize_objective_on_parameters(optimizer.get(), objective_and_grad, parameters);
 
     arma::mat Gamma = metadata.copy<GAMMA_ID>(parameters.data());
-    arma::mat beta  = metadata.copy<BETA_ID>(parameters.data());
+    arma::vec beta  = metadata.copy<BETA_ID>(parameters.data());
 
     return Rcpp::List::create(
         Rcpp::Named("status", static_cast<int>(result.status)),
@@ -366,6 +366,40 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_undirected_covariates(
     for(int q=0; q < Q; q++){
       for(int l=0; l < Q; l++){
         log_tau(Rij.row(),q) -=  Z(Rij.col(),l) * log(1 + exp(Gamma(q,l) + M(Rij.row(),Rij.col())) )  ;
+      }
+    }
+  }
+
+  log_tau.each_row() += log(pi) ;
+  log_tau.each_row( [](arma::rowvec& x){
+    x = exp(x - max(x)) / sum(exp(x - max(x))) ;
+  }) ;
+
+  return Rcpp::wrap(log_tau) ;
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix E_step_sparse_bernoulli_directed_covariates(
+    const arma::sp_mat& Y,
+    const arma::sp_mat& R,
+    const arma::mat&  M,
+    const arma::mat&  Z,
+    const arma::mat&  Gamma,
+    const arma::rowvec&  pi,
+    const double& log_lambda = 0) {
+
+  uword Q = Z.n_cols ;
+  sp_mat::const_iterator Rij     = R.begin();
+  sp_mat::const_iterator Rij_end = R.end();
+
+  arma::mat log_tau = Y * Z * Gamma.t() + Y.t() * Z * Gamma + log_lambda;
+
+  for(; Rij != Rij_end; ++Rij) {
+    for(int q=0; q < Q; q++){
+      for(int l=0; l < Q; l++){
+        log_tau(Rij.row(),q) -=  Z(Rij.col(),l) *
+          (log(1 + exp(Gamma(q,l) + M(Rij.row(),Rij.col())) )
+        +  log(1 + exp(Gamma(l,q) + M(Rij.col(),Rij.row())) ) ) ;
       }
     }
   }
