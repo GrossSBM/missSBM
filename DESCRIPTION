@@ -28,7 +28,7 @@ Imports:
     methods,
     ape,
     igraph,
-    nloptr,
+    nloptr (>= 1.2.0),
     ggplot2,
     corrplot,
     R6,
@@ -36,7 +36,7 @@ Imports:
     sbm,
     magrittr,
     Matrix
-LinkingTo: Rcpp, RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo, nloptr (>= 1.2.0)
 Collate:
     'utils_missSBM.R'
     'R6Class-networkSampling.R'

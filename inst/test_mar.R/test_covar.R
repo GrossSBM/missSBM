@@ -19,7 +19,7 @@ means <- diag(.4, 2) + 0.05
 connectParam <- list(mean = means)
 
 ## Basic construction - check for wrong specifications
-mySampler <- SimpleSBM$new('bernoulli', nbNodes, FALSE, blockProp, connectParam, covarParam = covarParam[1], covarList = covarList[1])
+mySampler <- sbm::SimpleSBM$new('bernoulli', nbNodes, FALSE, blockProp, connectParam, covarParam = covarParam[1], covarList = covarList[1])
 mySampler$rMemberships(store = TRUE)
 mySampler$rEdges(store = TRUE)
 adjacencyMatrix <- missSBM::observeNetwork(mySampler$networkData, "dyad", 1)
@@ -28,7 +28,7 @@ adjacencyMatrix <- missSBM::observeNetwork(mySampler$networkData, "dyad", 1)
 Y <- adjacencyMatrix
 Y[is.na(Y)] <- 0
 Z <- mySampler$indMemberships
-T <- matrix(0.5, nrow(Z), ncol(Z))
+Tau <- matrix(0.5, nrow(Z), ncol(Z))
 M <- mySampler$covarEffect
 Gamma <- missSBM:::.logit(mySampler$connectParam$mean)
 pi <- mySampler$blockProp
@@ -45,25 +45,44 @@ Y_sp   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacency
 
 microbenchmark::microbenchmark(
  spmat = missSBM:::vLL_complete_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, T, Gamma, pi),
- dense = missSBM:::vExpec_covariates(Y, M, Gamma, T, pi)
+ dense = missSBM:::vExpec_covariates(Y, M, Gamma, Tau, pi)
 ) -> res_vLL
 
-ggplot2::autoplot(res_vLL)
 
 microbenchmark::microbenchmark(
- spmat = missSBM:::E_step_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, T, Gamma, pi),
+ spmat = missSBM:::E_step_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, Tau, Gamma, pi),
  dense = missSBM:::E_step_covariates(Y, M, Gamma, T, pi)
 ) -> res_Estep
 
-ggplot2::autoplot(res_Estep)
 
-param <- c(Gamma,covarParam)
+
+param <- list(Gamma = Gamma, beta = matrix(covarParam[1], ncol=1))
+
 microbenchmark::microbenchmark(
- spmat = missSBM:::M_step_sparse_bernoulli_undirected_covariates(param, Y_sp, R_sp, mySampler$covarArray, T),
- dense = missSBM:::Mstep_covariates_undirected(param, Y, mySampler$covarArray, T)
-) -> res_Mstep
+sparse = sparse <- missSBM:::M_step_sparse_bernoulli_undirected_covariates(
+        param,
+        Y_sp,
+        R_sp,
+        mySampler$covarArray,
+        Tau,
+        configuration = list(algorithm="CCSAQ", maxeval = 50, xtol_rel = 1e-4)
+        ),
+dense  = nloptr::nloptr(
+                # starting parameters
+                unlist(param),
+                # objective function + gradient
+                missSBM:::Mstep_covariates_undirected,
+                # optimizer parameters
+                opts = list("algorithm" = "NLOPT_LD_MMA", "xtol_rel" = 1.0e-4),
+                # additional argument for objective/gradient function
+                Y = Y, cov = mySampler$covarArray, Tau = Tau,
+        ), times = 10) -> res_Mstep_covariates
 
-ggplot2::autoplot(res_Mstep)
+ggplot2::autoplot(res_vLL)
+ggplot2::autoplot(res_Estep)
+ggplot2::autoplot(res_Mstep_covariates)
 
-
-
+beta_new <- sparse$beta
+gamma_new <- sparse$Gamma
+beta_old  <- dense$solution[-(1:4)]
+gamma_old <- matrix(dense$solution[1:4], 2, 2)

@@ -25,8 +25,12 @@ M_step_sparse_bernoulli_directed_nocovariate <- function(Y, R, Z) {
     .Call('_missSBM_M_step_sparse_bernoulli_directed_nocovariate', PACKAGE = 'missSBM', Y, R, Z)
 }
 
-M_step_sparse_bernoulli_directed_covariates <- function(Y, R, Z) {
-    .Call('_missSBM_M_step_sparse_bernoulli_directed_covariates', PACKAGE = 'missSBM', Y, R, Z)
+M_step_sparse_bernoulli_undirected_covariates <- function(init_param, Y, R, X, Z, configuration) {
+    .Call('_missSBM_M_step_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', init_param, Y, R, X, Z, configuration)
+}
+
+M_step_sparse_bernoulli_directed_covariates <- function(init_param, Y, R, X, Z, configuration) {
+    .Call('_missSBM_M_step_sparse_bernoulli_directed_covariates', PACKAGE = 'missSBM', init_param, Y, R, X, Z, configuration)
 }
 
 E_step_sparse_bernoulli_undirected_nocovariate <- function(Y, R, Z, theta, pi, log_lambda = 0) {
@@ -37,12 +41,8 @@ E_step_sparse_bernoulli_directed_nocovariate <- function(Y, R, Z, theta, pi, log
     .Call('_missSBM_E_step_sparse_bernoulli_directed_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi, log_lambda)
 }
 
-E_step_sparse_bernoulli_undirected_covariates <- function(Y, R, M, Z, Gamma, pi) {
-    .Call('_missSBM_E_step_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi)
-}
-
-M_step_sparse_bernoulli_undirected_covariates <- function(param, Y, R, X, Z) {
-    .Call('_missSBM_M_step_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', param, Y, R, X, Z)
+E_step_sparse_bernoulli_undirected_covariates <- function(Y, R, M, Z, Gamma, pi, log_lambda = 0) {
+    .Call('_missSBM_E_step_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, log_lambda)
 }
 
 vExpec_covariates <- function(Y, roundProd, gamma, Tau, pi) {
@@ -59,6 +59,14 @@ Mstep_covariates_undirected <- function(param, Y, cov, Tau) {
 
 Mstep_covariates_directed <- function(param, Y, cov, Tau) {
     .Call('_missSBM_Mstep_covariates_directed', PACKAGE = 'missSBM', param, Y, cov, Tau)
+}
+
+cpp_test_nlopt <- function() {
+    .Call('_missSBM_cpp_test_nlopt', PACKAGE = 'missSBM')
+}
+
+cpp_test_packing <- function() {
+    .Call('_missSBM_cpp_test_packing', PACKAGE = 'missSBM')
 }
 
 roundProduct <- function(covariates_list, beta) {

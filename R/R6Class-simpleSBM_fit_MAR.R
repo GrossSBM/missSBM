@@ -43,27 +43,53 @@ R6::R6Class(classname = "SimpleSBM_fit_MAR",
       private$vLL_complete <- get(paste("vLL_complete_sparse", private$variant, sep = "_"))
 
       ## Initialize estimation of the model parameters
+      private$theta$mean <- matrix(0.5, ncol(private$Z), ncol(private$Z))
+      private$beta       <- numeric(self$nbCovariates)
       self$update_parameters()
 
       invisible(self)
     },
     #' @description update parameters estimation (M-step)
-    update_parameters = function() {
-        private$theta$mean <- private$M_step(private$Y, private$R, private$Z)
-        private$pi         <- check_boundaries(colMeans(private$Z))
+    #' @param control a list to tune nlopt for optimization, see documentation of nloptr. Only relevant when covariates are present
+    update_parameters = function(control = list(maxeval = 50, xtol_rel = 1e-4, algorithm = "CCSAQ")) {
+      if (self$nbCovariates > 0) {
+        res <- private$M_step(
+          init_param = list(Gamma = .logit(private$theta$mean), beta = private$beta),
+                   Y = private$Y,
+                   R = private$R,
+                   X = self$covarArray,
+                   Z = private$Z,
+          configuration = control
+         )
+         private$beta  <- as.numeric(res$beta)
+      } else {
+        res <- private$M_step(private$Y, private$R, private$Z)
+      }
+      private$theta <- res$theta
+      private$pi    <- as.numeric(res$pi)
+      invisible(res)
     },
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda double use to adjust the parameter estimation according to the sampling design
     update_blocks =   function(log_lambda = 0) {
       if (self$nbBlocks > 1) {
-        private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, log_lambda)
+        if (self$nbCovariates > 0) {
+          private$Z <- private$E_step(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi, log_lambda)
+        } else {
+          private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, log_lambda)
+        }
       }
     }
   ),
   active = list(
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
-      private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+      if (self$nbCovariates > 0) {
+        res <- private$vLL_complete(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi)
+      } else {
+        res <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+      }
+      res
     }
   )
 )

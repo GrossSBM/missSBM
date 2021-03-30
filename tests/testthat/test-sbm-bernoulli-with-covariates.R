@@ -31,23 +31,23 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
 
   ## Construction----------------------------------------------------------------
   mySBM_sbm <- sbm::SimpleSBM_fit$new(mySampler$networkData, 'bernoulli', FALSE, covarList = covarList[1])
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
   mySBM_sbm$setModel(2)
 
-  # cl <- missSBM:::init_spectral(mySampler$networkData, 3)
-  # mySBM_missSBM <- missSBM:::SimpleSBM_fit_MAR$new(mySampler$networkData, clusterInit = cl, model = 'bernoulli')
-  # mySBM_missSBM$doVEM()
-  #
-  # ## correctness
-  #
-  # ## distance with blockmodels/sbm estiamtor
-  # expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.1)
-  # expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.95)
-  # expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
-  #
-  # ## distance to true values
-  # expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.1)
-  # expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.95)
+  cl <- missSBM:::init_spectral(mySampler$networkData, 2)
+  mySBM_missSBM <- missSBM:::SimpleSBM_fit_MAR$new(mySampler$networkData, clusterInit = cl, model = 'bernoulli', covarList = covarList[1])
+  mySBM_missSBM$doVEM()
+
+  ## correctness
+
+  ## distance with blockmodels/sbm estiamtor
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.1)
+  expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.95)
+  expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
+
+  ## distance to true values
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.11)
+  expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.95)
 
 })
 
@@ -67,19 +67,19 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate", {
   mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
   mySBM_sbm$setModel(3)
 
-  # cl <- missSBM:::init_spectral(mySampler$networkData, 3)
-  # mySBM_missSBM <- missSBM:::SimpleSBM_fit_MAR$new(mySampler$networkData, clusterInit = cl, model = 'bernoulli')
-  # mySBM_missSBM$doVEM()
-  # mySBM_missSBM$reorder()
-  #
-  # ## correctness
-  # ## distance with blockmodels/sbm estiamtor
-  # expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.1)
-  # expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.95)
-  # expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
-  #
-  # ## distance to true values
-  # expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.1)
-  # expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.95)
+  cl <- missSBM:::init_spectral(mySampler$networkData, 3)
+  mySBM_missSBM <- missSBM:::SimpleSBM_fit_MAR$new(mySampler$networkData, clusterInit = cl, model = 'bernoulli')
+  mySBM_missSBM$doVEM()
+  mySBM_missSBM$reorder()
+
+  ## correctness
+  ## distance with blockmodels/sbm estiamtor
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.1)
+  expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.95)
+  expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
+
+  ## distance to true values
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.1)
+  expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.95)
 
 })

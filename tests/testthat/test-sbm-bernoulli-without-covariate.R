@@ -22,7 +22,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate", {
 
   ## Construction----------------------------------------------------------------
   mySBM_sbm     <- sbm::SimpleSBM_fit$new(mySampler$networkData, 'bernoulli', FALSE)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
   mySBM_sbm$setModel(3)
 
   cl <- missSBM:::init_spectral(mySampler$networkData, 3)
