@@ -314,13 +314,17 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_undirected_nocovariate(
     const arma::sp_mat& R,
     const arma::mat&  Z,
     const arma::mat&  theta,
-    const arma::rowvec&  pi) {
+    const arma::rowvec&  pi,
+    const bool rescale = true) {
 
   arma::mat log_tau = Y * Z * log(theta/(1 - theta)) + R * Z * log(1 - theta) ;
   log_tau.each_row() += log(pi) ;
-  log_tau.each_row( [](arma::rowvec& x){
-    x = exp(x - max(x)) / sum(exp(x - max(x))) ;
-  }) ;
+
+  if (rescale) {
+    log_tau.each_row( [](arma::rowvec& x){
+      x = exp(x - max(x)) / sum(exp(x - max(x))) ;
+    }) ;
+  }
 
   return Rcpp::wrap(log_tau) ;
 }
@@ -331,15 +335,19 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_directed_nocovariate(
     const arma::sp_mat& R,
     const arma::mat&  Z,
     const arma::mat&  theta,
-    const arma::rowvec&  pi) {
+    const arma::rowvec&  pi,
+    const bool rescale = true) {
 
   // I use trans
   mat log_tau = Y * Z * trans(log(theta/(1 - theta))) + R * Z * trans(log(1 - theta)) +
     Y.t() * Z * log(theta/(1 - theta)) +  R.t() * Z * log(1 - theta) ;
   log_tau.each_row() += log(pi) ;
-  log_tau.each_row( [](rowvec& x){
-    x = exp(x - max(x)) / sum(exp(x - max(x))) ;
-  }) ;
+
+  if (rescale) {
+    log_tau.each_row( [](rowvec& x){
+      x = exp(x - max(x)) / sum(exp(x - max(x))) ;
+    }) ;
+  }
 
   return Rcpp::wrap(log_tau) ;
 }
@@ -351,7 +359,8 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_undirected_covariates(
     const arma::mat&  M,
     const arma::mat&  Z,
     const arma::mat&  Gamma,
-    const arma::rowvec&  pi) {
+    const arma::rowvec&  pi,
+    const bool rescale = true) {
 
   uword Q = Z.n_cols ;
   sp_mat::const_iterator Rij     = R.begin();
@@ -366,11 +375,13 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_undirected_covariates(
       }
     }
   }
-
   log_tau.each_row() += log(pi) ;
-  log_tau.each_row( [](arma::rowvec& x){
-    x = exp(x - max(x)) / sum(exp(x - max(x))) ;
-  }) ;
+
+  if (rescale) {
+    log_tau.each_row( [](arma::rowvec& x){
+      x = exp(x - max(x)) / sum(exp(x - max(x))) ;
+    }) ;
+  }
 
   return Rcpp::wrap(log_tau) ;
 }
@@ -382,7 +393,8 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_directed_covariates(
     const arma::mat&  M,
     const arma::mat&  Z,
     const arma::mat&  Gamma,
-    const arma::rowvec&  pi) {
+    const arma::rowvec&  pi,
+    const bool rescale = true) {
 
   uword Q = Z.n_cols ;
   sp_mat::const_iterator Rij     = R.begin();
@@ -399,11 +411,13 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_directed_covariates(
       }
     }
   }
-
   log_tau.each_row() += log(pi) ;
-  log_tau.each_row( [](arma::rowvec& x){
-    x = exp(x - max(x)) / sum(exp(x - max(x))) ;
-  }) ;
+
+  if( rescale) {
+    log_tau.each_row( [](arma::rowvec& x){
+      x = exp(x - max(x)) / sum(exp(x - max(x))) ;
+    }) ;
+  }
 
   return Rcpp::wrap(log_tau) ;
 }

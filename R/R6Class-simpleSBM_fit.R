@@ -116,6 +116,8 @@ R6::R6Class(classname = "SimpleSBM_fit",
     }
   ),
   active = list(
+    #' @field type the type of SBM (distribution of edges values, network type, presence of covariates)
+    type = function(value) {private$variant},
     #' @field penalty double, value of the penalty term in ICL
     penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
     #' @field entropy double, value of the entropy due to the clustering distribution
@@ -152,6 +154,56 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+    }
+  )
+)
+
+#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#'
+#' It is not designed not be call by the user
+#'
+#' @import R6
+SimpleSBM_fit_NMAR_noCov <-
+R6::R6Class(classname = "SimpleSBM_fit_noCov",
+  inherit = SimpleSBM_fit,
+  private = list(
+    V = NULL, # matrix of imputed values  (sparse encoding)
+    S = NULL  # the "anti" sampling matrix (sparse encoding)
+  ),
+  public = list(
+    #' @description constructor for simpleSBM_fit for missSBM purpose
+    #' @param adjacencyMatrix a matrix encoding the graph
+    #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
+    #' @param imputedValues a matrix encoding the imputed part of the network
+    initialize = function(adjacencyMatrix, clusterInit, imputedValues) {
+      super$initialize(adjacencyMatrix, clusterInit)
+###TODO get S and V on top of Y and R
+    },
+    #' @description update parameters estimation (M-step)
+    update_parameters = function() {
+      res <- private$M_step(private$Y, private$R, private$Z)
+      private$pi <- as.numeric(res$pi)
+      theta_MAR <- res$theta
+### TODO: debias theta
+      private$theta <- theta_MAR
+      invisible(res)
+    },
+    #' @description update variational estimation of blocks (VE-step)
+    #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
+    update_blocks =   function(log_lambda = 0) {
+      log_tau_obs  <- private$E_step(private$Y, private$R   , private$Z, private$theta$mean, private$pi)
+      log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi)
+      private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda,1, .softmax))
+      private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
+    }
+  ),
+  active = list(
+    #' @field vExpec double: variational approximation of the expectation complete log-likelihood
+    vExpec = function(value) {
+      vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+### TODO: add non MAR term
+      vLL <- vLL_MAR
+      vLL
     }
   )
 )
