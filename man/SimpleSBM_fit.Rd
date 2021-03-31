@@ -55,12 +55,7 @@ It is not designed not be call by the user
 \subsection{Method \code{new()}}{
 constructor for simpleSBM_fit for missSBM purpose
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$new(
-  adjacencyMatrix,
-  clusterInit,
-  covarList = list(),
-  model = "bernoulli"
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$new(adjacencyMatrix, clusterInit, covarList = list())}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -68,9 +63,9 @@ constructor for simpleSBM_fit for missSBM purpose
 \describe{
 \item{\code{adjacencyMatrix}}{a matrix encoding the graph}
 
-\item{\code{clusterInit}}{Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".}
+\item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
 
-\item{\code{covarList}}{An option list with M entries (the M covariates).}
+\item{\code{covarList}}{An optional list with M entries (the M covariates).}
 }
 \if{html}{\out{</div>}}
 }

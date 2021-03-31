@@ -47,7 +47,6 @@ Collate:
     'R6Class-networkSampler.R'
     'R6Class-partlyObservedNetwork.R'
     'R6Class-simpleSBM_fit.R'
-    'R6Class-simpleSBM_fit_MAR.R'
     'RcppExports.R'
     'defunct.R'
     'er_network.R'

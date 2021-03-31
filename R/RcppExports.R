@@ -33,20 +33,20 @@ M_step_sparse_bernoulli_directed_covariates <- function(init_param, Y, R, X, Z, 
     .Call('_missSBM_M_step_sparse_bernoulli_directed_covariates', PACKAGE = 'missSBM', init_param, Y, R, X, Z, configuration)
 }
 
-E_step_sparse_bernoulli_undirected_nocovariate <- function(Y, R, Z, theta, pi, log_lambda = 0) {
-    .Call('_missSBM_E_step_sparse_bernoulli_undirected_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi, log_lambda)
+E_step_sparse_bernoulli_undirected_nocovariate <- function(Y, R, Z, theta, pi) {
+    .Call('_missSBM_E_step_sparse_bernoulli_undirected_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi)
 }
 
-E_step_sparse_bernoulli_directed_nocovariate <- function(Y, R, Z, theta, pi, log_lambda = 0) {
-    .Call('_missSBM_E_step_sparse_bernoulli_directed_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi, log_lambda)
+E_step_sparse_bernoulli_directed_nocovariate <- function(Y, R, Z, theta, pi) {
+    .Call('_missSBM_E_step_sparse_bernoulli_directed_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi)
 }
 
-E_step_sparse_bernoulli_undirected_covariates <- function(Y, R, M, Z, Gamma, pi, log_lambda = 0) {
-    .Call('_missSBM_E_step_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, log_lambda)
+E_step_sparse_bernoulli_undirected_covariates <- function(Y, R, M, Z, Gamma, pi) {
+    .Call('_missSBM_E_step_sparse_bernoulli_undirected_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi)
 }
 
-E_step_sparse_bernoulli_directed_covariates <- function(Y, R, M, Z, Gamma, pi, log_lambda = 0) {
-    .Call('_missSBM_E_step_sparse_bernoulli_directed_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, log_lambda)
+E_step_sparse_bernoulli_directed_covariates <- function(Y, R, M, Z, Gamma, pi) {
+    .Call('_missSBM_E_step_sparse_bernoulli_directed_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi)
 }
 
 vExpec_covariates <- function(Y, roundProd, gamma, Tau, pi) {

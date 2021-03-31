@@ -6,30 +6,71 @@
 SimpleSBM_fit <-
 R6::R6Class(classname = "SimpleSBM_fit",
   inherit = sbm::SimpleSBM,
+  private = list(
+    variant= NULL, # model variant
+    R      = NULL, # the sampling matrix (sparse encoding)
+    M_step = NULL, # pointing to the appropriate M_step function
+    E_step = NULL, # pointing to the appropriate E_step function
+    vLL_complete = NULL # pointing to the appropriate Expected complete LL function
+  ),
   public = list(
     #' @description constructor for simpleSBM_fit for missSBM purpose
     #' @param adjacencyMatrix a matrix encoding the graph
-    #' @param clusterInit Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".
-    #' @param covarList An option list with M entries (the M covariates).
-    initialize = function(adjacencyMatrix, clusterInit, covarList = list(), model = "bernoulli") {
+    #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
+    #' @param covarList An optional list with M entries (the M covariates).
+    initialize = function(adjacencyMatrix, clusterInit, covarList = list()) {
+
+### TODO: determine the model according to the adjacency matrix
+### Choose in Bernoulli, Poisson, Gaussian, ZIGaussian
+      model <- "bernoulli"
 
       ## SANITY CHECKS (on data)
-      stopifnot(is.matrix(adjacencyMatrix) | inherits(adjacencyMatrix, "Matrix")) # must be a matrix
-      stopifnot(all.equal(nrow(adjacencyMatrix),
-                          ncol(adjacencyMatrix)))             # matrix must be square
-      stopifnot(all(sapply(covarList, nrow) == nrow(adjacencyMatrix))) # consistency of the covariates
-      stopifnot(all(sapply(covarList, ncol) == ncol(adjacencyMatrix))) # with the network data
+      stopifnot(is.matrix(adjacencyMatrix) | inherits(adjacencyMatrix, "Matrix")) # must be a matrix or sparseMatrix
+      stopifnot(all.equal(nrow(adjacencyMatrix), ncol(adjacencyMatrix)))          # matrix must be square
+      ## Covariates are tested elsewhere
+
+      ## Initial Clustering
+      private$Z <- clustering_indicator(clusterInit)
 
       # Basic fields initialization and call to super constructor
       super$initialize(model        = model,
                        directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
                        nbNodes      = nrow(adjacencyMatrix),
-                       blockProp    = vector("numeric", 0),
-                       connectParam = list(mean = matrix(0, 0, 0)),
+                       blockProp    = vector("numeric", ncol(private$Z)) + .Machine$double.eps,
+### FIXME: this should be model-dependent
+                       connectParam = list(mean = matrix(0, ncol(private$Z), ncol(private$Z))),
                        covarList    = covarList)
 
-      ## Initial Clustering
-      private$Z <- clustering_indicator(clusterInit)
+      # Storing data
+### TODO: handle the case where Y is a sparse Matrix
+
+      ## where are my observations?
+      diag(adjacencyMatrix) <- NA
+      obs <- which(!is.na(adjacencyMatrix), arr.ind = TRUE)
+      private$R <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
+
+      ## where are my non-zero entries?
+      nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0, arr.ind = TRUE)
+      private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
+
+      ## point to the functions that performs E/M steps and compute the likelihood
+      private$variant <-
+        paste(model, ifelse(self$directed, "directed", "undirected"),
+          ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep="_")
+      private$M_step       <- get(paste("M_step_sparse"      , private$variant, sep = "_"))
+      private$E_step       <- get(paste("E_step_sparse"      , private$variant, sep = "_"))
+      private$vLL_complete <- get(paste("vLL_complete_sparse", private$variant, sep = "_"))
+
+### TODO:
+###  - check if parameters are not already intialize
+###  - specialize the initialization to each model (this should be done in sbm::SImpleSBM...)
+
+      ## Initialize estimation of the model parameters
+      private$theta$mean <- matrix(0.5, ncol(private$Z), ncol(private$Z))
+      private$beta       <- numeric(self$nbCovariates)
+      self$update_parameters()
+
+      invisible(self)
     },
     #' @description method to perform estimation via variational EM
     #' @param threshold stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.
@@ -42,7 +83,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
       delta     <- vector("numeric", maxIter)
       objective <- vector("numeric", maxIter)
       objective[1] <- self$loglik
-      iterate <- 1; stop <- FALSE
+      iterate <- 1; stop <- ifelse(self$nbBlocks > 1, FALSE, TRUE)
 
       ## Starting the variational EM algorithm
       if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
@@ -83,5 +124,73 @@ R6::R6Class(classname = "SimpleSBM_fit",
     loglik = function(value) {self$vExpec + self$entropy},
     #' @field ICL double: value of the integrated classification log-likelihood
     ICL    = function(value) {-2 * self$vExpec + self$penalty}
+  )
+)
+
+#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#'
+#' It is not designed not be call by the user
+#'
+#' @import R6
+SimpleSBM_fit_noCov <-
+R6::R6Class(classname = "SimpleSBM_fit_noCov",
+  inherit = SimpleSBM_fit,
+  public = list(
+    #' @description update parameters estimation (M-step)
+    update_parameters = function() {
+      res <- private$M_step(private$Y, private$R, private$Z)
+      private$theta <- res$theta
+      private$pi    <- as.numeric(res$pi)
+      invisible(res)
+    },
+    #' @description update variational estimation of blocks (VE-step)
+    update_blocks =   function() {
+      private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+    }
+  ),
+  active = list(
+    #' @field vExpec double: variational approximation of the expectation complete log-likelihood
+    vExpec = function(value) {
+      private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+    }
+  )
+)
+
+#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#'
+#' It is not designed not be call by the user
+#'
+#' @import R6
+SimpleSBM_fit_withCov <-
+R6::R6Class(classname = "SimpleSBM_fit_withCov",
+  inherit = SimpleSBM_fit,
+  public = list(
+    #' @description update parameters estimation (M-step)
+    #' @param control a list to tune nlopt for optimization, see documentation of nloptr
+    update_parameters = function(control = list(maxeval = 50, xtol_rel = 1e-4, algorithm = "CCSAQ")) {
+      res <- private$M_step(
+        init_param = list(Gamma = .logit(private$theta$mean), beta = private$beta),
+        Y = private$Y,
+        R = private$R,
+        X = self$covarArray,
+        Z = private$Z,
+        configuration = control
+      )
+      private$beta  <- as.numeric(res$beta)
+      private$theta <- res$theta
+      private$pi    <- as.numeric(res$pi)
+      invisible(res)
+    },
+    #' @description update variational estimation of blocks (VE-step)
+    #' @param log_lambda double use to adjust the parameter estimation according to the sampling design
+    update_blocks =   function() {
+       private$Z <- private$E_step(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi)
+    }
+  ),
+  active = list(
+    #' @field vExpec double: variational approximation of the expectation complete log-likelihood
+    vExpec = function(value) {
+      private$vLL_complete(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi)
+    }
   )
 )

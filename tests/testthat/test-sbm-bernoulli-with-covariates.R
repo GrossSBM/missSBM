@@ -35,7 +35,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
   mySBM_sbm$setModel(2)
 
   cl <- missSBM:::init_spectral(mySampler$networkData, 2)
-  mySBM_missSBM <- missSBM:::SimpleSBM_fit_MAR$new(mySampler$networkData, clusterInit = cl, model = 'bernoulli', covarList = covarList[1])
+  mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(mySampler$networkData, clusterInit = cl, covarList = covarList[1])
   mySBM_missSBM$doVEM()
 
   ## correctness
@@ -68,7 +68,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
   mySBM_sbm$setModel(2)
 
   cl <- missSBM:::init_spectral(mySampler$networkData, 2)
-  mySBM_missSBM <- missSBM:::SimpleSBM_fit_MAR$new(mySampler$networkData, clusterInit = cl, model = 'bernoulli', covarList = covarList_directed[1])
+  mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(mySampler$networkData, clusterInit = cl, covarList = covarList_directed[1])
   mySBM_missSBM$doVEM()
   mySBM_missSBM$reorder()
 

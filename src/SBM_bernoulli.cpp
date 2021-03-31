@@ -314,10 +314,9 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_undirected_nocovariate(
     const arma::sp_mat& R,
     const arma::mat&  Z,
     const arma::mat&  theta,
-    const arma::rowvec&  pi,
-    const double& log_lambda = 0) {
+    const arma::rowvec&  pi) {
 
-  arma::mat log_tau = Y * Z * log(theta/(1 - theta)) + R * Z * log(1 - theta) + log_lambda ;
+  arma::mat log_tau = Y * Z * log(theta/(1 - theta)) + R * Z * log(1 - theta) ;
   log_tau.each_row() += log(pi) ;
   log_tau.each_row( [](arma::rowvec& x){
     x = exp(x - max(x)) / sum(exp(x - max(x))) ;
@@ -332,12 +331,11 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_directed_nocovariate(
     const arma::sp_mat& R,
     const arma::mat&  Z,
     const arma::mat&  theta,
-    const arma::rowvec&  pi,
-    const double& log_lambda = 0) {
+    const arma::rowvec&  pi) {
 
   // I use trans
   mat log_tau = Y * Z * trans(log(theta/(1 - theta))) + R * Z * trans(log(1 - theta)) +
-    Y.t() * Z * log(theta/(1 - theta)) +  R.t() * Z * log(1 - theta) + log_lambda ;
+    Y.t() * Z * log(theta/(1 - theta)) +  R.t() * Z * log(1 - theta) ;
   log_tau.each_row() += log(pi) ;
   log_tau.each_row( [](rowvec& x){
     x = exp(x - max(x)) / sum(exp(x - max(x))) ;
@@ -353,14 +351,13 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_undirected_covariates(
     const arma::mat&  M,
     const arma::mat&  Z,
     const arma::mat&  Gamma,
-    const arma::rowvec&  pi,
-    const double& log_lambda = 0) {
+    const arma::rowvec&  pi) {
 
   uword Q = Z.n_cols ;
   sp_mat::const_iterator Rij     = R.begin();
   sp_mat::const_iterator Rij_end = R.end();
 
-  arma::mat log_tau = Y * Z * Gamma + log_lambda;
+  arma::mat log_tau = Y * Z * Gamma ;
 
   for(; Rij != Rij_end; ++Rij) {
     for(int q=0; q < Q; q++){
@@ -385,14 +382,13 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_directed_covariates(
     const arma::mat&  M,
     const arma::mat&  Z,
     const arma::mat&  Gamma,
-    const arma::rowvec&  pi,
-    const double& log_lambda = 0) {
+    const arma::rowvec&  pi) {
 
   uword Q = Z.n_cols ;
   sp_mat::const_iterator Rij     = R.begin();
   sp_mat::const_iterator Rij_end = R.end();
 
-  arma::mat log_tau = Y * Z * Gamma.t() + Y.t() * Z * Gamma + log_lambda;
+  arma::mat log_tau = Y * Z * Gamma.t() + Y.t() * Z * Gamma ;
 
   for(; Rij != Rij_end; ++Rij) {
     for(int q=0; q < Q; q++){

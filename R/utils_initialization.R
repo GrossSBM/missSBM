@@ -62,8 +62,12 @@ init_kmeans <- function(X, K) {
 clustering_indicator <- function(clustering) {
   nbBlocks <- length(unique(clustering))
   nbNodes  <- length(clustering)
-  Z <- matrix(0,nbNodes, nbBlocks)
-  Z[cbind(seq.int(nbNodes), clustering)] <- 1
+  if (nbBlocks > 1) {
+      Z <- matrix(0,nbNodes, nbBlocks)
+      Z[cbind(seq.int(nbNodes), clustering)] <- 1
+  } else {
+    Z <- matrix(1,nbNodes, nbBlocks)
+  }
   Z
 }
 
