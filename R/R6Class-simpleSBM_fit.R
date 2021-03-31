@@ -41,7 +41,8 @@ R6::R6Class(classname = "SimpleSBM_fit",
       ## Initialization of quantities that monitor convergence
       delta     <- vector("numeric", maxIter)
       objective <- vector("numeric", maxIter)
-      iterate <- 0; stop <- FALSE
+      objective[1] <- self$loglik
+      iterate <- 1; stop <- FALSE
 
       ## Starting the variational EM algorithm
       if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")

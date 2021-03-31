@@ -77,9 +77,18 @@ constructor for simpleSBM_fit for missSBM purpose
 \subsection{Method \code{update_parameters()}}{
 update parameters estimation (M-step)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MAR$update_parameters()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MAR$update_parameters(
+  control = list(maxeval = 50, xtol_rel = 1e-04, algorithm = "CCSAQ")
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{control}}{a list to tune nlopt for optimization, see documentation of nloptr. Only relevant when covariates are present}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-update_blocks"></a>}}
