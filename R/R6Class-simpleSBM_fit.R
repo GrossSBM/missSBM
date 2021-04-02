@@ -175,17 +175,27 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @param adjacencyMatrix a matrix encoding the graph
     #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
     #' @param imputedValues a matrix encoding the imputed part of the network
-    initialize = function(adjacencyMatrix, clusterInit, imputedValues) {
+    initialize = function(adjacencyMatrix, clusterInit) {
       super$initialize(adjacencyMatrix, clusterInit)
-###TODO get S and V on top of Y and R
+      diag(adjacencyMatrix) <- 0 ## not auto-loop: neither observed nor imputed
+      miss <- which(is.na(adjacencyMatrix), arr.ind = TRUE)
+      private$S <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
+      self$update_parameters()
+      private$V <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
     },
     #' @description update parameters estimation (M-step)
-    update_parameters = function() {
-      res <- private$M_step(private$Y, private$R, private$Z)
-      private$pi <- as.numeric(res$pi)
-      theta_MAR <- res$theta
-### TODO: debias theta
-      private$theta <- theta_MAR
+    update_parameters = function(imputed_values = NULL) {
+      if (is.null(imputed_values)) {
+        res <- private$M_step(private$Y, private$R, private$Z)
+        private$theta <- res$theta
+        private$pi    <- as.numeric(res$pi)
+      } else {
+        ## only Bernoulli for the moment !!!
+        private$V@x <- imputed_values
+        Zbar <- colSums(private$Z)
+        private$theta$mean <- ( t(private$Z) %*% private$Y %*% private$Z + t(private$Z) %*% private$V %*% private$Z  ) / ( Zbar %o% Zbar - Zbar )
+        private$pi         <- colMeans(private$Z)
+      }
       invisible(res)
     },
     #' @description update variational estimation of blocks (VE-step)
@@ -193,7 +203,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     update_blocks =   function(log_lambda = 0) {
       log_tau_obs  <- private$E_step(private$Y, private$R   , private$Z, private$theta$mean, private$pi)
       log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi)
-      private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda,1, .softmax))
+      private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
       private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
     }
   ),
@@ -201,8 +211,8 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
-### TODO: add non MAR term
-      vLL <- vLL_MAR
+      vLL_IMP <- private$vLL_complete(private$V, private$S, private$Z, private$theta$mean, private$pi)
+      vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
       vLL
     }
   )
