@@ -42,12 +42,12 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
 
   ## distance with blockmodels/sbm estiamtor
   expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.1)
-  expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.95)
+  expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.85)
   expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
 
   ## distance to true values
-  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.11)
-  expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.95)
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.2)
+  expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.85)
 
 })
 
