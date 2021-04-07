@@ -317,8 +317,8 @@ blockSampling_fit <-
     #' @param imputedNet an adjacency matrix where missing values have been imputed
     #' @param Z indicator of blocks
     update_parameters = function(imputedNet, Z) {
-      private$So <- colSums(Z[ private$N_obs, , drop = FALSE])
-      private$Sm <- colSums(Z[!private$N_obs, , drop = FALSE])
+      private$So  <- colSums(Z[ private$N_obs, , drop = FALSE])
+      private$Sm  <- colSums(Z[!private$N_obs, , drop = FALSE])
       private$psi <- check_boundaries(private$So / (private$So + private$Sm))
     }
   ),
@@ -354,8 +354,8 @@ degreeSampling_fit <-
     initialize = function(partlyObservedNetwork, blockInit, connectInit) {
       super$initialize(partlyObservedNetwork, "degree")
 
-      private$NAs <- partlyObservedNetwork$NAs
-      ## will remain the same
+      private$NAs <- as.matrix(partlyObservedNetwork$NAs)
+      ## the node degrees - will remain the same
       private$D <- rowSums(partlyObservedNetwork$networkData, na.rm = TRUE)
 
       ## will fluctuate along the algorithm

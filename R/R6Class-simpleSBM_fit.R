@@ -43,20 +43,17 @@ R6::R6Class(classname = "SimpleSBM_fit",
 
       # Storing data
 ### TODO: handle the case where Y is a sparse Matrix
-### TODO: create sparse matrix more effictiently
-
-      diag(adjacencyMatrix) <- NA ## no loops for bith cases (directed or not)
+### TODO: create sparse matrix more efficiently
       if (self$directed) {
-        ## where are my observations?
-        obs <- which(!is.na(adjacencyMatrix), arr.ind = TRUE)
-        ## where are my non-zero entries?
-        nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0, arr.ind = TRUE)
+        dyads <- upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)
       } else {
-        obs <- which(!is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix) , arr.ind = TRUE)
-        nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0  & upper.tri(adjacencyMatrix), arr.ind = TRUE)
+        dyads <- upper.tri(adjacencyMatrix)
       }
-
+      ## where are my observations?
+      obs <- which(!is.na(adjacencyMatrix) & dyads, arr.ind = TRUE)
       private$R <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
+      ## where are my non-zero entries?
+      nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
       private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
 
       ## point to the functions that performs E/M steps and compute the likelihood
@@ -183,16 +180,21 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @param imputedValues a matrix encoding the imputed part of the network
     initialize = function(adjacencyMatrix, clusterInit) {
       super$initialize(adjacencyMatrix, clusterInit)
-      diag(adjacencyMatrix) <- 0 ## not auto-loop: neither observed nor imputed
-      miss <- which(is.na(adjacencyMatrix), arr.ind = TRUE)
+
+      if (self$directed) {
+        dyads <- upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)
+      } else {
+        dyads <- upper.tri(adjacencyMatrix)
+      }
+      miss <- which(is.na(adjacencyMatrix) & dyads, arr.ind = TRUE)
       private$S <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
-      self$update_parameters()
       private$V <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
+      self$update_parameters()
     },
     #' @description update parameters estimation (M-step)
     update_parameters = function(imputed_values = NULL) {
       if (is.null(imputed_values)) {
-        res <- private$M_step(private$Y, private$R, private$Z)
+        res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
         private$theta <- res$theta
         private$pi    <- as.numeric(res$pi)
       } else {
@@ -207,9 +209,8 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
     update_blocks =   function(log_lambda = 0) {
-      log_tau_obs  <- private$E_step(private$Y, private$R   , private$Z, private$theta$mean, private$pi)
-      log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi)
-      private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
+      log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
+      log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
       private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
     }
   ),

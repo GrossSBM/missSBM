@@ -28,15 +28,15 @@ This class is not exported to the user
 
 \item{\code{covarMatrix}}{the matrix of covariates}
 
-\item{\code{dyads}}{a list of potential dyads in the network}
-
 \item{\code{missingDyads}}{array indices of missing dyads}
 
 \item{\code{observedDyads}}{array indices of observed dyads}
 
 \item{\code{samplingMatrix}}{matrix of observed and non-observed edges}
 
-\item{\code{observedNodes}}{a vector of observed and non-observed nodes}
+\item{\code{samplingMatrixBar}}{matrix of observed and non-observed edges}
+
+\item{\code{observedNodes}}{a vector of observed and non-observed nodes (observed means at least one non NA value)}
 
 \item{\code{NAs}}{boolean for NA entries in the adjacencyMatrix}
 }

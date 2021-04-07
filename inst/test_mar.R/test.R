@@ -11,7 +11,7 @@ directed <- FALSE         # if the network is directed or not
 
 ### Draw a undirected SBM model
 mySBM <- sbm::sampleSimpleSBM(N, pi, theta)
-A <- observeNetwork(mySBM$networkData, "dyad", parameters = 0.5)
+A <- observeNetwork(mySBM$networkData, "dyad", parameters = .5)
 obsNet <- missSBM:::partlyObservedNetwork$new(A)
 cl <- obsNet$clustering(nbBlocks = Q, "spectral")
 

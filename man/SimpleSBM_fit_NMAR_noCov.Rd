@@ -51,7 +51,7 @@ It is not designed not be call by the user
 \subsection{Method \code{new()}}{
 constructor for simpleSBM_fit for missSBM purpose
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_NMAR_noCov$new(adjacencyMatrix, clusterInit, imputedValues)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_NMAR_noCov$new(adjacencyMatrix, clusterInit)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -72,7 +72,7 @@ constructor for simpleSBM_fit for missSBM purpose
 \subsection{Method \code{update_parameters()}}{
 update parameters estimation (M-step)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_NMAR_noCov$update_parameters()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_NMAR_noCov$update_parameters(imputed_values = NULL)}\if{html}{\out{</div>}}
 }
 
 }

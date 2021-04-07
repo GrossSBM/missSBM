@@ -71,7 +71,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
   tolerance <- .25
-  expect_lt(error(fittedSampling$parameters,c(intercept, covarParam)), tolerance)
+  expect_lt(error(fittedSampling$parameters, c(intercept, covarParam)), tolerance)
   expect_equal(fittedSampling$df, 1 + length(covarParam))
   expect_equal(fittedSampling$penalty, log(N) * (1 + length(covarParam)))
   expect_lt(fittedSampling$vExpec, 0)

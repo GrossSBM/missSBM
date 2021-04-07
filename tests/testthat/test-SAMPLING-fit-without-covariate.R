@@ -45,8 +45,9 @@ test_that("Consistency of sampling fit", {
     expect_equal(fittedSampling$penalty, sampling$k * length(sampling$psi))
     expect_lte(fittedSampling$vExpec, 0)
 
-    if (sampling$name %in% c("dyad", "node"))
+    if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
+    }
 
   }
 })
