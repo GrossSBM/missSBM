@@ -23,7 +23,7 @@ mySampler <- sbm::SimpleSBM$new('bernoulli', nbNodes, FALSE, blockProp, connectP
 mySampler$rMemberships(store = TRUE)
 mySampler$rEdges(store = TRUE)
 adjacencyMatrix <- missSBM::observeNetwork(mySampler$networkData, "dyad", 1)
-
+A <- adjacencyMatrix
 
 Y <- adjacencyMatrix
 Y[is.na(Y)] <- 0
@@ -35,34 +35,39 @@ pi <- mySampler$blockProp
 
 # Storing data
 ## where are my observations?
-diag(adjacencyMatrix) <- NA
-obs <- which(!is.na(adjacencyMatrix), arr.ind = TRUE)
-R_sp <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
+diag(A) <- NA
+obs <- which(!is.na(A), arr.ind = TRUE)
+R_sp  <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(A))
+obs   <- which(!is.na(A) & upper.tri(A), arr.ind = TRUE)
+R_sp2 <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(A))
 
 ## where are my non-zero entries?
-nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0, arr.ind = TRUE)
-Y_sp   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
+nzero <- which(!is.na(A) & A != 0 , arr.ind = TRUE)
+Y_sp   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(A))
+nzero <- which(!is.na(A) & A != 0  & upper.tri(A), arr.ind = TRUE)
+Y_sp2   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(A))
 
 microbenchmark::microbenchmark(
- spmat = missSBM:::vLL_complete_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, T, Gamma, pi),
+ spmat = missSBM:::vLL_complete_sparse_bernoulli_covariates(Y_sp2, R_sp2, M, Tau, Gamma, pi),
  dense = missSBM:::vExpec_covariates(Y, M, Gamma, Tau, pi)
 ) -> res_vLL
 
 
 microbenchmark::microbenchmark(
- spmat = missSBM:::E_step_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, Tau, Gamma, pi),
- dense = missSBM:::E_step_covariates(Y, M, Gamma, T, pi)
+ spmat = missSBM:::E_step_sparse_bernoulli_covariates(Y_sp2, R_sp2, M, Tau, Gamma, pi),
+ dense = missSBM:::E_step_covariates(Y, M, Gamma, Tau, pi)
 ) -> res_Estep
 
-
+# Z1 <- missSBM:::E_step_sparse_bernoulli_undirected_covariates(Y_sp, R_sp, M, Z, Gamma, pi)
+# Z2 <- missSBM:::E_step_sparse_bernoulli_covariates(Y_sp2, R_sp2, M, Z, Gamma, pi)
 
 param <- list(Gamma = Gamma, beta = matrix(covarParam[1], ncol=1))
 
 microbenchmark::microbenchmark(
-sparse = sparse <- missSBM:::M_step_sparse_bernoulli_undirected_covariates(
+sparse = sparse <- missSBM:::M_step_sparse_bernoulli_covariates(
         param,
-        Y_sp,
-        R_sp,
+        Y_sp2,
+        R_sp2,
         mySampler$covarArray,
         Tau,
         configuration = list(algorithm="CCSAQ", maxeval = 50, xtol_rel = 1e-4)
@@ -83,6 +88,6 @@ ggplot2::autoplot(res_Estep)
 ggplot2::autoplot(res_Mstep_covariates)
 
 beta_new <- sparse$beta
-gamma_new <- sparse$Gamma
+gamma_new <- matrix(.logit(sparse$theta$mean), 2, 2)
 beta_old  <- dense$solution[-(1:4)]
 gamma_old <- matrix(dense$solution[1:4], 2, 2)

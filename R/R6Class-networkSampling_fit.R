@@ -263,6 +263,7 @@ blockDyadSampling_fit <-
     prob     = NULL,  ## for calculation of the log-likelihood
     NAs      = NULL,  ## localisation of NAs
     R        = NULL,  ## sampling matrix
+    Rbar     = NULL,
     directed = NULL   ##
   ),
   public = list(
@@ -273,6 +274,7 @@ blockDyadSampling_fit <-
       super$initialize(partlyObservedNetwork, "block-dyad")
       private$NAs      <- partlyObservedNetwork$NAs
       private$R        <- partlyObservedNetwork$samplingMatrix
+      private$Rbar     <- partlyObservedNetwork$samplingMatrixbar
       private$directed <- partlyObservedNetwork$is_directed
       imputedNet       <- matrix(mean(partlyObservedNetwork$networkData, na.rm = TRUE), partlyObservedNetwork$nbNodes, partlyObservedNetwork$nbNodes)
       self$update_parameters(imputedNet, blockInit)
@@ -281,7 +283,7 @@ blockDyadSampling_fit <-
     #' @param imputedNet an adjacency matrix where missing values have been imputed
     #' @param Z indicator of blocks
     update_parameters = function(imputedNet, Z) {
-      private$psi    <- check_boundaries((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z))
+      private$psi    <- check_boundaries(as.matrix((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z)))
       private$prob   <- check_boundaries(Z %*% private$psi %*% t(Z))
     }
   ),
@@ -289,9 +291,7 @@ blockDyadSampling_fit <-
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
       factor       <- ifelse(private$directed, 1, .5)
-      sampMat      <- private$R ; diag(sampMat) <- 0
-      sampMat_bar  <- 1 - private$R ; diag(sampMat_bar) <- 0
-      res          <- factor * sum(sampMat * log(private$prob) + sampMat_bar *  log(1 - private$prob))
+      res          <- factor * sum(private$R * log(private$prob) + private$Rbar *  log(1 - private$prob))
       res
     }
   )

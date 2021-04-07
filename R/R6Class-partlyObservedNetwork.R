@@ -14,11 +14,11 @@ partlyObservedNetwork <-
     X        = NULL, # the covariates matrix
     phi      = NULL, # the covariates array
     directed = NULL, # directed network of not
-    D        = NULL, # list of potential dyads in the network
     nas      = NULL, # all NA in Y
     D_obs    = NULL, # array indices of observed dyads
     D_miss   = NULL, # array indices of missing dyads
-    R        = NULL, # matrix of observed and non-observed edges
+    R        = NULL, # the sampling matrix (sparse encoding)
+    Rbar     = NULL, # complementary matrix of R
     S        = NULL  # vector of observed and non-observed nodes
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,14 +41,14 @@ partlyObservedNetwork <-
     covarArray = function(value) {private$phi},
     #' @field covarMatrix the matrix of covariates
     covarMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
-    #' @field dyads a list of potential dyads in the network
-    dyads           = function(value) {private$D},
     #' @field missingDyads array indices of missing dyads
     missingDyads    = function(value) {private$D_miss},
     #' @field observedDyads array indices of observed dyads
     observedDyads   = function(value) {private$D_obs},
     #' @field samplingMatrix matrix of observed and non-observed edges
     samplingMatrix  = function(value) {private$R},
+    #' @field samplingMatrix matrix of observed and non-observed edges
+    samplingMatrixBar  = function(value) {private$Rbar},
     #' @field observedNodes a vector of observed and non-observed nodes
     observedNodes   = function(value) {private$S},
     #' @field NAs boolean for NA entries in the adjacencyMatrix
@@ -82,23 +82,28 @@ partlyObservedNetwork <-
       private$nas <- is.na(adjacencyMatrix)
       if (private$directed) {
         ## remove diagonal (no loops)
-        private$D <- which(upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix))
+        dyads <- which(upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix))
       } else {
-        private$D <- which(upper.tri(adjacencyMatrix))
+        dyads <- which(upper.tri(adjacencyMatrix))
       }
-      private$D_miss <- intersect(which( private$nas), private$D )
-      private$D_obs  <- intersect(which(!private$nas), private$D )
+      private$D_miss <- intersect(which( private$nas), dyads )
+      private$D_obs  <- intersect(which(!private$nas), dyads )
 
       ## sets of observed / unobserved nodes
       S <- rep(FALSE, self$nbNodes)
       S[!is.na(rowSums(adjacencyMatrix))] <- TRUE
       private$S <- S
 
-      ## sampling matrix (indicating who is observed) : USELESS ??
-      R <- matrix(0, self$nbNodes, self$nbNodes)
-      R[private$D_obs] <- 1
-      if (!private$directed)  R <- t(R) | R
-      private$R <- R
+      ## sampling matrix (indicating who is observed)
+      ## where are my observations?
+      diag(adjacencyMatrix) <- NA
+      obs <- which(!is.na(adjacencyMatrix), arr.ind = TRUE)
+      private$R <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
+
+      diag(adjacencyMatrix) <- 0 ## not auto-loop: neither observed nor imputed
+      miss <- which(is.na(adjacencyMatrix), arr.ind = TRUE)
+      private$Rbar <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
+
     },
     #' @description method to cluster network data with missing value
     #' @param nbBlocks integer, the chosen number of blocks

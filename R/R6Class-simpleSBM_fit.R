@@ -43,26 +43,32 @@ R6::R6Class(classname = "SimpleSBM_fit",
 
       # Storing data
 ### TODO: handle the case where Y is a sparse Matrix
+### TODO: create sparse matrix more effictiently
 
-      ## where are my observations?
-      diag(adjacencyMatrix) <- NA
-      obs <- which(!is.na(adjacencyMatrix), arr.ind = TRUE)
+      diag(adjacencyMatrix) <- NA ## no loops for bith cases (directed or not)
+      if (self$directed) {
+        ## where are my observations?
+        obs <- which(!is.na(adjacencyMatrix), arr.ind = TRUE)
+        ## where are my non-zero entries?
+        nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0, arr.ind = TRUE)
+      } else {
+        obs <- which(!is.na(adjacencyMatrix) & upper.tri(adjacencyMatrix) , arr.ind = TRUE)
+        nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0  & upper.tri(adjacencyMatrix), arr.ind = TRUE)
+      }
+
       private$R <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
-
-      ## where are my non-zero entries?
-      nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0, arr.ind = TRUE)
       private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
 
       ## point to the functions that performs E/M steps and compute the likelihood
       private$variant <-
         paste(model, ifelse(self$directed, "directed", "undirected"),
           ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep="_")
-      private$M_step       <- get(paste("M_step_sparse"      , private$variant, sep = "_"))
-      private$E_step       <- get(paste("E_step_sparse"      , private$variant, sep = "_"))
-      private$vLL_complete <- get(paste("vLL_complete_sparse", private$variant, sep = "_"))
+      private$M_step       <- get(paste("M_step_sparse"      , model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
+      private$E_step       <- get(paste("E_step_sparse"      , model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
+      private$vLL_complete <- get(paste("vLL_complete_sparse", model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
 
 ### TODO:
-###  - check if parameters are not already intialize
+###  - check if parameters are not already initialize
 ###  - specialize the initialization to each model (this should be done in sbm::SImpleSBM...)
 
       ## Initialize estimation of the model parameters
@@ -140,7 +146,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   public = list(
     #' @description update parameters estimation (M-step)
     update_parameters = function() {
-      res <- private$M_step(private$Y, private$R, private$Z)
+      res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
       private$theta <- res$theta
       private$pi    <- as.numeric(res$pi)
       invisible(res)

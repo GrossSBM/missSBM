@@ -17,7 +17,7 @@ cl <- obsNet$clustering(nbBlocks = Q, "spectral")
 
 res <- microbenchmark::microbenchmark(
   MAR = {
-    mySBM_fit <- missSBM:::SimpleSBM_fit_MAR$new(A, cl)
+    mySBM_fit <- missSBM:::SimpleSBM_fit_noCov$new(A, cl)
     optim <- mySBM_fit$doVEM(trace = FALSE)
   },
   missSBM = {
