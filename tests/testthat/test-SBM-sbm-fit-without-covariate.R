@@ -17,9 +17,8 @@ A <- mySBM$networkData
 ### UGLY FIX - FIXME
 diag(A) <- 0
 cl_rand <- base::sample(mySBM$memberships)
-cl_spec <- missSBM:::init_spectral(A, Q)
-cl_hier <- missSBM:::init_hierarchical(A, Q)
-cl_kmns <- missSBM:::init_kmeans(A, Q)
+myNet <- missSBM:::partlyObservedNetwork$new(A)
+cl_spec <- myNet$clustering(Q)[[1]]
 
 test_that("Creation of a SimpleSBM_fit_missSBM", {
 
@@ -40,13 +39,9 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM when the number of bloc
   tol <- 2e-3
 
   ## testing all initialization
-  mySBM_fit_hier <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl_hier)
   mySBM_fit_spec <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl_spec)
-  mySBM_fit_kmns <- missSBM:::SimpleSBM_fit_missSBM$new(A, cl_kmns)
 
-  out_hier <- mySBM_fit_hier$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
   out_spec <- mySBM_fit_spec$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
-  out_kmns <- mySBM_fit_kmns$doVEM(trace = FALSE, threshold = tol, maxIter = 50, fixPointIter = 3)
 
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_max = Q, plotting = "", ncores = 1)
   BM$estimate()
@@ -54,23 +49,14 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM when the number of bloc
 
   ## checking estimation consistency
   expect_lt(sum((mySBM_fit_spec$connectParam$mean - mySBM$connectParam$mean)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam$mean - mySBM$connectParam$mean)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam$mean - mySBM$connectParam$mean)^2), tol)
 
   ## checking estimation consistency with block model
   expect_lt(sum((mySBM_fit_spec$connectParam$mean - theta_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_hier$connectParam$mean - theta_BM)^2), tol)
-  expect_lt(sum((mySBM_fit_kmns$connectParam$mean - theta_BM)^2), tol)
 
   ## checking consistency of the clustering
-  expect_lt(1 - ARI(mySBM_fit_hier$memberships, mySBM$memberships), tol)
   expect_lt(1 - ARI(mySBM_fit_spec$memberships, mySBM$memberships), tol)
-  expect_lt(1 - ARI(mySBM_fit_kmns$memberships, mySBM$memberships), tol)
 
-  expect_equal(mySBM_fit_hier$loglik,
-               mySBM_fit_spec$loglik,
-               mySBM_fit_kmns$loglik)
-  expect_gt(mySBM_fit_hier$loglik - .5 * mySBM_fit_hier$penalty,  BM$ICL[[Q]])
+  expect_gt(mySBM_fit_spec$loglik - .5 * mySBM_fit_spec$penalty,  BM$ICL[[Q]])
 
 })
 
@@ -80,10 +66,11 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
   BM <- blockmodels::BM_bernoulli("SBM_sym", A, verbosity = 0, explore_min = 5, explore_max = 5, plotting = "", ncores = 1)
   BM$estimate()
 
-  vBlocks <- 1:5
-  models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_hierarchical(A, nbBlocks)
-    myFit <- missSBM:::SimpleSBM_fit_noCov$new(A, cl0)
+  myNet <- missSBM:::partlyObservedNetwork$new(A)
+  cl0 <- myNet$clustering(1:5)
+
+  models <- lapply(cl0, function(cl0_) {
+    myFit <- missSBM:::SimpleSBM_fit_noCov$new(A, cl0_)
     myFit$doVEM()
     myFit
   })
@@ -93,7 +80,7 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
 
   expect_equal(which.min(ICLs), which.max(BM$ICL))
 
-  expect_lt(sum((-.5 * ICLs - BM$ICL)/BM$ICL^2), 5e-6)
+  expect_lt(sum((-.5 * ICLs - BM$ICL)^2/BM$ICL^2), 1e-4)
 })
 
 

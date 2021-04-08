@@ -2,7 +2,14 @@ context("test sbm fit with covariates (class simpleSBM_fit_missSBM)")
 
 library(aricode)
 library(blockmodels)
-source("utils_test.R")
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
+
 ## ========================================================================
 ## A SBM model with covariates
 
@@ -20,18 +27,7 @@ covarParam  <- rnorm(M, 0, 1)
 sbm <- sbm::sampleSimpleSBM(N, pi, theta, covariates = covariates, covariatesParam = covarParam)
 
 ### Draw a undirected SBM model
-cl_rand <- base::sample(sbm$memberships)
-
-A <- sbm$networkData
-y <- as.vector(A)
-X <- cbind(1, apply(sbm$covarArray, 3, as.vector))
-NAs <- as.vector(is.na(A))
-A_ <- matrix(NA, nrow(A), ncol(A))
-A_[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], A[!NAs], family = binomial())))
-
-cl_spec <- missSBM:::init_spectral(A_, Q)
-cl_hier <- missSBM:::init_hierarchical(A_, Q)
-cl_kmns <- missSBM:::init_kmeans(A_, Q)
+cl_rand <- base::sample.int(Q, N, replace = TRUE)
 
 test_that("Creation of a SimpleSBM_fit_missSBM", {
 
@@ -78,16 +74,10 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
   BM <- blockmodels::BM_bernoulli_covariates("SBM_sym", adjMatrix, covariates, verbosity = 0, explore_min = 3, explore_max = 3, plotting = "", ncores = 1)
   BM$estimate()
 
-  A <- sbm$networkData
-  y <- as.vector(A)
-  X <- cbind(1, apply(sbm$covarArray, 3, as.vector))
-  NAs <- as.vector(is.na(A))
-  A_ <- matrix(NA, nrow(A), ncol(A))
-  A_[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], A[!NAs], family = binomial())))
+  myNet <- missSBM:::partlyObservedNetwork$new(sbm$networkData, covariates = covariates)
+  cl_spec <- myNet$clustering(1:3)
 
-  vBlocks <- 1:3
-  models <- lapply(vBlocks, function(nbBlocks) {
-    cl0 <- missSBM:::init_hierarchical(A_, nbBlocks)
+  models <- lapply(cl_spec, function(cl0) {
     myFit <- missSBM:::SimpleSBM_fit_missSBM$new(adjMatrix, cl0, covariates)
     myFit$doVEM()
     myFit
@@ -99,7 +89,7 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
   expect_equal(which.min(ICLs), which.max(BM$ICL))
 
   tol_ref   <- 1e-2
-  tol_truth <- 1e-2
+  tol_truth <- 1e-3
   expect_lt(sum(((-.5 * ICLs - BM$ICL)/BM$ICL)^2), tol_ref)
 
   error_missSBM <- error(sbm$connectParam$mean, bestICL$connectParam$mean)

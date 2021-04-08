@@ -1,7 +1,13 @@
 context("test missSBM-fit without covariate")
 
 library(aricode)
-source("utils_test.R")
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
 
 set.seed(1890718)
 ### A SBM model : ###

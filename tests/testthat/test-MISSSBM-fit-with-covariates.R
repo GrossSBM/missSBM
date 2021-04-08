@@ -1,7 +1,13 @@
 context("test missSBM-fit with covariates")
 
 library(aricode)
-source("utils_test.R")
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
 
 ## ========================================================================
 ## A SBM model with covariates
@@ -38,7 +44,7 @@ test_that("missSBM with covariates and dyad sampling works", {
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
-  cl <- partlyObservedNet$clustering(Q)[[Q]]
+  cl <- partlyObservedNet$clustering(Q)[[1]]
 
   ## Perform inference
   missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, "covar-dyad", cl, TRUE)

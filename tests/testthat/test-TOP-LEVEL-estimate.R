@@ -31,7 +31,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     sampling <- names(l_psi)[k]
     adjMatrix <- missSBM::observeNetwork(A, sampling, l_psi[[k]], clusters = mySBM$memberships)
     partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-    cl0 <- partlyObservedNet$clustering(Q)[[Q]]
+    cl0 <- partlyObservedNet$clustering(Q)[[1]]
 
     ## control parameter for the VEM
     control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 0)

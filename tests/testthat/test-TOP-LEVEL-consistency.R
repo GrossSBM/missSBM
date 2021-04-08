@@ -1,13 +1,19 @@
 context("test consistency missSBM top-level function")
 
 library(aricode)
-source("utils_test.R")
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
 
 referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", package = "missSBM"))
 
 test_that("check consistency against Tim's code for dyad, node, double standard and block sampling", {
 
-  tol_ref   <- 2e-2
+  tol_ref   <- 1e-3
   tol_truth <- 1e-2
   tol_ARI   <- .8
   truth   <- referenceResults$true_sbm
@@ -21,7 +27,8 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     missSBM_out <- estimateMissSBM(
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
-      sampling = sampling
+      sampling = sampling,
+      control = list(trace = 0)
     )
     newAlgo <- missSBM_out$bestModel
 
@@ -95,7 +102,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
       vBlocks     = truth$nBlocks,
       sampling    = ifelse(sampling == "dyad-covariates", "covar-dyad", "covar-node"),
       covariates  = refAlgo$covariates,
-      control     = list(clusterInit = "spectral")
+      control     = list(trace = 0)
     )
     newAlgo <- missSBM_out$bestModel
 
