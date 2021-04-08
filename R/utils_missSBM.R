@@ -7,6 +7,14 @@ available_samplings_covariates <- c("dyad", "covar-dyad", "node", "covar-node")
 
 l1_similarity <- function(x, y) {-abs(x - y)}
 
+clustering_indicator <- function(clustering) {
+  K <- length(unique(clustering))
+  N  <- length(clustering)
+  Z <- matrix(0, N, K)
+  Z[cbind(seq.int(N), clustering)] <- 1
+  Z
+}
+
 bar <- function(X) {
   X.bar <- 1 - X ; diag(X.bar) <- 0
   X.bar

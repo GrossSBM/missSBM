@@ -21,8 +21,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     missSBM_out <- estimateMissSBM(
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
-      sampling = sampling,
-      control = list(clusterInit = "spectral")
+      sampling = sampling
     )
     newAlgo <- missSBM_out$bestModel
 

@@ -27,19 +27,20 @@ control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE
 test_that("missSBM-fit works and is consistent for all samplings", {
 
   ## Consistency
-  tol_truth <- 1e-2
-  tol_ARI   <- .8
+  tol_truth <- 0.5e-1
+  tol_ARI   <- .9
 
-##  cat("Tested sampling:")
+  cat("Tested sampling:")
   for (sampling in samplings) {
-##    cat("\n -", sampling$name)
+    cat("\n -", sampling$name)
 
     ## sampled the network
     adjMatrix  <- missSBM::observeNetwork(sbm$networkData, sampling$name, sampling$psi, sbm$memberships)
     partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
+    cl <- partlyObservedNet$clustering(1:Q)
 
     ## Perform inference
-    missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, sampling$name, "hierarchical", FALSE)
+    missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, sampling$name, cl[[Q]], FALSE)
     out <- missSBM$doVEM(control)
 
     ## Sanity check
@@ -64,33 +65,3 @@ test_that("missSBM-fit works and is consistent for all samplings", {
 
 })
 
-# test_that("miss SBM with degree sampling works", {
-#
-#   psi <- c(-5, .1)
-#   partlyObservedNet <- sampleNetwork(A, "degree", psi)
-#   ## Perform inference
-#   missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "degree", "hierarchical)
-#   out <- missSBM$doVEM(control)
-#
-#   ## Sanity check
-#   expect_is(missSBM, "missSBM_fit")
-#   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
-#   expect_is(missSBM$fittedSampling, "degreeSampling_fit")
-#   expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
-#
-#   ## Consistency
-#   tol <- 1e-2
-#   ## Optimization success
-#   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
-#   ## SBM: parameters estimation
-#   ## FIXME: expect_lt(sum((missSBM$fittedSBM$connectParam - mySBM$connectParam)^2)/(Q*(Q + 1)/2), tol)
-#   ## sampling design: parameters estimation
-#   ## FIXME: this does work!!! expect_lt(sum((sort(missSBM$fittedSampling$parameters) - sort(psi))^2/Q), tol)
-#   ## clustering
-#   tol <- .9
-#   expect_gt(ARI(missSBM$fittedSBM$memberships, mySBM$memberships), tol)
-#
-# })
-#
-#
-#

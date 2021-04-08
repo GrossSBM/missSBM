@@ -25,14 +25,16 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate", {
   mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
   mySBM_sbm$setModel(3)
 
-  cl <- missSBM:::init_spectral(mySampler$networkData, 3)
+  net <- missSBM:::partlyObservedNetwork$new(mySampler$networkData)
+  cl <- net$clustering(3)[[1]]
+
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_noCov$new(mySampler$networkData, clusterInit = cl)
   mySBM_missSBM$doVEM()
 
   ## correctness
 
   ## distance with blockmodels/sbm estiamtor
-  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.1)
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.05)
   expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.95)
   expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
 
@@ -58,7 +60,9 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate", {
   mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
   mySBM_sbm$setModel(3)
 
-  cl <- missSBM:::init_spectral(mySampler$networkData, 3)
+  net <- missSBM:::partlyObservedNetwork$new(mySampler$networkData)
+  cl <- net$clustering(3)[[1]]
+
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_noCov$new(mySampler$networkData, clusterInit = cl)
   mySBM_missSBM$doVEM()
   mySBM_missSBM$reorder()

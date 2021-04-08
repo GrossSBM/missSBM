@@ -82,16 +82,13 @@ constructor
 \subsection{Method \code{clustering()}}{
 method to cluster network data with missing value
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(
-  nbBlocks,
-  method = c("spectral", "hierarchical", "kmeans")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(nbBlocks, imputation = c("median", "average"))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{nbBlocks}}{integer, the chosen number of blocks}
+\item{\code{nbBlocks}}{integer, the maximal number of blocks considered}
 
 \item{\code{method}}{character with a clustering method among "hierarchical", "spectral", "kmeans".}
 }
@@ -104,18 +101,15 @@ method to cluster network data with missing value
 \subsection{Method \code{imputation()}}{
 basic imputation from existing clustering
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(clustering)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(type = c("median", "average"))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{clustering}}{a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
+\item{\code{type}}{a character, the type of imputation. Either "median" or "average"}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-an adjacency matrix with imputed values
 }
 }
 \if{html}{\out{<hr>}}

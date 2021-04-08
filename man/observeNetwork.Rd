@@ -44,9 +44,9 @@ initialization, how covariates are handled in the model, and the variational EM 
 \itemize{
 \item{"useCovSBM": }{logical. If \code{covariates} is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.}
-\item{"clusterInit": }{Initial method for clustering: either a character in "hierarchical", "spectral"
-or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
-\code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "spectral".}
+\item{"clusterInit": }{Initial method for clustering: either a character ("spectral")
+or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
+providing a user-defined clustering. Default is "spectral".}
 \item{"similarity": }{An R x R -> R function to compute similarities between node covariates. Default is
 \code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. \code{covariates} is a list of size-N vectors).}

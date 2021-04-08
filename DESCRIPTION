@@ -26,7 +26,7 @@ Depends: R (>= 3.4.0)
 Imports: 
     Rcpp,
     methods,
-    ape,
+    ClusterR,
     igraph,
     nloptr (>= 1.2.0),
     ggplot2,
@@ -54,7 +54,6 @@ Collate:
     'frenchblog2007.R'
     'missSBM-package.R'
     'observeNetwork.R'
-    'utils_initialization.R'
     'war.R'
 Suggests: 
     aricode,

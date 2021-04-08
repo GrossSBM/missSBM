@@ -40,25 +40,19 @@ missSBM_fit <-
   public = list(
     #' @description constructor for networkSampling
     #' @param partlyObservedNet An object with class [`partlyObservedNetwork`].
-    #' @param nbBlocks integer, the number of blocks in the SBM
     #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
-    #' @param clusterInit Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".
+    #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.
     #' @param useCov logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    initialize = function(partlyObservedNet, nbBlocks, netSampling, clusterInit, useCov) {
+    initialize = function(partlyObservedNet, netSampling, clusterInit, useCov) {
 
       ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
-      stopifnot(length(nbBlocks) == 1 & nbBlocks >= 1 & is.numeric(nbBlocks))
-
-      ## Initial Clustering
-      if (is.numeric(clusterInit) | is.factor(clusterInit))
-        clusterInit <- as.integer(clusterInit)
-      else
-        clusterInit <- partlyObservedNet$clustering(nbBlocks, clusterInit)
+      stopifnot(is.numeric(clusterInit))
 
       ## network data with basic imputation at start-up
-      private$imputedNet <- partlyObservedNet$imputation(clusterInit)
+      private$imputedNet <- partlyObservedNet$imputation()
+      private$NAs <- as.matrix(partlyObservedNet$NAs)
 
       ## Initialize the SBM fit
       covariates <- array2list(partlyObservedNet$covarArray)

@@ -38,9 +38,10 @@ test_that("missSBM with covariates and dyad sampling works", {
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
+  cl <- partlyObservedNet$clustering(Q)[[Q]]
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "covar-dyad", "spectral", TRUE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, "covar-dyad", cl, TRUE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -70,9 +71,10 @@ test_that("missSBM with covariates and dyad sampling works", {
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
+  cl <- partlyObservedNet$clustering(Q)[[1]]
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "dyad", "spectral", TRUE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, "dyad", cl, TRUE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -106,9 +108,10 @@ test_that("miss SBM with covariates and node sampling works", {
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
+  cl <- partlyObservedNet$clustering(Q)[[1]]
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "covar-node", clusterInit = "spectral", TRUE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, "covar-node", cl, TRUE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -138,9 +141,10 @@ test_that("miss SBM with covariates and node sampling works", {
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_node, missSBM:::l1_similarity)
+  cl <- partlyObservedNet$clustering(Q)[[1]]
 
   ## Perform inference
-  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "node", clusterInit = "spectral", FALSE)
+  missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, "node", cl, FALSE)
   out <- missSBM$doVEM(control)
 
   ## Sanity check
@@ -153,7 +157,6 @@ test_that("miss SBM with covariates and node sampling works", {
 
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
-
   expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth)
 
   ## sampling design: parameters estimation

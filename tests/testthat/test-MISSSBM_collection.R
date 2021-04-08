@@ -16,13 +16,13 @@ test_that("missSBMcollection works", {
 
   adjMatrix  <- missSBM::observeNetwork(A, "dyad", .5, clusters = mySBM$memberships)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
+  cl <- partlyObservedNet$clustering(4)
 
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
     partlyObservedNet  = partlyObservedNet,
-    vBlocks     = 1:4,
     sampling    = "dyad",
-    clusterInit = 'hierarchical', 1, TRUE, TRUE)
+    clusterInit = cl, 1, TRUE, TRUE)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)
@@ -45,14 +45,13 @@ test_that("More smoothing tests", {
 
   adjMatrix  <- missSBM::observeNetwork(A, "dyad", .5, clusters = mySBM$memberships)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-
+  cl <- partlyObservedNet$clustering(1:4)
 
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
     partlyObservedNet  = partlyObservedNet,
-    vBlocks     = 1:4,
     sampling    = "dyad",
-    clusterInit = 'hierarchical', 1, TRUE, TRUE)
+    clusterInit = cl, 1, TRUE, TRUE)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)

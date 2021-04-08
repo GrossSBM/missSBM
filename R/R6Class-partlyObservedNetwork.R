@@ -69,7 +69,7 @@ partlyObservedNetwork <-
     #' @param similarity An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
     initialize = function(adjacencyMatrix, covariates = NULL, similarity = missSBM:::l1_similarity) {
 
-### TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
+      ### TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
       ## adjacency matrix
       stopifnot(is.matrix(adjacencyMatrix))
 
@@ -105,42 +105,42 @@ partlyObservedNetwork <-
 
     },
     #' @description method to cluster network data with missing value
-    #' @param nbBlocks integer, the chosen number of blocks
+    #' @param vBlocks The vector of number of blocks considered in the collection.
     #' @param method character with a clustering method among "hierarchical", "spectral", "kmeans".
     #' @importFrom stats binomial glm.fit residuals
-    clustering = function(nbBlocks, method = c("spectral", "hierarchical", "kmeans")) {
-
-      if (nbBlocks > 1) {
-        adjacencyMatrix <- as.matrix(private$Y)
-        if (!is.null(private$phi)) {
-          y <- as.vector(adjacencyMatrix)
-          X <- cbind(1, apply(private$phi, 3, as.vector))
-          NAs <- as.vector(private$nas)
-          adjacencyMatrix <- matrix(NA, self$nbNodes, self$nbNodes)
-          adjacencyMatrix[!NAs] <- .logistic(residuals(glm.fit(X[!NAs, ], y[!NAs], family = binomial())))
-        }
-        clustering <-
-          switch(match.arg(method),
-                 "spectral"     = init_spectral(    adjacencyMatrix, nbBlocks),
-                 "kmeans"       = init_kmeans(      adjacencyMatrix, nbBlocks),
-                 "hierarchical" = init_hierarchical(adjacencyMatrix, nbBlocks))
-      } else {
-        clustering <- rep(1L, self$nbNodes)
-      }
-      clustering
+    #' @importFrom ClusterR KMeans_rcpp
+    clustering = function(vBlocks, imputation = c("median", "average") ) {
+      A <- self$imputation(imputation)
+      ## normalized  Laplacian with Gaussian kernel
+      D <- rowSums(A)
+      A <- 1/(1 + exp(-A/sd(A)))
+      L <- diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks)]
+      lapply(vBlocks, function(k)
+        as.integer(
+          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 20)$clusters
+        )
+      )
     },
     #' @description basic imputation from existing clustering
-    #' @param clustering a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
-    #' @return an adjacency matrix with imputed values
-### TODO: include covariates in the imputation!!!
-    imputation = function(clustering) {
-      adjancency0 <- private$Y
-      adjancency0[private$nas] <- 0
-      Z <- clustering_indicator(clustering)
-      theta0 <- check_boundaries((t(Z) %*% adjancency0 %*% Z) / (t(Z) %*% (1 - diag(self$nbNodes)) %*% Z))
-      imputation <- private$Y
-      imputation[private$nas] <- (Z %*% theta0 %*% t(Z))[private$nas]
-      imputation
+    #' @param type a character, the type of imputation. Either "median" or "average"
+    imputation = function(type = c("median", "average")) {
+      adjacencyMatrix <- as.matrix(private$Y)
+      if (!is.null(private$phi)) {
+        y <- as.vector(adjacencyMatrix[self$observedDyads])
+        X <- cbind(1, apply(private$phi, 3, function(x) x[self$observedDyads]))
+        adjacencyMatrix <- matrix(NA, self$nbNodes, self$nbNodes)
+        ### TODO: make it work for other model than Bernoulli / family than binomial
+        adjacencyMatrix[self$observedDyads] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
+        if (!private$directed)
+          adjacencyMatrix[lower.tri(adjacencyMatrix)] <- t(adjacencyMatrix)[lower.tri(adjacencyMatrix)]
+      }
+      adjacencyMatrix[is.na(adjacencyMatrix)] <-
+        switch(match.arg(type),
+               "average"  = mean(adjacencyMatrix, na.rm = TRUE),
+               "median"   = median(adjacencyMatrix, na.rm = TRUE)
+        )
+      adjacencyMatrix
     }
   )
 )

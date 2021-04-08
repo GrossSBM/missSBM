@@ -18,7 +18,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
 
   ## initial clustering
   Q <- 3
-  cl0   <- missSBM:::init_hierarchical(A, Q)
+  cl0   <- partlyObservedNet$clustering(Q)[[1]]
 
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 1)
 
@@ -29,7 +29,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   my_SBM$ICL
 
   ## using missSBM_fit class
-  my_missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet = partlyObservedNet, Q, netSampling = "node", clusterInit = cl0, useCov = TRUE)
+  my_missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet = partlyObservedNet, netSampling = "node", clusterInit = cl0, useCov = TRUE)
   my_missSBM$doVEM(control)
   my_missSBM$fittedSBM$ICL
 
@@ -37,16 +37,13 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   ## using missSBM_collection class
   my_collection <- missSBM_collection$new(
       partlyObservedNet  = partlyObservedNet,
-      vBlocks     = Q,
       sampling    = "node",
-      clusterInit = cl0,
+      clusterInit = list(cl0),
       cores       = 1,
       trace       = TRUE,
       useCov      = TRUE
   )
   my_collection$estimate(control)
 
-  # expect_equivalent(my_SBM, my_missSBM$fittedSBM)
-  # expect_equivalent(my_SBM, my_collection$bestModel$fittedSBM)
   expect_lt(my_SBM$ICL, my_collection$ICL) ## different due an addition df for sampling
 })

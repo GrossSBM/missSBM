@@ -1,5 +1,16 @@
 context("test network sampling fit (Class networkSampling_fit and chidren)")
 
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
+
+.logistic <- missSBM:::.logistic
+.logit <- missSBM:::.logit
+
 set.seed(1234)
 ### A SBM model : ###
 N <- 200
@@ -24,8 +35,9 @@ test_that("Parameter estimation in dyad-centered sampling with covariates", {
   expect_is(fittedSampling, "covarDyadSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
-  tolerance <- .5
-  expect_lt(sum((fittedSampling$parameters - c(intercept, covarParam))^2)/(M + 1), tolerance)
+#### There is a problem here !
+  tolerance <- .1
+  expect_lt(error(fittedSampling$parameters, c(intercept, covarParam)), tolerance)
   expect_equal(fittedSampling$df, 1 + length(covarParam))
   expect_equal(fittedSampling$penalty, log(N * (N - 1)/2) * (1 + length(covarParam)) )
   expect_lt(fittedSampling$vExpec, 0)
@@ -70,7 +82,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
   expect_is(fittedSampling, "covarNodeSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
-  tolerance <- .25
+  tolerance <- .1
   expect_lt(error(fittedSampling$parameters, c(intercept, covarParam)), tolerance)
   expect_equal(fittedSampling$df, 1 + length(covarParam))
   expect_equal(fittedSampling$penalty, log(N) * (1 + length(covarParam)))
@@ -94,7 +106,7 @@ test_that("Parameter estimation in node-centered sampling with covariates but ig
   expect_is(fittedSampling, "nodeSampling_fit")
   expect_true(all(fittedSampling$prob_obs > 0, fittedSampling$prob_obs < 1))
 
-  tolerance <- .2
+  tolerance <- .01
   expect_lt(sum((fittedSampling$parameters - .9)^2), tolerance)
   expect_equal(fittedSampling$df, 1)
   expect_equal(fittedSampling$penalty, log(N))

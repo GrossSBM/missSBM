@@ -59,7 +59,7 @@ missSBM_collection <-
               J1 <- base::sample(J, floor(length(J)/2))
               J2 <- setdiff(J, J1)
               cl[J1] <- j; cl[J2] <- i + 1
-              model <- missSBM_fit$new(private$partlyObservedNet, i + 1, sampling, cl, useCov)
+              model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl), useCov)
               model$doVEM(control)
             } else {
               model <- private$missSBM_fit[[i + 1]]$clone()
@@ -100,7 +100,7 @@ missSBM_collection <-
             cl_fusion <- cl0
             levels(cl_fusion)[which(levels(cl_fusion) == paste(couple[1]))] <- paste(couple[2])
             levels(cl_fusion) <- as.character(1:(i - 1))
-            model <- missSBM_fit$new(private$partlyObservedNet, i - 1, sampling, cl_fusion, useCov)
+            model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_fusion), useCov)
             model$doVEM(control)
             model
           }, mc.cores = control$cores)
@@ -129,28 +129,26 @@ missSBM_collection <-
   public = list(
     #' @description constructor for networkSampling
     #' @param partlyObservedNet An object with class [`partlyObservedNetwork`].
-    #' @param vBlocks vector of integer with the number of blocks in the successively fitted models
     #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
-    #' @param clusterInit Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. Default is "hierarchical".
+    #' @param clusterInit Initial clustering: a list of vectors, each with size \code{ncol(adjacencyMatrix)}.
     #' @param cores integer for number of cores used. Default is 1.
     #' @param trace integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1
     #' @param useCov logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    initialize = function(partlyObservedNet, vBlocks, sampling, clusterInit, cores, trace, useCov) {
+    initialize = function(partlyObservedNet, sampling, clusterInit, cores, trace, useCov) {
 
       if (trace) cat("\n")
       if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
       if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
       if (trace) cat("\n")
-      if (!is.list(clusterInit)) clusterInit <- rep(list(clusterInit), length(vBlocks))
 
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       private$partlyObservedNet <- partlyObservedNet
 
-      private$missSBM_fit <- mcmapply(
-        function(nBlock, cl0) {
-          if (trace) cat(" Initialization of model with", nBlock,"blocks.", "\r")
-          missSBM_fit$new(partlyObservedNet, nBlock, sampling, cl0, useCov)
-        }, nBlock = vBlocks, cl0 = clusterInit, mc.cores = cores
+      private$missSBM_fit <- mclapply(clusterInit,
+        function(cl0) {
+          if (trace) cat(" Initialization of model with", length(unique(cl0)), "blocks.", "\r")
+          missSBM_fit$new(partlyObservedNet, sampling, cl0, useCov)
+        },  mc.cores = cores
       )
     },
     #' @description method to launch the estimation of the collection of models

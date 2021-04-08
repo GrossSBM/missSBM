@@ -78,9 +78,9 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @description method to perform estimation via variational EM
     #' @param threshold stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.
     #' @param maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10
-    #' @param fixPointIter number of fix-point iterations in the Variational E step. Default is 3.
+    #' @param fixPointIter number of fix-point iterations in the Variational E step. Default is 5.
     #' @param trace logical for verbosity. Default is \code{FALSE}.
-    doVEM = function(threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE) {
+    doVEM = function(threshold = 1e-4, maxIter = 10, fixPointIter = 5, trace = FALSE) {
 
       ## Initialization of quantities that monitor convergence
       delta     <- vector("numeric", maxIter)
@@ -102,9 +102,9 @@ R6::R6Class(classname = "SimpleSBM_fit",
         self$update_parameters()
 
         # Assess convergence
+        objective[iterate] <- self$loglik
         delta[iterate] <- sqrt(sum((private$theta$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
         stop <- (iterate > maxIter) |  (delta[iterate] < threshold)
-        objective[iterate] <- self$loglik
       }
       if (trace) cat("\n")
       res <- data.frame(delta = delta[1:iterate], objective = objective[1:iterate])

@@ -1,7 +1,5 @@
 context("test network samplers (Class networkSampler and chidren)")
 
-source("utils_test.R")
-
 set.seed(178303)
 ### A SBM model : ###
 N <- 200

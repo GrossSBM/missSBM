@@ -13,7 +13,7 @@ directed <- FALSE         # if the network is directed or not
 mySBM <- sbm::sampleSimpleSBM(N, pi, theta)
 A <- observeNetwork(mySBM$networkData, "dyad", parameters = .5)
 obsNet <- missSBM:::partlyObservedNetwork$new(A)
-cl <- obsNet$clustering(nbBlocks = Q, "spectral")
+cl <- obsNet$clustering(Q)[[1]]
 
 res <- microbenchmark::microbenchmark(
   MAR = {
@@ -21,7 +21,7 @@ res <- microbenchmark::microbenchmark(
     optim <- mySBM_fit$doVEM(trace = FALSE)
   },
   missSBM = {
-    my_missSBM_fit <- missSBM:::missSBM_fit$new( missSBM:::partlyObservedNetwork$new(A), Q, "dyad", cl, FALSE)
+    my_missSBM_fit <- missSBM:::missSBM_fit$new( missSBM:::partlyObservedNetwork$new(A), "dyad", cl, FALSE)
     my_missSBM_fit$doVEM(control = list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 0))
   },
   times = 10
