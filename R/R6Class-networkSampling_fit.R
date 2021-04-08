@@ -8,8 +8,11 @@ networkSamplingDyads_fit <-
   ## PRIVATE MEMBERS
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   private = list(
-    card_D = NULL, # number of possible dyads in the network
-    D_miss = NULL  # where are the missing dyads
+    card_D   = NULL, # number of possible dyads in the network
+    card_D_o = NULL, # number of observed dyads in the network
+    card_D_m = NULL, # number of missing dyads in the network
+    D_miss   = NULL,  # where are the missing dyads
+    D_obs    = NULL  # observed dyads
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -19,9 +22,12 @@ networkSamplingDyads_fit <-
     #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param name a character for the name of sampling to fit on the partlyObservedNetwork
     initialize = function(partlyObservedNetwork, name) {
-      private$name    <- name
-      private$D_miss  <- partlyObservedNetwork$missingDyads
-      private$card_D  <- partlyObservedNetwork$nbDyads
+      private$name     <- name
+      private$D_miss   <- partlyObservedNetwork$missingDyads
+      private$D_obs    <- partlyObservedNetwork$observedDyads
+      private$card_D   <- partlyObservedNetwork$nbDyads
+      private$card_D_o <- sum(partlyObservedNetwork$samplingMatrix)
+      private$card_D_m <- sum(partlyObservedNetwork$samplingMatrixBar)
     },
     #' @description show method
     show = function() {
@@ -53,17 +59,21 @@ networkSamplingNodes_fit <-
   R6::R6Class(classname = "networkSamplingNodes_fit",
   inherit = networkSampling,
   private = list(
-    card_N = NULL, # number of nodes in the network
-    N_obs  = NULL  # boolean for observed nodes
+    card_N   = NULL, # number of nodes in the network
+    card_N_m = NULL, # number of observed nodes
+    card_N_o = NULL, # number of missing nodes
+    N_obs    = NULL  # boolean for observed nodes
   ),
   public = list(
     #' @description constructor
     #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param name a character for the name of sampling to fit on the partlyObservedNetwork
     initialize = function(partlyObservedNetwork, name) {
-      private$name   <- name
-      private$N_obs  <- partlyObservedNetwork$observedNodes
-      private$card_N <- partlyObservedNetwork$nbNodes
+      private$name     <- name
+      private$N_obs    <- partlyObservedNetwork$observedNodes
+      private$card_N   <- partlyObservedNetwork$nbNodes
+      private$card_N_o <- sum( partlyObservedNetwork$observedNodes)
+      private$card_N_m <- sum(!partlyObservedNetwork$observedNodes)
     },
     #' @description show method
     show = function() {
@@ -89,18 +99,12 @@ networkSamplingNodes_fit <-
 dyadSampling_fit <-
   R6::R6Class(classname = "dyadSampling_fit",
   inherit = networkSamplingDyads_fit,
-  private = list(
-    card_D_o = NULL, # number of observed dyads
-    card_D_m = NULL  # number of missing dyads
-  ),
   public = list(
     #' @description constructor
     #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param ... used for compatibility
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "dyad")
-      private$card_D_o <- length(partlyObservedNetwork$observedDyads)
-      private$card_D_m <- length(partlyObservedNetwork$missingDyads )
       private$psi      <- check_boundaries(private$card_D_o / (private$card_D_m + private$card_D_o))
       private$rho      <- rep(private$psi, private$card_D)
     }
@@ -119,10 +123,6 @@ dyadSampling_fit <-
 covarDyadSampling_fit <-
   R6::R6Class(classname = "covarDyadSampling_fit",
   inherit = networkSamplingDyads_fit,
-  private = list(
-    D_obs = NULL, # observed dyads
-    rho   = NULL  # matrix of predicted probabilities of observation
-  ),
   public = list(
     #' @description constructor
     #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
@@ -134,7 +134,6 @@ covarDyadSampling_fit <-
       glm_out       <- glm.fit(X, y, family = binomial())
       private$psi   <- coefficients(glm_out)
       private$rho   <- fitted(glm_out)
-      private$D_obs <- partlyObservedNetwork$D_obs
     }
   ),
   active = list(
@@ -153,19 +152,14 @@ covarDyadSampling_fit <-
 nodeSampling_fit <-
   R6::R6Class(classname = "nodeSampling_fit",
   inherit = networkSamplingNodes_fit,
-  private = list(
-    card_N_o = NULL, # number of observed nodes
-    card_N_m = NULL  # number of missing nodes
-  ),
   public = list(
     #' @description constructor
     #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param ... used for compatibility
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "node")
-      private$card_N_o <- sum( partlyObservedNetwork$observedNodes)
-      private$card_N_m <- sum(!partlyObservedNetwork$observedNodes)
       private$psi <- private$card_N_o / (private$card_N_o + private$card_N_m)
+      private$rho <- rep(private$psi, private$card_N)
     }
   ),
   active = list(
@@ -226,9 +220,7 @@ doubleStandardSampling_fit <-
       super$initialize(partlyObservedNetwork, "double-standard")
       private$So      <- sum(    partlyObservedNetwork$networkData[partlyObservedNetwork$observedDyads])
       private$So.bar  <- sum(1 - partlyObservedNetwork$networkData[partlyObservedNetwork$observedDyads])
-      ## can we do better than that?
-      imputedNet      <- matrix(mean(partlyObservedNetwork$networkData, na.rm = TRUE), partlyObservedNetwork$nbNodes, partlyObservedNetwork$nbNodes)
-      self$update_parameters(imputedNet)
+      self$update_parameters(partlyObservedNetwork$imputation("average"))
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
     #' @param imputedNet an adjacency matrix where missing values have been imputed
@@ -260,8 +252,6 @@ blockDyadSampling_fit <-
   R6::R6Class(classname = "blockDyadSampling_fit",
   inherit  = networkSamplingDyads_fit,
   private  = list(
-    prob     = NULL,  ## for calculation of the log-likelihood
-    NAs      = NULL,  ## localisation of NAs
     R        = NULL,  ## sampling matrix
     Rbar     = NULL,
     directed = NULL   ##
@@ -272,27 +262,30 @@ blockDyadSampling_fit <-
     #' @param blockInit n x Q matrix of initial block indicators
     initialize = function(partlyObservedNetwork, blockInit) {
       super$initialize(partlyObservedNetwork, "block-dyad")
-      private$NAs      <- partlyObservedNetwork$NAs
       private$R        <- partlyObservedNetwork$samplingMatrix
       private$Rbar     <- partlyObservedNetwork$samplingMatrixbar
       private$directed <- partlyObservedNetwork$is_directed
-      imputedNet       <- matrix(mean(partlyObservedNetwork$networkData, na.rm = TRUE), partlyObservedNetwork$nbNodes, partlyObservedNetwork$nbNodes)
-      self$update_parameters(imputedNet, blockInit)
+      self$update_parameters(partlyObservedNetwork$imputation(), blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
     #' @param imputedNet an adjacency matrix where missing values have been imputed
     #' @param Z indicator of blocks
     update_parameters = function(imputedNet, Z) {
-      private$psi    <- check_boundaries(as.matrix((t(Z) %*% private$R %*% Z) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z)))
+      ZtRZ <- as.matrix(t(Z) %*% private$R %*% Z)
+      if(private$directed) {
+        private$psi <- ZtRZ / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z)
+      } else {
+        private$psi <- ( ZtRZ + t(ZtRZ) ) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z)
+      }
       private$prob   <- check_boundaries(Z %*% private$psi %*% t(Z))
     }
   ),
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
-      factor       <- ifelse(private$directed, 1, .5)
-      res          <- factor * sum(private$R * log(private$prob) + private$Rbar *  log(1 - private$prob))
-      res
+      ## factor       <- ifelse(private$directed, 1, .5)
+     ## factor is handle by the fact that R and Rbar are triangular in the undirected case
+      sum(private$R * log(private$prob) + private$Rbar *  log(1 - private$prob))
     }
   )
 )

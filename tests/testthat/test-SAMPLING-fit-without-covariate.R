@@ -1,6 +1,12 @@
 context("test network sampling fit with covariates (Classes nodeSampling_fit and dyadSampling_fit)")
 
-source("utils_test.R")
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
 
 set.seed(178303)
 ### SBM model
@@ -47,6 +53,8 @@ test_that("Consistency of sampling fit", {
 
     if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
+    } else {
+      expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth * 10 )
     }
 
   }

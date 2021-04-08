@@ -81,7 +81,7 @@ method to perform estimation via variational EM
 \if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$doVEM(
   threshold = 1e-04,
   maxIter = 10,
-  fixPointIter = 3,
+  fixPointIter = 5,
   trace = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -93,7 +93,7 @@ method to perform estimation via variational EM
 
 \item{\code{maxIter}}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10}
 
-\item{\code{fixPointIter}}{number of fix-point iterations in the Variational E step. Default is 3.}
+\item{\code{fixPointIter}}{number of fix-point iterations in the Variational E step. Default is 5.}
 
 \item{\code{trace}}{logical for verbosity. Default is \code{FALSE}.}
 }

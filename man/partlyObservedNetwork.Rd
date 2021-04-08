@@ -82,13 +82,13 @@ constructor
 \subsection{Method \code{clustering()}}{
 method to cluster network data with missing value
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(nbBlocks, imputation = c("median", "average"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(vBlocks, imputation = c("median", "average"))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{nbBlocks}}{integer, the maximal number of blocks considered}
+\item{\code{vBlocks}}{The vector of number of blocks considered in the collection.}
 
 \item{\code{method}}{character with a clustering method among "hierarchical", "spectral", "kmeans".}
 }

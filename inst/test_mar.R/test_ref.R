@@ -28,7 +28,8 @@ referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", packa
     missSBM_out <- estimateMissSBM(
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
-      sampling = sampling
+      sampling = sampling,
+      control = list(trace = 0)
     )
     newAlgo <- missSBM_out$bestModel
 
