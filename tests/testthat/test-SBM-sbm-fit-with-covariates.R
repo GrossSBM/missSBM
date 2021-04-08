@@ -94,7 +94,7 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
 
   error_missSBM <- error(sbm$connectParam$mean, bestICL$connectParam$mean)
   error_BM      <- error(bestICL$connectParam$mean,
-                         .logistic(BM$model_parameters[[2]]$m))
+                         missSBM:::.logistic(BM$model_parameters[[2]]$m))
   error_BM_beta <- error(bestICL$covarParam, BM$model_parameters[[2]]$beta)
 
   expect_lt(error_missSBM, tol_truth)

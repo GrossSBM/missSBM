@@ -137,8 +137,6 @@ covarDyadSampling_fit <-
     }
   ),
   active = list(
-    #' @field prob_obs sampling rate
-    prob_obs = function(value) {private$rho},
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
       res <- sum(log(1 - private$rho[private$D_miss])) + sum(log(private$rho[private$D_obs]))
