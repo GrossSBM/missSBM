@@ -15,7 +15,7 @@ partlyObservedNetwork <-
     phi      = NULL, # the covariates array
     directed = NULL, # directed network of not
     R        = NULL, # the sampling matrix (sparse encoding)
-    Rbar     = NULL  # complementary matrix of R
+    S        = NULL  # complementary matrix of R
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -38,25 +38,25 @@ partlyObservedNetwork <-
     #' @field covarMatrix the matrix of covariates
     covarMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
     #' @field missingDyads array indices of missing dyads
-    missingDyads    = function(value) {Matrix::which( private$Rbar != 0, arr.ind = TRUE)},
+    missingDyads    = function(value) {Matrix::which( private$S != 0, arr.ind = TRUE)},
     #' @field observedDyads array indices of observed dyads
     observedDyads   = function(value) {Matrix::which( private$R != 0, arr.ind = TRUE)},
     #' @field samplingMatrix matrix of observed and non-observed edges
     samplingMatrix  = function(value) {private$R},
     #' @field samplingMatrixBar matrix of observed and non-observed edges
-    samplingMatrixBar  = function(value) {private$Rbar},
+    samplingMatrixBar  = function(value) {private$S},
     #' @field observedNodes a vector of observed and non-observed nodes (observed means at least one non NA value)
     observedNodes   = function(value) {
       res <- rep(TRUE, self$nbNodes)
-      res[Matrix::rowSums(private$Rbar) > 0] <- FALSE
+      res[Matrix::rowSums(private$S) > 0] <- FALSE
       res
      },
     #' @field NAs boolean for NA entries in the adjacencyMatrix
     NAs = function(value) {
       if (private$directed)
-        private$Rbar
+        private$S
       else
-        private$Rbar | Matrix::t(private$Rbar)
+        private$S | Matrix::t(private$S)
     }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,8 +96,8 @@ partlyObservedNetwork <-
       obs  <- which(!NAs & dyads, arr.ind = TRUE )
 
       ## sampling matrix (indicating who is observed)
-      private$R    <- Matrix::sparseMatrix(obs [,1], obs [,2], x = 1, dims = dim(adjacencyMatrix))
-      private$Rbar <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
+      private$R <- Matrix::sparseMatrix(obs [,1], obs [,2], x = 1, dims = dim(adjacencyMatrix))
+      private$S <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
 
       # ## where are my non-zero entries?
       # nzero <- which(!NAs & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
@@ -125,7 +125,7 @@ partlyObservedNetwork <-
     #' @description basic imputation from existing clustering
     #' @param type a character, the type of imputation. Either "median" or "average"
     imputation = function(type = c("median", "average")) {
-      adjacencyMatrix <- as.matrix(private$Y)
+      adjacencyMatrix <- private$Y
       if (!is.null(private$phi)) {
         y <- as.vector(adjacencyMatrix[self$observedDyads])
         X <- cbind(1, apply(private$phi, 3, function(x) x[self$observedDyads]))

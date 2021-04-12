@@ -50,14 +50,27 @@ missSBM_fit <-
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       stopifnot(is.numeric(clusterInit))
 
-      ## network data with basic imputation at start-up
-      private$imputedNet <- partlyObservedNet$imputation()
-      private$NAs <- as.matrix(partlyObservedNet$NAs)
-
       ## Initialize the SBM fit
       covariates <- array2list(partlyObservedNet$covarArray)
       if (!useCov) covariates <- list()
-      private$SBM <- SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates)
+
+      private$imputedNet <- partlyObservedNet$networkData
+      private$NAs        <- as.matrix(partlyObservedNet$NAs)
+      if (length(covariates) == 0 & netSampling %in% c("dyad", "node", "snowball")) {
+          private$SBM <- SimpleSBM_fit_noCov$new(private$imputedNet, clusterInit)
+      } else {
+        private$SBM <- switch(netSampling,
+                              "dyad"            = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "node"            = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "covar-dyad"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "covar-node"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "block-node"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "double-standard" = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "block-dyad"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "degree"          = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
+                              "snowball"        = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates) # estimated sampling parameter not relevant
+        )
+      }
 
       ## Initialize the sampling fit
       private$sampling <- switch(netSampling,
@@ -90,16 +103,13 @@ missSBM_fit <-
         i <- i + 1
         if (control$trace) cat(" iteration #:", i, "\r")
         theta_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
-
         ## ______________________________________________________
         ## Variational E-Step
         #
         for (k in seq.int(control$fixPointIter)) {
           # update the variational parameters for missing entries (a.k.a nu)
-          nu <- private$sampling$update_imputation(private$SBM$expectation)
-          private$imputedNet[private$NAs] <- nu[private$NAs]
+          nu <- private$sampling$update_imputation(private$SBM$imputation)
           # update the variational parameters for block memberships (a.k.a tau)
-          private$SBM$networkData <- private$imputedNet
           private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
         }
 
@@ -107,9 +117,9 @@ missSBM_fit <-
         ## M-step
         #
         # update the parameters of the SBM (a.k.a pi and theta)
-        private$SBM$update_parameters()
+        private$SBM$update_parameters(nu)
         # update the parameters of network sampling process (a.k.a psi)
-        private$sampling$update_parameters(private$imputedNet, private$SBM$probMemberships)
+        private$sampling$update_parameters(nu, private$SBM$probMemberships)
 
         ## Check convergence
         delta[i] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
@@ -118,6 +128,13 @@ missSBM_fit <-
 
       }
       private$SBM$reorder()
+
+      ## probably not efficient
+      if (private$SBM$directed)
+        private$imputedNet[Matrix::which(private$NAs)] <- nu[Matrix::which(nu != 0)]
+      else
+        private$imputedNet[Matrix::which(private$NAs)] <- (nu + Matrix::t(nu))[Matrix::which(nu != 0 | Matrix::t(nu) != 0)]
+
       if (control$trace) cat("\n")
       private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
       invisible(private$optStatus)
@@ -159,7 +176,7 @@ missSBM_fit <-
       res
     },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
-   entropy = function(value) {private$SBM$entropy + self$entropyImputed},
+    entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {private$SBM$vExpec + private$sampling$vExpec},
     #' @field penalty double, value of the penalty term in ICL

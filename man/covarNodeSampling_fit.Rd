@@ -14,8 +14,6 @@ Class for fitting a node-centered sampling with covariate
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{prob_obs}}{sampling rate}
-
 \item{\code{vExpec}}{variational expectation of the sampling}
 }
 \if{html}{\out{</div>}}

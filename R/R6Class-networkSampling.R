@@ -37,7 +37,7 @@ R6::R6Class(classname = "networkSampling",
       cat("Structure for handling network sampling in missSBM.\n")
       cat("==================================================================\n")
       cat("* Useful fields \n")
-      cat("  $type, $parameters, $prob, $df\n")
+      cat("  $type, $parameters, $df\n")
     },
     #' @description User friendly print method
     print = function() { self$show() }
@@ -48,8 +48,6 @@ R6::R6Class(classname = "networkSampling",
   active = list(
     #' @field type a character for the type of sampling
     type = function(value) {private$name},
-    #' @field prob a double representing the overall sampling rate
-    prob  = function(value) {private$rho},
     #' @field parameters the vector of parameters associated with the sampling at play
     parameters = function(value) {private$psi},
     #' @field df the number of entries in the vector of parameters

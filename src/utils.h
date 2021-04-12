@@ -9,6 +9,15 @@ inline arma::mat logistic(arma::mat & x) {
   return (1/(1+exp(-x)));
 }
 
+inline arma::mat logit(arma::mat & x) {
+    arma::mat res (log(x)-log(1-x)) ;
+    return(res.replace(arma::datum::nan, 0));
+}
+
+inline double logit(double & x) {
+    return(log(x)-log(1-x));
+}
+
 inline double g(double x) {
   return (-std::log(1+std::exp(-x)));
 }

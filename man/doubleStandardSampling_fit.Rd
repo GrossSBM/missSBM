@@ -85,7 +85,7 @@ a method to update the imputation of the missing entries.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{PI}}{the matrix of inter/intra class probability of connection}
+\item{\code{PI}}{the matrix of inter/intra class probability of connection for missing}
 }
 \if{html}{\out{</div>}}
 }

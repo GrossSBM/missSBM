@@ -18,8 +18,6 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 \describe{
 \item{\code{type}}{a character for the type of sampling}
 
-\item{\code{prob}}{a double representing the overall sampling rate}
-
 \item{\code{parameters}}{the vector of parameters associated with the sampling at play}
 
 \item{\code{df}}{the number of entries in the vector of parameters}

@@ -7,10 +7,11 @@ SimpleSBM_fit <-
 R6::R6Class(classname = "SimpleSBM_fit",
   inherit = sbm::SimpleSBM,
   private = list(
-    variant= NULL, # model variant
-    R      = NULL, # the sampling matrix (sparse encoding)
-    M_step = NULL, # pointing to the appropriate M_step function
-    E_step = NULL, # pointing to the appropriate E_step function
+    variant = NULL, # model variant
+    R       = NULL, # the sampling matrix (sparse encoding)
+    S       = NULL,  # the "anti" sampling matrix (sparse encoding)
+    M_step  = NULL, # pointing to the appropriate M_step function
+    E_step  = NULL, # pointing to the appropriate E_step function
     vLL_complete = NULL # pointing to the appropriate Expected complete LL function
   ),
   public = list(
@@ -52,6 +53,9 @@ R6::R6Class(classname = "SimpleSBM_fit",
       ## where are my observations?
       obs <- which(!is.na(adjacencyMatrix) & dyads, arr.ind = TRUE)
       private$R <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
+      ## where are the missing entries?
+      miss <- which(is.na(adjacencyMatrix) & dyads, arr.ind = TRUE)
+      private$S <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
       ## where are my non-zero entries?
       nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
       private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
@@ -142,85 +146,26 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   inherit = SimpleSBM_fit,
   public = list(
     #' @description update parameters estimation (M-step)
-    update_parameters = function() {
+    update_parameters = function(...) {
       res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
+      res$theta$mean[is.nan(res$theta$mean)] <- 0
       private$theta <- res$theta
       private$pi    <- as.numeric(res$pi)
       invisible(res)
     },
     #' @description update variational estimation of blocks (VE-step)
-    update_blocks =   function() {
+    update_blocks =   function(...) {
       private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
     }
   ),
   active = list(
+    #' @field imputation the matrix of imputed values
+    imputation = function(value) {
+      as(missSBM:::.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+    },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
-    }
-  )
-)
-
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-#'
-#' It is not designed not be call by the user
-#'
-#' @import R6
-SimpleSBM_fit_NMAR_noCov <-
-R6::R6Class(classname = "SimpleSBM_fit_noCov",
-  inherit = SimpleSBM_fit,
-  private = list(
-    V = NULL, # matrix of imputed values  (sparse encoding)
-    S = NULL  # the "anti" sampling matrix (sparse encoding)
-  ),
-  public = list(
-    #' @description constructor for simpleSBM_fit for missSBM purpose
-    #' @param adjacencyMatrix a matrix encoding the graph
-    #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
-    #' @param imputedValues a matrix encoding the imputed part of the network
-    initialize = function(adjacencyMatrix, clusterInit) {
-      super$initialize(adjacencyMatrix, clusterInit)
-
-      if (self$directed) {
-        dyads <- upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)
-      } else {
-        dyads <- upper.tri(adjacencyMatrix)
-      }
-      miss <- which(is.na(adjacencyMatrix) & dyads, arr.ind = TRUE)
-      private$S <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
-      private$V <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
-      self$update_parameters()
-    },
-    #' @description update parameters estimation (M-step)
-    update_parameters = function(imputed_values = NULL) {
-      if (is.null(imputed_values)) {
-        res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
-        private$theta <- res$theta
-        private$pi    <- as.numeric(res$pi)
-      } else {
-        ## only Bernoulli for the moment !!!
-        private$V@x <- imputed_values
-        Zbar <- colSums(private$Z)
-        private$theta$mean <- ( t(private$Z) %*% private$Y %*% private$Z + t(private$Z) %*% private$V %*% private$Z  ) / ( Zbar %o% Zbar - Zbar )
-        private$pi         <- colMeans(private$Z)
-      }
-      invisible(res)
-    },
-    #' @description update variational estimation of blocks (VE-step)
-    #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
-    update_blocks =   function(log_lambda = 0) {
-      log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
-      log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
-      private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
-    }
-  ),
-  active = list(
-    #' @field vExpec double: variational approximation of the expectation complete log-likelihood
-    vExpec = function(value) {
-      vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
-      vLL_IMP <- private$vLL_complete(private$V, private$S, private$Z, private$theta$mean, private$pi)
-      vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
-      vLL
     }
   )
 )
@@ -253,13 +198,100 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda double use to adjust the parameter estimation according to the sampling design
     update_blocks =   function() {
-       private$Z <- private$E_step(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi)
+       private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
     }
   ),
   active = list(
+    #' @field imputation the matrix of imputed values
+    imputation = function(value) {
+      as(missSBM:::.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+    },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
-      private$vLL_complete(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi)
+      private$vLL_complete(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
     }
   )
 )
+
+# vExpec = function(value) {
+#   vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+#   vLL_IMP <- private$vLL_complete(self$imputation, private$S, private$Z, private$theta$mean, private$pi)
+#   vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
+#   vLL
+# }
+
+
+#' SimpleSBM_fit_NMAR_noCov <-
+#' R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
+#'   inherit = SimpleSBM_fit_noCov,
+#'   private = list(
+#'     V = NULL # matrix of imputed values
+#'   ),
+#'   public = list(
+#'     initialize = function(adjacencyMatrix, clusterInit, covarList = list()) {
+#'       super$initialize(adjacencyMatrix, clusterInit)
+#'       private$V <- as(missSBM:::.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+#'     },
+#'     #' @description update parameters estimation (M-step)
+#'     update_parameters = function(nu = NULL) {
+#'       if (is.null(nu)) { # fall back to the MAR case
+#'         super$update_parameters()
+#'       } else {
+#'         private$V <- nu
+#'         ## only Bernoulli for the moment !!!
+#'         Zbar <- colSums(private$Z)
+#'         tZYZ <- t(private$Z) %*% private$Y %*% private$Z
+#'         tZVZ <- t(private$Z) %*% private$V %*% private$Z
+#'         if (self$directed) {
+#'           private$theta$mean <- (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar )
+#'         } else {
+#'           private$theta$mean <- (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar )
+#'         }
+#'         private$pi <- colMeans(private$Z)
+#'       }
+#'     },
+#'     #' @description update variational estimation of blocks (VE-step)
+#'     #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
+#'     update_blocks =   function(log_lambda = 0) {
+#'       log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
+#'       log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
+#'       private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
+#'     }
+#'   ),
+#'   active = list(
+#'     #' @field imputation the matrix of imputed values
+#'     imputation = function(value) {private$V},
+#'     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
+#'     vExpec = function(value) {
+#'       vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+#'       vLL_IMP <- private$vLL_complete(private$V, private$S, private$Z, private$theta$mean, private$pi)
+#'       vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
+#'       vLL
+#'     }
+#'   )
+#' )
+#'
+#'
+#' #' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' #'
+#' #' It is not designed not be call by the user
+#' #'
+#' #' @import R6
+#' SimpleSBM_fit_MAR_withCov <-
+#' R6::R6Class(classname = "SimpleSBM_fit_withCov",
+#'   inherit = SimpleSBM_fit_withCov,
+#'   active = list(
+#'     #' @field imputation the matrix of imputed values
+#'     imputation = function(value) {
+#'       as(missSBM:::.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect) * private$S, "dgCMatrix")
+#'     },
+#'     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
+#'     vExpec = function(value) {
+#'       vLL_MAR <- private$vLL_complete(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi)
+#'       vLL_IMP <- private$vLL_complete(self$imputation, private$S, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
+#'       vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
+#'       vLL
+#'     }
+#'   )
+#' )
+

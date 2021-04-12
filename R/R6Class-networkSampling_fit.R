@@ -190,8 +190,6 @@ covarNodeSampling_fit <-
     }
   ),
   active = list(
-    #' @field prob_obs sampling rate
-    prob_obs = function(value) {private$rho},
     #' @field vExpec variational expectation of the sampling
     vExpec = function() {
       res <- sum(log(private$rho[private$N_obs])) + sum(log(1 - private$rho[!private$N_obs]))
@@ -229,9 +227,9 @@ doubleStandardSampling_fit <-
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     #' @description a method to update the imputation of the missing entries.
-    #' @param PI the matrix of inter/intra class probability of connection
+    #' @param PI the matrix of inter/intra class probability of connection for missing
     update_imputation = function(PI) {
-      nu <- check_boundaries(.logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + .logit(PI) ))
+      nu <- .logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + .logit(PI) )
       nu
     }
   ),
@@ -251,7 +249,7 @@ blockDyadSampling_fit <-
   inherit  = networkSamplingDyads_fit,
   private  = list(
     R        = NULL,  ## sampling matrix
-    Rbar     = NULL,
+    S        = NULL,
     directed = NULL   ##
   ),
   public = list(
@@ -260,8 +258,8 @@ blockDyadSampling_fit <-
     #' @param blockInit n x Q matrix of initial block indicators
     initialize = function(partlyObservedNetwork, blockInit) {
       super$initialize(partlyObservedNetwork, "block-dyad")
-      private$R        <- partlyObservedNetwork$samplingMatrix
-      private$Rbar     <- partlyObservedNetwork$samplingMatrixbar
+      private$R <- partlyObservedNetwork$samplingMatrix
+      private$S <- partlyObservedNetwork$samplingMatrixbar
       private$directed <- partlyObservedNetwork$is_directed
       self$update_parameters(partlyObservedNetwork$imputation(), blockInit)
     },
@@ -275,15 +273,13 @@ blockDyadSampling_fit <-
       } else {
         private$psi <- ( ZtRZ + t(ZtRZ) ) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z)
       }
-      private$prob   <- check_boundaries(Z %*% private$psi %*% t(Z))
     }
   ),
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
-      ## factor       <- ifelse(private$directed, 1, .5)
-     ## factor is handle by the fact that R and Rbar are triangular in the undirected case
-      sum(private$R * log(private$prob) + private$Rbar *  log(1 - private$prob))
+      prob <- check_boundaries(Z %*% private$psi %*% t(Z))
+      sum(private$R * log(prob) + private$S *  log(1 - prob))
     }
   )
 )
