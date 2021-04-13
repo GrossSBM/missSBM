@@ -65,18 +65,18 @@ partlyObservedNetwork <-
     #' @param similarity An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
     initialize = function(adjacencyMatrix, covariates = list(), similarity = missSBM:::l1_similarity) {
 
-      ### TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
-      ## adjacency matrix
       ## SANITY CHECKS (on data)
       stopifnot(inherits(adjacencyMatrix, "matrix") | inherits(adjacencyMatrix, "dgCMatrix"))
+      ## TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
 
-      ## Only binary graph supported
-### TODO: later, should also include Poisson/Gaussian models
+      ## TODO: later, should also include Poisson/Gaussian models
       stopifnot(all.equal(sort(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)]))), c(0,1)))
 
+      ## type of SBM
       private$directed <- ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE)
 
       ## covariates
+      ## TODO: for symmetric network, we should only keep the upper triangular part of the covariates
       covar <- format_covariates(covariates, similarity)
       private$X   <- covar$Matrix
       private$phi <- covar$Array
@@ -96,9 +96,9 @@ partlyObservedNetwork <-
       ## sampling matrix (indicating who is observed)
       private$R <- Matrix::sparseMatrix(private$obs[,1] , private$obs[,2] ,x = 1, dims = dim(adjacencyMatrix))
       private$S <- Matrix::sparseMatrix(private$miss[,1], private$miss[,2],x = 1, dims = dim(adjacencyMatrix))
-
       ## network matrix (only none zero, non NA values)
       private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
+
     },
     #' @description method to cluster network data with missing value
     #' @param vBlocks The vector of number of blocks considered in the collection.

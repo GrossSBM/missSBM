@@ -22,13 +22,13 @@ sbm <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-direc
 
 samplings <- list(
   list(name = "dyad", psi = 0.5, class = "dyadSampling_fit"),
-  list(name = "node", psi = 0.5, class = "nodeSampling_fit")#,
-#  list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit")#,
+  list(name = "node", psi = 0.5, class = "nodeSampling_fit"),
+  list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit")#,
 #  list(name = "block-node", psi = c(.3, .5, .7), class = "blockSampling_fit")
 )
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
 test_that("missSBM-fit works and is consistent for all samplings", {
 

@@ -145,7 +145,6 @@ covarDyadSampling_fit <-
   )
 )
 
-
 #' Class for fitting a node sampling
 nodeSampling_fit <-
   R6::R6Class(classname = "nodeSampling_fit",
@@ -214,22 +213,23 @@ doubleStandardSampling_fit <-
     #' @param ... used for compatibility
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "double-standard")
-      private$So      <- sum(    partlyObservedNetwork$networkData[partlyObservedNetwork$observedDyads])
-      private$So.bar  <- sum(1 - partlyObservedNetwork$networkData[partlyObservedNetwork$observedDyads])
-      self$update_parameters(partlyObservedNetwork$imputation("average"))
+      private$So      <- sum(partlyObservedNetwork$networkData)
+      private$So.bar  <- private$card_D_o - private$So
+      self$update_parameters(partlyObservedNetwork$imputation("average") * partlyObservedNetwork$samplingMatrixBar)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-    #' @param imputedNet an adjacency matrix where missing values have been imputed
+    #' @param nu an adjacency matrix with imputed values (only)
     #' @param ... use for compatibility
-    update_parameters = function(imputedNet, ...) {
-      private$Sm     <- sum(    imputedNet[private$D_miss])
-      private$Sm.bar <- sum(1 - imputedNet[private$D_miss])
+    update_parameters = function(nu, ...) {
+      private$Sm     <- sum(nu)
+      private$Sm.bar <- private$card_D_m - private$Sm
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     #' @description a method to update the imputation of the missing entries.
     #' @param PI the matrix of inter/intra class probability of connection for missing
     update_imputation = function(PI) {
-      nu <- .logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + .logit(PI) )
+      nu <- PI
+      nu@x <- .logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + .logit(nu@x) )
       nu
     }
   ),
