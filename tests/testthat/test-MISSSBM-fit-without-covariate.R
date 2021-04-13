@@ -23,8 +23,9 @@ sbm <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-direc
 samplings <- list(
   list(name = "dyad", psi = 0.5, class = "dyadSampling_fit"),
   list(name = "node", psi = 0.5, class = "nodeSampling_fit"),
-  list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit")#,
-#  list(name = "block-node", psi = c(.3, .5, .7), class = "blockSampling_fit")
+  list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit"),
+  list(name = "block-node", psi = c(.3, .5, .7), class = "blockNodeSampling_fit")#,
+#  list(name = "block-dyad", psi = c(.3, .5, .7), class = "blockDyadSampling_fit")
 )
 
 ## control parameter for the VEM

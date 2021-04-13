@@ -78,8 +78,8 @@ missSBM_fit <-
         "node"            = nodeSampling_fit$new(partlyObservedNet),
         "covar-dyad"      = covarDyadSampling_fit$new(partlyObservedNet),
         "covar-node"      = covarNodeSampling_fit$new(partlyObservedNet),
-        "block-node"      = blockSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "double-standard" = doubleStandardSampling_fit$new(partlyObservedNet),
+        "block-node"      = blockNodeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "block-dyad"      = blockDyadSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "degree"          = degreeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit), private$SBM$connectParam$mean),
         "snowball"        = nodeSampling_fit$new(partlyObservedNet) # estimated sampling parameter not relevant

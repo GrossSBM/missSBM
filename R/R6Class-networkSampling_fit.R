@@ -259,19 +259,19 @@ blockDyadSampling_fit <-
     initialize = function(partlyObservedNetwork, blockInit) {
       super$initialize(partlyObservedNetwork, "block-dyad")
       private$R <- partlyObservedNetwork$samplingMatrix
-      private$S <- partlyObservedNetwork$samplingMatrixbar
       private$directed <- partlyObservedNetwork$is_directed
-      self$update_parameters(partlyObservedNetwork$imputation(), blockInit)
+      self$update_parameters(NA, blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
     #' @param imputedNet an adjacency matrix where missing values have been imputed
     #' @param Z indicator of blocks
     update_parameters = function(imputedNet, Z) {
       ZtRZ <- as.matrix(t(Z) %*% private$R %*% Z)
+      Zbar <- colSums(private$Z)
       if(private$directed) {
-        private$psi <- ZtRZ / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z)
+        private$psi <- ZtRZ / ( Zbar %o% Zbar - Zbar )
       } else {
-        private$psi <- ( ZtRZ + t(ZtRZ) ) / (t(Z) %*% (1 - diag(nrow(imputedNet))) %*% Z)
+        private$psi <- ( ZtRZ + t(ZtRZ) ) / ( Zbar %o% Zbar - Zbar )
       }
     }
   ),
@@ -285,8 +285,8 @@ blockDyadSampling_fit <-
 )
 
 #' Class for fitting a block-node sampling
-blockSampling_fit <-
-  R6::R6Class(classname = "blockSampling_fit",
+blockNodeSampling_fit <-
+  R6::R6Class(classname = "blockNodeSampling_fit",
   inherit = networkSamplingNodes_fit,
   private = list(
     So     = NULL, ## sum_(i in Nobs ) Z_iq
