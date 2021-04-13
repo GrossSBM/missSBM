@@ -28,8 +28,7 @@ missSBM_fit <-
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## fields for internal use (referring to mathematical notations)
   private = list(
-    NAs        = NULL, # boolean for NA entries in the adjacencyMatrix
-    imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
+    nu         = NULL, # imputed values (a sparse Matrix with entries only for imputed values, "dgCMatrix)
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
     optStatus  = NULL  # status of the optimization process
@@ -54,21 +53,19 @@ missSBM_fit <-
       covariates <- array2list(partlyObservedNet$covarArray)
       if (!useCov) covariates <- list()
 
-      private$imputedNet <- partlyObservedNet$networkData
-      private$NAs        <- as.matrix(partlyObservedNet$NAs)
       if (length(covariates) == 0 & netSampling %in% c("dyad", "node", "snowball")) {
-          private$SBM <- SimpleSBM_fit_noCov$new(private$imputedNet, clusterInit)
+          private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
       } else {
         private$SBM <- switch(netSampling,
-                              "dyad"            = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "node"            = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "covar-dyad"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "covar-node"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "block-node"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "double-standard" = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "block-dyad"      = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "degree"          = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates),
-                              "snowball"        = SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates) # estimated sampling parameter not relevant
+                              "dyad"            = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "node"            = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "covar-dyad"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "covar-node"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "block-node"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "double-standard" = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "block-dyad"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "degree"          = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
+                              "snowball"        = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates) # estimated sampling parameter not relevant
         )
       }
 
@@ -108,7 +105,7 @@ missSBM_fit <-
         #
         for (k in seq.int(control$fixPointIter)) {
           # update the variational parameters for missing entries (a.k.a nu)
-          nu <- private$sampling$update_imputation(private$SBM$imputation)
+          private$nu <- private$sampling$update_imputation(private$SBM$imputation)
           # update the variational parameters for block memberships (a.k.a tau)
           private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
         }
@@ -117,9 +114,9 @@ missSBM_fit <-
         ## M-step
         #
         # update the parameters of the SBM (a.k.a pi and theta)
-        private$SBM$update_parameters(nu)
+        private$SBM$update_parameters(private$nu)
         # update the parameters of network sampling process (a.k.a psi)
-        private$sampling$update_parameters(nu, private$SBM$probMemberships)
+        private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
 
         ## Check convergence
         delta[i] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
@@ -128,12 +125,6 @@ missSBM_fit <-
 
       }
       private$SBM$reorder()
-
-      ## probably not efficient
-      if (private$SBM$directed)
-        private$imputedNet[Matrix::which(private$NAs)] <- nu[Matrix::which(nu != 0)]
-      else
-        private$imputedNet[Matrix::which(private$NAs)] <- (nu + Matrix::t(nu))[Matrix::which(nu != 0 | Matrix::t(nu) != 0)]
 
       if (control$trace) cat("\n")
       private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
@@ -165,14 +156,12 @@ missSBM_fit <-
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
     fittedSampling = function(value) {private$sampling},
     #' @field imputedNetwork The network data as a matrix with NAs values imputed with the current model
-    imputedNetwork = function(value) {private$imputedNet},
+    imputedNetwork = function(value) {private$fittedSBM$networkData + private$nu},
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
     entropyImputed = function(value) {
-      nu <- private$imputedNet[private$NAs]
-      res <- -sum(xlogx(nu) + xlogx(1 - nu))
-      if (!self$fittedSBM$directed) res <- res / 2
+      res <- -sum(xlogx(private$nu) + xlogx(1 - private$nu))
       res
     },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering

@@ -33,7 +33,7 @@ control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE
 test_that("missSBM-fit works and is consistent for all samplings", {
 
   ## Consistency
-  tol_truth <- 0.5e-1
+  tol_truth <- 5e-3
   tol_ARI   <- .9
 
   cat("Tested sampling:")

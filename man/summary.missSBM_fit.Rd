@@ -4,7 +4,7 @@
 \alias{summary.missSBM_fit}
 \title{Summary method for a \code{\link{missSBM_fit}}}
 \usage{
-\method{summary}{missSBM_fit}(object, ...)
+summary.missSBM_fit(object, ...)
 }
 \arguments{
 \item{object}{an R6 object with class \code{\link{missSBM_fit}}}

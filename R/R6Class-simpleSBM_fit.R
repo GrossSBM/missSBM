@@ -9,56 +9,40 @@ R6::R6Class(classname = "SimpleSBM_fit",
   private = list(
     variant = NULL, # model variant
     R       = NULL, # the sampling matrix (sparse encoding)
-    S       = NULL,  # the "anti" sampling matrix (sparse encoding)
+    S       = NULL, # the "anti" sampling matrix (sparse encoding)
     M_step  = NULL, # pointing to the appropriate M_step function
     E_step  = NULL, # pointing to the appropriate E_step function
     vLL_complete = NULL # pointing to the appropriate Expected complete LL function
   ),
   public = list(
     #' @description constructor for simpleSBM_fit for missSBM purpose
-    #' @param adjacencyMatrix a matrix encoding the graph
+    #' @param networkData a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork
     #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
     #' @param covarList An optional list with M entries (the M covariates).
-    initialize = function(adjacencyMatrix, clusterInit, covarList = list()) {
+    initialize = function(networkData, clusterInit, covarList = list()) {
 
-### TODO: determine the model according to the adjacency matrix
-### Choose in Bernoulli, Poisson, Gaussian, ZIGaussian
-      model <- "bernoulli"
-
-      ## SANITY CHECKS (on data)
-      stopifnot(is.matrix(adjacencyMatrix) | inherits(adjacencyMatrix, "Matrix")) # must be a matrix or sparseMatrix
-      stopifnot(all.equal(nrow(adjacencyMatrix), ncol(adjacencyMatrix)))          # matrix must be square
-      ## Covariates are tested elsewhere
+      ## networkData
+      if (inherits(networkData, "matrix")) networkData <- partlyObservedNetwork$new(networkData, covarList)
+      stopifnot(inherits(networkData, "partlyObservedNetwork"))
 
       ## Initial Clustering
       private$Z <- clustering_indicator(clusterInit)
 
-      # Basic fields initialization and call to super constructor
+      # Basic fields initialization by call to super constructor
+### TODO: determine the model according to the adjacency matrix
+      model <- "bernoulli"
       super$initialize(model        = model,
-                       directed     = ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE),
-                       nbNodes      = nrow(adjacencyMatrix),
+                       directed     = networkData$is_directed,
+                       nbNodes      = networkData$nbNodes,
                        blockProp    = vector("numeric", ncol(private$Z)) + .Machine$double.eps,
 ### FIXME: this should be model-dependent
                        connectParam = list(mean = matrix(0, ncol(private$Z), ncol(private$Z))),
                        covarList    = covarList)
 
       # Storing data
-### TODO: handle the case where Y is a sparse Matrix
-### TODO: create sparse matrix more efficiently
-      if (self$directed) {
-        dyads <- upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)
-      } else {
-        dyads <- upper.tri(adjacencyMatrix)
-      }
-      ## where are my observations?
-      obs <- which(!is.na(adjacencyMatrix) & dyads, arr.ind = TRUE)
-      private$R <- Matrix::sparseMatrix(obs[,1], obs[,2],x = 1, dims = dim(adjacencyMatrix))
-      ## where are the missing entries?
-      miss <- which(is.na(adjacencyMatrix) & dyads, arr.ind = TRUE)
-      private$S <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
-      ## where are my non-zero entries?
-      nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
-      private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
+      private$R <- networkData$samplingMatrix
+      private$S <- networkData$samplingMatrixBar
+      private$Y <- networkData$networkData
 
       ## point to the functions that performs E/M steps and compute the likelihood
       private$variant <-
@@ -110,6 +94,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
         delta[iterate] <- sqrt(sum((private$theta$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
         stop <- (iterate > maxIter) |  (delta[iterate] < threshold)
       }
+      self$reorder()
       if (trace) cat("\n")
       res <- data.frame(delta = delta[1:iterate], objective = objective[1:iterate])
       res
@@ -148,7 +133,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @description update parameters estimation (M-step)
     update_parameters = function(...) {
       res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
-      res$theta$mean[is.nan(res$theta$mean)] <- 0
+      # res$theta$mean[is.nan(res$theta$mean)] <- 0
       private$theta <- res$theta
       private$pi    <- as.numeric(res$pi)
       invisible(res)

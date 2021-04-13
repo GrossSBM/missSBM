@@ -36,7 +36,7 @@ array2list <-function(X) {
 }
 
 format_covariates <- function(covariates, similarity) {
-  if (!is.null(covariates)) {
+  if (length(covariates) > 0) {
     # Conversion of covariates to an array
     covariates <- simplify2array(covariates)
     # if a list of vector (covariates node-centered), will be a matrix

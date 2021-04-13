@@ -21,10 +21,10 @@ Z0  <- sbm$indMemberships
 
 samplings <- list(
   list(name = "dyad", psi = 0.5, class = "dyadSampling_fit", k = log(N * (N-1)/2)),
-  list(name = "node", psi = 0.5, class = "nodeSampling_fit", k = log(N)),
-  list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit", k = log(N * (N-1)/2)),
-  list(name = "block-node", psi = c(.3, .5, .7), class = "blockSampling_fit", k = log(N)),
-  list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
+  list(name = "node", psi = 0.5, class = "nodeSampling_fit", k = log(N))#,
+#  list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit", k = log(N * (N-1)/2)),
+#  list(name = "block-node", psi = c(.3, .5, .7), class = "blockSampling_fit", k = log(N)),
+#  list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
 )
 
 test_that("Consistency of sampling fit", {

@@ -3,6 +3,7 @@
 #' This class is not exported to the user
 #'
 #' @importFrom R6 R6Class
+#' @import Matrix
 partlyObservedNetwork <-
   R6::R6Class(classname = "partlyObservedNetwork",
   ## FIELDS : encode network with missing edges
@@ -14,8 +15,10 @@ partlyObservedNetwork <-
     X        = NULL, # the covariates matrix
     phi      = NULL, # the covariates array
     directed = NULL, # directed network of not
+    obs      = NULL, # collection of observed dyads
+    miss     = NULL, # collection of missing dyads
     R        = NULL, # the sampling matrix (sparse encoding)
-    S        = NULL  # complementary matrix of R
+    S        = NULL  # the (anti) sampling matrix (sparse encoding)
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -38,9 +41,9 @@ partlyObservedNetwork <-
     #' @field covarMatrix the matrix of covariates
     covarMatrix = function(value) {if (missing(value)) return(private$X) else  private$X <- value},
     #' @field missingDyads array indices of missing dyads
-    missingDyads    = function(value) {Matrix::which( private$S != 0, arr.ind = TRUE)},
+    missingDyads    = function(value) {private$miss},
     #' @field observedDyads array indices of observed dyads
-    observedDyads   = function(value) {Matrix::which( private$R != 0, arr.ind = TRUE)},
+    observedDyads   = function(value) {private$obs},
     #' @field samplingMatrix matrix of observed and non-observed edges
     samplingMatrix  = function(value) {private$R},
     #' @field samplingMatrixBar matrix of observed and non-observed edges
@@ -50,14 +53,7 @@ partlyObservedNetwork <-
       res <- rep(TRUE, self$nbNodes)
       res[Matrix::rowSums(private$S) > 0] <- FALSE
       res
-     },
-    #' @field NAs boolean for NA entries in the adjacencyMatrix
-    NAs = function(value) {
-      if (private$directed)
-        private$S
-      else
-        private$S | Matrix::t(private$S)
-    }
+     }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -67,18 +63,18 @@ partlyObservedNetwork <-
     #' @param adjacencyMatrix The adjacency matrix of the network
     #' @param covariates A list with M entries (the M covariates), each of whom being either a size-N vector or N x N matrix.
     #' @param similarity An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
-    initialize = function(adjacencyMatrix, covariates = NULL, similarity = missSBM:::l1_similarity) {
+    initialize = function(adjacencyMatrix, covariates = list(), similarity = missSBM:::l1_similarity) {
 
       ### TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
       ## adjacency matrix
-      stopifnot(is.matrix(adjacencyMatrix))
+      ## SANITY CHECKS (on data)
+      stopifnot(inherits(adjacencyMatrix, "matrix") | inherits(adjacencyMatrix, "dgCMatrix"))
 
       ## Only binary graph supported
+### TODO: later, should also include Poisson/Gaussian models
       stopifnot(all.equal(sort(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)]))), c(0,1)))
 
       private$directed <- ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE)
-
-      private$Y  <- adjacencyMatrix
 
       ## covariates
       covar <- format_covariates(covariates, similarity)
@@ -91,18 +87,18 @@ partlyObservedNetwork <-
       } else {
         dyads <- upper.tri(adjacencyMatrix)
       }
-      NAs  <- is.na(adjacencyMatrix)
-      miss <- which( NAs & dyads, arr.ind = TRUE)
-      obs  <- which(!NAs & dyads, arr.ind = TRUE )
+      ## where are my observations?
+      private$obs   <- which(!is.na(adjacencyMatrix) & dyads, arr.ind = TRUE )
+      private$miss  <- which( is.na(adjacencyMatrix) & dyads, arr.ind = TRUE )
+      ## where are my non-zero entries?
+      nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
 
       ## sampling matrix (indicating who is observed)
-      private$R <- Matrix::sparseMatrix(obs [,1], obs [,2], x = 1, dims = dim(adjacencyMatrix))
-      private$S <- Matrix::sparseMatrix(miss[,1], miss[,2], x = 1, dims = dim(adjacencyMatrix))
+      private$R <- Matrix::sparseMatrix(private$obs[,1] , private$obs[,2] ,x = 1, dims = dim(adjacencyMatrix))
+      private$S <- Matrix::sparseMatrix(private$miss[,1], private$miss[,2],x = 1, dims = dim(adjacencyMatrix))
 
-      # ## where are my non-zero entries?
-      # nzero <- which(!NAs & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
-      # private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
-
+      ## network matrix (only none zero, non NA values)
+      private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
     },
     #' @description method to cluster network data with missing value
     #' @param vBlocks The vector of number of blocks considered in the collection.
@@ -130,16 +126,17 @@ partlyObservedNetwork <-
         y <- as.vector(adjacencyMatrix[self$observedDyads])
         X <- cbind(1, apply(private$phi, 3, function(x) x[self$observedDyads]))
         adjacencyMatrix <- matrix(NA, self$nbNodes, self$nbNodes)
-        ### TODO: make it work for other model than Bernoulli / family than binomial
+### TODO: make it work for other model than Bernoulli / family than binomial
         adjacencyMatrix[self$observedDyads] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
-        if (!private$directed)
-          adjacencyMatrix[lower.tri(adjacencyMatrix)] <- t(adjacencyMatrix)[lower.tri(adjacencyMatrix)]
       }
-      adjacencyMatrix[is.na(adjacencyMatrix)] <-
+      suppressMessages(adjacencyMatrix[self$missingDyads] <-
         switch(match.arg(type),
                "average"  = mean(adjacencyMatrix, na.rm = TRUE),
                "median"   = median(adjacencyMatrix, na.rm = TRUE)
-        )
+        ))
+      if (!private$directed)
+        suppressMessages(adjacencyMatrix[lower.tri(adjacencyMatrix)] <- Matrix::t(adjacencyMatrix)[lower.tri(adjacencyMatrix)])
+
       adjacencyMatrix
     }
   )

@@ -37,8 +37,6 @@ This class is not exported to the user
 \item{\code{samplingMatrixBar}}{matrix of observed and non-observed edges}
 
 \item{\code{observedNodes}}{a vector of observed and non-observed nodes (observed means at least one non NA value)}
-
-\item{\code{NAs}}{boolean for NA entries in the adjacencyMatrix}
 }
 \if{html}{\out{</div>}}
 }
@@ -59,7 +57,7 @@ constructor
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$new(
   adjacencyMatrix,
-  covariates = NULL,
+  covariates = list(),
   similarity = missSBM:::l1_similarity
 )}\if{html}{\out{</div>}}
 }

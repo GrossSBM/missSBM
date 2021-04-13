@@ -17,6 +17,8 @@ It is not designed not be call by the user
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{imputation}}{the matrix of imputed values}
+
 \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
 }
 \if{html}{\out{</div>}}
@@ -51,7 +53,7 @@ It is not designed not be call by the user
 \subsection{Method \code{update_parameters()}}{
 update parameters estimation (M-step)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_noCov$update_parameters()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_noCov$update_parameters(...)}\if{html}{\out{</div>}}
 }
 
 }
@@ -61,7 +63,7 @@ update parameters estimation (M-step)
 \subsection{Method \code{update_blocks()}}{
 update variational estimation of blocks (VE-step)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_noCov$update_blocks()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_noCov$update_blocks(...)}\if{html}{\out{</div>}}
 }
 
 }

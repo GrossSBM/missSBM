@@ -57,13 +57,13 @@ It is not designed not be call by the user
 \subsection{Method \code{new()}}{
 constructor for simpleSBM_fit for missSBM purpose
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$new(adjacencyMatrix, clusterInit, covarList = list())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$new(networkData, clusterInit, covarList = list())}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{adjacencyMatrix}}{a matrix encoding the graph}
+\item{\code{networkData}}{a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork}
 
 \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
 

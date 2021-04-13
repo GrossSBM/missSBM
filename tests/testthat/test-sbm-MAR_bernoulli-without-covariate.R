@@ -23,9 +23,8 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate, dyad sampl
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
   cl <- net$clustering(3)[[1]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(adjMatrix, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
   mySBM$doVEM()
-  mySBM$reorder()
 
   ## correctness
   expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
@@ -47,9 +46,8 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate, node sampl
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
   cl <- net$clustering(3)[[1]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(adjMatrix, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
   mySBM$doVEM()
-  mySBM$reorder()
 
   ## correctness
   expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
@@ -71,9 +69,8 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate, dyad samplin
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
   cl <- net$clustering(3)[[1]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(adjMatrix, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
   mySBM$doVEM()
-  mySBM$reorder()
 
   ## correctness
   expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
@@ -95,9 +92,8 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate, node samping
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
   cl <- net$clustering(3)[[1]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(adjMatrix, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
   mySBM$doVEM()
-  mySBM$reorder()
 
   ## correctness
   expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
