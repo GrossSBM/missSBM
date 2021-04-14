@@ -267,19 +267,19 @@ blockDyadSampling_fit <-
     #' @param Z indicator of blocks
     update_parameters = function(imputedNet, Z) {
       ZtRZ <- as.matrix(t(Z) %*% private$R %*% Z)
-      Zbar <- colSums(private$Z)
+      Zbar <- colSums(Z)
       if(private$directed) {
         private$psi <- ZtRZ / ( Zbar %o% Zbar - Zbar )
       } else {
         private$psi <- ( ZtRZ + t(ZtRZ) ) / ( Zbar %o% Zbar - Zbar )
       }
+      private$rho <- check_boundaries(Z %*% private$psi %*% t(Z))
     }
   ),
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
-      prob <- check_boundaries(Z %*% private$psi %*% t(Z))
-      sum(private$R * log(prob) + private$S *  log(1 - prob))
+      sum(private$R * log(private$rho) + private$S *  log(1 - private$rho))
     }
   )
 )

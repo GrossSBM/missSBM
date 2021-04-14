@@ -146,7 +146,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   ),
   active = list(
     #' @field imputation the matrix of imputed values
-    MAR_imputation = function(value) {
+    imputation = function(value) {
       as(missSBM:::.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
@@ -207,6 +207,11 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
 # }
 
 
+#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#'
+#' It is not designed not be call by the user
+#'
+#' @import R6
 SimpleSBM_fit_NMAR_noCov <-
 R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
   inherit = SimpleSBM_fit_noCov,
@@ -214,7 +219,10 @@ R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
     V = NULL # matrix of imputed values
   ),
   public = list(
-    initialize = function(networkData, clusterInit, covarList = list()) {
+    #' @description constructor for simpleSBM_fit for missSBM purpose
+    #' @param networkData a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork
+    #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
+    initialize = function(networkData, clusterInit) {
       super$initialize(networkData, clusterInit)
       private$V <- self$imputation
     },
