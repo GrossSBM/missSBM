@@ -269,9 +269,9 @@ blockDyadSampling_fit <-
       ZtRZ <- as.matrix(t(Z) %*% private$R %*% Z)
       Zbar <- colSums(Z)
       if(private$directed) {
-        private$psi <- ZtRZ / ( Zbar %o% Zbar - Zbar )
+        private$psi <- check_boundaries(ZtRZ / ( Zbar %o% Zbar - Zbar ))
       } else {
-        private$psi <- ( ZtRZ + t(ZtRZ) ) / ( Zbar %o% Zbar - Zbar )
+        private$psi <- check_boundaries(( ZtRZ + t(ZtRZ) ) / ( Zbar %o% Zbar - Zbar ))
       }
     }
   ),

@@ -238,9 +238,9 @@ R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
         tZYZ <- t(private$Z) %*% private$Y %*% private$Z
         tZVZ <- t(private$Z) %*% private$V %*% private$Z
         if (self$directed) {
-          private$theta$mean <- as.matrix ( (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar ) )
+          private$theta$mean <- missSBM:::check_boundaries(as.matrix ( (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar ) ))
         } else {
-          private$theta$mean <-  as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) )
+          private$theta$mean <-  missSBM:::check_boundaries(as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) ) )
         }
         private$pi <- colMeans(private$Z)
       }
@@ -265,28 +265,4 @@ R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
     }
   )
 )
-
-
-#' #' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-#' #'
-#' #' It is not designed not be call by the user
-#' #'
-#' #' @import R6
-#' SimpleSBM_fit_MAR_withCov <-
-#' R6::R6Class(classname = "SimpleSBM_fit_withCov",
-#'   inherit = SimpleSBM_fit_withCov,
-#'   active = list(
-#'     #' @field imputation the matrix of imputed values
-#'     imputation = function(value) {
-#'       as(missSBM:::.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect) * private$S, "dgCMatrix")
-#'     },
-#'     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
-#'     vExpec = function(value) {
-#'       vLL_MAR <- private$vLL_complete(private$Y, private$R, roundProduct(private$X, private$beta), private$Z, .logit(private$theta$mean), private$pi)
-#'       vLL_IMP <- private$vLL_complete(self$imputation, private$S, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
-#'       vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
-#'       vLL
-#'     }
-#'   )
-#' )
 
