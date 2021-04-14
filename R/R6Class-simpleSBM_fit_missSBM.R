@@ -139,6 +139,7 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
     loglik = function(value) {self$vExpec + self$entropy},
     #' @field ICL double: value of the integrated classification log-likelihood
     ICL    = function(value) {-2 * self$vExpec + self$penalty},
+    #' @field networkData the network as stored by missSBM
     networkData    = function(value) {
       if (missing(value)) private$Y else private$Y <- value
     },

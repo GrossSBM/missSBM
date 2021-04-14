@@ -64,7 +64,7 @@ plot(my_missSBM_fit, "connectivity")
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

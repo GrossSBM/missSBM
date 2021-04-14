@@ -381,7 +381,8 @@ degreeSampling_fit <-
     },
     #' @description a method to update the imputation of the missing entries.
     #' @param PI the matrix of inter/intra class probability of connection
-    update_imputation = function(PI) {
+    #' @param ... use for compatibility
+    update_imputation = function(PI,...) {
       C <- 2 * h(private$ksi) * (private$psi[1] * private$psi[2] + private$psi[2]^2 * (1 + private$Dij))
       nu <- check_boundaries((.logit(PI) - private$psi[2] + C + t(C) ))
       nu

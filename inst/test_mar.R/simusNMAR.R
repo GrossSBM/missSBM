@@ -63,4 +63,4 @@ p <- RES %>% dplyr::select(-Psi) %>% pivot_longer(c(ARI, MSE), names_to = "measu
   geom_boxplot() + geom_point(alpha = 0.5) + facet_wrap(~ measure, scales = "free")
 
 
-print(p)
+# print(p)

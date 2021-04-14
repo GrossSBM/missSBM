@@ -88,7 +88,7 @@ method to cluster network data with missing value
 \describe{
 \item{\code{vBlocks}}{The vector of number of blocks considered in the collection.}
 
-\item{\code{method}}{character with a clustering method among "hierarchical", "spectral", "kmeans".}
+\item{\code{imputation}}{character indicating the type of imputation among "median", "average"}
 }
 \if{html}{\out{</div>}}
 }

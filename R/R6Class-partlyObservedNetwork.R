@@ -102,7 +102,7 @@ partlyObservedNetwork <-
     },
     #' @description method to cluster network data with missing value
     #' @param vBlocks The vector of number of blocks considered in the collection.
-    #' @param method character with a clustering method among "hierarchical", "spectral", "kmeans".
+    #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom ClusterR KMeans_rcpp
     clustering = function(vBlocks, imputation = c("median", "average") ) {

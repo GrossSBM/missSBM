@@ -25,6 +25,8 @@ It is not designed not be call by the user
 
 \item{\code{ICL}}{double: value of the integrated classification log-likelihood}
 
+\item{\code{networkData}}{the network as stored by missSBM}
+
 \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
 }
 \if{html}{\out{</div>}}

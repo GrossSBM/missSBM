@@ -15,6 +15,8 @@ Class for fitting a block-dyad sampling
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{vExpec}}{variational expectation of the sampling}
+
+\item{\code{log_lambda}}{matrix, term for adjusting the imputation step which depends on the type of sampling}
 }
 \if{html}{\out{</div>}}
 }
@@ -60,15 +62,15 @@ constructor
 \subsection{Method \code{update_parameters()}}{
 a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampling_fit$update_parameters(imputedNet, Z)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampling_fit$update_parameters(nu, Z)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
+\item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
 
-\item{\code{Z}}{indicator of blocks}
+\item{\code{Z}}{probabilities of block memberships}
 }
 \if{html}{\out{</div>}}
 }
