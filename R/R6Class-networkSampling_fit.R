@@ -38,8 +38,8 @@ networkSamplingDyads_fit <-
     #' @param ... use for compatibility
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
-    #' @param PI the matrix of inter/intra class probability of connection
-    update_imputation = function(PI) {PI} ## good for MCAR on node, dyads and NMAR with blocks
+    #' @param nu the matrix of (uncorrected) imputation for missing entries
+    update_imputation = function(nu) {nu} # good for MCAR on node, dyads and NMAR with blocks
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -84,8 +84,8 @@ networkSamplingNodes_fit <-
     #' @param ... use for compatibility
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
-    #' @param PI the matrix of inter/intra class probability of connection
-    update_imputation = function(PI) {PI} ## good for MCAR on node, dyads and NMAR with blocks
+    #' @param nu the matrix of (uncorrected) imputation for missing entries
+    update_imputation = function(nu) {nu} ## good for MCAR on node, dyads and NMAR with blocks
   ),
   active = list(
     #' @field penalty double, value of the penalty term in ICL
@@ -105,8 +105,7 @@ dyadSampling_fit <-
     #' @param ... used for compatibility
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "dyad")
-      private$psi      <- check_boundaries(private$card_D_o / (private$card_D_m + private$card_D_o))
-      private$rho      <- rep(private$psi, private$card_D)
+      private$psi <- check_boundaries(private$card_D_o / (private$card_D_m + private$card_D_o))
     }
   ),
   active = list(
@@ -156,7 +155,6 @@ nodeSampling_fit <-
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "node")
       private$psi <- private$card_N_o / (private$card_N_o + private$card_N_m)
-      private$rho <- rep(private$psi, private$card_N)
     }
   ),
   active = list(
@@ -226,9 +224,8 @@ doubleStandardSampling_fit <-
       private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
     },
     #' @description a method to update the imputation of the missing entries.
-    #' @param PI the matrix of inter/intra class probability of connection for missing
-    update_imputation = function(PI) {
-      nu <- PI
+    #' @param nu the matrix of (uncorrected) imputation for missing entries
+    update_imputation = function(nu) {
       nu@x <- .logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + .logit(nu@x) )
       nu
     }
@@ -250,7 +247,8 @@ blockDyadSampling_fit <-
   private  = list(
     R        = NULL,  ## sampling matrix
     S        = NULL,
-    directed = NULL   ##
+    Z        = NULL,
+    directed = NULL
   ),
   public = list(
     #' @description constructor
@@ -259,13 +257,15 @@ blockDyadSampling_fit <-
     initialize = function(partlyObservedNetwork, blockInit) {
       super$initialize(partlyObservedNetwork, "block-dyad")
       private$R <- partlyObservedNetwork$samplingMatrix
+      private$S <- partlyObservedNetwork$samplingMatrixBar
       private$directed <- partlyObservedNetwork$is_directed
       self$update_parameters(NA, blockInit)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-    #' @param imputedNet an adjacency matrix where missing values have been imputed
-    #' @param Z indicator of blocks
-    update_parameters = function(imputedNet, Z) {
+    #' @param nu the matrix of (uncorrected) imputation for missing entries
+    #' @param Z probabilities of block memberships
+    update_parameters = function(nu, Z) {
+      private$Z <- Z
       ZtRZ <- as.matrix(t(Z) %*% private$R %*% Z)
       Zbar <- colSums(Z)
       if(private$directed) {
@@ -273,13 +273,19 @@ blockDyadSampling_fit <-
       } else {
         private$psi <- ( ZtRZ + t(ZtRZ) ) / ( Zbar %o% Zbar - Zbar )
       }
-      private$rho <- check_boundaries(Z %*% private$psi %*% t(Z))
     }
   ),
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
-      sum(private$R * log(private$rho) + private$S *  log(1 - private$rho))
+      rho <- check_boundaries(private$Z %*% private$psi %*% t(private$Z))
+      sum(private$R * log(rho) + private$S *  log(1 - rho))
+    },
+    #' @field log_lambda matrix, term for adjusting the imputation step which depends on the type of sampling
+    log_lambda = function(value) {
+      res <- private$R %*% private$Z %*% t(log(private$psi)) + private$S %*% private$Z %*% t(log(1 - private$psi)) +
+        t(private$R) %*% private$Z %*% log(private$psi) + t(private$S) %*% private$Z %*% log(1 - private$psi)
+      res
     }
   )
 )

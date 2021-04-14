@@ -15,7 +15,7 @@ R6::R6Class(classname = "networkSampling",
   private = list(
     name  = NULL, # type of sampling process
     psi   = NULL, # vector of parameters of the process originating the missing values
-    rho   = NULL  # the prior probability for sampling either a dyad or a node
+    rho   = NULL  # the probability for sampling either a dyad or a node
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
