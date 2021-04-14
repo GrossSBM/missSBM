@@ -42,7 +42,7 @@ missSBM_fit <-
     #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.
     #' @param useCov logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    initialize = function(partlyObservedNet, netSampling, clusterInit, useCov) {
+    initialize = function(partlyObservedNet, netSampling, clusterInit, useCov = TRUE) {
 
       ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
@@ -64,11 +64,7 @@ missSBM_fit <-
         private$SBM <- switch(netSampling,
                               "covar-dyad"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
                               "covar-node"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
-                              "block-node"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
-                              "double-standard" = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
-                              "block-dyad"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
-                              "degree"          = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
-                              "snowball"        = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates) # estimated sampling parameter not relevant
+                              "degree"          = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates) # estimated sampling parameter not relevant
         )
       }
 
