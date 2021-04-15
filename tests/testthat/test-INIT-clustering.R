@@ -70,7 +70,7 @@ test_that("Init clustering with covariate is consistent", {
     expect_is(clusterings, "list")
 
     cl <- clusterings[[Q]]
-    relevance <- .8
+    relevance <- .7
     expect_is(cl, "integer")
     expect_equal(length(cl), N)
     expect_gt(ARI(cl, sbm$memberships), relevance)

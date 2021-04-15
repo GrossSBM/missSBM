@@ -125,7 +125,6 @@ partlyObservedNetwork <-
       if (!is.null(private$phi)) {
         y <- as.vector(adjacencyMatrix[self$observedDyads])
         X <- cbind(1, apply(private$phi, 3, function(x) x[self$observedDyads]))
-        adjacencyMatrix <- matrix(NA, self$nbNodes, self$nbNodes)
 ### TODO: make it work for other model than Bernoulli / family than binomial
         adjacencyMatrix[self$observedDyads] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
       }

@@ -1,5 +1,13 @@
 context("test network samplers (Class networkSampler and chidren)")
 
+error <- function(beta1, beta2, sort = FALSE) {
+  if (sort)
+    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
+  else
+    err <- sum((beta1 - beta2)^2)/length(beta2)
+  err
+}
+
 set.seed(178303)
 ### A SBM model : ###
 N <- 200
@@ -60,7 +68,6 @@ test_that("Consistency of simple node-centered sampling", {
   expect_equal(mySampler$type, "node")
   expect_equal(mySampler$df, 1)
   expect_equal(mySampler$parameters, psi)
-  expect_equal(length(mySampler$prob), N)
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))
   samplingRate <- sum(mySampler$samplingMatrix)/N^2
@@ -73,7 +80,6 @@ test_that("Consistency of simple node-centered sampling", {
   expect_equal(mySampler$type, "node")
   expect_equal(mySampler$df, M)
   expect_equal(mySampler$parameters, psi)
-  expect_equal(length(mySampler$prob), N)
   mySampler$rSamplingMatrix()
   expect_equal(dim(mySampler$samplingMatrix), c(N,N))
 })
