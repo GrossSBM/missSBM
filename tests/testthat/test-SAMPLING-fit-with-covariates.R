@@ -1,15 +1,6 @@
 context("test network sampling fit (Class networkSampling_fit and chidren)")
 
-error <- function(beta1, beta2, sort = FALSE) {
-  if (sort)
-    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
-  else
-    err <- sum((beta1 - beta2)^2)/length(beta2)
-  err
-}
-
-.logistic <- missSBM:::.logistic
-.logit <- missSBM:::.logit
+source("utils_test.R")
 
 set.seed(1234)
 ### A SBM model : ###

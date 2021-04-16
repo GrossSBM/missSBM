@@ -2,101 +2,78 @@ set.seed(1234)
 library(sbm)
 library(aricode)
 
-rmse <- function(theta, theta_star) { sqrt(sum((theta - theta_star)^2)/sum(theta_star^2)) }
-
-## Common parameters
-nbNodes  <- 200
-nbBlocks <- 3
-blockProp <- c(.5, .25, .25) # group proportions
+N_nocov   <- 200
+Q <- 3
+source("utils_test.R")
 
 test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate, dyad sampling, MAR", {
 
-  ## SIMPLE UNDIRECTED BERNOULLI SBM
-  means <- diag(.4, 3) + 0.05
-  connectParam <- list(mean = means)
+  sampler_undirected_nocov$rNetwork(store = TRUE)
 
-  ## Basic construction - check for wrong specifications
-  mySampler <- sbm::SimpleSBM$new('bernoulli', nbNodes, FALSE, blockProp, connectParam)
-  mySampler$rNetwork(store = TRUE)
-
-  adjMatrix  <- missSBM::observeNetwork(mySampler$networkData, "dyad", 0.5)
+  adjMatrix  <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, "dyad", 0.5)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-  cl <- net$clustering(3)[[1]]
+  cls <- net$clustering(1:(2*Q))
+  cl <- cls[[Q]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, cl)
   mySBM$doVEM()
 
   ## correctness
-  expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
-  expect_gt(ARI(mySBM$memberships, mySampler$memberships), 0.95)
+  expect_lt(error(mySBM$connectParam$mean, sampler_undirected_nocov$connectParam$mean), 0.05)
+  expect_gt(ARI(mySBM$memberships       , sampler_undirected_nocov$memberships), 0.95)
 
 })
 
 test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate, node sampling, MAR", {
 
-  ## SIMPLE UNDIRECTED BERNOULLI SBM
-  means <- diag(.4, 3) + 0.05
-  connectParam <- list(mean = means)
+  sampler_undirected_nocov$rNetwork(store = TRUE)
 
-  ## Basic construction - check for wrong specifications
-  mySampler <- sbm::SimpleSBM$new('bernoulli', nbNodes, FALSE, blockProp, connectParam)
-  mySampler$rNetwork(store = TRUE)
-
-  adjMatrix  <- missSBM::observeNetwork(mySampler$networkData, "node", 0.5)
+  adjMatrix  <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, "node", 0.5)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-  cl <- net$clustering(3)[[1]]
+  cls <- net$clustering(1:(2*Q))
+  cl <- cls[[Q]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, cl)
   mySBM$doVEM()
 
   ## correctness
-  expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
-  expect_gt(ARI(mySBM$memberships, mySampler$memberships), 0.95)
+  expect_lt(error(mySBM$connectParam$mean, sampler_undirected_nocov$connectParam$mean), 0.05)
+  expect_gt(ARI(mySBM$memberships       , sampler_undirected_nocov$memberships), 0.95)
 
 })
 
 test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate, dyad sampling, MAR", {
 
-  ## SIMPLE UNDIRECTED BERNOULLI SBM
-  means <- matrix(c(9:1)/10, 3,  3)
-  connectParam <- list(mean = means)
+  sampler_directed_nocov$rNetwork(store = TRUE)
 
-  ## Basic construction - check for wrong specifications
-  mySampler <- sbm::SimpleSBM$new('bernoulli', nbNodes, TRUE, blockProp, connectParam)
-  mySampler$rNetwork(store = TRUE)
-
-  adjMatrix  <- missSBM::observeNetwork(mySampler$networkData, "dyad", 0.5)
+  adjMatrix  <- missSBM::observeNetwork(sampler_directed_nocov$networkData, "dyad", 0.5)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-  cl <- net$clustering(3)[[1]]
+  cls <- net$clustering(1:(2*Q))
+  cl <- cls[[Q]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, cl)
   mySBM$doVEM()
 
   ## correctness
-  expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
-  expect_gt(ARI(mySBM$memberships, mySampler$memberships), 0.95)
+  expect_lt(error(mySBM$connectParam$mean, sampler_directed_nocov$connectParam$mean), 0.05)
+  expect_gt(ARI(mySBM$memberships       , sampler_directed_nocov$memberships), 0.95)
 
 })
 
 test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate, node samping, MAR", {
 
-  ## SIMPLE UNDIRECTED BERNOULLI SBM
-  means <- matrix(c(9:1)/10, 3,  3)
-  connectParam <- list(mean = means)
+  sampler_directed_nocov$rNetwork(store = TRUE)
 
-  ## Basic construction - check for wrong specifications
-  mySampler <- sbm::SimpleSBM$new('bernoulli', nbNodes, TRUE, blockProp, connectParam)
-  mySampler$rNetwork(store = TRUE)
-
-  adjMatrix  <- missSBM::observeNetwork(mySampler$networkData, "node", 0.2)
+  adjMatrix  <- missSBM::observeNetwork(sampler_directed_nocov$networkData, "node", 0.5)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-  cl <- net$clustering(3)[[1]]
+  cls <- net$clustering(1:(2*Q))
+  cl <- cls[[Q]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, clusterInit = cl)
+  mySBM <- missSBM:::SimpleSBM_fit_noCov$new(net, cl)
   mySBM$doVEM()
 
   ## correctness
-  expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
-  expect_gt(ARI(mySBM$memberships, mySampler$memberships), 0.95)
+  expect_lt(error(mySBM$connectParam$mean, sampler_directed_nocov$connectParam$mean), 0.05)
+  expect_gt(ARI(mySBM$memberships       , sampler_directed_nocov$memberships), 0.95)
 
 })

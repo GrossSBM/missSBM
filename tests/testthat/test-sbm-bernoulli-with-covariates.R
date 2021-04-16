@@ -2,42 +2,26 @@ set.seed(1234)
 library(sbm)
 library(aricode)
 
-rmse <- function(theta, theta_star) { sqrt(sum((theta - theta_star)^2)/sum(theta_star^2)) }
-
-## Common parameters
-nbNodes  <- 40
-nbBlocks <- 2
-blockProp <- c(.5, .5) # group proportions
-covarParam <- c(-2,2)
-dimLabels <- list(row = "rowLabel", col = "colLabel")
-covar1 <- matrix(rnorm(nbNodes**2), nbNodes, nbNodes)
-covar2 <- matrix(rnorm(nbNodes**2), nbNodes, nbNodes)
-covarList_directed <- list(covar1 = covar1, covar2 = covar2)
-
-covar1 <- covar1 + t(covar1)
-covar2 <- covar2 + t(covar2)
-covarList <- list(covar1 = covar1, covar2 = covar2)
+N_cov <- 40
+Q <- 2
+M <- 1
+source("utils_test.R")
 
 test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
 
-  ## SIMPLE UNDIRECTED BERNOULLI SBM
-  means <- diag(.4, 2) + 0.05
-  connectParam <- list(mean = means)
+  sampler_undirected_cov$rNetwork(store = TRUE)
 
-  ## Basic construction - check for wrong specifications
-  mySampler <- SimpleSBM$new('bernoulli', nbNodes, FALSE, blockProp, connectParam, covarParam = covarParam[1], covarList = covarList[1])
-  mySampler$rMemberships(store = TRUE)
-  mySampler$rEdges(store = TRUE)
+  ## blockmodels
+  mySBM_sbm <- sbm::SimpleSBM_fit$new(sampler_undirected_cov$networkData, 'bernoulli', FALSE, covarList = covarList_undirected)
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
+  mySBM_sbm$setModel(Q)
 
-  ## Construction----------------------------------------------------------------
-  mySBM_sbm <- sbm::SimpleSBM_fit$new(mySampler$networkData, 'bernoulli', FALSE, covarList = covarList[1])
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
-  mySBM_sbm$setModel(2)
-
-  net <- missSBM:::partlyObservedNetwork$new(mySampler$networkData, covariates = covarList[1])
-  cl <- net$clustering(2)[[1]]
-
-  mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(mySampler$networkData, clusterInit = cl, covarList = covarList[1])
+  ## missSBM
+  net <- missSBM:::partlyObservedNetwork$new(sampler_undirected_cov$networkData, covariates = covarList_undirected)
+  cls <- net$clustering(1:(2*Q))
+  cl <- cls[[Q]]
+  ARI(cl, sampler_undirected_cov$memberships)
+  mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(net, clusterInit = cl, covarList = covarList_undirected)
   mySBM_missSBM$doVEM()
 
   ## correctness
@@ -48,33 +32,27 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
   expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
 
   ## distance to true values
-  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.2)
-  expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.85)
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, sampler_undirected_cov$connectParam$mean), 0.2)
+  expect_gt(ARI(mySBM_missSBM$memberships, sampler_undirected_cov$memberships), 0.85)
 
 })
 
 test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
 
-  ## SIMPLE UNDIRECTED BERNOULLI SBM
-  means <- matrix(rev(c(0.1, 0.4, 0.6, 0.9)), 2,  2)
-  connectParam <- list(mean = means)
-
-  ## Basic construction - check for wrong specifications
-  mySampler <- SimpleSBM$new('bernoulli', nbNodes, TRUE, blockProp, connectParam, c(node = "nodeName"), covarParam[1], covarList_directed[1])
-  mySampler$rMemberships(store = TRUE)
-  mySampler$rEdges(store = TRUE)
+  sampler_directed_cov$rNetwork(store = TRUE)
 
   ## Construction----------------------------------------------------------------
-  mySBM_sbm <- sbm::SimpleSBM_fit$new(mySampler$networkData, 'bernoulli', TRUE, covarList = covarList_directed[1])
+  mySBM_sbm <- sbm::SimpleSBM_fit$new(sampler_directed_cov$networkData, 'bernoulli', TRUE, covarList = covarList_directed)
   mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
-  mySBM_sbm$setModel(2)
+  mySBM_sbm$setModel(Q)
 
-  net <- missSBM:::partlyObservedNetwork$new(mySampler$networkData, covariates = covarList_directed[1])
-  cl <- net$clustering(2)[[1]]
-
-  mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(mySampler$networkData, clusterInit = cl, covarList = covarList_directed[1])
+  ## missSBM
+  net <- missSBM:::partlyObservedNetwork$new(sampler_directed_cov$networkData, covariates = covarList_directed)
+  cls <- net$clustering(1:(2*Q))
+  cl <- cls[[Q]]
+  ARI(cl, sampler_directed_cov$memberships)
+  mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(net, clusterInit = cl, covarList = covarList_directed)
   mySBM_missSBM$doVEM()
-  mySBM_missSBM$reorder()
 
   ## correctness
   ## distance with blockmodels/sbm estiamtor
@@ -83,7 +61,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
   expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.05)
 
   ## distance to true values
-  expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySampler$connectParam$mean), 0.1)
-  expect_gt(ARI(mySBM_missSBM$memberships, mySampler$memberships), 0.95)
+  expect_lt(rmse(mySBM_missSBM$connectParam$mean, sampler_directed_cov$connectParam$mean), 0.1)
+  expect_gt(ARI(mySBM_missSBM$memberships, sampler_directed_cov$memberships), 0.95)
 
 })
