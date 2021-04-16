@@ -1,4 +1,4 @@
-set.seed(1234)
+set.seed(12345)
 library(sbm)
 library(aricode)
 
@@ -20,7 +20,6 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
   net <- missSBM:::partlyObservedNetwork$new(sampler_undirected_cov$networkData, covariates = covarList_undirected)
   cls <- net$clustering(1:(2*Q))
   cl <- cls[[Q]]
-  ARI(cl, sampler_undirected_cov$memberships)
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(net, clusterInit = cl, covarList = covarList_undirected)
   mySBM_missSBM$doVEM()
 
@@ -50,7 +49,6 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
   net <- missSBM:::partlyObservedNetwork$new(sampler_directed_cov$networkData, covariates = covarList_directed)
   cls <- net$clustering(1:(2*Q))
   cl <- cls[[Q]]
-  ARI(cl, sampler_directed_cov$memberships)
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(net, clusterInit = cl, covarList = covarList_directed)
   mySBM_missSBM$doVEM()
 

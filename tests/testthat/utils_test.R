@@ -26,7 +26,7 @@ covarParam  <- rnorm(M, 1, 2) * base::sample(c(-1,1), M, replace = TRUE)
 ## UNDIRECTED, NO COVARIATES
 sampler_undirected_nocov <- sbm::SimpleSBM$new('bernoulli', N_nocov, FALSE, rep(1/Q, Q), list(mean = diag(.45, Q) + .05 ))
 ## DIRECTED, NO COVARIATES
-sampler_directed_nocov <- sbm::SimpleSBM$new('bernoulli', N_nocov, TRUE, rep(1/Q, Q), list(mean = matrix(seq(.9, .1, length.out = Q*Q), Q,  Q)))
+sampler_directed_nocov <- sbm::SimpleSBM$new('bernoulli', N_nocov, TRUE, rep(1/Q, Q), list(mean = diag(.45, Q) + matrix(seq(.3, .05, length.out = Q), Q,  Q)))
 
 ## BERNOULLI WITH COVARIATES -------------------------------------------------------------
 
@@ -34,5 +34,5 @@ sampler_directed_nocov <- sbm::SimpleSBM$new('bernoulli', N_nocov, TRUE, rep(1/Q
 sampler_undirected_cov <- sbm::SimpleSBM$new('bernoulli', N_cov, FALSE, rep(1/Q, Q), list(mean = diag(.45, Q) + .05 ), covarParam = covarParam, covarList = covarList_undirected)
 
 ## DIRECTED, COVARIATES
-sampler_directed_cov <- sbm::SimpleSBM$new('bernoulli', N_cov, TRUE, rep(1/Q, Q), list(mean = matrix(seq(.9, .1, length.out = Q*Q), Q,  Q)), covarParam = covarParam, covarList = covarList_directed)
+sampler_directed_cov <- sbm::SimpleSBM$new('bernoulli', N_cov, TRUE, rep(1/Q, Q), list(mean = diag(.45, Q) + matrix(seq(.3, .05, length.out = Q), Q,  Q)), covarParam = covarParam, covarList = covarList_directed)
 

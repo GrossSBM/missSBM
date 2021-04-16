@@ -19,7 +19,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate, dyad sampl
   mySBM$doVEM()
 
   ## correctness
-  expect_lt(error(mySBM$connectParam$mean, sampler_undirected_nocov$connectParam$mean), 0.05)
+  expect_lt(error(mySBM$connectParam$mean, sampler_undirected_nocov$connectParam$mean), 0.075)
   expect_gt(ARI(mySBM$memberships       , sampler_undirected_nocov$memberships), 0.95)
 
 })

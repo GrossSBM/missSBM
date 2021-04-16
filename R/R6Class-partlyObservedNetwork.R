@@ -107,6 +107,7 @@ partlyObservedNetwork <-
     #' @importFrom ClusterR KMeans_rcpp
     clustering = function(vBlocks, imputation = c("median", "average") ) {
       A <- self$imputation(imputation)
+      if (self$is_directed) A <- A %*% t(A)
       ## normalized  Laplacian with Gaussian kernel
       A <- 1/(1 + exp(-A/sd(A)))
       D <- diag(1/sqrt(rowSums(A)))
