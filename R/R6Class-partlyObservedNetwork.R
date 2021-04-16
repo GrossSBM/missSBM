@@ -108,9 +108,9 @@ partlyObservedNetwork <-
     clustering = function(vBlocks, imputation = c("median", "average") ) {
       A <- self$imputation(imputation)
       ## normalized  Laplacian with Gaussian kernel
-      D <- rowSums(A)
       A <- 1/(1 + exp(-A/sd(A)))
-      L <- diag(D^(-1/2)) %*% A %*% diag(D^(-1/2))
+      D <- diag(1/sqrt(rowSums(A)))
+      L <- D %*% A %*% D
       U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks)]
       lapply(vBlocks, function(k)
         as.integer(

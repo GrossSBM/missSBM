@@ -30,23 +30,16 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate, dyad samp
   mySampler$rNetwork(store = TRUE)
 
   adjMatrix  <- missSBM::observeNetwork(mySampler$networkData, "dyad", 0.5)
-  net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-  cl <- net$clustering(2)[[1]]
+  net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList[1])
+  cls <- net$clustering(1:4)
+  cl <- cls[[2]]
 
-  mySBM <- missSBM:::SimpleSBM_fit_withCov$new(adjMatrix, cl, covarList[1])
+  mySBM <- missSBM:::SimpleSBM_fit_withCov$new(net, cl, covarList[1])
   mySBM$doVEM()
-  mySBM$reorder()
-
-  mySBM_MAR <- missSBM:::SimpleSBM_fit_MAR_withCov$new(adjMatrix, cl, covarList[1])
-  mySBM_MAR$doVEM()
-  mySBM_MAR$reorder()
 
   ## correctness
-  expect_lt(rmse(mySBM_MAR$connectParam$mean, mySampler$connectParam$mean), 0.075)
   expect_lt(rmse(mySBM$connectParam$mean, mySampler$connectParam$mean), 0.075)
-  expect_lt(rmse(mySBM$connectParam$mean, mySBM_MAR$connectParam$mean), 1e-5)
-  expect_gt(ARI(mySBM_MAR$memberships, mySampler$memberships), 0.95)
-  expect_lt(mySBM_MAR$loglik, mySBM$loglik)
+  expect_gt(ARI(mySBM$memberships, mySampler$memberships), 0.95)
 
 })
 

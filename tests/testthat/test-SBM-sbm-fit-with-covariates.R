@@ -78,7 +78,7 @@ test_that("Consistency of VEM of a SimpleSBM_fit_missSBM on a series of values f
   cl_spec <- myNet$clustering(1:3)
 
   models <- lapply(cl_spec, function(cl0) {
-    myFit <- missSBM:::SimpleSBM_fit_missSBM$new(adjMatrix, cl0, covariates)
+    myFit <- missSBM:::SimpleSBM_fit_withCov$new(myNet, cl0, covariates)
     myFit$doVEM()
     myFit
   })
