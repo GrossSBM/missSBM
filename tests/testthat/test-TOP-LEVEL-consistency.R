@@ -1,20 +1,13 @@
 context("test consistency missSBM top-level function")
 
 library(aricode)
-error <- function(beta1, beta2, sort = FALSE) {
-  if (sort)
-    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
-  else
-    err <- sum((beta1 - beta2)^2)/length(beta2)
-  err
-}
-
+source("utils_test.R")
 referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", package = "missSBM"))
 
 test_that("check consistency against Tim's code for dyad, node, double standard and block sampling", {
 
-  tol_ref   <- 1e-3
-  tol_truth <- 1e-3
+  tol_ref   <- 1e-1
+  tol_truth <- 1e-1
   tol_ARI   <- .8
   truth   <- referenceResults$true_sbm
 
@@ -69,13 +62,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       err_new  <- error(newAlgo$fittedSampling$parameters, refAlgo$true_samplingParam, sort = TRUE)
       err_old  <- error(refAlgo$samplingParam            , refAlgo$true_samplingParam, sort = TRUE)
       err_gap  <- error(newAlgo$fittedSampling$parameters, refAlgo$samplingParam, sort = TRUE)
-      if (err_new < err_old) {
-        expect_lt(err_new, tol_truth*10)
-        cat(" new better on sampling parameters")
-      } else {
-        expect_lt(err_old, tol_ref)
-        expect_lt(err_gap, tol_ref)
-      }
+      expect_lt(err_new, 2 * tol_truth)
     }
     cat("\n")
   }

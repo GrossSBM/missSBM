@@ -60,7 +60,6 @@ test_that("Init clustering with covariate is consistent", {
 
   A_full <- sbm$networkData
   psi <- runif(M, -5, 5)
-  A_dyad <- missSBM::observeNetwork(A_full, "covar-dyad", psi, covariates = covariates_dyad)
   A_node <- missSBM::observeNetwork(A_full, "covar-node", psi, covariates = covariates_node)
 
   for (A in list(A_full, A_dyad, A_node)) {

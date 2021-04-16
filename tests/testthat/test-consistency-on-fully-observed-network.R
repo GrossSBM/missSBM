@@ -6,11 +6,10 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   data("war")
 
   ## adjacency matrix without missing values
-  A <- war$belligerent %>%  as_adj(sparse = FALSE)
+  A <- war$belligerent %>%  as_adj()
 
   ## coherence of partlyObservedNetwork object
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(A)
-  expect_equal(A, partlyObservedNet$networkData)
   expect_equal(ncol(A), partlyObservedNet$nbNodes)
   expect_equal(ncol(A) * (ncol(A) - 1)/2, partlyObservedNet$nbDyads)
   expect_equal(length(partlyObservedNet$missingDyads), 0)
@@ -23,13 +22,12 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 1)
 
   ## using SBM_fit class
-  my_SBM <- missSBM:::SimpleSBM_fit_missSBM$new(adjacencyMatrix = A, clusterInit = cl0)
+  my_SBM <- missSBM:::SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit = cl0)
   my_SBM$doVEM(control$threshold, control$maxIter, control$fixPointIter, control$trace)
-  my_SBM$reorder()
   my_SBM$ICL
 
   ## using missSBM_fit class
-  my_missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet = partlyObservedNet, netSampling = "node", clusterInit = cl0, useCov = TRUE)
+  my_missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, netSampling = "node", clusterInit = cl0)
   my_missSBM$doVEM(control)
   my_missSBM$fittedSBM$ICL
 
