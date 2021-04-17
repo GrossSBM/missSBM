@@ -4,7 +4,7 @@ library(aricode)
 
 N_nocov   <- 200
 Q <- 3
-source("utils_test.R")
+source("utils_test.R", local = TRUE)
 
 test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate, dyad sampling, MAR", {
 

@@ -54,7 +54,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
 
 ### TODO:
 ###  - check if parameters are not already initialize
-###  - specialize the initialization to each model (this should be done in sbm::SImpleSBM...)
+###  - specialize the initialization to each model (this should be done in sbm::SimpleSBM...)
 
       ## Initialize estimation of the model parameters
       private$theta$mean <- matrix(0.5, ncol(private$Z), ncol(private$Z))

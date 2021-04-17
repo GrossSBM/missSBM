@@ -5,7 +5,7 @@ library(aricode)
 N_cov <- 40
 Q <- 2
 M <- 1
-source("utils_test.R")
+source("utils_test.R", local = TRUE)
 
 test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
 

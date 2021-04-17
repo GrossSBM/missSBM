@@ -5,7 +5,7 @@ library(aricode)
 ## Common parameters
 N_nocov  <- 200
 Q <- 3
-source("utils_test.R")
+source("utils_test.R", local = TRUE)
 
 test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate", {
 
@@ -62,3 +62,4 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate", {
   expect_gt(ARI(mySBM_missSBM$memberships, sampler_directed_nocov$memberships), 0.95)
 
 })
+

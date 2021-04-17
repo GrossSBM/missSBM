@@ -11,10 +11,11 @@ error <- function(beta1, beta2, sort = FALSE) {
 .logistic <- missSBM:::.logistic
 .logit <- missSBM:::.logit
 
-# N_nocov <- 200
-# N_cov   <- 40
-# Q <- 3
-# M <- 5
+# default settings
+if (!exists("N_nocov")) N_nocov <- 200
+if (!exists("N_cov"))   N_cov <- 40
+if (!exists("Q"))       Q <- 3
+if (!exists("M"))       M <- 5
 
 ## SBM SAMPLER GENERAL PARAMETERS
 covarList_directed   <- replicate(M, matrix(rnorm(N_cov * N_cov ,mean = 0, sd = 1), N_cov, N_cov), simplify = FALSE)

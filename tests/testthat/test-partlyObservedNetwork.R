@@ -8,7 +8,7 @@ N_cov   <- 200
 N_nocov <- 200
 Q <- 3
 M <- 4
-source("utils_test.R")
+source("utils_test.R", local = TRUE)
 
 psi <- 0.3 # missingness
 
@@ -108,6 +108,12 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, no covariate, m
   ## check that clustering works
   expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_nocov$memberships)), 0.95)
 
+  adjMatrix <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, "node", psi)
+  net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
+
+  ## check that clustering works
+  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_nocov$memberships)), 0.95)
+
 })
 
 test_that("partlyObservedNetwork: 'Bernoulli' model, directed, no covariate, missing", {
@@ -139,6 +145,14 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, directed, no covariate, mis
 
   ## check that clustering works
   expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_directed_nocov$memberships)), 0.95)
+
+  ## node sampling
+  adjMatrix <- missSBM::observeNetwork(sampler_directed_nocov$networkData, "node", psi)
+  net <- missSBM:::partlyObservedNetwork$new(adjMatrix)
+
+  ## check that clustering works
+  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_directed_nocov$memberships)), 0.95)
+
 
 })
 
@@ -240,6 +254,19 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, covariates, mis
 
   expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.5)
 
+  adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov$networkData, "node", psi)
+  net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_undirected)
+
+  ## check that clustering works
+  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.95)
+
+  # covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+  # adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov$networkData, "covar-node",  runif(M, 0, 2), covariates = covarList_undirected)
+  # net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_undirected)
+  #
+  # ## check that clustering works
+  # expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.5)
+
 })
 
 test_that("partlyObservedNetwork: 'Bernoulli' model, directed, covariates, missing", {
@@ -275,6 +302,17 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, directed, covariates, missi
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_directed)
 
   expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_directed_cov$memberships)), 0.5)
+
+  adjMatrix <- missSBM::observeNetwork(sampler_directed_cov$networkData, "node", psi)
+  net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_directed)
+
+  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_directed_cov$memberships)), 0.95)
+
+  # covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
+  # adjMatrix <- missSBM::observeNetwork(sampler_directed_cov$networkData, "covar-node", runif(M, 0, 2), covariates = covarList_directed)
+  # net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_directed)
+  #
+  # expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_directed_cov$memberships)), 0.5)
 
 })
 
