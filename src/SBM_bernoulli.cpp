@@ -205,24 +205,27 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_covariates(
     const arma::mat&  Z,
     const arma::mat&  Gamma,
     const arma::rowvec&  pi,
-    const bool rescale = true) {
+    const bool symmetric = true,
+    const bool rescale   = true) {
 
   uword Q = Z.n_cols ;
   sp_mat::const_iterator Rij     = R.begin();
   sp_mat::const_iterator Rij_end = R.end();
 
   arma::mat log_tau = Y * Z * Gamma.t() + Y.t() * Z * Gamma ;
+  log_tau.each_row() += log(pi) ;
+
+  // constant in Tau(i_.) so useless
+  //  log_tau.each_col() += sum( (Y % M) * Z, 1)  + sum( (Y % M).t() * Z, 1) ;
 
   for(; Rij != Rij_end; ++Rij) {
     for(int q=0; q < Q; q++){
-      for(int l=0; l < Q; l++){
-        log_tau(Rij.row(),q) -=  Z(Rij.col(),l) *
-          (log(1 + exp(Gamma(q,l) + M(Rij.row(),Rij.col())) )
-        +  log(1 + exp(Gamma(l,q) + M(Rij.col(),Rij.row())) ) ) ;
-      }
+       log_tau(Rij.row(), q) -= accu(Z.row(Rij.col()) % log (1 + exp(Gamma.row(q) + M(Rij.row(),Rij.col())))) ;
+       if (symmetric) {
+         log_tau(Rij.col(), q) -= accu(Z.row(Rij.row()) % log (1 + exp(Gamma.row(q) + M(Rij.col(),Rij.row())))) ;
+       }
     }
   }
-  log_tau.each_row() += log(pi) ;
 
   if( rescale) {
     log_tau.each_row( [](arma::rowvec& x){

@@ -68,10 +68,11 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @param maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10
     #' @param fixPointIter number of fix-point iterations in the Variational E step. Default is 5.
     #' @param trace logical for verbosity. Default is \code{FALSE}.
-    doVEM = function(threshold = 1e-4, maxIter = 10, fixPointIter = 5, trace = FALSE) {
+    doVEM = function(threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE) {
 
       ## Initialization of quantities that monitor convergence
-      delta     <- vector("numeric", maxIter)
+      delta_par <- vector("numeric", maxIter)
+      delta_obj <- vector("numeric", maxIter)
       objective <- vector("numeric", maxIter)
       objective[1] <- self$loglik
       iterate <- 1; stop <- ifelse(self$nbBlocks > 1, FALSE, TRUE)
@@ -92,12 +93,13 @@ R6::R6Class(classname = "SimpleSBM_fit",
 
         # Assess convergence
         objective[iterate] <- self$loglik
-        delta[iterate] <- sqrt(sum((private$theta$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
-        stop <- (iterate > maxIter) |  (delta[iterate] < threshold)
+        delta_par[iterate] <- sqrt(sum((private$theta$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
+        delta_obj[iterate] <- (objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
+        stop <- (iterate > maxIter) |  ((delta_par[iterate] < threshold) & (delta_obj[iterate] < threshold))
       }
       self$reorder()
       if (trace) cat("\n")
-      res <- data.frame(delta = delta[1:iterate], objective = objective[1:iterate])
+      res <- data.frame(delta_pararameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate],  elbo = objective[1:iterate])
       res
     },
     #' @description permute group labels by order of decreasing probability
@@ -168,7 +170,8 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   public = list(
     #' @description update parameters estimation (M-step)
     #' @param control a list to tune nlopt for optimization, see documentation of nloptr
-    update_parameters = function(control = list(maxeval = 50, xtol_rel = 1e-4, algorithm = "CCSAQ")) {
+    update_parameters = function(...) {
+      control <- list(maxeval = 50, xtol_rel = 1e-4, algorithm = "CCSAQ")
       res <- private$M_step(
         init_param = list(Gamma = .logit(private$theta$mean), beta = private$beta),
         Y = private$Y,
@@ -184,8 +187,8 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     },
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda double use to adjust the parameter estimation according to the sampling design
-    update_blocks =   function() {
-       private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
+    update_blocks =   function(...) {
+       private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
     }
   ),
   active = list(

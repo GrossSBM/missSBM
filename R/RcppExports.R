@@ -21,8 +21,8 @@ E_step_sparse_bernoulli_nocovariate <- function(Y, R, Z, theta, pi, rescale = TR
     .Call('_missSBM_E_step_sparse_bernoulli_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi, rescale)
 }
 
-E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, rescale = TRUE) {
-    .Call('_missSBM_E_step_sparse_bernoulli_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, rescale)
+E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, symmetric = TRUE, rescale = TRUE) {
+    .Call('_missSBM_E_step_sparse_bernoulli_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, symmetric, rescale)
 }
 
 vExpec_covariates <- function(Y, roundProd, gamma, Tau, pi) {

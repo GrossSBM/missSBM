@@ -49,7 +49,6 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate", {
 
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_noCov$new(sampler_directed_nocov$networkData, clusterInit = cl)
   mySBM_missSBM$doVEM()
-  mySBM_missSBM$reorder()
 
   ## correctness
   ## distance with blockmodels/sbm estiamtor
@@ -59,6 +58,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate", {
 
   ## distance to true values
   expect_lt(rmse(mySBM_missSBM$connectParam$mean, sampler_directed_nocov$connectParam$mean), 0.1)
+  expect_lt(rmse(mySBM_missSBM$covarParam, sampler_directed_cov$covarParam), 0.2)
   expect_gt(ARI(mySBM_missSBM$memberships, sampler_directed_nocov$memberships), 0.95)
 
 })

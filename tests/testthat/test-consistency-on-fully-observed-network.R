@@ -6,7 +6,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   data("war")
 
   ## adjacency matrix without missing values
-  A <- war$belligerent %>%  as_adj()
+  A <- war$belligerent %>%  igraph::as_adj()
 
   ## coherence of partlyObservedNetwork object
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(A)
@@ -30,7 +30,6 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   my_missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, netSampling = "node", clusterInit = cl0)
   my_missSBM$doVEM(control)
   my_missSBM$fittedSBM$ICL
-
 
   ## using missSBM_collection class
   my_collection <- missSBM_collection$new(

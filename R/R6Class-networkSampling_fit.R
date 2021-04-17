@@ -128,17 +128,20 @@ covarDyadSampling_fit <-
     #' @param ... used for compatibility
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "covar-dyad")
-      X <- cbind(1, apply(partlyObservedNetwork$covarArray, 3, as.vector))
-      y <- 1 * as.vector(!partlyObservedNetwork$NAs)
-      glm_out       <- glm.fit(X, y, family = binomial())
-      private$psi   <- coefficients(glm_out)
-      private$rho   <- fitted(glm_out)
+      dyads <- rbind(partlyObservedNetwork$observedDyads, partlyObservedNetwork$missingDyads)
+      X <- cbind(1, apply(partlyObservedNetwork$covarArray, 3, function(x) x[dyads]))
+      y <- partlyObservedNetwork$samplingMatrix[dyads]
+      glm_out     <- glm.fit(X, y, family = binomial())
+      private$psi <- coefficients(glm_out)
+      y_hat <- fitted(glm_out)
+      private$rho <- list(obs = y_hat[y == 1], miss = y_hat[y == 0])
+
     }
   ),
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
-      res <- sum(log(1 - private$rho[private$D_miss])) + sum(log(private$rho[private$D_obs]))
+      res <- sum(log(1 - private$rho$miss)) + sum(log(private$rho$obs))
       res
     }
   )

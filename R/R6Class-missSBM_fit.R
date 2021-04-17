@@ -61,11 +61,7 @@ missSBM_fit <-
           private$SBM <- SimpleSBM_fit_NMAR_noCov$new(partlyObservedNet, clusterInit)
         }
       } else {
-        private$SBM <- switch(netSampling,
-                              "covar-dyad"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
-                              "covar-node"      = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates),
-                              "degree"          = SimpleSBM_fit_missSBM$new(partlyObservedNet$networkData, clusterInit, covariates) # estimated sampling parameter not relevant
-        )
+        private$SBM <- SimpleSBM_fit_withCov$new(partlyObservedNet, clusterInit, covariates)
       }
 
       ## Initialize the sampling fit

@@ -1,6 +1,6 @@
 context("test network sampling fit (Class networkSampling_fit and chidren)")
 
-source("utils_test.R")
+source("utils_test.R", local = TRUE)
 
 set.seed(1234)
 ### A SBM model : ###
