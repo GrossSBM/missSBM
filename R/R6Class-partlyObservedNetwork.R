@@ -105,23 +105,38 @@ partlyObservedNetwork <-
     #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom ClusterR KMeans_rcpp
-    clustering = function(vBlocks, imputation = c("median", "average") ) {
+    clustering = function(vBlocks,
+                          imputation = ifelse(is.null(private$phi), "median", "average"),
+                            method   = ifelse(is.null(private$phi), "spectral", "hierarchical")) {
+
       A <- self$imputation(imputation)
       if (self$is_directed) A <- A %*% t(A)
-      ## normalized  Laplacian with Gaussian kernel
-      A <- 1/(1 + exp(-A/sd(A)))
-      D <- diag(1/sqrt(rowSums(A)))
-      L <- D %*% A %*% D
-      U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks)]
-      lapply(vBlocks, function(k)
-        as.integer(
-          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 20)$clusters
-        )
-      )
+
+      if (method == "hierarchical") {
+        mydist <- as.matrix(dist(A, method = "manhattan"))
+        mydist <- as.dist(ape::additive(mydist))
+        out <- cutree(hclust(mydist, method = "ward.D2"), vBlocks)
+        res <- vector("list", length(vBlocks))
+        for (k in seq_along(vBlocks)) res[[k]] <- out[, k]
+        res
+      } else {
+       ## normalized  Laplacian with Gaussian kernel
+       A <- 1/(1 + exp(-A/sd(A)))
+       D <- diag(1/sqrt(rowSums(A)))
+       L <- D %*% A %*% D
+       U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks)]
+       res <- lapply(vBlocks, function(k)
+         as.integer(
+           ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 20)$clusters
+         )
+       )
+      }
+
+
     },
     #' @description basic imputation from existing clustering
     #' @param type a character, the type of imputation. Either "median" or "average"
-    imputation = function(type = c("median", "average")) {
+    imputation = function(type = ifelse(is.null(private$phi), "median", "average")) {
       adjacencyMatrix <- private$Y
       if (!is.null(private$phi)) {
         y <- as.vector(adjacencyMatrix[self$observedDyads])
@@ -130,7 +145,7 @@ partlyObservedNetwork <-
         adjacencyMatrix[self$observedDyads] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
       }
       suppressMessages(adjacencyMatrix[self$missingDyads] <-
-        switch(match.arg(type),
+        switch(type,
                "average"  = mean(adjacencyMatrix, na.rm = TRUE),
                "median"   = median(adjacencyMatrix, na.rm = TRUE)
         ))

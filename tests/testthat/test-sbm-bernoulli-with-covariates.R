@@ -29,7 +29,6 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
   expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.2)
   expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.8)
   expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
-  expect_lt(rmse(mySBM_sbm$covarParam, sampler_undirected_cov$covarParam), 0.2)
 
   ## distance to true values
   expect_lt(rmse(mySBM_missSBM$connectParam$mean, sampler_undirected_cov$connectParam$mean), 0.2)
@@ -53,7 +52,6 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
   cl <- cls[[Q]]
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(net, clusterInit = cl, covarList = covarList_directed)
   mySBM_missSBM$doVEM()
-  mySBM_missSBM$reorder()
 
   ## correctness
   ## distance with blockmodels/sbm estiamtor

@@ -3,7 +3,7 @@ library(sbm)
 library(aricode)
 
 N_cov   <- 40
-Q <- 3
+Q <- 2
 M <- 1
 source("utils_test.R")
 
@@ -11,7 +11,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate, dyad samp
 
   sampler_undirected_cov$rNetwork(store = TRUE)
 
-  adjMatrix  <- missSBM::observeNetwork(sampler_undirected_cov$networkData, "dyad", 0.5)
+  adjMatrix  <- missSBM::observeNetwork(sampler_undirected_cov$networkData, "dyad", 0.8)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_undirected)
   cls <- net$clustering(1:(2*Q))
   cl <- cls[[Q]]
