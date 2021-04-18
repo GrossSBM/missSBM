@@ -1,8 +1,6 @@
 context("test missSBM-fit with covariates")
 
 Q <- 2
-N_nocov <- 100
-N <- N_nocov
 M <- 1
 source("utils_test.R", local = TRUE)
 

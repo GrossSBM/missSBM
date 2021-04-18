@@ -1,6 +1,5 @@
 context("test consistency missSBM top-level function")
 
-library(aricode)
 source("utils_test.R", local =TRUE)
 referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", package = "missSBM"))
 
@@ -71,9 +70,9 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
 test_that("check consistency against Tim's code for dyad and node sampling with covariates", {
 
   truth   <- referenceResults$true_sbm_cov
-  tol_ref   <- 1e-2
-  tol_truth <- 1e-2
-  tol_ARI   <- .7
+  tol_ref   <- 2e-1
+  tol_truth <- 2e-1
+  tol_ARI   <- .5
 
   covarMatrix <- referenceResults$`dyad-covariates`$covarMatrix
   covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
@@ -110,7 +109,7 @@ test_that("check consistency against Tim's code for dyad and node sampling with 
     err_old <- error(missSBM:::.logistic(refAlgo$connectParam)    , missSBM:::.logistic(truth$connectParam), sort = TRUE)
     err_gap <- error(newAlgo$fittedSBM$connectParam$mean, missSBM:::.logistic(refAlgo$connectParam), sort = TRUE)
     if (err_new < err_old) {
-      expect_lt(err_new, tol_truth*3)
+      expect_lt(err_new, tol_truth)
       cat(" new better on connectivity")
     } else {
       expect_lt(err_new, 10*tol_ref)
