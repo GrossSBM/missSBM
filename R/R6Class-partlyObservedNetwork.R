@@ -107,17 +107,16 @@ partlyObservedNetwork <-
     #' @importFrom ClusterR KMeans_rcpp
     clustering = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average"),
-                            method   = ifelse(is.null(private$phi), "spectral", "hierarchical")) {
-
+                          method   = c("spectral", "hierachical")) {
+      method <- match.arg(method)
       A <- self$imputation(imputation)
       if (self$is_directed) A <- A %*% t(A)
 
       if (method == "hierarchical") {
         mydist <- as.matrix(dist(A, method = "manhattan"))
         mydist <- as.dist(ape::additive(mydist))
-        out <- cutree(hclust(mydist, method = "ward.D2"), vBlocks)
-        res <- vector("list", length(vBlocks))
-        for (k in seq_along(vBlocks)) res[[k]] <- out[, k]
+        hc <- hclust(mydist, method = "ward.D2")
+        res <- lapply(vBlocks, function(k) cutree(hc, k))
         res
       } else {
        ## normalized  Laplacian with Gaussian kernel
@@ -131,12 +130,11 @@ partlyObservedNetwork <-
          )
        )
       }
-
-
+      res
     },
     #' @description basic imputation from existing clustering
     #' @param type a character, the type of imputation. Either "median" or "average"
-    imputation = function(type = ifelse(is.null(private$phi), "median", "average")) {
+    imputation = function(type = c("median", "average", "zero")) {
       adjacencyMatrix <- private$Y
       if (!is.null(private$phi)) {
         y <- as.vector(adjacencyMatrix[self$observedDyads])
@@ -145,9 +143,10 @@ partlyObservedNetwork <-
         adjacencyMatrix[self$observedDyads] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
       }
       suppressMessages(adjacencyMatrix[self$missingDyads] <-
-        switch(type,
+        switch(match.arg(type),
                "average"  = mean(adjacencyMatrix, na.rm = TRUE),
-               "median"   = median(adjacencyMatrix, na.rm = TRUE)
+               "median"   = median(adjacencyMatrix, na.rm = TRUE),
+               "zero"     = 0
         ))
       if (!private$directed)
         suppressMessages(adjacencyMatrix[lower.tri(adjacencyMatrix)] <- Matrix::t(adjacencyMatrix)[lower.tri(adjacencyMatrix)])

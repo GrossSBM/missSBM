@@ -4,13 +4,13 @@ library(aricode)
 
 context("test partlyObservedNetwork class")
 
-N_cov   <- 200
-N_nocov <- 200
+N_cov   <- 300
+N_nocov <- 300
 Q <- 3
 M <- 4
 source("utils_test.R", local = TRUE)
 
-psi <- 0.3 # missingness
+psi <- 0.75 # missingness
 
 test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, no covariate, no missing", {
 
@@ -99,7 +99,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, no covariate, m
   expect_equal(ncol(net$observedDyads), 2)
   expect_equal(nrow(net$missingDyads) + nrow(net$observedDyads), N_nocov * (N_nocov - 1)/2)
   expect_equal(length(net$observedNodes), N_nocov)
-  expect_lt(net$samplingRate, .6)
+  expect_lt(net$samplingRate, psi + 0.1)
   expect_equal(dim(net$networkData), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), dim(net$samplingMatrixBar))
@@ -137,7 +137,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, directed, no covariate, mis
   expect_equal(ncol(net$observedDyads), 2)
   expect_equal(nrow(net$missingDyads) + nrow(net$observedDyads), N_nocov * (N_nocov - 1))
   expect_equal(length(net$observedNodes), N_nocov)
-  expect_lt(net$samplingRate, .6)
+  expect_lt(net$samplingRate, psi + 0.1)
   expect_equal(dim(net$networkData), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), dim(net$samplingMatrixBar))
@@ -184,7 +184,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, covariates, no 
   expect_equal(dim(net$imputation()), dim(net$networkData))
 
   ## check that clustering works
-  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.95)
+  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.7)
 
 })
 
@@ -240,7 +240,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, covariates, mis
   expect_equal(ncol(net$observedDyads), 2)
   expect_equal(nrow(net$missingDyads) + nrow(net$observedDyads), N_nocov * (N_nocov - 1)/2)
   expect_equal(length(net$observedNodes), N_nocov)
-  expect_lt(net$samplingRate, .6)
+  expect_lt(net$samplingRate, psi + 0.1)
   expect_equal(dim(net$networkData), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), dim(net$samplingMatrixBar))
@@ -249,7 +249,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, covariates, mis
   ## check that clustering works
   expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.5)
 
-  adjMatrix <- observeNetwork(sampler_directed_cov$networkData, "covar-dyad", runif(M, 0, 2), covariates = covarList_undirected)
+  adjMatrix <- observeNetwork(sampler_undirected_cov$networkData, "covar-dyad", runif(M, 0, 2), covariates = covarList_undirected)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_undirected)
 
   expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.5)
@@ -258,7 +258,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, undirected, covariates, mis
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_undirected)
 
   ## check that clustering works
-  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.95)
+  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_undirected_cov$memberships)), 0.5)
 
   # covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
   # adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov$networkData, "covar-node",  runif(M, 0, 2), covariates = covarList_undirected)
@@ -289,7 +289,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, directed, covariates, missi
   expect_equal(ncol(net$observedDyads), 2)
   expect_equal(nrow(net$missingDyads) + nrow(net$observedDyads), N_nocov * (N_nocov - 1))
   expect_equal(length(net$observedNodes), N_nocov)
-  expect_lt(net$samplingRate, .6)
+  expect_lt(net$samplingRate, psi + 0.1)
   expect_equal(dim(net$networkData), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), c(N_nocov, N_nocov))
   expect_equal(dim(net$samplingMatrix), dim(net$samplingMatrixBar))
@@ -306,7 +306,7 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, directed, covariates, missi
   adjMatrix <- missSBM::observeNetwork(sampler_directed_cov$networkData, "node", psi)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_directed)
 
-  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_directed_cov$memberships)), 0.95)
+  expect_gt(max(sapply(net$clustering(1:(2*Q)), ARI, sampler_directed_cov$memberships)), 0.5)
 
   # covariates_node <- replicate(M, rnorm(N,mean = 0, sd = 1), simplify = FALSE)
   # adjMatrix <- missSBM::observeNetwork(sampler_directed_cov$networkData, "covar-node", runif(M, 0, 2), covariates = covarList_directed)

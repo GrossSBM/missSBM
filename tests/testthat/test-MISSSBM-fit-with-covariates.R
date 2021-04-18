@@ -1,12 +1,13 @@
 context("test missSBM-fit with covariates")
 
-Q <- 3
+Q <- 2
+N_nocov <- 100
 N <- N_nocov
 M <- 1
 source("utils_test.R", local = TRUE)
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 2, trace = TRUE)
+control <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 5, trace = TRUE)
 
 ## Consistency
 tol_truth <- .1
@@ -39,23 +40,23 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_cov$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth*10)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, sampler_undirected_cov$connectParam$mean), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), 0.25)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sampler_undirected_cov$covarParam), 0.25)
 
   ## clustering
-  expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
+  expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sampler_undirected_cov$memberships), tol_ARI)
 
   ## DO NOT ACCOUNT FOR COVARIATES IN THE SAMPLING (JUST IN THE SBM)
 
   ## sampled the network
-  adjMatrix <- missSBM::observeNetwork(sbm$networkData, "dyad", 0.9)
+  adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov$networkData, "dyad", 0.9)
 
   ## Prepare network data for estimation with missing data
-  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates_dyad, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_undirected)
   cl <- partlyObservedNet$clustering(Q)[[1]]
 
   ## Perform inference
@@ -64,7 +65,7 @@ test_that("missSBM with covariates and dyad sampling works", {
 
   ## Sanity check
   expect_is(missSBM, "missSBM_fit")
-  expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
+  expect_is(missSBM$fittedSBM, "SimpleSBM_fit_withCov")
   expect_is(missSBM$fittedSampling, "dyadSampling_fit")
   expect_equal(out, missSBM$monitoring)
 
@@ -72,15 +73,15 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_cov$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, sampler_undirected_cov$connectParam$mean), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sbm$covarParam), 0.25)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sampler_undirected_cov$covarParam), 0.25)
 
   ## clustering
-  expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
+  expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sampler_undirected_cov$memberships), tol_ARI)
 
 })
 

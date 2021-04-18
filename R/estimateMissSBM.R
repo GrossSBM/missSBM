@@ -109,7 +109,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
-  clusterInit <- partlyObservedNet$clustering(max(vBlocks), ctrl$imputation)
+  clusterInit <- partlyObservedNet$clustering(vBlocks, ctrl$imputation)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(

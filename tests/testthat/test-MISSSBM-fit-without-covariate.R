@@ -1,6 +1,7 @@
 context("test missSBM-fit without covariate")
 
 Q <- 3
+N_nocov <- 100
 N <- N_nocov
 source("utils_test.R", local = TRUE)
 
@@ -20,7 +21,7 @@ control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 5, trace = FALSE
 test_that("missSBM-fit works and is consistent for all samplings", {
 
   ## Consistency
-  tol_truth <- 0.1
+  tol_truth <- 0.25
   tol_ARI   <- .9
 
   cat("Tested sampling:")

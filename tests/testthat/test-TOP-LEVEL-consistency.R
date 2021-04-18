@@ -1,7 +1,7 @@
 context("test consistency missSBM top-level function")
 
 library(aricode)
-source("utils_test.R")
+source("utils_test.R", local =TRUE)
 referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", package = "missSBM"))
 
 test_that("check consistency against Tim's code for dyad, node, double standard and block sampling", {
@@ -71,8 +71,8 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
 test_that("check consistency against Tim's code for dyad and node sampling with covariates", {
 
   truth   <- referenceResults$true_sbm_cov
-  tol_ref   <- 1e-3
-  tol_truth <- 1e-3
+  tol_ref   <- 1e-2
+  tol_truth <- 1e-2
   tol_ARI   <- .7
 
   covarMatrix <- referenceResults$`dyad-covariates`$covarMatrix

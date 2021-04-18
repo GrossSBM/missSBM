@@ -1,8 +1,8 @@
 context("test network sampling fit with covariates (Classes nodeSampling_fit and dyadSampling_fit)")
 
+N_nocov <- 300
 source("utils_test.R", local = TRUE)
 N <- N_nocov
-
 
 samplings <- list(
   list(name = "dyad", psi = 0.5, class = "dyadSampling_fit", k = log(N * (N-1)/2)),

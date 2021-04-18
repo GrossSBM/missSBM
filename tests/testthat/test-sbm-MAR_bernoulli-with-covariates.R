@@ -2,7 +2,7 @@ set.seed(1234)
 library(sbm)
 library(aricode)
 
-N_cov   <- 40
+N_cov   <- 100
 Q <- 2
 M <- 1
 source("utils_test.R")
@@ -29,7 +29,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate, dyad sampli
 
   sampler_directed_cov$rNetwork(store = TRUE)
 
-  adjMatrix  <- missSBM::observeNetwork(sampler_directed_cov$networkData, "dyad", 0.5, covariates = covarList_directed)
+  adjMatrix  <- missSBM::observeNetwork(sampler_directed_cov$networkData, "dyad", 0.8, covariates = covarList_directed)
   net <- missSBM:::partlyObservedNetwork$new(adjMatrix, covariates = covarList_directed)
   cls <- net$clustering(1:(2*Q))
   cl <- cls[[Q]]
