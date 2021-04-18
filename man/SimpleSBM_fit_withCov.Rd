@@ -53,14 +53,14 @@ It is not designed not be call by the user
 \subsection{Method \code{update_parameters()}}{
 update parameters estimation (M-step)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_withCov$update_parameters(
-  control = list(maxeval = 50, xtol_rel = 1e-04, algorithm = "CCSAQ")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_withCov$update_parameters(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{...}}{use for compatibility}
+
 \item{\code{control}}{a list to tune nlopt for optimization, see documentation of nloptr}
 }
 \if{html}{\out{</div>}}
@@ -72,13 +72,13 @@ update parameters estimation (M-step)
 \subsection{Method \code{update_blocks()}}{
 update variational estimation of blocks (VE-step)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_withCov$update_blocks()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_withCov$update_blocks(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{log_lambda}}{double use to adjust the parameter estimation according to the sampling design}
+\item{\code{...}}{use for compatibility}
 }
 \if{html}{\out{</div>}}
 }

@@ -150,7 +150,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(missSBM:::.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -170,6 +170,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   public = list(
     #' @description update parameters estimation (M-step)
     #' @param control a list to tune nlopt for optimization, see documentation of nloptr
+    #' @param ... use for compatibility
     update_parameters = function(...) {
       control <- list(maxeval = 50, xtol_rel = 1e-4, algorithm = "CCSAQ")
       res <- private$M_step(
@@ -186,7 +187,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
       invisible(res)
     },
     #' @description update variational estimation of blocks (VE-step)
-    #' @param log_lambda double use to adjust the parameter estimation according to the sampling design
+    #' @param ... use for compatibility
     update_blocks =   function(...) {
        private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
     }
@@ -194,7 +195,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(missSBM:::.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -259,7 +260,7 @@ R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
   ),
   active = list(
     #' @field imputation the matrix of imputed values
-    imputation = function(value) {as(missSBM:::.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")},
+    imputation = function(value) {as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")},
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)

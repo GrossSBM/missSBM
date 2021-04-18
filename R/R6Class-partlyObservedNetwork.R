@@ -106,30 +106,19 @@ partlyObservedNetwork <-
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom ClusterR KMeans_rcpp
     clustering = function(vBlocks,
-                          imputation = ifelse(is.null(private$phi), "median", "average"),
-                          method   = c("spectral", "hierachical")) {
-      method <- match.arg(method)
+                          imputation = ifelse(is.null(private$phi), "median", "average")) {
       A <- self$imputation(imputation)
       if (self$is_directed) A <- A %*% t(A)
-
-      if (method == "hierarchical") {
-        mydist <- as.matrix(dist(A, method = "manhattan"))
-        mydist <- as.dist(ape::additive(mydist))
-        hc <- hclust(mydist, method = "ward.D2")
-        res <- lapply(vBlocks, function(k) cutree(hc, k))
-        res
-      } else {
-       ## normalized  Laplacian with Gaussian kernel
-       A <- 1/(1 + exp(-A/sd(A)))
-       D <- diag(1/sqrt(rowSums(A)))
-       L <- D %*% A %*% D
-       U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks)]
-       res <- lapply(vBlocks, function(k)
-         as.integer(
-           ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 20)$clusters
-         )
-       )
-      }
+      ## normalized  Laplacian with Gaussian kernel
+      A <- 1/(1 + exp(-A/sd(A)))
+      D <- diag(1/sqrt(rowSums(A)))
+      L <- D %*% A %*% D
+      U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks)]
+      res <- lapply(vBlocks, function(k)
+        as.integer(
+          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 20)$clusters
+        )
+      )
       res
     },
     #' @description basic imputation from existing clustering

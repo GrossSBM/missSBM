@@ -80,7 +80,10 @@ constructor
 \subsection{Method \code{clustering()}}{
 method to cluster network data with missing value
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(vBlocks, imputation = c("median", "average"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(
+  vBlocks,
+  imputation = ifelse(is.null(private$phi), "median", "average")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -99,7 +102,7 @@ method to cluster network data with missing value
 \subsection{Method \code{imputation()}}{
 basic imputation from existing clustering
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(type = c("median", "average"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(type = c("median", "average", "zero"))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

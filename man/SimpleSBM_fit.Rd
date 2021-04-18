@@ -81,7 +81,7 @@ method to perform estimation via variational EM
 \if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$doVEM(
   threshold = 1e-04,
   maxIter = 10,
-  fixPointIter = 5,
+  fixPointIter = 3,
   trace = FALSE
 )}\if{html}{\out{</div>}}
 }
