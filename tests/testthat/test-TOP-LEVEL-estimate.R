@@ -1,7 +1,7 @@
 context("test-test-top-level-function-misssbm")
 
 N_nocov <- 80
-source("utils_test.R")
+source("utils_test.R", local = TRUE)
 sampler_undirected_nocov$rNetwork(store = TRUE)
 A  <- sampler_undirected_nocov$networkData
 cl <- sampler_undirected_nocov$memberships
