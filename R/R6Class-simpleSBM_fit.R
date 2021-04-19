@@ -253,14 +253,18 @@ R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
     update_blocks =   function(log_lambda = 0) {
-      log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
-      log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
-      private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
+      if (self$nbBlocks > 1) {
+        log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
+        log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
+        private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
+      }
     }
   ),
   active = list(
     #' @field imputation the matrix of imputed values
-    imputation = function(value) {as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")},
+    imputation = function(value) {
+      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+    },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
