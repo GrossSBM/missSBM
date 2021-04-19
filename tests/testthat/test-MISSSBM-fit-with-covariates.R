@@ -9,7 +9,7 @@ source("utils_test.R", local = TRUE)
 control <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 5, trace = TRUE)
 
 ## Consistency
-tol_truth <- .1
+tol_truth <- .2
 tol_ARI   <- .9
 
 test_that("missSBM with covariates and dyad sampling works", {
