@@ -16,7 +16,7 @@
 #' collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 #' my_missSBM_fit <- collection$bestModel
 #' class(my_missSBM_fit)
-#' plot(my_missSBM_fit, "connectivity")
+#' plot(my_missSBM_fit, "imputed")
 #'
 #' @include R6Class-simpleSBM_fit_missSBM.R
 #' @include R6Class-networkSampling_fit.R
@@ -223,6 +223,8 @@ predict.missSBM_fit <- function(object, ...) {
 #' @param ... additional parameters for S3 compatibility.
 #'
 #' @return a basic printing output
+#'
+#' @importFrom base summary
 #'
 #' @export
 summary.missSBM_fit <- function(object, ...) {

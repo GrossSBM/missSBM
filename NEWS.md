@@ -1,7 +1,7 @@
 # missSBM dev 
  
   - Now use sparse Matrices to encode 0 and NAs
-  - complete writting of optim (E and M steps) with C++ armardillo routines
+  - complete writing of optimization routines (E and M steps) with C++ armadillo routines
   - important bug fix in MAR case
   - better initialization
   - bug fixed in blockDyad-sampling
