@@ -19,9 +19,9 @@
 #'  \itemize{
 #'  \item{"useCovSBM": }{logical. If \code{covariates} is not null, should they be used for the
 #'         for the SBM inference (or just for the sampling)? Default is TRUE.}
-#'  \item{"clusterInit": }{Initial method for clustering: either a character in "hierarchical", "spectral"
-#'         or "kmeans", or a list with \code{length(vBlocks)} vectors, each with size
-#'         \code{ncol(adjacencyMatrix)},  providing a user-defined clustering. Default is "spectral".}
+#'  \item{"clusterInit": }{Initial method for clustering: either a character ("spectral")
+#'         or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
+#'         providing a user-defined clustering. Default is "spectral".}
 #'  \item{"similarity": }{An R x R -> R function to compute similarities between node covariates. Default is
 #'         \code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
 #'         (i.e. \code{covariates} is a list of size-N vectors).}
@@ -77,7 +77,9 @@
 #' coef(collection$bestModel$fittedSBM, "connectivity")
 #'
 #' myModel <- collection$bestModel
-#' plot(myModel, "network")
+#' plot(myModel, "expected")
+#' plot(myModel, "imputed")
+#' plot(myModel, "meso")
 #' coef(myModel, "sampling")
 #' coef(myModel, "connectivity")
 #' predict(myModel)[1:5, 1:5]
@@ -98,7 +100,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
   else if (is.null(control$useCovSBM)) control$useCovSBM <- TRUE
 
   ## Defaut control parameters overwritten by user specification
-  ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, clusterInit = "hierarchical", similarity = l1_similarity)
+  ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, imputation = "median", similarity = l1_similarity)
   if (control$useCovSBM) {
     stopifnot(sampling %in% available_samplings_covariates)
     ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2))
@@ -109,13 +111,13 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
+  clusterInit <- partlyObservedNet$clustering(vBlocks, ctrl$imputation)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
       partlyObservedNet  = partlyObservedNet,
-      vBlocks            = vBlocks,
       sampling           = sampling,
-      clusterInit        = ctrl$clusterInit,
+      clusterInit        = clusterInit,
       cores              = ctrl$cores,
       trace              = (ctrl$trace > 0),
       useCov             = ctrl$useCovSBM

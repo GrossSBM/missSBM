@@ -52,7 +52,7 @@
 #'      )
 #' }
 #' @export
-observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = NULL, similarity = missSBM:::l1_similarity, intercept = 0) {
+observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = list(), similarity = missSBM:::l1_similarity, intercept = 0) {
 
 ### TEMPORARY FIX
   adjacencyMatrix[is.na(adjacencyMatrix)] <- 0
@@ -94,7 +94,7 @@ observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NUL
   ## draw a sampling matrix R
   mySampler$rSamplingMatrix()
 
-  ## code the observed networrk as a matrix possibly with NA
+  ## code the observed network as a matrix possibly with NA
   adjacencyMatrix[mySampler$samplingMatrix == 0] <- NA
   adjacencyMatrix
 }

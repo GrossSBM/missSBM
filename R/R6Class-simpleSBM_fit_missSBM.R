@@ -15,7 +15,7 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
     initialize = function(adjacencyMatrix, clusterInit, covarList = list()) {
 
       ## SANITY CHECKS (on data)
-      stopifnot(is.matrix(adjacencyMatrix))                   # must be a matrix
+      stopifnot(is.matrix(adjacencyMatrix) | inherits(adjacencyMatrix, "Matrix")) # must be a matrix
       stopifnot(all.equal(nrow(adjacencyMatrix),
                           ncol(adjacencyMatrix)))             # matrix must be square
       stopifnot(all(sapply(covarList, nrow) == nrow(adjacencyMatrix))) # consistency of the covariates
@@ -29,11 +29,11 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
                        connectParam = list(mean = matrix(0, 0, 0)),
                        covarList    = covarList)
 
-      # Storing data
-      private$Y <- adjacencyMatrix
-
       ## Initial Clustering
       private$Z <- clustering_indicator(clusterInit)
+
+      # Storing data
+      private$Y <- adjacencyMatrix
 
       ## Initialize estimation of the model parameters
       private$theta <- list(mean = check_boundaries(quad_form(adjacencyMatrix, private$Z) / quad_form(1 - diag(self$nbNodes), private$Z)))
@@ -51,7 +51,8 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
       ## Initialization of quantities that monitor convergence
       delta     <- vector("numeric", maxIter)
       objective <- vector("numeric", maxIter)
-      iterate <- 0; stop <- FALSE
+      objective[1] <- self$loglik
+      iterate <- 1; stop <- FALSE
 
       ## Starting the variational EM algorithm
       if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
@@ -74,6 +75,13 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
       if (trace) cat("\n")
       res <- data.frame(delta = delta[1:iterate], objective = objective[1:iterate])
       res
+    },
+    #' @description permute group labels by order of decreasing probability
+    reorder = function(){
+      o <- order(private$theta$mean %*% private$pi, decreasing = TRUE)
+      private$pi <- private$pi[o]
+      private$theta$mean <- private$theta$mean[o,o]
+      private$Z <- private$Z[, o, drop = FALSE]
     },
     #' @description update parameters estimation (M-step)
     update_parameters = function() { # NA not allowed in adjMatrix (should be imputed)
@@ -120,16 +128,21 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
           private$Z <- t(apply(sweep(tau, 2, log(private$pi), "+"), 1, .softmax))
         }
       }
-    },
-    #' @description permute group labels by order of decreasing probability
-    reorder = function(){
-      o <- order(private$theta$mean %*% private$pi, decreasing = TRUE)
-      private$pi <- private$pi[o]
-      private$theta$mean <- private$theta$mean[o,o]
-      private$Z <- private$Z[, o, drop = FALSE]
     }
   ),
   active = list(
+    #' @field penalty double, value of the penalty term in ICL
+    penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
+    #' @field entropy double, value of the entropy due to the clustering distribution
+    entropy  = function(value) {-sum(.xlogx(private$Z))},
+    #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
+    loglik = function(value) {self$vExpec + self$entropy},
+    #' @field ICL double: value of the integrated classification log-likelihood
+    ICL    = function(value) {-2 * self$vExpec + self$penalty},
+    #' @field networkData the network as stored by missSBM
+    networkData    = function(value) {
+      if (missing(value)) private$Y else private$Y <- value
+    },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       if (self$nbCovariates > 0) {
@@ -148,14 +161,6 @@ R6::R6Class(classname = "SimpleSBM_fit_missSBM",
         res <- sum(private$Z %*% log(private$pi)) +  tmp
       }
       res
-    },
-    #' @field penalty double, value of the penalty term in ICL
-    penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
-    #' @field entropy double, value of the entropy due to the clustering distribution
-    entropy  = function(value) {-sum(.xlogx(private$Z))},
-    #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
-    loglik = function(value) {self$vExpec + self$entropy},
-    #' @field ICL double: value of the integrated classification log-likelihood
-    ICL    = function(value) {-2 * self$vExpec + self$penalty}
+    }
   )
 )

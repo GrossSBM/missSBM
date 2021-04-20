@@ -1,5 +1,10 @@
-# missSBM dev version
-
+# missSBM dev 
+ 
+  - Now use sparse Matrices to encode 0 and NAs
+  - complete writing of optimization routines (E and M steps) with C++ armadillo routines
+  - important bug fix in MAR case
+  - better initialization
+  - bug fixed in blockDyad-sampling
   - missSBM::SimpleSBM_fit_missSBM now inherits from from sbm::SimpleSBM rather than sbm::SimpleSBM_fit
   - change field '$netMatrix' to '$networkData' to comply with new interface in sbm
 

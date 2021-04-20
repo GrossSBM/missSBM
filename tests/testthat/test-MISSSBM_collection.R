@@ -1,28 +1,19 @@
 context("test-misssbm_collection")
 
-set.seed(1890718)
-### A SBM model : ###
-N <- 100
-Q <- 3
-pi <- rep(1, Q)/Q           # block proportion
-theta <- list(mean = diag(.45, Q, Q) + .05) # connectivity matrix
-directed <- FALSE              # if the network is directed or not
-
-### Draw a SBM model
-mySBM <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
-A <- mySBM$networkData             # the adjacency matrix
+source("utils_test.R", local =TRUE)
+sampler_undirected_nocov$rNetwork(store = TRUE)
 
 test_that("missSBMcollection works", {
 
-  adjMatrix  <- missSBM::observeNetwork(A, "dyad", .5, clusters = mySBM$memberships)
+  adjMatrix  <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, "dyad", .5, clusters = sampler_undirected_nocov$memberships)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
+  cl <- partlyObservedNet$clustering(1:3)
 
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
     partlyObservedNet  = partlyObservedNet,
-    vBlocks     = 1:4,
     sampling    = "dyad",
-    clusterInit = 'hierarchical', 1, TRUE, TRUE)
+    clusterInit = cl, 1, TRUE, TRUE)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)
@@ -43,16 +34,15 @@ test_that("missSBMcollection works", {
 
 test_that("More smoothing tests", {
 
-  adjMatrix  <- missSBM::observeNetwork(A, "dyad", .5, clusters = mySBM$memberships)
+  adjMatrix  <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, "dyad", .5)
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
-
+  cl <- partlyObservedNet$clustering(1:4)
 
   ## Instantiate the collection of missSBM_fit
   collection <- missSBM_collection$new(
     partlyObservedNet  = partlyObservedNet,
-    vBlocks     = 1:4,
     sampling    = "dyad",
-    clusterInit = 'hierarchical', 1, TRUE, TRUE)
+    clusterInit = cl, 1, TRUE, TRUE)
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0)

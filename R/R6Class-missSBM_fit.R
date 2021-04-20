@@ -16,7 +16,7 @@
 #' collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 #' my_missSBM_fit <- collection$bestModel
 #' class(my_missSBM_fit)
-#' plot(my_missSBM_fit, "connectivity")
+#' plot(my_missSBM_fit, "imputed")
 #'
 #' @include R6Class-simpleSBM_fit_missSBM.R
 #' @include R6Class-networkSampling_fit.R
@@ -28,8 +28,7 @@ missSBM_fit <-
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## fields for internal use (referring to mathematical notations)
   private = list(
-    NAs        = NULL, # boolean for NA entries in the adjacencyMatrix
-    imputedNet = NULL, # imputed network data (a matrix possibly with NA when MAR sampling is used)
+    nu         = NULL, # imputed values (a sparse Matrix with entries only for imputed values, "dgCMatrix)
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
     optStatus  = NULL  # status of the optimization process
@@ -40,30 +39,30 @@ missSBM_fit <-
   public = list(
     #' @description constructor for networkSampling
     #' @param partlyObservedNet An object with class [`partlyObservedNetwork`].
-    #' @param nbBlocks integer, the number of blocks in the SBM
     #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
-    #' @param clusterInit Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".
+    #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.
     #' @param useCov logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    initialize = function(partlyObservedNet, nbBlocks, netSampling, clusterInit, useCov) {
+    initialize = function(partlyObservedNet, netSampling, clusterInit, useCov = TRUE) {
 
       ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
-      stopifnot(length(nbBlocks) == 1 & nbBlocks >= 1 & is.numeric(nbBlocks))
-
-      ## Initial Clustering
-      if (is.numeric(clusterInit) | is.factor(clusterInit))
-        clusterInit <- as.integer(clusterInit)
-      else
-        clusterInit <- partlyObservedNet$clustering(nbBlocks, clusterInit)
-
-      ## network data with basic imputation at start-up
-      private$imputedNet <- partlyObservedNet$imputation(clusterInit)
+      stopifnot(is.numeric(clusterInit))
 
       ## Initialize the SBM fit
       covariates <- array2list(partlyObservedNet$covarArray)
       if (!useCov) covariates <- list()
-      private$SBM <- SimpleSBM_fit_missSBM$new(private$imputedNet, clusterInit, covariates)
+
+      if (length(covariates) == 0) {
+        if (netSampling %in% c("dyad", "node", "snowball")) {
+          private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
+        }
+        if (netSampling %in% c("double-standard", "block-node", "block-dyad")) {
+          private$SBM <- SimpleSBM_fit_NMAR_noCov$new(partlyObservedNet, clusterInit)
+        }
+      } else {
+        private$SBM <- SimpleSBM_fit_withCov$new(partlyObservedNet, clusterInit, covariates)
+      }
 
       ## Initialize the sampling fit
       private$sampling <- switch(netSampling,
@@ -71,8 +70,8 @@ missSBM_fit <-
         "node"            = nodeSampling_fit$new(partlyObservedNet),
         "covar-dyad"      = covarDyadSampling_fit$new(partlyObservedNet),
         "covar-node"      = covarNodeSampling_fit$new(partlyObservedNet),
-        "block-node"      = blockSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "double-standard" = doubleStandardSampling_fit$new(partlyObservedNet),
+        "block-node"      = blockNodeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "block-dyad"      = blockDyadSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "degree"          = degreeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit), private$SBM$connectParam$mean),
         "snowball"        = nodeSampling_fit$new(partlyObservedNet) # estimated sampling parameter not relevant
@@ -96,16 +95,13 @@ missSBM_fit <-
         i <- i + 1
         if (control$trace) cat(" iteration #:", i, "\r")
         theta_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
-
         ## ______________________________________________________
         ## Variational E-Step
         #
         for (k in seq.int(control$fixPointIter)) {
           # update the variational parameters for missing entries (a.k.a nu)
-          nu <- private$sampling$update_imputation(private$SBM$expectation)
-          private$imputedNet[private$NAs] <- nu[private$NAs]
+          private$nu <- private$sampling$update_imputation(private$SBM$imputation)
           # update the variational parameters for block memberships (a.k.a tau)
-          private$SBM$networkData <- private$imputedNet
           private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
         }
 
@@ -113,9 +109,9 @@ missSBM_fit <-
         ## M-step
         #
         # update the parameters of the SBM (a.k.a pi and theta)
-        private$SBM$update_parameters()
+        private$SBM$update_parameters(private$nu)
         # update the parameters of network sampling process (a.k.a psi)
-        private$sampling$update_parameters(private$imputedNet, private$SBM$probMemberships)
+        private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
 
         ## Check convergence
         delta[i] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
@@ -124,6 +120,7 @@ missSBM_fit <-
 
       }
       private$SBM$reorder()
+
       if (control$trace) cat("\n")
       private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
       invisible(private$optStatus)
@@ -154,18 +151,20 @@ missSBM_fit <-
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
     fittedSampling = function(value) {private$sampling},
     #' @field imputedNetwork The network data as a matrix with NAs values imputed with the current model
-    imputedNetwork = function(value) {private$imputedNet},
+    imputedNetwork = function(value) {
+      res <- private$SBM$networkData + private$nu
+      if (!private$SBM$directed) res <- res + t(res)
+      res
+    },
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
     entropyImputed = function(value) {
-      nu <- private$imputedNet[private$NAs]
-      res <- -sum(xlogx(nu) + xlogx(1 - nu))
-      if (!self$fittedSBM$directed) res <- res / 2
+      res <- -sum(xlogx(private$nu) + xlogx(1 - private$nu))
       res
     },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
-   entropy = function(value) {private$SBM$entropy + self$entropyImputed},
+    entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {private$SBM$vExpec + private$sampling$vExpec},
     #' @field penalty double, value of the penalty term in ICL
@@ -241,17 +240,19 @@ summary.missSBM_fit <- function(object, ...) {
 #' @name plot.missSBM_fit
 #'
 #' @param x an object with class [`missSBM_fit`]
-#' @param type the type specifies the field to plot, either "network", "connectivity" or "monitoring"
+#' @param type the type specifies the field to plot, either "expected", "imputed", "meso",  or "monitoring"
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
-plot.missSBM_fit <- function(x, type = c("network", "connectivity", "monitoring"), ...) {
+#' @importFrom sbm plotMyMatrix
+plot.missSBM_fit <- function(x, type = c("expected", "imputed", "meso", "monitoring"), ...) {
   stopifnot(is_missSBMfit(x))
   gg_obj <- switch(match.arg(type),
-    "network"      = x$fittedSBM$plot("data"),
-    "connectivity" = x$fittedSBM$plot("expected"),
-    "monitoring"   = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
+    "expected"   = x$fittedSBM$plot("expected"),
+    "meso"       = x$fittedSBM$plot("meso"),
+    "imputed"    = plotMyMatrix(as.matrix(predict(x)),  clustering = list(row = x$fittedSBM$memberships)),
+    "monitoring" = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
   )
   gg_obj
 }

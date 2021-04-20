@@ -1,50 +1,45 @@
 context("test missSBM-fit without covariate")
 
-library(aricode)
-source("utils_test.R")
-
-set.seed(1890718)
-### A SBM model : ###
-N <- 200
 Q <- 3
-pi <- rep(1, Q)/Q           # block proportion
-theta <- list(mean = diag(.45, Q, Q) + .05) # connectivity matrix
-directed <- FALSE         # if the network is directed or not
+N_nocov <- 100
+N <- N_nocov
+source("utils_test.R", local = TRUE)
 
-### Draw a SBM model
-sbm <- sbm::sampleSimpleSBM(N, pi, theta) # simulation of ad Bernoulli non-directed SBM
+sampler_undirected_nocov$rNetwork(store = TRUE)
 
 samplings <- list(
   list(name = "dyad", psi = 0.5, class = "dyadSampling_fit"),
   list(name = "node", psi = 0.5, class = "nodeSampling_fit"),
   list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit"),
-  list(name = "block-node", psi = c(.3, .5, .7), class = "blockSampling_fit")
+  list(name = "block-node", psi = c(.3, .5, .7), class = "blockNodeSampling_fit"),
+  list(name = "block-dyad", psi = psi <- matrix(.5,3,3) + diag(3)*.3, class = "blockDyadSampling_fit")
 )
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
+control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
 test_that("missSBM-fit works and is consistent for all samplings", {
 
   ## Consistency
-  tol_truth <- 1e-2
-  tol_ARI   <- .8
+  tol_truth <- 0.25
+  tol_ARI   <- .9
 
-##  cat("Tested sampling:")
+  cat("Tested sampling:")
   for (sampling in samplings) {
-##    cat("\n -", sampling$name)
+    cat("\n -", sampling$name)
 
     ## sampled the network
-    adjMatrix  <- missSBM::observeNetwork(sbm$networkData, sampling$name, sampling$psi, sbm$memberships)
-    partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
+    adjMatrix  <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, sampling$name, sampling$psi, sampler_undirected_nocov$memberships)
+    myNet <- missSBM:::partlyObservedNetwork$new(adjMatrix)
+    cl <- myNet$clustering(1: (2*Q) )
 
     ## Perform inference
-    missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, sampling$name, "hierarchical", FALSE)
+    missSBM <- missSBM:::missSBM_fit$new(myNet, sampling$name, cl[[Q]], FALSE)
     out <- missSBM$doVEM(control)
 
     ## Sanity check
-    expect_is(missSBM, "missSBM_fit")
-    expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
+    expect_true(inherits(missSBM, "missSBM_fit"))
+    expect_true(inherits(missSBM$fittedSBM, "SimpleSBM_fit"))
     expect_is(missSBM$fittedSampling, sampling$class)
     expect_equal(out, missSBM$monitoring)
 
@@ -52,45 +47,15 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
 
     ## SBM: parameters estimation
-    expect_lt(error(missSBM$fittedSBM$connectParam$mean, sbm$connectParam$mean), tol_truth)
-    expect_lt(error(missSBM$fittedSBM$blockProp, sbm$blockProp, sort = TRUE), tol_truth)
+    expect_lt(error(missSBM$fittedSBM$connectParam$mean, sampler_undirected_nocov$connectParam$mean), tol_truth)
+    expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_nocov$blockProp, sort = TRUE), tol_truth)
 
     ## sampling design: parameters estimation
     expect_lt(error(missSBM$fittedSampling$parameters, sampling$psi, sort = TRUE), tol_truth)
 
     ## clustering
-    expect_gt(ARI(missSBM$fittedSBM$memberships, sbm$memberships), tol_ARI)
+    expect_gt(ARI(missSBM$fittedSBM$memberships, sampler_undirected_nocov$memberships), tol_ARI)
   }
 
 })
 
-# test_that("miss SBM with degree sampling works", {
-#
-#   psi <- c(-5, .1)
-#   partlyObservedNet <- sampleNetwork(A, "degree", psi)
-#   ## Perform inference
-#   missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, Q, "degree", "hierarchical)
-#   out <- missSBM$doVEM(control)
-#
-#   ## Sanity check
-#   expect_is(missSBM, "missSBM_fit")
-#   expect_is(missSBM$fittedSBM, "SimpleSBM_fit_missSBM")
-#   expect_is(missSBM$fittedSampling, "degreeSampling_fit")
-#   expect_is(missSBM$partlyObservedNetwork, "partlyObservedNetwork")
-#
-#   ## Consistency
-#   tol <- 1e-2
-#   ## Optimization success
-#   expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
-#   ## SBM: parameters estimation
-#   ## FIXME: expect_lt(sum((missSBM$fittedSBM$connectParam - mySBM$connectParam)^2)/(Q*(Q + 1)/2), tol)
-#   ## sampling design: parameters estimation
-#   ## FIXME: this does work!!! expect_lt(sum((sort(missSBM$fittedSampling$parameters) - sort(psi))^2/Q), tol)
-#   ## clustering
-#   tol <- .9
-#   expect_gt(ARI(missSBM$fittedSBM$memberships, mySBM$memberships), tol)
-#
-# })
-#
-#
-#

@@ -60,13 +60,13 @@ constructor
 \subsection{Method \code{update_parameters()}}{
 a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{doubleStandardSampling_fit$update_parameters(imputedNet, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{doubleStandardSampling_fit$update_parameters(nu, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
+\item{\code{nu}}{an adjacency matrix with imputed values (only)}
 
 \item{\code{...}}{use for compatibility}
 }
@@ -79,13 +79,13 @@ a method to update the estimation of the parameters. By default, nothing to do (
 \subsection{Method \code{update_imputation()}}{
 a method to update the imputation of the missing entries.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{doubleStandardSampling_fit$update_imputation(PI)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{doubleStandardSampling_fit$update_imputation(nu)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{PI}}{the matrix of inter/intra class probability of connection}
+\item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
 }
 \if{html}{\out{</div>}}
 }

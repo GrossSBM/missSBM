@@ -28,17 +28,15 @@ This class is not exported to the user
 
 \item{\code{covarMatrix}}{the matrix of covariates}
 
-\item{\code{dyads}}{a list of potential dyads in the network}
-
 \item{\code{missingDyads}}{array indices of missing dyads}
 
 \item{\code{observedDyads}}{array indices of observed dyads}
 
 \item{\code{samplingMatrix}}{matrix of observed and non-observed edges}
 
-\item{\code{observedNodes}}{a vector of observed and non-observed nodes}
+\item{\code{samplingMatrixBar}}{matrix of observed and non-observed edges}
 
-\item{\code{NAs}}{boolean for NA entries in the adjacencyMatrix}
+\item{\code{observedNodes}}{a vector of observed and non-observed nodes (observed means at least one non NA value)}
 }
 \if{html}{\out{</div>}}
 }
@@ -59,7 +57,7 @@ constructor
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$new(
   adjacencyMatrix,
-  covariates = NULL,
+  covariates = list(),
   similarity = missSBM:::l1_similarity
 )}\if{html}{\out{</div>}}
 }
@@ -83,17 +81,17 @@ constructor
 method to cluster network data with missing value
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(
-  nbBlocks,
-  method = c("hierarchical", "spectral", "kmeans")
+  vBlocks,
+  imputation = ifelse(is.null(private$phi), "median", "average")
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{nbBlocks}}{integer, the chosen number of blocks}
+\item{\code{vBlocks}}{The vector of number of blocks considered in the collection.}
 
-\item{\code{method}}{character with a clustering method among "hierarchical", "spectral", "kmeans".}
+\item{\code{imputation}}{character indicating the type of imputation among "median", "average"}
 }
 \if{html}{\out{</div>}}
 }
@@ -104,18 +102,15 @@ method to cluster network data with missing value
 \subsection{Method \code{imputation()}}{
 basic imputation from existing clustering
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(clustering)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(type = c("median", "average", "zero"))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{clustering}}{a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
+\item{\code{type}}{a character, the type of imputation. Either "median" or "average"}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-an adjacency matrix with imputed values
 }
 }
 \if{html}{\out{<hr>}}

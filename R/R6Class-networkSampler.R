@@ -168,7 +168,7 @@ R6::R6Class(classname = "blockDyadSampler",
       )
       super$initialize("block-dyad", parameters, nbNodes, directed)
       Z <- matrix(0, nbNodes, Q)
-      Z[cbind(1:private$N, private$clusters)] <- 1
+      Z[cbind(1:private$N, clusters)] <- 1
       private$rho <- (Z %*% self$parameters %*% t(Z))[private$dyads]
       private$Q <- Q
     }

@@ -18,13 +18,14 @@ SimpleSBM
 VE
 Variational
 Wayman
-adjacencyMatrix
+blockDyad
 cloneable
 clusterInit
 correlatesofwar
 covar
 covarArray
 covarMatrix
+de
 dev
 doi
 dyad
@@ -39,6 +40,7 @@ intra
 kmeans
 magrittr
 maxIter
+meso
 missSBM’
 modelling
 netMatrix
@@ -46,6 +48,8 @@ networkData
 networkSampling
 networkSamplingDyads
 networkSamplingNodes
+nlopt
+nloptr
 observedNetwork
 partlyObservedNet
 partlyObservedNetwork

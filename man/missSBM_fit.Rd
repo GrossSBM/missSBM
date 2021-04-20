@@ -20,7 +20,7 @@ adjMatrix <- missSBM::frenchblog2007 \%>\%
 collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 my_missSBM_fit <- collection$bestModel
 class(my_missSBM_fit)
-plot(my_missSBM_fit, "connectivity")
+plot(my_missSBM_fit, "imputed")
 
 }
 \section{Active bindings}{
@@ -64,7 +64,7 @@ plot(my_missSBM_fit, "connectivity")
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(partlyObservedNet, nbBlocks, netSampling, clusterInit, useCov)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -72,11 +72,9 @@ constructor for networkSampling
 \describe{
 \item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
 
-\item{\code{nbBlocks}}{integer, the number of blocks in the SBM}
-
 \item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
-\item{\code{clusterInit}}{Initial clustering: either a character in "hierarchical", "spectral" or "kmeans", or a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels. Default is "hierarchical".}
+\item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
 
 \item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
 }
