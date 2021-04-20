@@ -224,8 +224,6 @@ predict.missSBM_fit <- function(object, ...) {
 #'
 #' @return a basic printing output
 #'
-#' @importFrom base summary
-#'
 #' @export
 summary.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
