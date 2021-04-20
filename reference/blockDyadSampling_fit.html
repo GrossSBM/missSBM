@@ -73,7 +73,7 @@ Class for fitting a block-dyad sampling" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9850</span>
       </span>
     </div>
 
@@ -150,6 +150,8 @@ Class for fitting a block-dyad sampling" />
     <p><div class="r6-active-bindings"></p><dl>
 <dt><code>vExpec</code></dt><dd><p>variational expectation of the sampling</p></dd>
 
+<dt><code>log_lambda</code></dt><dd><p>matrix, term for adjusting the imputation step which depends on the type of sampling</p></dd>
+
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
@@ -184,13 +186,13 @@ Class for fitting a block-dyad sampling" />
 <p><hr>
 <a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
 <p>a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span><span class='va'>imputedNet</span>, <span class='va'>Z</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>blockDyadSampling_fit</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span><span class='va'>nu</span>, <span class='va'>Z</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>imputedNet</code></dt><dd><p>an adjacency matrix where missing values have been imputed</p></dd>
+<dt><code>nu</code></dt><dd><p>the matrix of (uncorrected) imputation for missing entries</p></dd>
 
-<dt><code>Z</code></dt><dd><p>indicator of blocks</p></dd>
+<dt><code>Z</code></dt><dd><p>probabilities of block memberships</p></dd>
 
 </dl><p></div></p>
 <p><hr>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class for defining a snowball sampler — snowballSampler • missSBM</title>
+<title>Class for fitting a block-node sampling — blockNodeSampling_fit • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Class for defining a snowball sampler — snowballSampler" />
-<meta property="og:description" content="Class for defining a snowball sampler
-Class for defining a snowball sampler" />
+<meta property="og:title" content="Class for fitting a block-node sampling — blockNodeSampling_fit" />
+<meta property="og:description" content="Class for fitting a block-node sampling
+Class for fitting a block-node sampling" />
 
 
 
@@ -130,56 +130,75 @@ Class for defining a snowball sampler" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class for defining a snowball sampler</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampler.R'><code>R/R6Class-networkSampler.R</code></a></small>
-    <div class="hidden name"><code>snowballSampler.Rd</code></div>
+    <h1>Class for fitting a block-node sampling</h1>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampling_fit.R'><code>R/R6Class-networkSampling_fit.R</code></a></small>
+    <div class="hidden name"><code>blockNodeSampling_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Class for defining a snowball sampler</p>
-<p>Class for defining a snowball sampler</p>
+    <p>Class for fitting a block-node sampling</p>
+<p>Class for fitting a block-node sampling</p>
     </div>
 
 
 
     <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
 
-    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code><a href='networkSampler.html'>missSBM::networkSampler</a></code> -&gt; <code><a href='nodeSampler.html'>missSBM::nodeSampler</a></code> -&gt; <code>snowballSampler</code></p>
+    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code><a href='networkSamplingNodes_fit.html'>missSBM::networkSamplingNodes_fit</a></code> -&gt; <code>blockNodeSampling_fit</code></p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
+
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>vExpec</code></dt><dd><p>variational expectation of the sampling</p></dd>
+
+<dt><code>log_lambda</code></dt><dd><p>double, term for adjusting the imputation step which depends on the type of sampling</p></dd>
+
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
 <ul>
-<li><p><a href='#method-new'><code>snowballSampler$new()</code></a></p></li>
-<li><p><a href='#method-clone'><code>snowballSampler$clone()</code></a></p></li>
+<li><p><a href='#method-new'><code>blockNodeSampling_fit$new()</code></a></p></li>
+<li><p><a href='#method-update_parameters'><code>blockNodeSampling_fit$update_parameters()</code></a></p></li>
+<li><p><a href='#method-clone'><code>blockNodeSampling_fit$clone()</code></a></p></li>
 </ul>
 <p><details open ><summary>Inherited methods</summary>
 <ul>
 <li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-print'><code>missSBM::networkSampling$print()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-show'><code>missSBM::networkSampling$show()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-show'><code>missSBM::networkSamplingNodes_fit$show()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-update_imputation'><code>missSBM::networkSamplingNodes_fit$update_imputation()</code></a></span></p></li>
 </ul>
 </details>
 
 <hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
-<p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>snowballSampler</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>parameters <span class='op'>=</span> <span class='cn'>NA</span>, adjacencyMatrix <span class='op'>=</span> <span class='cn'>NA</span>, directed <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
+<p>constructor</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>blockNodeSampling_fit</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>partlyObservedNetwork</span>, <span class='va'>blockInit</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>parameters</code></dt><dd><p>the vector of parameters associated to the sampling at play</p></dd>
+<dt><code>partlyObservedNetwork</code></dt><dd><p>a object with class partlyObservedNetwork representing the observed data with possibly missing entries</p></dd>
 
-<dt><code>adjacencyMatrix</code></dt><dd><p>the adjacency matrix of the network</p></dd>
+<dt><code>blockInit</code></dt><dd><p>n x Q matrix of initial block indicators</p></dd>
 
-<dt><code>directed</code></dt><dd><p>logical, directed network of not</p></dd>
+</dl><p></div></p>
+<p><hr>
+<a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
+<p>a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>blockNodeSampling_fit</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span><span class='va'>imputedNet</span>, <span class='va'>Z</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>imputedNet</code></dt><dd><p>an adjacency matrix where missing values have been imputed</p></dd>
+
+<dt><code>Z</code></dt><dd><p>indicator of blocks</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>snowballSampler</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>blockNodeSampling_fit</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

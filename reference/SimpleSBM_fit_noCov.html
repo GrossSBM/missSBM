@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class for defining a snowball sampler — snowballSampler • missSBM</title>
+<title>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_noCov • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Class for defining a snowball sampler — snowballSampler" />
-<meta property="og:description" content="Class for defining a snowball sampler
-Class for defining a snowball sampler" />
+<meta property="og:title" content="This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_noCov" />
+<meta property="og:description" content="This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM." />
 
 
 
@@ -130,56 +130,81 @@ Class for defining a snowball sampler" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class for defining a snowball sampler</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampler.R'><code>R/R6Class-networkSampler.R</code></a></small>
-    <div class="hidden name"><code>snowballSampler.Rd</code></div>
+    <h1>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-simpleSBM_fit.R'><code>R/R6Class-simpleSBM_fit.R</code></a></small>
+    <div class="hidden name"><code>SimpleSBM_fit_noCov.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Class for defining a snowball sampler</p>
-<p>Class for defining a snowball sampler</p>
+    <p>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.</p>
+<p>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.</p>
     </div>
 
 
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>It is not designed not be call by the user</p>
     <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
 
-    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code><a href='networkSampler.html'>missSBM::networkSampler</a></code> -&gt; <code><a href='nodeSampler.html'>missSBM::nodeSampler</a></code> -&gt; <code>snowballSampler</code></p>
+    <p><code><a href='https://grosssbm.github.io/sbm/reference/SBM.html'>sbm::SBM</a></code> -&gt; <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM.html'>sbm::SimpleSBM</a></code> -&gt; <code><a href='SimpleSBM_fit.html'>missSBM::SimpleSBM_fit</a></code> -&gt; <code>SimpleSBM_fit_noCov</code></p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
+
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>imputation</code></dt><dd><p>the matrix of imputed values</p></dd>
+
+<dt><code>vExpec</code></dt><dd><p>double: variational approximation of the expectation complete log-likelihood</p></dd>
+
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
 <ul>
-<li><p><a href='#method-new'><code>snowballSampler$new()</code></a></p></li>
-<li><p><a href='#method-clone'><code>snowballSampler$clone()</code></a></p></li>
+<li><p><a href='#method-update_parameters'><code>SimpleSBM_fit_noCov$update_parameters()</code></a></p></li>
+<li><p><a href='#method-update_blocks'><code>SimpleSBM_fit_noCov$update_blocks()</code></a></p></li>
+<li><p><a href='#method-clone'><code>SimpleSBM_fit_noCov$clone()</code></a></p></li>
 </ul>
-<p><details open ><summary>Inherited methods</summary>
+<p><details ><summary>Inherited methods</summary>
 <ul>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-print'><code>missSBM::networkSampling$print()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-show'><code>missSBM::networkSampling$show()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-print'><code>sbm::SBM$print()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-plot'><code>sbm::SimpleSBM$plot()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-predict'><code>sbm::SimpleSBM$predict()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-show'><code>sbm::SimpleSBM$show()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-doVEM'><code>missSBM::SimpleSBM_fit$doVEM()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-initialize'><code>missSBM::SimpleSBM_fit$initialize()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-reorder'><code>missSBM::SimpleSBM_fit$reorder()</code></a></span></p></li>
 </ul>
 </details>
 
 <hr>
-<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
-<p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>snowballSampler</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>parameters <span class='op'>=</span> <span class='cn'>NA</span>, adjacencyMatrix <span class='op'>=</span> <span class='cn'>NA</span>, directed <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
+<a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
+<p>update parameters estimation (M-step)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_noCov</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>parameters</code></dt><dd><p>the vector of parameters associated to the sampling at play</p></dd>
+<dt><code>...</code></dt><dd><p>additional arguments, only required for NMAR cases</p></dd>
 
-<dt><code>adjacencyMatrix</code></dt><dd><p>the adjacency matrix of the network</p></dd>
+</dl><p></div></p>
+<p><hr>
+<a id="method-update_blocks"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_blocks()</code></h3>
+<p>update variational estimation of blocks (VE-step)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_noCov</span><span class='op'>$</span><span class='fu'>update_blocks</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
 
-<dt><code>directed</code></dt><dd><p>logical, directed network of not</p></dd>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>...</code></dt><dd><p>additional arguments, only required for NMAR cases</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>snowballSampler</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_noCov</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

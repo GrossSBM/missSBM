@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9850</span>
       </span>
     </div>
 
@@ -184,9 +184,9 @@ must be a size-N vector;  if the covariates are dyad-centered, each entry of <co
 initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul>
 <li><p>"useCovSBM": logical. If <code>covariates</code> is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
-<li><p>"clusterInit": Initial method for clustering: either a character in "hierarchical", "spectral"
-or "kmeans", or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size
-<code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>,  providing a user-defined clustering. Default is "spectral".</p></li>
+<li><p>"clusterInit": Initial method for clustering: either a character ("spectral")
+or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size  <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>,
+providing a user-defined clustering. Default is "spectral".</p></li>
 <li><p>"similarity": An R x R -&gt; R function to compute similarities between node covariates. Default is
 <code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. <code>covariates</code> is a list of size-N vectors).</p></li>
@@ -248,29 +248,110 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 #&gt; 
 #&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
 #&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
-</div><div class='output co'>#&gt; [1] 24924.59 23982.07 23379.39 23486.16 23594.63</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 21030.29 20326.12 19859.67 19923.45 20029.18</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.35785416 0.03629987 0.05114642
-#&gt; [2,] 0.03629987 0.36282613 0.03898758
-#&gt; [3,] 0.05114642 0.03898758 0.36870980
+#&gt; [1,] 0.49642857 0.04866006 0.05102884
+#&gt; [2,] 0.04866006 0.51038027 0.04313737
+#&gt; [3,] 0.05102884 0.04313737 0.50694473
 #&gt; </div><div class='input'>
 <span class='va'>myModel</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"network"</span><span class='op'>)</span>
-</div><div class='img'><img src='estimateMissSBM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"sampling"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"expected"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"imputed"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"meso"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; $g
+#&gt; IGRAPH 0266fe8 U-W- 3 6 -- 
+#&gt; + attr: weight (e/n), width (e/n)
+#&gt; + edges from 0266fe8:
+#&gt; [1] 1--1 1--2 1--3 2--2 2--3 3--3
+#&gt; 
+#&gt; $layout
+#&gt;          [,1]     [,2]
+#&gt; [1,] 72.49190 97.06873
+#&gt; [2,] 69.82416 96.42734
+#&gt; [3,] 71.86439 94.44321
+#&gt; 
+#&gt; $plotOptions
+#&gt; $plotOptions$seed
+#&gt; NULL
+#&gt; 
+#&gt; $plotOptions$title
+#&gt; NULL
+#&gt; 
+#&gt; $plotOptions$layout
+#&gt; NULL
+#&gt; 
+#&gt; $plotOptions$vertex.color
+#&gt; [1] "salmon2"
+#&gt; 
+#&gt; $plotOptions$vertex.frame.color
+#&gt; [1] "black"
+#&gt; 
+#&gt; $plotOptions$vertex.shape
+#&gt; [1] "circle"
+#&gt; 
+#&gt; $plotOptions$vertex.size
+#&gt; [1] 1
+#&gt; 
+#&gt; $plotOptions$vertex.size2
+#&gt; [1] NA
+#&gt; 
+#&gt; $plotOptions$vertex.label.name
+#&gt; $plotOptions$vertex.label.name$node
+#&gt; [1] "nodeName"
+#&gt; 
+#&gt; 
+#&gt; $plotOptions$vertex.label.color
+#&gt; [1] "black"
+#&gt; 
+#&gt; $plotOptions$vertex.label.font
+#&gt; [1] 2
+#&gt; 
+#&gt; $plotOptions$vertex.label.cex
+#&gt; [1] 0.9
+#&gt; 
+#&gt; $plotOptions$vertex.label.dist
+#&gt; [1] 0
+#&gt; 
+#&gt; $plotOptions$vertex.label.degree
+#&gt; [1] 0
+#&gt; 
+#&gt; $plotOptions$edge.threshold
+#&gt; [1] -Inf
+#&gt; 
+#&gt; $plotOptions$edge.color
+#&gt; [1] "gray"
+#&gt; 
+#&gt; $plotOptions$edge.width
+#&gt; [1] 1
+#&gt; 
+#&gt; $plotOptions$edge.arrow.size
+#&gt; [1] 1
+#&gt; 
+#&gt; $plotOptions$edge.arrow.width
+#&gt; [1] 2
+#&gt; 
+#&gt; $plotOptions$edge.lty
+#&gt; [1] "solid"
+#&gt; 
+#&gt; $plotOptions$edge.curved
+#&gt; [1] 0.3
+#&gt; 
+#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"sampling"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 0.4924385</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.35785416 0.03629987 0.05114642
-#&gt; [2,] 0.03629987 0.36282613 0.03898758
-#&gt; [3,] 0.05114642 0.03898758 0.36870980
+#&gt; [1,] 0.49642857 0.04866006 0.05102884
+#&gt; [2,] 0.04866006 0.51038027 0.04313737
+#&gt; [3,] 0.05102884 0.04313737 0.50694473
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
-</div><div class='output co'>#&gt;            [,1]       [,2]       [,3]     [,4]       [,5]
-#&gt; [1,] 0.00000000 0.02668760 0.00000000 0.000000 0.02501646
-#&gt; [2,] 0.02668760 0.00000000 0.24561404 1.000000 0.03639371
-#&gt; [3,] 0.00000000 0.24561404 0.00000000 0.245614 0.03639371
-#&gt; [4,] 0.00000000 1.00000000 0.24561404 0.000000 0.00000000
-#&gt; [5,] 0.02501646 0.03639371 0.03639371 0.000000 0.00000000</div><div class='input'>
+</div><div class='output co'>#&gt; 5 x 5 sparse Matrix of class "dgCMatrix"
+#&gt;                                                           
+#&gt; [1,] .          0.04313725 .          .         0.04866008
+#&gt; [2,] 0.04313725 .          0.50694444 1.0000000 0.05102881
+#&gt; [3,] .          0.50694444 .          0.5069444 0.05102881
+#&gt; [4,] .          1.00000000 0.50694444 .         .         
+#&gt; [5,] 0.04866008 0.05102881 0.05102881 .         .         </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

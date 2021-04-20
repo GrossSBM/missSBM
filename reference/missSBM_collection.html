@@ -78,7 +78,7 @@ used to smooth the ICL on a collection of model, as post-treatment." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9850</span>
       </span>
     </div>
 
@@ -184,7 +184,6 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 <p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
   <span class='va'>partlyObservedNet</span>,
-  <span class='va'>vBlocks</span>,
   <span class='va'>sampling</span>,
   <span class='va'>clusterInit</span>,
   <span class='va'>cores</span>,
@@ -196,11 +195,9 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 <p><div class="arguments"></p><dl>
 <dt><code>partlyObservedNet</code></dt><dd><p>An object with class <code><a href='partlyObservedNetwork.html'>partlyObservedNetwork</a></code>.</p></dd>
 
-<dt><code>vBlocks</code></dt><dd><p>vector of integer with the number of blocks in the successively fitted models</p></dd>
-
 <dt><code>sampling</code></dt><dd><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></dd>
 
-<dt><code>clusterInit</code></dt><dd><p>Initial method for clustering: either a character in "hierarchical", "spectral" or "kmeans", or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering. Default is "hierarchical".</p></dd>
+<dt><code>clusterInit</code></dt><dd><p>Initial clustering: a list of vectors, each with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>.</p></dd>
 
 <dt><code>cores</code></dt><dd><p>integer for number of cores used. Default is 1.</p></dd>
 

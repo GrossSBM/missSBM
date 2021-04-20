@@ -73,7 +73,7 @@ An R6 Class used for internal representation of a partially observed network" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9850</span>
       </span>
     </div>
 
@@ -162,17 +162,15 @@ An R6 Class used for internal representation of a partially observed network" />
 
 <dt><code>covarMatrix</code></dt><dd><p>the matrix of covariates</p></dd>
 
-<dt><code>dyads</code></dt><dd><p>a list of potential dyads in the network</p></dd>
-
 <dt><code>missingDyads</code></dt><dd><p>array indices of missing dyads</p></dd>
 
 <dt><code>observedDyads</code></dt><dd><p>array indices of observed dyads</p></dd>
 
 <dt><code>samplingMatrix</code></dt><dd><p>matrix of observed and non-observed edges</p></dd>
 
-<dt><code>observedNodes</code></dt><dd><p>a vector of observed and non-observed nodes</p></dd>
+<dt><code>samplingMatrixBar</code></dt><dd><p>matrix of observed and non-observed edges</p></dd>
 
-<dt><code>NAs</code></dt><dd><p>boolean for NA entries in the adjacencyMatrix</p></dd>
+<dt><code>observedNodes</code></dt><dd><p>a vector of observed and non-observed nodes (observed means at least one non NA value)</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -191,7 +189,7 @@ An R6 Class used for internal representation of a partially observed network" />
 <p>constructor</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>partlyObservedNetwork</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
   <span class='va'>adjacencyMatrix</span>,
-  covariates <span class='op'>=</span> <span class='cn'>NULL</span>,
+  covariates <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   similarity <span class='op'>=</span> <span class='fu'>missSBM</span><span class='fu'>:::</span><span class='va'>l1_similarity</span>
 <span class='op'>)</span></pre><p></div></p>
 
@@ -208,29 +206,27 @@ An R6 Class used for internal representation of a partially observed network" />
 <a id="method-clustering"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clustering()</code></h3>
 <p>method to cluster network data with missing value</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>partlyObservedNetwork</span><span class='op'>$</span><span class='fu'>clustering</span><span class='op'>(</span>
-  <span class='va'>nbBlocks</span>,
-  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"hierarchical"</span>, <span class='st'>"spectral"</span>, <span class='st'>"kmeans"</span><span class='op'>)</span>
+  <span class='va'>vBlocks</span>,
+  imputation <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='va'>private</span><span class='op'>$</span><span class='va'>phi</span><span class='op'>)</span>, <span class='st'>"median"</span>, <span class='st'>"average"</span><span class='op'>)</span>
 <span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>nbBlocks</code></dt><dd><p>integer, the chosen number of blocks</p></dd>
+<dt><code>vBlocks</code></dt><dd><p>The vector of number of blocks considered in the collection.</p></dd>
 
-<dt><code>method</code></dt><dd><p>character with a clustering method among "hierarchical", "spectral", "kmeans".</p></dd>
+<dt><code>imputation</code></dt><dd><p>character indicating the type of imputation among "median", "average"</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-imputation"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>imputation()</code></h3>
 <p>basic imputation from existing clustering</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>partlyObservedNetwork</span><span class='op'>$</span><span class='fu'>imputation</span><span class='op'>(</span><span class='va'>clustering</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>partlyObservedNetwork</span><span class='op'>$</span><span class='fu'>imputation</span><span class='op'>(</span>type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"median"</span>, <span class='st'>"average"</span>, <span class='st'>"zero"</span><span class='op'>)</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>clustering</code></dt><dd><p>a vector with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering with <code>nbBlocks</code> levels.</p></dd>
+<dt><code>type</code></dt><dd><p>a character, the type of imputation. Either "median" or "average"</p></dd>
 
 </dl><p></div></p>
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>an adjacency matrix with imputed values</p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
