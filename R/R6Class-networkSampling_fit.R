@@ -174,9 +174,6 @@ nodeSampling_fit <-
 covarNodeSampling_fit <-
   R6::R6Class(classname = "covarNodeSampling_fit",
   inherit = networkSamplingNodes_fit,
-  private = list(
-    rho = NULL # vector of predicted probabilities of observation
-  ),
   #' @description constructor
   #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
   #' @param ... used for compatibility

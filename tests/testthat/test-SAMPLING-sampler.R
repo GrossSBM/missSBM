@@ -1,21 +1,5 @@
 context("test network samplers (Class networkSampler and chidren)")
 
-error <- function(beta1, beta2, sort = FALSE) {
-  if (sort)
-    err <- sum((sort(beta1) - sort(beta2))^2)/length(beta2)
-  else
-    err <- sum((beta1 - beta2)^2)/length(beta2)
-  err
-}
-
-set.seed(178303)
-### A SBM model : ###
-N <- 200
-Q <- 3
-pi <- rep(1, Q)/Q            # block proportion
-theta <- list(mean = diag(.45, Q, Q) + .05)  # connectivity matrix
-directed <- FALSE
-
 ### Draw a SBM model (Bernoulli, undirected)
 mySBM <- sbm::sampleSimpleSBM(N, pi, theta)
 A <- mySBM$networkData
