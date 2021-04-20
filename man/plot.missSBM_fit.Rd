@@ -4,12 +4,12 @@
 \alias{plot.missSBM_fit}
 \title{Visualization for an object \code{\link{missSBM_fit}}}
 \usage{
-\method{plot}{missSBM_fit}(x, type = c("network", "connectivity", "monitoring"), ...)
+\method{plot}{missSBM_fit}(x, type = c("data", "expected", "meso", "imputed", "monitoring"), ...)
 }
 \arguments{
 \item{x}{an object with class \code{\link{missSBM_fit}}}
 
-\item{type}{the type specifies the field to plot, either "network", "connectivity" or "monitoring"}
+\item{type}{the type specifies the field to plot, either "data", "expected", "meso", "imputed" or "monitoring"}
 
 \item{...}{additional parameters for S3 compatibility. Not used}
 }

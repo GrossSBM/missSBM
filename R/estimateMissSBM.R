@@ -77,7 +77,9 @@
 #' coef(collection$bestModel$fittedSBM, "connectivity")
 #'
 #' myModel <- collection$bestModel
-#' plot(myModel, "network")
+#' plot(myModel, "expected")
+#' plot(myModel, "imputed")
+#' plot(myModel, "meso")
 #' coef(myModel, "sampling")
 #' coef(myModel, "connectivity")
 #' predict(myModel)[1:5, 1:5]

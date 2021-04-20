@@ -161,13 +161,10 @@ table(
 The model finally fitted on the network data can be represented thanks to a plot method applying on objects with class `SBM`:
 
 ```{r plot, fig.width=7, fig.height=7}
-par(mfrow = c(2,2))
-plot(collection_sbm$bestModel, type = "network")
-plot(collection_sbm$bestModel, type = "connectivity")
-plot(collection_sbm_full$bestModel, type = "network")
-plot(collection_sbm_full$bestModel, type = "connectivity")
+par(mfrow = c(1,2))
+plot(collection_sbm$bestModel, type = "expected")
+plot(collection_sbm_full$bestModel, type = "expected")
 ```
-
 
 ### Taking covariates into account
 

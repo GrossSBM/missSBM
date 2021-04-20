@@ -151,7 +151,11 @@ missSBM_fit <-
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
     fittedSampling = function(value) {private$sampling},
     #' @field imputedNetwork The network data as a matrix with NAs values imputed with the current model
-    imputedNetwork = function(value) {private$fittedSBM$networkData + private$nu},
+    imputedNetwork = function(value) {
+      res <- private$SBM$networkData + private$nu
+      if (!private$SBM$directed) res <- res + t(res)
+      res
+    },
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
@@ -236,17 +240,19 @@ summary.missSBM_fit <- function(object, ...) {
 #' @name plot.missSBM_fit
 #'
 #' @param x an object with class [`missSBM_fit`]
-#' @param type the type specifies the field to plot, either "network", "connectivity" or "monitoring"
+#' @param type the type specifies the field to plot, either "expected", "imputed", "meso",  or "monitoring"
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
-plot.missSBM_fit <- function(x, type = c("network", "connectivity", "monitoring"), ...) {
+#' @importFrom sbm plotMyMatrix
+plot.missSBM_fit <- function(x, type = c("expected", "imputed", "meso", "monitoring"), ...) {
   stopifnot(is_missSBMfit(x))
   gg_obj <- switch(match.arg(type),
-    "network"      = x$fittedSBM$plot("data"),
-    "connectivity" = x$fittedSBM$plot("expected"),
-    "monitoring"   = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
+    "expected"   = x$fittedSBM$plot("expected"),
+    "meso"       = x$fittedSBM$plot("meso"),
+    "imputed"    = plotMyMatrix(as.matrix(predict(x)),  clustering = list(row = x$fittedSBM$memberships)),
+    "monitoring" = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
   )
   gg_obj
 }
