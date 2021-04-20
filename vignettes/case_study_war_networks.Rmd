@@ -175,7 +175,7 @@ This part shows how to account for covariates in the model.
 We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate. We run the inference on the fully observed network^[Note that smoothing is not performed to alleviate computational time.]: 
 
 ```{r war network with covariates full, results = 'hide'} 
-vBlocks <- 1:4
+vBlocks <- 1:3
 collection_sbm_power_full <- estimateMissSBM(belligerent_adjacency, vBlocks = vBlocks, sampling = "node", covariates = list(belligerent_power))
 smooth(collection_sbm_power_full)
 ```
