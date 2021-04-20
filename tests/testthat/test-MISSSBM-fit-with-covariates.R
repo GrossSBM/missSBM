@@ -111,7 +111,7 @@ test_that("miss SBM with covariates and node sampling works", {
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_cov_node$blockProp, sort = TRUE), tol_truth)
 
-  expect_lt(error(missSBM$fittedSBM$connectParam$mean, theta$mean), tol_truth)
+  expect_lt(error(missSBM$fittedSBM$connectParam$mean, sampler_undirected_cov_node$connectParam$mean), tol_truth)
 
   ## sampling design: parameters estimation
   expect_lt(error(missSBM$fittedSBM$covarParam, sampler_undirected_cov_node$covarParam), tol_truth)
