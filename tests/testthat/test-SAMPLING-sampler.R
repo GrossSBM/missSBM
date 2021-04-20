@@ -4,7 +4,7 @@ N <- 200
 N_nocov <- N
 N_cov   <- N
 M <- 10
-source("utils_test.R")
+source("utils_test.R", local = TRUE)
 ### Draw a SBM model (Bernoulli, undirected)
 sampler_undirected_nocov$rNetwork(store = TRUE)
 directed <- FALSE

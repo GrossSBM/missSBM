@@ -2,7 +2,7 @@ set.seed(12345)
 library(sbm)
 library(aricode)
 
-N_cov <- 40
+N_cov <- 80
 Q <- 2
 M <- 1
 source("utils_test.R", local = TRUE)
