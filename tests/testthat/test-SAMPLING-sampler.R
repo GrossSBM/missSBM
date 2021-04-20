@@ -1,7 +1,8 @@
 context("test network samplers (Class networkSampler and chidren)")
 
-N <- N_nocov
-N_cov <- N
+N <- 200
+N_nocov <- N
+N_cov   <- N
 M <- 10
 source("utils_test.R")
 ### Draw a SBM model (Bernoulli, undirected)
