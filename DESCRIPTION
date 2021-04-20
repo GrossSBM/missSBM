@@ -36,6 +36,7 @@ Imports:
     sbm,
     magrittr,
     Matrix
+Remotes: grosssbm/sbm
 LinkingTo: Rcpp, RcppArmadillo, nloptr (>= 1.2.0)
 Collate:
     'utils_missSBM.R'
