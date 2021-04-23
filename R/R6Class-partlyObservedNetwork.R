@@ -113,7 +113,7 @@ partlyObservedNetwork <-
       A <- 1/(1 + exp(-A/sd(A)))
       D <- diag(1/sqrt(rowSums(A)))
       L <- D %*% A %*% D
-      U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks)]
+      U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks), drop = FALSE]
       res <- lapply(vBlocks, function(k)
         as.integer(
           ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 20)$clusters
