@@ -79,26 +79,29 @@ missSBM_fit <-
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
-    doVEM = function(control = list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 1)) {
+    doVEM = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = 1)) {
 
       ## Initialization of quantities that monitor convergence
-      delta     <- vector("numeric", control$maxIter)
-      objective <- vector("numeric", control$maxIter)
-      i <- 0; cond <- FALSE
+      delta_par <- vector("numeric", control$maxIter); delta_par[1] <- NA
+      delta_obj <- vector("numeric", control$maxIter); delta_obj[1] <- NA
+      objective <- vector("numeric", control$maxIter); objective[1] <- self$loglik
+      iterate <- 1; stop <- FALSE
+
       ## Starting the Variational EM algorithm
       if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
       if (control$trace) cat("\n\tDyads are distributed according to a '",
                              ifelse(private$SBM$directed, "directed", "undirected"),"' SBM.\n", sep = "")
       if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
 
-      while (!cond) {
-        i <- i + 1
-        if (control$trace) cat(" iteration #:", i, "\r")
+      while (!stop) {
+        iterate <- iterate + 1
+        if (control$trace) cat(" iteration #:", iterate, "\r")
+
         theta_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
         ## ______________________________________________________
         ## Variational E-Step
         #
-        for (k in seq.int(control$fixPointIter)) {
+        for (i in seq.int(control$fixPointIter)) {
           # update the variational parameters for missing entries (a.k.a nu)
           private$nu <- private$sampling$update_imputation(private$SBM$imputation)
           # update the variational parameters for block memberships (a.k.a tau)
@@ -114,15 +117,15 @@ missSBM_fit <-
         private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
 
         ## Check convergence
-        delta[i] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
-        cond     <- (i > control$maxIter) |  (delta[i] < control$threshold)
-        objective[i] <- self$loglik
-
+        objective[iterate] <- self$loglik
+        delta_par[iterate] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
+        delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
+        stop <- (iterate > control$maxIter) |  ((delta_par[iterate] < control$threshold) & (delta_obj[iterate] < control$threshold))
       }
       private$SBM$reorder()
 
       if (control$trace) cat("\n")
-      private$optStatus <- data.frame(delta = delta[1:i], objective = c(NA, objective[2:i]), iteration = 1:i)
+      private$optStatus <- data.frame(delta_pararameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate],  elbo = objective[1:iterate])
       invisible(private$optStatus)
     },
     #' @description show method for missSBM_fit

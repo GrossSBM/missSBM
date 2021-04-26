@@ -68,7 +68,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @param maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10
     #' @param fixPointIter number of fix-point iterations in the Variational E step. Default is 5.
     #' @param trace logical for verbosity. Default is \code{FALSE}.
-    doVEM = function(threshold = 1e-4, maxIter = 10, fixPointIter = 3, trace = FALSE) {
+    doVEM = function(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = FALSE) {
 
       ## Initialization of quantities that monitor convergence
       delta_par <- vector("numeric", maxIter)
@@ -138,7 +138,8 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     update_parameters = function(...) {
       res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
       private$theta <- res$theta
-      private$pi    <- as.numeric(res$pi)
+      private$theta$mean <- check_boundaries(private$theta$mean)
+      private$pi    <- check_boundaries(as.numeric(res$pi))
       invisible(res)
     },
     #' @description update variational estimation of blocks (VE-step)
@@ -247,7 +248,7 @@ R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
         } else {
           private$theta$mean <-  missSBM:::check_boundaries(as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) ) )
         }
-        private$pi <- colMeans(private$Z)
+        private$pi <- check_boundaries(colMeans(private$Z))
       }
     },
     #' @description update variational estimation of blocks (VE-step)

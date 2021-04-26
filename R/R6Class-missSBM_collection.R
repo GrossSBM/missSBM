@@ -53,7 +53,7 @@ missSBM_collection <-
         if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- base_net %*% t(base_net)
         ## current clustering
         cl  <- private$missSBM_fit[[k]]$fittedSBM$memberships
-        cl_splitable <- (1:k)[tabulate(cl) >= 4]
+        cl_splitable <- (1:k)[tabulate(cl, nbins = k) >= 4]
         cl_split <- vector("list", k)
         cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
           A <- base_net[cl == k_, cl == k_]
@@ -150,11 +150,11 @@ missSBM_collection <-
 
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       private$partlyObservedNet <- partlyObservedNet
-      private$missSBM_fit <- mclapply(clusterInit,
+      private$missSBM_fit <-lapply(clusterInit,
         function(cl0) {
           if (trace) cat(" Initialization of model with", length(unique(cl0)), "blocks.", "\r")
           missSBM_fit$new(partlyObservedNet, sampling, cl0, useCov)
-        }, mc.cores = control$cores
+        }
       )
     },
     #' @description method to launch the estimation of the collection of models
@@ -244,7 +244,7 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, mc.cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
 
   ## Run the smoothing

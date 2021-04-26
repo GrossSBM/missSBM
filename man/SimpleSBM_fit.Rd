@@ -79,8 +79,8 @@ constructor for simpleSBM_fit for missSBM purpose
 method to perform estimation via variational EM
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$doVEM(
-  threshold = 1e-04,
-  maxIter = 10,
+  threshold = 0.01,
+  maxIter = 100,
   fixPointIter = 3,
   trace = FALSE
 )}\if{html}{\out{</div>}}

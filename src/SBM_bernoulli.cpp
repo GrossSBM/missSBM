@@ -1,11 +1,12 @@
-#include "RcppArmadillo.h"
-
 // [[Rcpp::depends(RcppArmadillo)]]
-// [[Rcpp::plugins("cpp11")]]
+// [[Rcpp::depends(nloptr)]]
+// [[Rcpp::plugins(cpp11)]]
 
-#include "utils.h"
+#include <RcppArmadillo.h>
+
 #include "nlopt_wrapper.h"
 #include "packing.h"
+#include "utils.h"
 
 using namespace Rcpp;
 using namespace arma;
@@ -87,12 +88,12 @@ Rcpp::List M_step_sparse_bernoulli_nocovariate(
     res = ZtYZ / ZtRZ ;
   }
   res.replace(arma::datum::nan, 0) ;
-  res.replace(0,     arma::datum::eps) ;
-  res.replace(1, 1 - arma::datum::eps) ;
+  res.replace(0,     exp(arma::datum::log_min)) ;
+  res.replace(1, 1 - exp(arma::datum::log_min)) ;
 
   arma::rowvec pi = mean(Z,0) ;
-  pi.replace(0,     arma::datum::eps) ;
-  pi.replace(1, 1 - arma::datum::eps) ;
+  pi.replace(0,     exp(arma::datum::log_min)) ;
+  pi.replace(1, 1 - exp(arma::datum::log_min)) ;
 
   return Rcpp::List::create(
     Rcpp::Named("theta", Rcpp::List::create(Rcpp::Named("mean", wrap(res)))),

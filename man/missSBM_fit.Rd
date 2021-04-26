@@ -88,7 +88,7 @@ constructor for networkSampling
 a method to perform inference of the current missSBM fit with variational EM
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$doVEM(
-  control = list(threshold = 0.001, maxIter = 100, fixPointIter = 5, trace = 1)
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = 1)
 )}\if{html}{\out{</div>}}
 }
 

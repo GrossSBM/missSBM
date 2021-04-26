@@ -44,7 +44,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
     expect_equal(out, missSBM$monitoring)
 
     ## Optimization success
-    expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
+    expect_gte(diff(range(out$elbo, na.rm = TRUE)), 0)
 
     ## SBM: parameters estimation
     expect_lt(error(missSBM$fittedSBM$connectParam$mean, sampler_undirected_nocov$connectParam$mean), tol_truth)

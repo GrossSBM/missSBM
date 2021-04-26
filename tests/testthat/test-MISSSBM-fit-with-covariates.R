@@ -36,7 +36,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_equal(out, missSBM$monitoring)
 
   ## Optimization success
-  expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
+  expect_gte(diff(range(out$elbo, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_cov$blockProp, sort = TRUE), tol_truth)
@@ -69,7 +69,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_equal(out, missSBM$monitoring)
 
   ## Optimization success
-  expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
+  expect_gte(diff(range(out$elbo, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_cov$blockProp, sort = TRUE), tol_truth)
@@ -106,7 +106,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_is(missSBM$fittedSampling, "covarNodeSampling_fit")
 
   ## Optimization success
-  expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
+  expect_gte(diff(range(out$elbo, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_cov_node$blockProp, sort = TRUE), tol_truth)
@@ -137,7 +137,7 @@ test_that("miss SBM with covariates and node sampling works", {
   expect_is(missSBM$fittedSampling, "nodeSampling_fit")
 
   ## Optimization success
-  expect_gte(diff(range(out$objective, na.rm = TRUE)), 0)
+  expect_gte(diff(range(out$elbo, na.rm = TRUE)), 0)
 
   ## SBM: parameters estimation
   expect_lt(error(missSBM$fittedSBM$blockProp, sampler_undirected_cov_node$blockProp, sort = TRUE), tol_truth)
