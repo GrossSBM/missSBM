@@ -58,6 +58,7 @@ Collate:
 Suggests: 
     aricode,
     blockmodels,
+    corrplot,
     testthat (>= 2.1.0),
     covr,
     knitr,
