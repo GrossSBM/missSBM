@@ -20,7 +20,7 @@
 #'
 #'
 #' @rdname missSBM_collection
-#'
+#' @importFrom parallel mclapply
 #' @include R6Class-missSBM_fit.R
 #' @export
 missSBM_collection <-
@@ -53,34 +53,33 @@ missSBM_collection <-
         if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- base_net %*% t(base_net)
         ## current clustering
         cl  <- private$missSBM_fit[[k]]$fittedSBM$memberships
-
         cl_splitable <- (1:k)[tabulate(cl) >= 4]
         cl_split <- vector("list", k)
-        cl_split[cl_splitable] <- lapply(cl_splitable, function(cl_) {
-          A <- base_net[cl == cl_, cl == cl_]
+        cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
+          A <- base_net[cl == k_, cl == k_]
           ## normalized  Laplacian with Gaussian kernel
           A <- 1/(1 + exp(-A/sd(A)))
           D <- diag(1/sqrt(rowSums(A)))
           L <- D %*% A %*% D
           ## svd(L, nv = 3)$v[, 2:3]
           ClusterR::KMeans_rcpp(eigen(L, symmetric = TRUE)$vectors[, 1:2], 2, num_init = 10)$clusters
-        })
+        }, mc.cores = control$cores)
 
         ## build list of candidate clustering after splits
-        cl_candidates <- lapply(cl_splitable, function(k_)  {
+        cl_candidates <- mclapply(cl_splitable, function(k_)  {
           split <- cl_split[[k_]]
           split[cl_split[[k_]] == 1] <- k_
           split[cl_split[[k_]] == 2] <- k + 1
           candidate <- cl
           candidate[candidate == k_] <- split
           candidate
-        })
+        }, mc.cores = control$cores)
 
-        loglik_candidates <- future.apply::future_lapply(cl_candidates, function(cl_) {
+        loglik_candidates <- mclapply(cl_candidates, function(cl_) {
           model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
           model$doVEM(control_fast)
           model$loglik
-        }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random")) %>% unlist()
+        }, mc.cores = control$cores) %>% unlist()
 
         best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
         best_one$doVEM(control)
@@ -108,18 +107,18 @@ missSBM_collection <-
         cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships)
 
         ## build list of candidate clustering after merge
-        cl_candidates <- future.apply::future_lapply(combn(k, 2, simplify = FALSE), function(couple) {
+        cl_candidates <- mclapply(combn(k, 2, simplify = FALSE), function(couple) {
           cl_merged <- cl0
           levels(cl_merged)[which(levels(cl_merged) == paste(couple[1]))] <- paste(couple[2])
           levels(cl_merged) <- as.character(1:(k - 1))
           as.integer(cl_merged)
-        })
+        }, mc.cores = control$cores)
 
-        loglik_candidates <- future.apply::future_lapply(cl_candidates, function(cl_) {
+        loglik_candidates <- mclapply(cl_candidates, function(cl_) {
           model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
           model$doVEM(control_fast)
           model$loglik
-        }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random")) %>% unlist()
+        }, mc.cores = control$cores) %>% unlist()
 
         best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
         best_one$doVEM(control)
@@ -151,11 +150,11 @@ missSBM_collection <-
 
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       private$partlyObservedNet <- partlyObservedNet
-      private$missSBM_fit <- future.apply::future_lapply(clusterInit,
+      private$missSBM_fit <- mclapply(clusterInit,
         function(cl0) {
           if (trace) cat(" Initialization of model with", length(unique(cl0)), "blocks.", "\r")
           missSBM_fit$new(partlyObservedNet, sampling, cl0, useCov)
-        }
+        }, mc.cores = control$cores
       )
     },
     #' @description method to launch the estimation of the collection of models
@@ -164,12 +163,11 @@ missSBM_collection <-
       trace_main <- control$trace > 0
       control$trace <- ifelse (control$trace > 1, TRUE, FALSE)
       if (trace_main) cat("\n")
-      invisible(
-        future.apply::future_lapply(private$missSBM_fit, function(model) {
-          if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nbBlocks,"blocks.\r")
-            model$doVEM(control)
-          })
-      )
+      private$missSBM_fit <- mclapply(private$missSBM_fit, function(model) {
+        if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nbBlocks,"blocks.\r")
+        model$doVEM(control)
+        model
+      }, mc.cores = control$cores)
       invisible(self)
     },
     #' @description method for performing smoothing of the ICL
@@ -246,7 +244,7 @@ smooth <- function(Robject, type = c("forward", "backward", "both"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 2, mc.cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
 
   ## Run the smoothing

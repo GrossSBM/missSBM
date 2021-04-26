@@ -30,7 +30,7 @@ Imports:
     igraph,
     nloptr (>= 1.2.0),
     ggplot2,
-    future.apply,
+    parallel,
     R6,
     rlang,
     sbm,
