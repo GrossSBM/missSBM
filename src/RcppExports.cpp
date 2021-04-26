@@ -101,64 +101,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// vExpec_covariates
-double vExpec_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector pi);
-RcppExport SEXP _missSBM_vExpec_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP piSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type roundProd(roundProdSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type pi(piSEXP);
-    rcpp_result_gen = Rcpp::wrap(vExpec_covariates(Y, roundProd, gamma, Tau, pi));
-    return rcpp_result_gen;
-END_RCPP
-}
-// E_step_covariates
-Rcpp::NumericMatrix E_step_covariates(Rcpp::NumericMatrix Y, Rcpp::NumericMatrix roundProd, Rcpp::NumericMatrix gamma, Rcpp::NumericMatrix Tau, Rcpp::NumericVector pi);
-RcppExport SEXP _missSBM_E_step_covariates(SEXP YSEXP, SEXP roundProdSEXP, SEXP gammaSEXP, SEXP TauSEXP, SEXP piSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type roundProd(roundProdSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Tau(TauSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type pi(piSEXP);
-    rcpp_result_gen = Rcpp::wrap(E_step_covariates(Y, roundProd, gamma, Tau, pi));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Mstep_covariates_undirected
-List Mstep_covariates_undirected(arma::vec param, NumericMatrix Y, arma::cube cov, NumericMatrix Tau);
-RcppExport SEXP _missSBM_Mstep_covariates_undirected(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type param(paramSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
-    rcpp_result_gen = Rcpp::wrap(Mstep_covariates_undirected(param, Y, cov, Tau));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Mstep_covariates_directed
-List Mstep_covariates_directed(arma::vec param, NumericMatrix Y, arma::cube cov, NumericMatrix Tau);
-RcppExport SEXP _missSBM_Mstep_covariates_directed(SEXP paramSEXP, SEXP YSEXP, SEXP covSEXP, SEXP TauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type param(paramSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::cube >::type cov(covSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Tau(TauSEXP);
-    rcpp_result_gen = Rcpp::wrap(Mstep_covariates_directed(param, Y, cov, Tau));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cpp_test_nlopt
 bool cpp_test_nlopt();
 RcppExport SEXP _missSBM_cpp_test_nlopt() {
@@ -199,10 +141,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 6},
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
-    {"_missSBM_vExpec_covariates", (DL_FUNC) &_missSBM_vExpec_covariates, 5},
-    {"_missSBM_E_step_covariates", (DL_FUNC) &_missSBM_E_step_covariates, 5},
-    {"_missSBM_Mstep_covariates_undirected", (DL_FUNC) &_missSBM_Mstep_covariates_undirected, 4},
-    {"_missSBM_Mstep_covariates_directed", (DL_FUNC) &_missSBM_Mstep_covariates_directed, 4},
     {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},

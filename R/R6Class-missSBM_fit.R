@@ -18,7 +18,7 @@
 #' class(my_missSBM_fit)
 #' plot(my_missSBM_fit, "imputed")
 #'
-#' @include R6Class-simpleSBM_fit_missSBM.R
+#' @include R6Class-simpleSBM_fit.R
 #' @include R6Class-networkSampling_fit.R
 #' @export
 missSBM_fit <-

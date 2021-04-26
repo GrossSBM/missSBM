@@ -107,16 +107,18 @@ partlyObservedNetwork <-
     #' @importFrom ClusterR KMeans_rcpp
     clustering = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
+
       A <- self$imputation(imputation)
       if (self$is_directed) A <- A %*% t(A)
       ## normalized  Laplacian with Gaussian kernel
       A <- 1/(1 + exp(-A/sd(A)))
       D <- diag(1/sqrt(rowSums(A)))
       L <- D %*% A %*% D
-      U <- eigen(L, symmetric = TRUE)$vectors[,1:max(vBlocks), drop = FALSE]
+      ## U <- svd(L, nv = max(vBlocks) + 1)$v
+      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
       res <- lapply(vBlocks, function(k)
         as.integer(
-          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 20)$clusters
+          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 10)$clusters
         )
       )
       res

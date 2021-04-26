@@ -25,22 +25,6 @@ E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, symmetric 
     .Call('_missSBM_E_step_sparse_bernoulli_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, symmetric, rescale)
 }
 
-vExpec_covariates <- function(Y, roundProd, gamma, Tau, pi) {
-    .Call('_missSBM_vExpec_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, pi)
-}
-
-E_step_covariates <- function(Y, roundProd, gamma, Tau, pi) {
-    .Call('_missSBM_E_step_covariates', PACKAGE = 'missSBM', Y, roundProd, gamma, Tau, pi)
-}
-
-Mstep_covariates_undirected <- function(param, Y, cov, Tau) {
-    .Call('_missSBM_Mstep_covariates_undirected', PACKAGE = 'missSBM', param, Y, cov, Tau)
-}
-
-Mstep_covariates_directed <- function(param, Y, cov, Tau) {
-    .Call('_missSBM_Mstep_covariates_directed', PACKAGE = 'missSBM', param, Y, cov, Tau)
-}
-
 cpp_test_nlopt <- function() {
     .Call('_missSBM_cpp_test_nlopt', PACKAGE = 'missSBM')
 }

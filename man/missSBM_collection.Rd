@@ -22,6 +22,7 @@ adjacencyMatrix <- missSBM::frenchblog2007 \%>\%
 collection <- estimateMissSBM(adjacencyMatrix, 3:5, sampling = "dyad")
 class(collection)
 
+
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}

@@ -30,7 +30,7 @@ Imports:
     igraph,
     nloptr (>= 1.2.0),
     ggplot2,
-    corrplot,
+    future.apply,
     R6,
     rlang,
     sbm,
@@ -42,12 +42,11 @@ Collate:
     'utils_missSBM.R'
     'R6Class-networkSampling.R'
     'R6Class-networkSampling_fit.R'
-    'R6Class-simpleSBM_fit_missSBM.R'
+    'R6Class-simpleSBM_fit.R'
     'R6Class-missSBM_fit.R'
     'R6Class-missSBM_collection.R'
     'R6Class-networkSampler.R'
     'R6Class-partlyObservedNetwork.R'
-    'R6Class-simpleSBM_fit.R'
     'RcppExports.R'
     'defunct.R'
     'er_network.R'
