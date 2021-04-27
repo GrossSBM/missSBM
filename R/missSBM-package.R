@@ -25,7 +25,7 @@
 #' @author Timothée Tabouy \email{timothee.tabouy@@gmail.com}
 #' @references Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, \doi{10.1080/01621459.2018.1562934}
 #'
-#' @import R6 methods igraph future.apply nloptr Matrix
+#' @import R6 methods igraph nloptr Matrix
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib missSBM
 #' @docType package

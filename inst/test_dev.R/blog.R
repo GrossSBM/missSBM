@@ -8,11 +8,9 @@ adjacencyMatrix <- frenchblog2007 %>% as_adj(sparse = FALSE)
 party <- vertex.attributes(frenchblog2007)$party
 
 vBlocks <- 1:14
-control <- list(trace = 1, iterates = 3, cores = 1)
-smoothing_type <- "both"
+control <- list(trace = 1, iterates = 3, cores = 4)
 
 sbm_full <- estimateMissSBM(adjacencyMatrix, vBlocks, "node",  control = control)
-smooth(sbm_full, smoothing_type, control)
 
 samplingParameters <- base::sample(
   x       = c(0.2, 0.8),

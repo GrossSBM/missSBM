@@ -14,7 +14,7 @@
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
 #' adjacencyMatrix <- missSBM::frenchblog2007 %>%
 #'   igraph::as_adj (sparse = FALSE) %>%
-#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.25)
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 #' collection <- estimateMissSBM(adjacencyMatrix, 3:5, sampling = "dyad")
 #' class(collection)
 #'
@@ -45,7 +45,8 @@ missSBM_collection <-
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
       if (trace) cat("   Going forward ")
-      for (k in self$vBlocks[-length(self$vBlocks)]) {
+      vBlocks <- self$vBlocks[-length(self$vBlocks)]
+      for (k in seq_along(vBlocks)) {
         if (trace) cat("+")
 
         ## current  imputed network
@@ -53,10 +54,10 @@ missSBM_collection <-
         if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- base_net %*% t(base_net)
         ## current clustering
         cl  <- private$missSBM_fit[[k]]$fittedSBM$memberships
-        cl_splitable <- (1:k)[tabulate(cl, nbins = k) >= 4]
+        cl_splitable <- (1:vBlocks[k])[tabulate(cl, nbins = vBlocks[k]) >= 4]
         sd <- sapply(cl_splitable, function(k_) sd(base_net[cl == k_, cl == k_]))
         cl_splitable <- cl_splitable[sd > 0]
-        cl_split <- vector("list", k)
+        cl_split <- vector("list", vBlocks[k])
         cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
           A <- base_net[cl == k_, cl == k_]
           ## normalized  Laplacian with Gaussian kernel
@@ -71,7 +72,7 @@ missSBM_collection <-
         cl_candidates <- mclapply(cl_splitable, function(k_)  {
           split <- cl_split[[k_]]
           split[cl_split[[k_]] == 1] <- k_
-          split[cl_split[[k_]] == 2] <- k + 1
+          split[cl_split[[k_]] == 2] <- vBlocks[k] + 1
           candidate <- cl
           candidate[candidate == k_] <- split
           candidate
@@ -104,15 +105,16 @@ missSBM_collection <-
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
       if (trace) cat("   Going backward ")
-      for (k in rev(self$vBlocks[-1])) {
+      vBlocks <- self$vBlocks
+      for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {
         if (trace) cat("+")
         cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships)
 
         ## build list of candidate clustering after merge
-        cl_candidates <- mclapply(combn(k, 2, simplify = FALSE), function(couple) {
+        cl_candidates <- mclapply(combn(vBlocks[k], 2, simplify = FALSE), function(couple) {
           cl_merged <- cl0
           levels(cl_merged)[which(levels(cl_merged) == paste(couple[1]))] <- paste(couple[2])
-          levels(cl_merged) <- as.character(1:(k - 1))
+          levels(cl_merged) <- as.character(1:(vBlocks[k] - 1))
           as.integer(cl_merged)
         }, mc.cores = control$cores)
 
