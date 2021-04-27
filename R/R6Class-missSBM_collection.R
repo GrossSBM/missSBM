@@ -44,8 +44,10 @@ missSBM_collection <-
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
+      if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going forward ")
       vBlocks <- self$vBlocks[-length(self$vBlocks)]
+
       for (k in seq_along(vBlocks)) {
         if (trace) cat("+")
 
@@ -104,6 +106,7 @@ missSBM_collection <-
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
+      if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going backward ")
       vBlocks <- self$vBlocks
       for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {

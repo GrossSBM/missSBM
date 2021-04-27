@@ -58,7 +58,7 @@ missSBM_fit <-
           private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
         }
         if (netSampling %in% c("double-standard", "block-node", "block-dyad")) {
-          private$SBM <- SimpleSBM_fit_NMAR_noCov$new(partlyObservedNet, clusterInit)
+          private$SBM <- SimpleSBM_fit_NMAR$new(partlyObservedNet, clusterInit)
         }
       } else {
         private$SBM <- SimpleSBM_fit_withCov$new(partlyObservedNet, clusterInit, covariates)
@@ -149,7 +149,8 @@ missSBM_fit <-
   ## ACTIVE BINDING
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
-    #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_missSBM`], inheriting from class [`sbm::SimpleSBM_fit`]
+    #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`] or
+    #' [`SimpleSBM_fit_NMAR`] inheriting from class [`sbm::SimpleSBM_fit`]
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
     fittedSampling = function(value) {private$sampling},

@@ -218,7 +218,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
 #' It is not designed not be call by the user
 #'
 #' @import R6
-SimpleSBM_fit_NMAR_noCov <-
+SimpleSBM_fit_NMAR <-
 R6::R6Class(classname = "SimpleSBM_NMAR_noCov",
   inherit = SimpleSBM_fit_noCov,
   private = list(
