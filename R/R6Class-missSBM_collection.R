@@ -253,6 +253,7 @@ smooth <- function(Robject, type = c("both", "forward", "backward"), control = l
   ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
   ctrl$smoothing <- match.arg(type)
+  if(Sys.info()$sysname == "Windows") ctrl$cores <- 1
 
   ## Run the smoothing
   Robject$smooth(ctrl)
