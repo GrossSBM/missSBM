@@ -84,14 +84,14 @@ corrplot(partlyObservedNet_war,
 
 ### Estimation with missing data
 
-We can now adjust a Stochastic Block Model with the function `estimate` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to smoothed the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust. The smoothing type (forward, abckward, both or none, and number of iteration can be tuned via the `control` argument).
+We can now adjust a Stochastic Block Model with the function `estimate` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to smoothed the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust. The smoothing type (forward, backward, both or none, and number of iteration can be tuned via the `control` argument).
 
 ```{r inference node, results='hide'}
 vBlocks <- 1:5
 collection_sbm <- estimateMissSBM(partlyObservedNet_war, vBlocks, sampling = "node")
 ```
 
-Note that is is also possible to perform more "smoothing" 'a posteriori' on a collection of `missSBM` fits thanks to the S3 method: 
+Note that is is also possible to perform more "smoothing" _a posteriori_ on a collection of `missSBM` fits thanks to the S3 method: 
 
 
 ```{r smoothed node, results='hide'}

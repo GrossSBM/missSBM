@@ -37,7 +37,6 @@ großBM
 https
 igraph
 intra
-kmeans
 magrittr
 maxIter
 meso
@@ -53,6 +52,7 @@ nloptr
 observedNetwork
 partlyObservedNet
 partlyObservedNetwork
+posteriori
 rSampling
 sampleSimpleSBM
 sampledNetwork

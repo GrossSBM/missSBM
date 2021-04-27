@@ -16,7 +16,7 @@ as S3 methods. See the documentation for  \code{\link[=show]{show()}}, \code{\li
 ## Sample 75\% of dyads in  French political Blogosphere's network data
 adjMatrix <- missSBM::frenchblog2007 \%>\%
   igraph::as_adj (sparse = FALSE) \%>\%
-  missSBM::observeNetwork(sampling = "dyad", parameters = 0.25)
+  missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 my_missSBM_fit <- collection$bestModel
 class(my_missSBM_fit)
