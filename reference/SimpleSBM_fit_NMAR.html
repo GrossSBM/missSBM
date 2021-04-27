@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Virtual class used to define a family of networkSamplingNodes_fit — networkSamplingNodes_fit • missSBM</title>
+<title>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_NMAR • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Virtual class used to define a family of networkSamplingNodes_fit — networkSamplingNodes_fit" />
-<meta property="og:description" content="Virtual class used to define a family of networkSamplingNodes_fit
-Virtual class used to define a family of networkSamplingNodes_fit" />
+<meta property="og:title" content="This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_NMAR" />
+<meta property="og:description" content="This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM." />
 
 
 
@@ -130,27 +130,30 @@ Virtual class used to define a family of networkSamplingNodes_fit" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Virtual class used to define a family of networkSamplingNodes_fit</h1>
-    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-networkSampling_fit.R'><code>R/R6Class-networkSampling_fit.R</code></a></small>
-    <div class="hidden name"><code>networkSamplingNodes_fit.Rd</code></div>
+    <h1>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-simpleSBM_fit.R'><code>R/R6Class-simpleSBM_fit.R</code></a></small>
+    <div class="hidden name"><code>SimpleSBM_fit_NMAR.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Virtual class used to define a family of networkSamplingNodes_fit</p>
-<p>Virtual class used to define a family of networkSamplingNodes_fit</p>
+    <p>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.</p>
+<p>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.</p>
     </div>
 
 
 
-    <h2 class="hasAnchor" id="super-class"><a class="anchor" href="#super-class"></a>Super class</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code><a href='networkSampling.html'>missSBM::networkSampling</a></code> -&gt; <code>networkSamplingNodes_fit</code></p>
+    <p>It is not designed not be call by the user</p>
+    <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
+
+    <p><code><a href='https://grosssbm.github.io/sbm/reference/SBM.html'>sbm::SBM</a></code> -&gt; <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM.html'>sbm::SimpleSBM</a></code> -&gt; <code><a href='SimpleSBM_fit.html'>missSBM::SimpleSBM_fit</a></code> -&gt; <code><a href='SimpleSBM_fit_noCov.html'>missSBM::SimpleSBM_fit_noCov</a></code> -&gt; <code>SimpleSBM_NMAR_noCov</code></p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
-<dt><code>penalty</code></dt><dd><p>double, value of the penalty term in ICL</p></dd>
+<dt><code>imputation</code></dt><dd><p>the matrix of imputed values</p></dd>
 
-<dt><code>log_lambda</code></dt><dd><p>double, term for adjusting the imputation step which depends on the type of sampling</p></dd>
+<dt><code>vExpec</code></dt><dd><p>double: variational approximation of the expectation complete log-likelihood</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -159,59 +162,61 @@ Virtual class used to define a family of networkSamplingNodes_fit" />
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
 <ul>
-<li><p><a href='#method-new'><code>networkSamplingNodes_fit$new()</code></a></p></li>
-<li><p><a href='#method-show'><code>networkSamplingNodes_fit$show()</code></a></p></li>
-<li><p><a href='#method-update_parameters'><code>networkSamplingNodes_fit$update_parameters()</code></a></p></li>
-<li><p><a href='#method-update_imputation'><code>networkSamplingNodes_fit$update_imputation()</code></a></p></li>
-<li><p><a href='#method-clone'><code>networkSamplingNodes_fit$clone()</code></a></p></li>
+<li><p><a href='#method-new'><code>SimpleSBM_fit_NMAR$new()</code></a></p></li>
+<li><p><a href='#method-update_parameters'><code>SimpleSBM_fit_NMAR$update_parameters()</code></a></p></li>
+<li><p><a href='#method-update_blocks'><code>SimpleSBM_fit_NMAR$update_blocks()</code></a></p></li>
+<li><p><a href='#method-clone'><code>SimpleSBM_fit_NMAR$clone()</code></a></p></li>
 </ul>
-<p><details open ><summary>Inherited methods</summary>
+<p><details ><summary>Inherited methods</summary>
 <ul>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-print'><code>missSBM::networkSampling$print()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-print'><code>sbm::SBM$print()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-plot'><code>sbm::SimpleSBM$plot()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-predict'><code>sbm::SimpleSBM$predict()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-show'><code>sbm::SimpleSBM$show()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-doVEM'><code>missSBM::SimpleSBM_fit$doVEM()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-reorder'><code>missSBM::SimpleSBM_fit$reorder()</code></a></span></p></li>
 </ul>
 </details>
 
 <hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
-<p>constructor</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>networkSamplingNodes_fit</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>partlyObservedNetwork</span>, <span class='va'>name</span><span class='op'>)</span></pre><p></div></p>
+<p>constructor for simpleSBM_fit for missSBM purpose</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_NMAR</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>networkData</span>, <span class='va'>clusterInit</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>partlyObservedNetwork</code></dt><dd><p>a object with class partlyObservedNetwork representing the observed data with possibly missing entries</p></dd>
+<dt><code>networkData</code></dt><dd><p>a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork</p></dd>
 
-<dt><code>name</code></dt><dd><p>a character for the name of sampling to fit on the partlyObservedNetwork</p></dd>
+<dt><code>clusterInit</code></dt><dd><p>Initial clustering: a vector with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering with <code>nbBlocks</code> levels.</p></dd>
 
 </dl><p></div></p>
-<p><hr>
-<a id="method-show"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>show()</code></h3>
-<p>show method</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>networkSamplingNodes_fit</span><span class='op'>$</span><span class='fu'>show</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
-
 <p><hr>
 <a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
-<p>a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>networkSamplingNodes_fit</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
+<p>update parameters estimation (M-step)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_NMAR</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span>nu <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>...</code></dt><dd><p>use for compatibility</p></dd>
+<dt><code>nu</code></dt><dd><p>currently imputed values</p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-update_imputation"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_imputation()</code></h3>
-<p>a method to update the imputation of the missing entries.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>networkSamplingNodes_fit</span><span class='op'>$</span><span class='fu'>update_imputation</span><span class='op'>(</span><span class='va'>nu</span><span class='op'>)</span></pre><p></div></p>
+<a id="method-update_blocks"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_blocks()</code></h3>
+<p>update variational estimation of blocks (VE-step)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_NMAR</span><span class='op'>$</span><span class='fu'>update_blocks</span><span class='op'>(</span>log_lambda <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>nu</code></dt><dd><p>the matrix of (uncorrected) imputation for missing entries</p></dd>
+<dt><code>log_lambda</code></dt><dd><p>additional term sampling dependent used to de-bias estimation of tau</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>networkSamplingNodes_fit</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_NMAR</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

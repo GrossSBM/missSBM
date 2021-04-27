@@ -76,7 +76,7 @@ as S3 methods. See the documentation for  show(), print(), fitted(), predict(), 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9850</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9910</span>
       </span>
     </div>
 
@@ -151,7 +151,8 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href='ht
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
-<dt><code>fittedSBM</code></dt><dd><p>the fitted SBM with class <code><a href='SimpleSBM_fit_missSBM.html'>SimpleSBM_fit_missSBM</a></code>, inheriting from class <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM_fit.html'>sbm::SimpleSBM_fit</a></code></p></dd>
+<dt><code>fittedSBM</code></dt><dd><p>the fitted SBM with class <code><a href='SimpleSBM_fit_noCov.html'>SimpleSBM_fit_noCov</a></code>, <code><a href='SimpleSBM_fit_withCov.html'>SimpleSBM_fit_withCov</a></code> or
+<code><a href='SimpleSBM_fit_NMAR.html'>SimpleSBM_fit_NMAR</a></code> inheriting from class <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM_fit.html'>sbm::SimpleSBM_fit</a></code></p></dd>
 
 <dt><code>fittedSampling</code></dt><dd><p>the fitted sampling, inheriting from class <code><a href='networkSampling.html'>networkSampling</a></code> and corresponding fits</p></dd>
 
@@ -204,7 +205,7 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href='ht
 <a id="method-doVEM"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>doVEM()</code></h3>
 <p>a method to perform inference of the current missSBM fit with variational EM</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>missSBM_fit</span><span class='op'>$</span><span class='fu'>doVEM</span><span class='op'>(</span>
-  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='fl'>0.001</span>, maxIter <span class='op'>=</span> <span class='fl'>100</span>, fixPointIter <span class='op'>=</span> <span class='fl'>5</span>, trace <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='fl'>0.01</span>, maxIter <span class='op'>=</span> <span class='fl'>100</span>, fixPointIter <span class='op'>=</span> <span class='fl'>3</span>, trace <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 <span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -239,7 +240,7 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href='ht
     <pre class="examples"><div class='input'><span class='co'>## Sample 75% of dyads in  French political Blogosphere's network data</span>
 <span class='va'>adjMatrix</span> <span class='op'>&lt;-</span> <span class='fu'>missSBM</span><span class='fu'>::</span><span class='va'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
   <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> <span class='op'>(</span>sparse <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span>sampling <span class='op'>=</span> <span class='st'>"dyad"</span>, parameters <span class='op'>=</span> <span class='fl'>0.25</span><span class='op'>)</span>
+  <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span>sampling <span class='op'>=</span> <span class='st'>"dyad"</span>, parameters <span class='op'>=</span> <span class='fl'>0.75</span><span class='op'>)</span>
 <span class='va'>collection</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimateMissSBM.html'>estimateMissSBM</a></span><span class='op'>(</span><span class='va'>adjMatrix</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='st'>"dyad"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; 
@@ -248,7 +249,9 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href='ht
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
 #&gt;  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='va'>my_missSBM_fit</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
+#&gt; 
+#&gt;  Smoothing ICL
+#&gt;    Going forward ++                                                                                                       Going backward ++                                                                                                    </div><div class='input'><span class='va'>my_missSBM_fit</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
 <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>my_missSBM_fit</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "missSBM_fit" "R6"         </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>my_missSBM_fit</span>, <span class='st'>"imputed"</span><span class='op'>)</span>
 </div><div class='img'><img src='missSBM_fit-1.png' alt='' width='700' height='433' /></div><div class='input'>

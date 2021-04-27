@@ -78,7 +78,7 @@ used to smooth the ICL on a collection of model, as post-treatment." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9850</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9910</span>
       </span>
     </div>
 
@@ -219,12 +219,10 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 <p><hr>
 <a id="method-smooth"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='smooth.html'>smooth()</a></code></h3>
 <p>method for performing smoothing of the ICL</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>smooth</span><span class='op'>(</span><span class='va'>type</span>, <span class='va'>control</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>smooth</span><span class='op'>(</span><span class='va'>control</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>type</code></dt><dd><p>character, the type of smoothing: forward, backward, both</p></dd>
-
 <dt><code>control</code></dt><dd><p>a list of parameters controlling the smoothing. See details of regular function <code><a href='smooth.html'>smooth()</a></code></p></dd>
 
 </dl><p></div></p>
@@ -255,7 +253,7 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
     <pre class="examples"><div class='input'><span class='co'>## Sample 75% of dyads in  French political Blogosphere's network data</span>
 <span class='va'>adjacencyMatrix</span> <span class='op'>&lt;-</span> <span class='fu'>missSBM</span><span class='fu'>::</span><span class='va'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
   <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> <span class='op'>(</span>sparse <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span>sampling <span class='op'>=</span> <span class='st'>"dyad"</span>, parameters <span class='op'>=</span> <span class='fl'>0.25</span><span class='op'>)</span>
+  <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span>sampling <span class='op'>=</span> <span class='st'>"dyad"</span>, parameters <span class='op'>=</span> <span class='fl'>0.75</span><span class='op'>)</span>
 <span class='va'>collection</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimateMissSBM.html'>estimateMissSBM</a></span><span class='op'>(</span><span class='va'>adjacencyMatrix</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='st'>"dyad"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; 
@@ -264,8 +262,11 @@ used to smooth the ICL on a collection of model, as post-treatment.</p>
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
 #&gt;  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>)</span>
+#&gt; 
+#&gt;  Smoothing ICL
+#&gt;    Going forward ++                                                                                                       Going backward ++                                                                                                    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "missSBM_collection" "R6"                </div><div class='input'>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

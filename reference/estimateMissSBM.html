@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9850</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9910</span>
       </span>
     </div>
 
@@ -190,13 +190,15 @@ providing a user-defined clustering. Default is "spectral".</p></li>
 <li><p>"similarity": An R x R -&gt; R function to compute similarities between node covariates. Default is
 <code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. <code>covariates</code> is a list of size-N vectors).</p></li>
-<li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function
+<li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 by less than threshold. Default is 1e-3.</p></li>
 <li><p>"maxIter": V-EM algorithm stops when the number of iteration exceeds maxIter.
 Default is 100 with no covariate, 50 otherwise.</p></li>
 <li><p>"fixPointIter": number of fix-point iterations in the V-E step.
 Default is 5 with no covariate, 2 otherwise.</p></li>
-<li><p>"cores": integer for number of cores used. Default is 1.</p></li>
+<li><p>"smoothing": character indicating what kind of smoothing should be use among "forward", "backward", "both" or "none". Default is "both".</p></li>
+<li><p>"iterates": integer for the number of iterations of smoothing. Only relevant when smoothing is different from "none". Default is 1.</p></li>
+<li><p>"cores": integer for number of cores used. Default is 2.</p></li>
 <li><p>"trace": integer for verbosity (0, 1, 2). Default is 1. Useless when <code>cores</code> &gt; 1</p></li>
 </ul>
 
@@ -230,7 +232,7 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 <span class='va'>theta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>.45</span>,<span class='va'>Q</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>.05</span> <span class='op'>)</span> <span class='co'># connectivity matrix</span>
 
 <span class='co'>## Sampling parameters</span>
-<span class='va'>samplingParameters</span> <span class='op'>&lt;-</span> <span class='fl'>.5</span> <span class='co'># the sampling rate</span>
+<span class='va'>samplingParameters</span> <span class='op'>&lt;-</span> <span class='fl'>.75</span> <span class='co'># the sampling rate</span>
 <span class='va'>sampling</span>  <span class='op'>&lt;-</span> <span class='st'>"dyad"</span>      <span class='co'># the sampling design</span>
 
 <span class='co'>## generate a undirected binary SBM with no covariate</span>
@@ -247,29 +249,31 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
 #&gt;  Initialization of model with 1 blocks.  Initialization of model with 2 blocks.  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
-#&gt;  Performing VEM inference for model with 1 blocks. Performing VEM inference for model with 2 blocks. Performing VEM inference for model with 3 blocks. Performing VEM inference for model with 4 blocks. Performing VEM inference for model with 5 blocks.</div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
-</div><div class='output co'>#&gt; [1] 21030.29 20326.12 19859.67 19923.45 20029.18</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+#&gt; 
+#&gt;  Smoothing ICL
+#&gt;    Going forward ++++                                                                                                       Going backward ++++                                                                                                    </div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
+</div><div class='output co'>#&gt; [1] 21084.17 19773.03 19067.87 19150.88 19169.89</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.49642857 0.04866006 0.05102884
-#&gt; [2,] 0.04866006 0.51038027 0.04313737
-#&gt; [3,] 0.05102884 0.04313737 0.50694473
+#&gt; [1,] 0.52627512 0.05327869 0.04764454
+#&gt; [2,] 0.05327869 0.50684932 0.05200790
+#&gt; [3,] 0.04764454 0.05200790 0.49546828
 #&gt; </div><div class='input'>
 <span class='va'>myModel</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"expected"</span><span class='op'>)</span>
 </div><div class='img'><img src='estimateMissSBM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"imputed"</span><span class='op'>)</span>
 </div><div class='img'><img src='estimateMissSBM-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"meso"</span><span class='op'>)</span>
 </div><div class='img'><img src='estimateMissSBM-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; $g
-#&gt; IGRAPH 0266fe8 U-W- 3 6 -- 
+#&gt; IGRAPH aee1c90 U-W- 3 6 -- 
 #&gt; + attr: weight (e/n), width (e/n)
-#&gt; + edges from 0266fe8:
+#&gt; + edges from aee1c90:
 #&gt; [1] 1--1 1--2 1--3 2--2 2--3 3--3
 #&gt; 
 #&gt; $layout
 #&gt;          [,1]     [,2]
-#&gt; [1,] 72.49190 97.06873
-#&gt; [2,] 69.82416 96.42734
-#&gt; [3,] 71.86439 94.44321
+#&gt; [1,] 95.93882 78.47798
+#&gt; [2,] 97.87137 76.66029
+#&gt; [3,] 98.59340 79.24608
 #&gt; 
 #&gt; $plotOptions
 #&gt; $plotOptions$seed
@@ -338,20 +342,20 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 #&gt; [1] 0.3
 #&gt; 
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"sampling"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.4924385</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.7530201</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.49642857 0.04866006 0.05102884
-#&gt; [2,] 0.04866006 0.51038027 0.04313737
-#&gt; [3,] 0.05102884 0.04313737 0.50694473
+#&gt; [1,] 0.52627512 0.05327869 0.04764454
+#&gt; [2,] 0.05327869 0.50684932 0.05200790
+#&gt; [3,] 0.04764454 0.05200790 0.49546828
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
 </div><div class='output co'>#&gt; 5 x 5 sparse Matrix of class "dgCMatrix"
-#&gt;                                                           
-#&gt; [1,] .          0.04313725 .          .         0.04866008
-#&gt; [2,] 0.04313725 .          0.50694444 1.0000000 0.05102881
-#&gt; [3,] .          0.50694444 .          0.5069444 0.05102881
-#&gt; [4,] .          1.00000000 0.50694444 .         .         
-#&gt; [5,] 0.04866008 0.05102881 0.05102881 .         .         </div><div class='input'>
+#&gt;                               
+#&gt; [1,] .         . 0.0520079 . .
+#&gt; [2,] .         . 1.0000000 1 .
+#&gt; [3,] 0.0520079 1 .         . 1
+#&gt; [4,] .         1 .         . .
+#&gt; [5,] .         . 1.0000000 . .</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
