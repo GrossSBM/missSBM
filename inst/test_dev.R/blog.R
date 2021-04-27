@@ -8,7 +8,7 @@ adjacencyMatrix <- frenchblog2007 %>% as_adj(sparse = FALSE)
 party <- vertex.attributes(frenchblog2007)$party
 
 vBlocks <- 1:14
-control <- list(trace = 1, iterates = 3, cores = 4)
+control <- list(trace = 1, iterates = 3, cores = 10)
 
 sbm_full <- estimateMissSBM(adjacencyMatrix, vBlocks, "node",  control = control)
 
@@ -26,10 +26,8 @@ sampledNet <-
   )
 
 sbm_node <- estimateMissSBM(sampledNet, vBlocks, "node", control = control)
-smooth(sbm_node, smoothing_type, control)
 
 sbm_block <- estimateMissSBM(sampledNet, vBlocks, "block-node", control = control)
-smooth(sbm_block, smoothing_type, control)
 
 ICLs <- rbind.data.frame(
   data.frame(Q = vBlocks, ICL = sbm_node$ICL , sampling = "node"),
@@ -47,5 +45,3 @@ aricode::ARI(sbm_block$bestModel$fittedSBM$memberships,
 aricode::ARI(sbm_node$bestModel$fittedSBM$memberships ,
              sbm_full$bestModel$fittedSBM$memberships)
 
-
-my_missSBM_fit <- missSBM_fit$new(missSBM:::partlyObservedNetwork$new(sampledNet), netSampling = "block-node", clusterInit = sbm_full$bestModel$fittedSBM$memberships)
