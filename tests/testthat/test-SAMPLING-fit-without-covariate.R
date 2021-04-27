@@ -1,5 +1,7 @@
 context("test network sampling fit with covariates (Classes nodeSampling_fit and dyadSampling_fit)")
 
+set.seed(321)
+
 N_nocov <- 300
 source("utils_test.R", local = TRUE)
 N <- N_nocov

@@ -33,7 +33,7 @@
 #'        Default is 5 with no covariate, 2 otherwise.}
 #'  \item{"smoothing": }{character indicating what kind of smoothing should be use among "forward", "backward", "both" or "none". Default is "both".}
 #'  \item{"iterates": }{integer for the number of iterations of smoothing. Only relevant when smoothing is different from "none". Default is 1.}
-#'  \item{"cores": }{integer for number of cores used. Default is 1.}
+#'  \item{"cores": }{integer for number of cores used. Default is 2.}
 #'  \item{"trace": }{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 #' }
 #'
@@ -100,7 +100,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
   else if (is.null(control$useCovSBM)) control$useCovSBM <- TRUE
 
   ## Default control parameters overwritten by user specification
-  ctrl <- list(threshold = 1e-3, trace = 1, cores = 1, imputation = "median", similarity = l1_similarity, iterates = 1, smoothing = "both")
+  ctrl <- list(threshold = 1e-3, trace = 1, cores = 2, imputation = "median", similarity = l1_similarity, iterates = 1, smoothing = "both")
   if (control$useCovSBM) {
     stopifnot(sampling %in% available_samplings_covariates)
     ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 2))

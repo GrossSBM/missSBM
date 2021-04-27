@@ -1,4 +1,4 @@
-set.seed(12345)
+set.seed(1234)
 library(sbm)
 library(aricode)
 
@@ -13,7 +13,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
 
   ## blockmodels
   mySBM_sbm <- sbm::SimpleSBM_fit$new(sampler_undirected_cov$networkData, 'bernoulli', FALSE, covarList = covarList_undirected)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
   mySBM_sbm$setModel(Q)
 
   ## missSBM
@@ -43,7 +43,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
 
   ## Construction----------------------------------------------------------------
   mySBM_sbm <- sbm::SimpleSBM_fit$new(sampler_directed_cov$networkData, 'bernoulli', TRUE, covarList = covarList_directed)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
   mySBM_sbm$setModel(Q)
 
   ## missSBM
@@ -51,7 +51,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
   cls <- net$clustering(1:(2*Q))
   cl <- cls[[Q]]
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(net, clusterInit = cl, covarList = covarList_directed)
-  mySBM_missSBM$doVEM()
+  mySBM_missSBM$doVEM(trace = TRUE)
 
   ## correctness
   ## distance with blockmodels/sbm estiamtor

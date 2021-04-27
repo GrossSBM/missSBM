@@ -16,12 +16,12 @@ samplings <- list(
 )
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-3, maxIter = 200, fixPointIter = 5, trace = FALSE)
+control <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = FALSE)
 
 test_that("missSBM-fit works and is consistent for all samplings", {
 
   ## Consistency
-  tol_truth <- 0.25
+  tol_truth <- 0.3
   tol_ARI   <- .9
 
   cat("Tested sampling:")

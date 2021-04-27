@@ -24,7 +24,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate", {
 
   ## correctness
 
-  ## distance with blockmodels/sbm estiamtor
+  ## distance with blockmodels/sbm estimator
   expect_lt(rmse(mySBM_missSBM$connectParam$mean, mySBM_sbm$connectParam$mean), 0.05)
   expect_gt(ARI(mySBM_missSBM$memberships, mySBM_sbm$memberships), 0.95)
   expect_lt(rmse(mySBM_missSBM$loglik, mySBM_sbm$loglik), 0.01)
@@ -41,7 +41,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate", {
 
   ## Construction----------------------------------------------------------------
   mySBM_sbm     <- sbm::SimpleSBM_fit$new(sampler_directed_nocov$networkData, 'bernoulli', TRUE)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
   mySBM_sbm$setModel(3)
 
   net <- missSBM:::partlyObservedNetwork$new(sampler_directed_nocov$networkData)

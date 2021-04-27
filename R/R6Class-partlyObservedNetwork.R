@@ -118,7 +118,7 @@ partlyObservedNetwork <-
       U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
       res <- lapply(vBlocks, function(k)
         as.integer(
-          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 10)$clusters
+          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 25)$clusters
         )
       )
       res
