@@ -19,7 +19,7 @@ used to smooth the ICL on a collection of model, as post-treatment.
 adjacencyMatrix <- missSBM::frenchblog2007 \%>\%
   igraph::as_adj (sparse = FALSE) \%>\%
   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
-collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
+collection <- estimateMissSBM(adjacencyMatrix, 3:5, sampling = "dyad")
 class(collection)
 
 
