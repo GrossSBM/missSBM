@@ -107,8 +107,9 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
   } else {
     ctrl <- c(ctrl, list(maxIter = 100, fixPointIter = 5))
   }
-  ctrl[names(control)] <- control
-  if(Sys.info()$sysname == "Windows") ctrl$cores <- 1
+browser()
+ctrl[names(control)] <- control
+  if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
