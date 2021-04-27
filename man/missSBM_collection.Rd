@@ -107,14 +107,12 @@ method to launch the estimation of the collection of models
 \subsection{Method \code{smooth()}}{
 method for performing smoothing of the ICL
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smooth(type, control)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smooth(control)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{character, the type of smoothing: forward, backward, both}
-
 \item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function \code{\link[=smooth]{smooth()}}}
 }
 \if{html}{\out{</div>}}

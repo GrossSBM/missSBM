@@ -1,5 +1,6 @@
 # missSBM dev 
  
+  - faster smoothing, now integrated by default in estimateMissSBM
   - Now use sparse Matrices to encode 0 and NAs
   - complete writing of optimization routines (E and M steps) with C++ armadillo routines
   - important bug fix in MAR case

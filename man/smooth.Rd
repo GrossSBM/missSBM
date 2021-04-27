@@ -4,12 +4,12 @@
 \alias{smooth}
 \title{Smooth the path ICL in a collection of missSBM_fit models}
 \usage{
-smooth(Robject, type = c("forward", "backward", "both"), control = list())
+smooth(Robject, type = c("both", "forward", "backward"), control = list())
 }
 \arguments{
 \item{Robject}{an object with class missSBM_collection, i.e. an output from \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
 
-\item{type}{character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "forward".}
+\item{type}{character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "both".}
 
 \item{control}{a list controlling the variational EM algorithm. See details.}
 }
@@ -25,7 +25,7 @@ in a "smoothing" of the ICL, that should be close to concave.
 The list of parameters \code{control} controls the optimization process and the variational EM algorithm, with the following entries
 \itemize{
 \item{"iterates": }{integer for the number of iterations of smoothing. Default is 1.}
-\item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function
+\item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 by less than threshold. Default is 1e-3.}
 \item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
 Default is 100 with no covariate, 50 otherwise.}

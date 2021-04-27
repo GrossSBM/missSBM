@@ -54,6 +54,8 @@ missSBM_collection <-
         ## current clustering
         cl  <- private$missSBM_fit[[k]]$fittedSBM$memberships
         cl_splitable <- (1:k)[tabulate(cl, nbins = k) >= 4]
+        sd <- sapply(cl_splitable, function(k_) sd(base_net[cl == k_, cl == k_]))
+        cl_splitable <- cl_splitable[sd > 0]
         cl_split <- vector("list", k)
         cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
           A <- base_net[cl == k_, cl == k_]
@@ -171,14 +173,13 @@ missSBM_collection <-
       invisible(self)
     },
     #' @description method for performing smoothing of the ICL
-    #' @param type character, the type of smoothing: forward, backward, both
     #' @param control a list of parameters controlling the smoothing. See details of regular function [smooth()]
-    smooth = function(type, control) {
+    smooth = function(control) {
       if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
       if (control$trace) cat("\n Smoothing ICL\n")
       for (i in 1:control$iterates) {
-        if (type %in% c('forward' , 'both')) private$smoothing_forward(control)
-        if (type %in% c('backward', 'both')) private$smoothing_backward(control)
+        if (control$smoothing %in% c('forward' , 'both')) private$smoothing_forward(control)
+        if (control$smoothing %in% c('backward', 'both')) private$smoothing_backward(control)
       }
     },
     #' @description show method for missSBM_collection
@@ -222,13 +223,13 @@ missSBM_collection <-
 #' in a "smoothing" of the ICL, that should be close to concave.
 #'
 #' @param Robject an object with class missSBM_collection, i.e. an output from [estimateMissSBM()]
-#' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "forward".
+#' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "both".
 #' @param control a list controlling the variational EM algorithm. See details.
 #'
 #' @details The list of parameters \code{control} controls the optimization process and the variational EM algorithm, with the following entries
 #'  \itemize{
 #'  \item{"iterates": }{integer for the number of iterations of smoothing. Default is 1.}
-#'  \item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function
+#'  \item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 #'         by less than threshold. Default is 1e-3.}
 #'  \item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
 #'        Default is 100 with no covariate, 50 otherwise.}
@@ -239,16 +240,17 @@ missSBM_collection <-
 #' }
 #' @return An invisible missSBM_collection, in which the ICL has been smoothed
 #' @export
-smooth <- function(Robject, type = c("forward", "backward", "both"), control = list()) {
+smooth <- function(Robject, type = c("both", "forward", "backward"), control = list()) {
 
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
   ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
+  ctrl$smoothing <- match.arg(type)
 
   ## Run the smoothing
-  Robject$smooth(match.arg(type), ctrl)
+  Robject$smooth(ctrl)
 
   invisible(Robject)
 }

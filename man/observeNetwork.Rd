@@ -50,12 +50,14 @@ providing a user-defined clustering. Default is "spectral".}
 \item{"similarity": }{An R x R -> R function to compute similarities between node covariates. Default is
 \code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. \code{covariates} is a list of size-N vectors).}
-\item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function
+\item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 by less than threshold. Default is 1e-3.}
 \item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
 Default is 100 with no covariate, 50 otherwise.}
 \item{"fixPointIter": }{number of fix-point iterations in the V-E step.
 Default is 5 with no covariate, 2 otherwise.}
+\item{"smoothing": }{character indicating what kind of smoothing should be use among "forward", "backward", "both" or "none". Default is "both".}
+\item{"iterates": }{integer for the number of iterations of smoothing. Only relevant when smoothing is different from "none". Default is 1.}
 \item{"cores": }{integer for number of cores used. Default is 1.}
 \item{"trace": }{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
 }
