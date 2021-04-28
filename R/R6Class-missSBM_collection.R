@@ -110,28 +110,29 @@ missSBM_collection <-
       if (trace) cat("   Going backward ")
       vBlocks <- self$vBlocks
       for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {
-        if (trace) cat("+")
-        cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships)
+        if (vBlocks[k] >= 2 ) {
+          if (trace) cat("+")
+          cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships)
+          ## build list of candidate clustering after merge
+          cl_candidates <- mclapply(combn(vBlocks[k], 2, simplify = FALSE), function(couple) {
+            cl_merged <- cl0
+            levels(cl_merged)[which(levels(cl_merged) == paste(couple[1]))] <- paste(couple[2])
+            levels(cl_merged) <- as.character(1:(vBlocks[k] - 1))
+            as.integer(cl_merged)
+          }, mc.cores = control$cores)
 
-        ## build list of candidate clustering after merge
-        cl_candidates <- mclapply(combn(vBlocks[k], 2, simplify = FALSE), function(couple) {
-          cl_merged <- cl0
-          levels(cl_merged)[which(levels(cl_merged) == paste(couple[1]))] <- paste(couple[2])
-          levels(cl_merged) <- as.character(1:(vBlocks[k] - 1))
-          as.integer(cl_merged)
-        }, mc.cores = control$cores)
+          loglik_candidates <- mclapply(cl_candidates, function(cl_) {
+            model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
+            model$doVEM(control_fast)
+            model$loglik
+          }, mc.cores = control$cores) %>% unlist()
 
-        loglik_candidates <- mclapply(cl_candidates, function(cl_) {
-          model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
-          model$doVEM(control_fast)
-          model$loglik
-        }, mc.cores = control$cores) %>% unlist()
+          best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
+          best_one$doVEM(control)
 
-        best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
-        best_one$doVEM(control)
-
-        if (best_one$loglik > private$missSBM_fit[[k - 1]]$loglik) {
-          private$missSBM_fit[[k - 1]] <- best_one
+          if (best_one$loglik > private$missSBM_fit[[k - 1]]$loglik) {
+            private$missSBM_fit[[k - 1]] <- best_one
+          }
         }
       }
       if (trace) cat("\r                                                                                                    \r")
