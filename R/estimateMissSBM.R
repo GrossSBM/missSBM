@@ -105,7 +105,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
     stopifnot(sampling %in% available_samplings_covariates)
     ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 3))
   } else {
-    ctrl <- c(ctrl, list(maxIter = 100, fixPointIter = 5))
+    ctrl <- c(ctrl, list(maxIter = 50, fixPointIter = 3))
   }
   ctrl[names(control)] <- control
   if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
