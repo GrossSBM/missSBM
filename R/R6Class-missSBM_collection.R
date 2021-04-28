@@ -59,38 +59,42 @@ missSBM_collection <-
         cl_splitable <- (1:vBlocks[k])[tabulate(cl, nbins = vBlocks[k]) >= 4]
         sd <- sapply(cl_splitable, function(k_) sd(base_net[cl == k_, cl == k_]))
         cl_splitable <- cl_splitable[sd > 0]
-        cl_split <- vector("list", vBlocks[k])
-        cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
-          A <- base_net[cl == k_, cl == k_]
-          ## normalized  Laplacian with Gaussian kernel
-          A <- 1/(1 + exp(-A/sd(A)))
-          D <- diag(1/sqrt(rowSums(A)))
-          L <- D %*% A %*% D
-          ## svd(L, nv = 3)$v[, 2:3]
-          ClusterR::KMeans_rcpp(eigen(L, symmetric = TRUE)$vectors[, 1:2], 2, num_init = 10)$clusters
-        }, mc.cores = control$cores)
 
-        ## build list of candidate clustering after splits
-        cl_candidates <- mclapply(cl_splitable, function(k_)  {
-          split <- cl_split[[k_]]
-          split[cl_split[[k_]] == 1] <- k_
-          split[cl_split[[k_]] == 2] <- vBlocks[k] + 1
-          candidate <- cl
-          candidate[candidate == k_] <- split
-          candidate
-        }, mc.cores = control$cores)
+        if (length(cl_splitable) > 0) {
+          cl_split <- vector("list", vBlocks[k])
+          cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
+            A <- base_net[cl == k_, cl == k_]
+            ## normalized  Laplacian with Gaussian kernel
+            A <- 1/(1 + exp(-A/sd(A)))
+            D <- diag(1/sqrt(rowSums(A)))
+            L <- D %*% A %*% D
+            ## svd(L, nv = 3)$v[, 2:3]
+            ClusterR::KMeans_rcpp(eigen(L, symmetric = TRUE)$vectors[, 1:2], 2, num_init = 10)$clusters
+          }, mc.cores = control$cores)
 
-        loglik_candidates <- mclapply(cl_candidates, function(cl_) {
-          model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
-          model$doVEM(control_fast)
-          model$loglik
-        }, mc.cores = control$cores) %>% unlist()
+          ## build list of candidate clustering after splits
+          cl_candidates <- mclapply(cl_splitable, function(k_)  {
+            split <- cl_split[[k_]]
+            split[cl_split[[k_]] == 1] <- k_
+            split[cl_split[[k_]] == 2] <- vBlocks[k] + 1
+            candidate <- cl
+            candidate[candidate == k_] <- split
+            as.numeric(as.factor(candidate)) # relabeling to start from 1
+          }, mc.cores = control$cores)
 
-        best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
-        best_one$doVEM(control)
+          loglik_candidates <- mclapply(cl_candidates, function(cl_) {
+            model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
+            model$doVEM(control_fast)
+            model$loglik
+          }, mc.cores = control$cores) %>% unlist()
 
-        if (best_one$loglik > private$missSBM_fit[[k + 1]]$loglik) {
-          private$missSBM_fit[[k + 1]] <- best_one
+          best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
+          best_one$doVEM(control)
+
+          if (best_one$loglik > private$missSBM_fit[[k + 1]]$loglik) {
+            private$missSBM_fit[[k + 1]] <- best_one
+          }
+
         }
       }
       if (trace) cat("\r                                                                                                    \r")
