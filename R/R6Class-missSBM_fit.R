@@ -125,7 +125,7 @@ missSBM_fit <-
       private$SBM$reorder()
 
       if (control$trace) cat("\n")
-      private$optStatus <- data.frame(delta_pararameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate],  elbo = objective[1:iterate])
+      private$optStatus <- data.frame(iteration = 1:iterate, delta_pararameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate], elbo = objective[1:iterate])
       invisible(private$optStatus)
     },
     #' @description show method for missSBM_fit
@@ -257,7 +257,7 @@ plot.missSBM_fit <- function(x, type = c("expected", "imputed", "meso", "monitor
     "expected"   = x$fittedSBM$plot("expected"),
     "meso"       = x$fittedSBM$plot("meso"),
     "imputed"    = plotMyMatrix(as.matrix(predict(x)),  clustering = list(row = x$fittedSBM$memberships)),
-    "monitoring" = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$objective)) + geom_line() + theme_bw()
+    "monitoring" = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$elbo)) + geom_line() + theme_bw()
   )
   gg_obj
 }
