@@ -250,7 +250,7 @@ smooth <- function(Robject, type = c("both", "forward", "backward"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1)
   ctrl[names(control)] <- control
   ctrl$smoothing <- match.arg(type)
   if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1

@@ -5,8 +5,8 @@ referenceResults <- readRDS(system.file("extdata", "referenceResults.rds", packa
 
 test_that("check consistency against Tim's code for dyad, node, double standard and block sampling", {
 
-  tol_ref   <- 1e-1
-  tol_truth <- 1e-1
+  tol_ref   <- 2e-1
+  tol_truth <- 2e-1
   tol_ARI   <- .8
   truth   <- referenceResults$true_sbm
 
