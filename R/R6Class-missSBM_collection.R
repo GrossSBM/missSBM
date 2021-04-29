@@ -41,8 +41,8 @@ missSBM_collection <-
       control_fast <- control
       control_fast$maxIter <- 2
 
-      sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-      useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
+      sampling <- private$missSBM_fit[[1]]$fittedSampling$type
+      useCov   <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
       if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going forward ")
@@ -55,21 +55,29 @@ missSBM_collection <-
         base_net <- private$missSBM_fit[[k]]$imputedNetwork
         if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- base_net %*% t(base_net)
         ## current clustering
-        cl  <- private$missSBM_fit[[k]]$fittedSBM$memberships
-        cl_splitable <- (1:vBlocks[k])[tabulate(cl, nbins = vBlocks[k]) >= 4]
-        sd <- sapply(cl_splitable, function(k_) sd(base_net[cl == k_, cl == k_]))
+        cl0 <- private$missSBM_fit[[k]]$fittedSBM$memberships
+        cl_splitable <- (1:vBlocks[k])[tabulate(cl0, nbins = vBlocks[k]) >= 4]
+        sd <- sapply(cl_splitable, function(k_) sd(base_net[cl0 == k_, cl0 == k_]))
         cl_splitable <- cl_splitable[sd > 0]
 
         if (length(cl_splitable) > 0) {
           cl_split <- vector("list", vBlocks[k])
           cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
-            A <- base_net[cl == k_, cl == k_]
-            ## normalized  Laplacian with Gaussian kernel
-            A <- 1/(1 + exp(-A/sd(A)))
-            D <- diag(1/sqrt(rowSums(A)))
-            L <- D %*% A %*% D
-            ## svd(L, nv = 3)$v[, 2:3]
-            ClusterR::KMeans_rcpp(eigen(L, symmetric = TRUE)$vectors[, 1:2], 2, num_init = 10)$clusters
+            A <- base_net[cl0 == k_, cl0 == k_]
+            n <- ncol(A)
+            cl <- rep(1L, n)
+            unconnected <- which(rowSums(abs(A)) == 0)
+            connected   <- setdiff(1:n, unconnected)
+            A <- A[connected,connected]
+            D <- 1/sqrt(rowSums(abs(A)))
+            L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
+            Un <- base::svd(L, nu = 2, nv = 0)$u
+            Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+            Un[is.nan(Un)] <- 0
+            cl_ <- ClusterR::KMeans_rcpp(Un, 2, num_init = 10)$clusters
+            cl[connected] <- cl_
+            cl[unconnected] <- which.min(rowsum(D, cl_))
+            cl
           }, mc.cores = control$cores)
 
           ## build list of candidate clustering after splits
@@ -77,7 +85,7 @@ missSBM_collection <-
             split <- cl_split[[k_]]
             split[cl_split[[k_]] == 1] <- k_
             split[cl_split[[k_]] == 2] <- vBlocks[k] + 1
-            candidate <- cl
+            candidate <- cl0
             candidate[candidate == k_] <- split
             as.numeric(as.factor(candidate)) # relabeling to start from 1
           }, mc.cores = control$cores)
