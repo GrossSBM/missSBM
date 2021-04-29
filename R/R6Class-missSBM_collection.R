@@ -64,20 +64,12 @@ missSBM_collection <-
           cl_split <- vector("list", vBlocks[k])
           cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
             A <- base_net[cl0 == k_, cl0 == k_]
-            n <- ncol(A)
-            cl <- rep(1L, n)
-            unconnected <- which(rowSums(abs(A)) == 0)
-            connected   <- setdiff(1:n, unconnected)
-            A <- A[connected,connected]
+            A <- 1/(1+exp(-A/sd(A)))
             D <- 1/sqrt(rowSums(abs(A)))
             L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
             Un <- base::svd(L, nu = 2, nv = 0)$u
             Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-            Un[is.nan(Un)] <- 0
-            cl_ <- ClusterR::KMeans_rcpp(Un, 2, num_init = 10)$clusters
-            cl[connected] <- cl_
-            cl[unconnected] <- which.min(rowsum(D, cl_))
-            cl
+            ClusterR::KMeans_rcpp(Un, 2, num_init = 10)$clusters
           }, mc.cores = control$cores)
 
           ## build list of candidate clustering after splits
