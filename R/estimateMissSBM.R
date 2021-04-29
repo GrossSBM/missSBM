@@ -8,7 +8,7 @@
 #' @param sampling The model used to described the process that originates the missing data:
 #' MAR designs ("dyad", "node","covar-dyad","covar-node","snowball") and NMAR designs
 #' ("double-standard", "block-dyad", "block-node" , "degree") are available. See details.
-#' @param covariates A list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
+#' @param covariates An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.
 #' @param control a list of parameters controlling advanced features. See details.
 #'
@@ -95,10 +95,10 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
   stopifnot(is.character(sampling))
 
   ## If no covariate is provided, you cannot ask for using them
-  if (is.null(covariates)) control$useCovSBM <- FALSE
+  if (is.null(covariates)) control$useCov <- FALSE
   ## If nothing specified by the user, use covariates by default
-  else if (is.null(control$useCovSBM)) control$useCovSBM <- TRUE
-  if (control$useCovSBM) stopifnot(sampling %in% available_samplings_covariates)
+  else if (is.null(control$useCov)) control$useCov <- TRUE
+  if (control$useCov) stopifnot(sampling %in% available_samplings_covariates)
 
   ## Default control parameters overwritten by user specification
   ctrl <- list(threshold = 1e-2, trace = 1, cores = 2, imputation = "median", similarity = l1_similarity,
@@ -117,7 +117,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
       clusterInit        = clusterInit,
       cores              = ctrl$cores,
       trace              = (ctrl$trace > 0),
-      useCov             = ctrl$useCovSBM
+      useCov             = ctrl$useCov
   )
 
   ## Launch estimation of each missSBM_fit
