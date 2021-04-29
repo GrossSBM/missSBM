@@ -3,9 +3,8 @@ library(igraph)
 library(ggplot2)
 
 data("frenchblog2007", package = "missSBM")
-class(frenchblog2007)
-adjacencyMatrix <- frenchblog2007 %>% as_adj(sparse = FALSE)
-party <- vertex.attributes(frenchblog2007)$party
+adjacencyMatrix <- frenchblog2007 %>%  as_adj(sparse = FALSE)
+party <- vertex.attributes(blog)$party
 
 vBlocks <- 1:14
 control <- list(trace = 1, iterates = 3, cores = 10)

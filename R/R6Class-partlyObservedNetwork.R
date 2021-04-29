@@ -109,24 +109,34 @@ partlyObservedNetwork <-
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
 
       A <- self$imputation(imputation)
+      n <- ncol(A)
       if (self$is_directed) A <- A %*% t(A)
+      # A <- as.matrix(1/(1 + exp(-A/sd(A)))) ## caveat: the matrix is dense; pros: lonely node are automatically handled
+
+      ## handling lonely souls
+      unconnected <- which(rowSums(abs(A)) == 0)
+      connected   <- setdiff(1:n, unconnected)
+      A <- A[connected,connected]
+
       ## normalized absolute Laplacian with Gaussian kernel
-      # A <- as.matrix(1/(1 + exp(-A/sd(A))))
       D <- 1/sqrt(rowSums(abs(A)))
       L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
       U <- base::svd(L, nu = max(vBlocks), nv = 0)$u
+      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
       res <- lapply(vBlocks, function(k) {
-        if (k == 1) {
-          out <- rep(1L, ncol(A))
-        } else {
-        Un <- U[, 1:k, drop = FALSE]
-        Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-        out <- as.integer(
-          ClusterR::KMeans_rcpp(Un, k, num_init = 25)$clusters
-        )
+        cl <- rep(1L, n)
+        if (k != 1) {
+          Un <- U[, 1:k, drop = FALSE]
+          Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+          cl_ <- as.integer(
+            ClusterR::KMeans_rcpp(Un, k, num_init = 25)$clusters
+          )
+         ## handing lonely souls
+         cl[connected] <- cl_
+         cl[unconnected] <- which.min(rowsum(D, cl_))
         }
-        out
-        }
+        cl
+      }
       )
       res
     },
