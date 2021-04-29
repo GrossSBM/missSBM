@@ -110,16 +110,23 @@ partlyObservedNetwork <-
 
       A <- self$imputation(imputation)
       if (self$is_directed) A <- A %*% t(A)
-      ## normalized  Laplacian with Gaussian kernel
-      A <- 1/(1 + exp(-A/sd(A)))
-      D <- diag(1/sqrt(rowSums(A)))
-      L <- D %*% A %*% D
-      ## U <- svd(L, nv = max(vBlocks) + 1)$v
-      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
-      res <- lapply(vBlocks, function(k)
-        as.integer(
-          ClusterR::KMeans_rcpp(U[, 1:k, drop = FALSE], k, num_init = 25)$clusters
+      ## normalized absolute Laplacian with Gaussian kernel
+      # A <- as.matrix(1/(1 + exp(-A/sd(A))))
+      D <- 1/sqrt(rowSums(abs(A)))
+      L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
+      U <- base::svd(L, nu = max(vBlocks), nv = 0)$u
+      res <- lapply(vBlocks, function(k) {
+        if (k == 1) {
+          out <- rep(1L, ncol(A))
+        } else {
+        Un <- U[, 1:k, drop = FALSE]
+        Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+        out <- as.integer(
+          ClusterR::KMeans_rcpp(Un, k, num_init = 25)$clusters
         )
+        }
+        out
+        }
       )
       res
     },

@@ -259,7 +259,7 @@ plot.missSBM_fit <- function(x, type = c("expected", "imputed", "meso", "monitor
     "imputed"    = plotMyMatrix(as.matrix(predict(x)),  clustering = list(row = x$fittedSBM$memberships)),
     "monitoring" = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$elbo)) + geom_line() + theme_bw()
   )
-  invisible(gg_obj)
+  if (type != "meso") gg_obj ## return ggobject unless igraph is invoked
 }
 
 #' Extract model coefficients
