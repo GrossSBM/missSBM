@@ -98,15 +98,11 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
   if (is.null(covariates)) control$useCovSBM <- FALSE
   ## If nothing specified by the user, use covariates by default
   else if (is.null(control$useCovSBM)) control$useCovSBM <- TRUE
+  if (control$useCovSBM) stopifnot(sampling %in% available_samplings_covariates)
 
   ## Default control parameters overwritten by user specification
-  ctrl <- list(threshold = 1e-2, trace = 1, cores = 2, imputation = "median", similarity = l1_similarity, iterates = 1, smoothing = "both")
-  if (control$useCovSBM) {
-    stopifnot(sampling %in% available_samplings_covariates)
-    ctrl <- c(ctrl,list(maxIter = 50, fixPointIter = 3))
-  } else {
-    ctrl <- c(ctrl, list(maxIter = 50, fixPointIter = 3))
-  }
+  ctrl <- list(threshold = 1e-2, trace = 1, cores = 2, imputation = "median", similarity = l1_similarity,
+               maxIter = 50, fixPointIter = 3, iterates = 1, prop_swap = 0, smoothing = "both")
   ctrl[names(control)] <- control
   if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
 

@@ -40,7 +40,8 @@ missSBM_collection <-
       trace <- control$trace > 0; control$trace <- FALSE
       control_fast <- control
       control_fast$maxIter <- 2
-
+      n <- private$missSBM_fit[[1]]$fittedSBM$nbNodes
+      nb_swap <- floor(control$prop_swap * n)
       sampling <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov   <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
@@ -83,6 +84,8 @@ missSBM_collection <-
           }, mc.cores = control$cores)
 
           loglik_candidates <- mclapply(cl_candidates, function(cl_) {
+            swaps <- base::sample(1:n, nb_swap)
+            cl_[swaps] <- base::sample(cl_[swaps])
             model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
             model$doVEM(control_fast)
             model$loglik
@@ -106,6 +109,8 @@ missSBM_collection <-
       trace <- control$trace > 0; control$trace <- FALSE
       control_fast <- control
       control_fast$maxIter <- 2
+      n <- private$missSBM_fit[[1]]$fittedSBM$nbNodes
+      nb_swap <- floor(control$prop_swap * n)
 
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
@@ -126,6 +131,8 @@ missSBM_collection <-
           }, mc.cores = control$cores)
 
           loglik_candidates <- mclapply(cl_candidates, function(cl_) {
+            swaps <- base::sample(1:n, nb_swap)
+            cl_[swaps] <- base::sample(cl_[swaps])
             model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
             model$doVEM(control_fast)
             model$loglik
@@ -187,7 +194,10 @@ missSBM_collection <-
     smooth = function(control) {
       if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
       if (control$trace) cat("\n Smoothing ICL\n")
+      prop_swap <- control$prop_swap
+      if (length(prop_swap) == 1) prop_swap <- rep(prop_swap, control$iterates)
       for (i in 1:control$iterates) {
+        control$prop_swap <- prop_swap[i]
         if (control$smoothing %in% c('forward' , 'both')) private$smoothing_forward(control)
         if (control$smoothing %in% c('backward', 'both')) private$smoothing_backward(control)
       }
@@ -255,7 +265,7 @@ smooth <- function(Robject, type = c("both", "forward", "backward"), control = l
   stopifnot(inherits(Robject, "missSBM_collection"))
 
   ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1)
+  ctrl <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1, prop_swap = 00)
   ctrl[names(control)] <- control
   ctrl$smoothing <- match.arg(type)
   if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1

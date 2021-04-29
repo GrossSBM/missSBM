@@ -7,7 +7,7 @@ adjacencyMatrix <- frenchblog2007 %>%  as_adj(sparse = FALSE)
 party <- vertex.attributes(blog)$party
 
 vBlocks <- 1:14
-control <- list(trace = 1, iterates = 3, cores = 10)
+control <- list(trace = 1, iterates = 3, prop_swap = c(0, 0.1, 0.2), cores = 10)
 
 sbm_full <- estimateMissSBM(adjacencyMatrix, vBlocks, "node",  control = control)
 
