@@ -67,19 +67,17 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
   }
 })
 
-test_that("check consistency against Tim's code for dyad and node sampling with covariates", {
+test_that("check consistency against Tim's code for dyad sampling with covariates", {
 
   truth   <- referenceResults$true_sbm_cov
   tol_ref   <- 2e-1
   tol_truth <- 2e-1
   tol_ARI   <- .5
 
-  covarMatrix <- referenceResults$`dyad-covariates`$covarMatrix
-  covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+  referenceResults$`dyad-covariates`$covariates <- missSBM:::array2list(covarArray)
+##   referenceResults$`node-covariates`$covariates <- lapply(1:ncol(referenceResults$`dyad-covariates`$covarMatrix), function(j) referenceResults$`dyad-covariates`$covarMatrix[, j])
 
-  referenceResults$`dyad-covariates`$covariates <- covarArray
-  referenceResults$`node-covariates`$covariates <- covarMatrix
-  for (sampling in c("dyad-covariates", "node-covariates")) {
+  for (sampling in c("dyad-covariates")) {
 
     refAlgo <- referenceResults[[sampling]]
 
