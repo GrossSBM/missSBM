@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9915</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9925</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@
       <h1 data-toc-skip>missSBM: a case study with war networks</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">Last update: 2021-04-29</h4>
+            <h4 class="date">Last update: 2021-04-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/grossSBM/missSBM/blob/master/vignettes/case_study_war_networks.Rmd"><code>vignettes/case_study_war_networks.Rmd</code></a></small>
       <div class="hidden name"><code>case_study_war_networks.Rmd</code></div>
@@ -218,7 +218,7 @@ More specifically, the data collection may be missing for some countries in the 
 <p>The estimated effect of the covariate is obtained through</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_power_full</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></code></pre></div>
-<pre><code>## [1] -4.624472</code></pre>
+<pre><code>## [1] -12.22176</code></pre>
 <p>The covariate could be responsible for the sampling. The state with bigger military power are more likely to be fully observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nWar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span><span class="op">)</span>
@@ -247,11 +247,11 @@ More specifically, the data collection may be missing for some countries in the 
 <p>Then we can access the estimated sampling parameters:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_power_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSampling</span><span class="op">$</span><span class="va">parameters</span></code></pre></div>
-<pre><code>## [1]  -1.968613 657.845818</code></pre>
+<pre><code>## [1]  -2.189892 708.290811</code></pre>
 <p>and the parameters in the SBM associated with the covariate:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_power_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></code></pre></div>
-<pre><code>## [1] -4.648869</code></pre>
+<pre><code>## [1] -5.489827</code></pre>
 </div>
 <div id="trade-data" class="section level4">
 <h4 class="hasAnchor">
@@ -300,7 +300,7 @@ More specifically, the data collection may be missing for some countries in the 
 <pre><code>## [1] -1.9077099  0.9773688</code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_trade_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></code></pre></div>
-<pre><code>## [1] 0.142691</code></pre>
+<pre><code>## [1] 0.1362121</code></pre>
 </div>
 </div>
 </div>
