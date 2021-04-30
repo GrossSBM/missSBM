@@ -3,9 +3,9 @@
   - faster smoothing, now integrated by default in estimateMissSBM
   - Now use sparse Matrices to encode 0 and NAs
   - complete rewriting of optimization routines (E and M steps) with C++ armadillo routines
+  - hopefully better initialization
   - important bug fix in MAR case
-  - bug fix in Mcase of covariates
-  - better initialization
+  - bug fix in inference on covariates
   - bug fixed in blockDyad-sampling
   - missSBM::SimpleSBM_fit_missSBM now inherits from from sbm::SimpleSBM rather than sbm::SimpleSBM_fit
   - change field '$netMatrix' to '$networkData' to comply with new interface in sbm

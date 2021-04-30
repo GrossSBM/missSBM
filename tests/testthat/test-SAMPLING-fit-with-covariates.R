@@ -54,7 +54,7 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
   fittedSampling <- missSBM:::covarNodeSampling_fit$new(partlyObservedNet)
   expect_is(fittedSampling, "covarNodeSampling_fit")
 
-  tolerance <- .2
+  tolerance <- .3
   expect_lt(error(fittedSampling$parameters, c(intercept, covarParam)), tolerance)
   expect_equal(fittedSampling$df, 1 + length(covarParam))
   expect_equal(fittedSampling$penalty, log(N_cov) * (1 + length(covarParam)))
