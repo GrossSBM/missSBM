@@ -135,7 +135,6 @@ covarDyadSampling_fit <-
       private$psi <- coefficients(glm_out)
       y_hat <- fitted(glm_out)
       private$rho <- list(obs = y_hat[y == 1], miss = y_hat[y == 0])
-
     }
   ),
   active = list(
