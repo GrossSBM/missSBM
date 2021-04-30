@@ -54,7 +54,7 @@ Default is 5 with no covariate, 2 otherwise.}
 \item{"smoothing": }{character indicating what kind of smoothing should be use among "forward", "backward", "both" or "none". Default is "both".}
 \item{"iterates": }{integer for the number of iterations of smoothing. Only relevant when smoothing is different from "none". Default is 1.}
 \item{"cores": }{integer for number of cores used. Default is 2.}
-\item{"trace": }{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
+\item{"trace": }{logical for verbosity. Default is TRUE.}
 }
 
 The different sampling designs are split into two families in which we find dyad-centered and

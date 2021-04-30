@@ -108,6 +108,7 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
     const arma::sp_mat& R,
     const arma::cube&   X,
     const arma::mat&    Z,
+    const bool sym,
     Rcpp::List configuration) {
 
      // Conversion from R, prepare optimization
@@ -124,7 +125,7 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
     auto optimizer = new_nlopt_optimizer(configuration, parameters.size());
 
     // Optimize
-    auto objective_and_grad = [&metadata, &Y, &R, &X, &Z](const double * params, double * grad) -> double {
+    auto objective_and_grad = [&metadata, &Y, &R, &X, &Z, &sym](const double * params, double * grad) -> double {
 
       const arma::mat gamma = metadata.map<GAMMA_ID>(params);
       const arma::vec beta = metadata.map<BETA_ID>(params);
@@ -142,15 +143,18 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
       sp_mat::const_iterator Rij     = R.begin();
       sp_mat::const_iterator Rij_end = R.end();
 
-      for(; Rij != Rij_end; ++Rij) {
-        arma::vec phi = X.tube(Rij.row(),Rij.col());
-        double mu = as_scalar(beta.t() * phi) ;
-        arma::mat ZiqZjl = Z.row(Rij.row()).t() * Z.row(Rij.col()) ;
-        loglik += accu(ZiqZjl % ( Y(Rij.row(), Rij.col()) * (gamma + mu) - log(1 + exp(gamma + mu ))) ) ;
-        arma::mat delta = ZiqZjl % (Y(Rij.row(), Rij.col()) - 1 / (1 + exp(-(gamma + mu)))) ;
-        gr_gamma += delta ;
-        gr_beta  += accu(delta) * phi ;
-      }
+        for(; Rij != Rij_end; ++Rij) {
+          arma::vec phi = X.tube(Rij.row(),Rij.col());
+          double mu = as_scalar(beta.t() * phi) ;
+          arma::mat ZiqZjl = Z.row(Rij.row()).t() * Z.row(Rij.col()) ;
+          loglik += accu(ZiqZjl % ( Y(Rij.row(), Rij.col()) * (gamma + mu) - log(1 + exp(gamma + mu ))) ) ;
+          arma::mat delta = ZiqZjl % (Y(Rij.row(), Rij.col()) - 1 / (1 + exp(-(gamma + mu)))) ;
+          if (sym) {
+            delta = .5 * (delta + delta.t()) ;
+          }
+          gr_gamma += delta ;
+          gr_beta  += accu(delta) * phi ;
+        }
 
         metadata.map<GAMMA_ID>(grad) = -gr_gamma;
         metadata.map<BETA_ID>(grad)  = -gr_beta;

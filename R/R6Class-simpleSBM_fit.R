@@ -57,7 +57,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
 ###  - specialize the initialization to each model (this should be done in sbm::SimpleSBM...)
 
       ## Initialize estimation of the model parameters
-      private$theta$mean <- matrix(0.5, ncol(private$Z), ncol(private$Z))
+      private$theta$mean <- matrix(.Machine$double.eps, ncol(private$Z), ncol(private$Z))
       private$beta       <- numeric(self$nbCovariates)
       self$update_parameters()
 
@@ -180,6 +180,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
         R = private$R,
         X = self$covarArray,
         Z = private$Z,
+        !self$directed,
         configuration = control
       )
       private$beta  <- as.numeric(res$beta)

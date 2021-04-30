@@ -125,7 +125,7 @@ missSBM_fit <-
       private$SBM$reorder()
 
       if (control$trace) cat("\n")
-      private$optStatus <- data.frame(iteration = 1:iterate, delta_pararameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate], elbo = objective[1:iterate])
+      private$optStatus <- data.frame(iteration = 1:iterate, delta_parameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate], elbo = objective[1:iterate])
       invisible(private$optStatus)
     },
     #' @description show method for missSBM_fit
