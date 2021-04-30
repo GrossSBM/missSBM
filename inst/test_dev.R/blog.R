@@ -62,3 +62,19 @@ dummy_party <- dummy_party <- (V(blog_subgraph)$party == "left") * 1
 control <- list(trace = 1, iterates = 2, prop_swap = 0, cores = 10)
 sbm_sub_full_cov <- estimateMissSBM(blog_subgraph %>% as_adj(sparse = FALSE), 1:8, "node", covariates = list(dummy_party), control = control)
 
+
+
+blog_subgraph_obs <-
+  blog_subgraph %>% as_adj(sparse = FALSE) %>%
+  missSBM::observeNetwork(sampling="covar-node", parameters = 3,
+                          covariates = list(dummy_party), intercept =-.5)
+vBlocks <- 1:8
+
+control_cov <-  control
+control_cov$useCov <- FALSE
+sbm_covar2 <- blog_subgraph_obs %>%
+  estimateMissSBM(vBlocks, "covar-node", covariates = list(dummy_party), control = control_cov)
+sbm_covar2$bestModel$fittedSampling$parameters # sampling parameters
+
+
+

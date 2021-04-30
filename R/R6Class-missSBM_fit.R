@@ -54,11 +54,10 @@ missSBM_fit <-
       if (!useCov) covariates <- list()
 
       if (length(covariates) == 0) {
-        if (netSampling %in% c("dyad", "node", "snowball")) {
-          private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
-        }
         if (netSampling %in% c("double-standard", "block-node", "block-dyad")) {
           private$SBM <- SimpleSBM_fit_NMAR$new(partlyObservedNet, clusterInit)
+        } else {
+          private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
         }
       } else {
         private$SBM <- SimpleSBM_fit_withCov$new(partlyObservedNet, clusterInit, covariates)
