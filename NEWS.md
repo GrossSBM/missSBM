@@ -2,8 +2,9 @@
  
   - faster smoothing, now integrated by default in estimateMissSBM
   - Now use sparse Matrices to encode 0 and NAs
-  - complete writing of optimization routines (E and M steps) with C++ armadillo routines
+  - complete rewriting of optimization routines (E and M steps) with C++ armadillo routines
   - important bug fix in MAR case
+  - bug fix in Mcase of covariates
   - better initialization
   - bug fixed in blockDyad-sampling
   - missSBM::SimpleSBM_fit_missSBM now inherits from from sbm::SimpleSBM rather than sbm::SimpleSBM_fit
