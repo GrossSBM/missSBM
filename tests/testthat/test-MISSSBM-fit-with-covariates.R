@@ -6,7 +6,7 @@ M <- 1
 source("utils_test.R", local = TRUE)
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-4, maxIter = 50, fixPointIter = 5, trace = TRUE)
+control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 5, trace = TRUE)
 
 ## Consistency
 tol_truth <- .2
@@ -44,7 +44,7 @@ test_that("missSBM with covariates and dyad sampling works", {
   expect_lt(error(missSBM$fittedSBM$connectParam$mean, sampler_undirected_cov$connectParam$mean), tol_truth)
 
   ## sampling design: parameters estimation
-  expect_lt(error(missSBM$fittedSBM$covarParam, sampler_undirected_cov$covarParam), 0.25)
+  expect_lt(error(missSBM$fittedSBM$covarParam, sampler_undirected_cov$covarParam), 0.1)
 
   ## clustering
   expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sampler_undirected_cov$memberships), tol_ARI)
