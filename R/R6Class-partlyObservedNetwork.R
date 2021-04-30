@@ -50,9 +50,7 @@ partlyObservedNetwork <-
     samplingMatrixBar  = function(value) {private$S},
     #' @field observedNodes a vector of observed and non-observed nodes (observed means at least one non NA value)
     observedNodes   = function(value) {
-      res <- rep(TRUE, self$nbNodes)
-      res[Matrix::rowSums(private$S) > 0] <- FALSE
-      res
+      (rowSums(private$S) + colSums(private$S)) == 0
      }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

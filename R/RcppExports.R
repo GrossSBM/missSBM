@@ -13,8 +13,8 @@ M_step_sparse_bernoulli_nocovariate <- function(Y, R, Z, sym = TRUE) {
     .Call('_missSBM_M_step_sparse_bernoulli_nocovariate', PACKAGE = 'missSBM', Y, R, Z, sym)
 }
 
-M_step_sparse_bernoulli_covariates <- function(init_param, Y, R, X, Z, configuration) {
-    .Call('_missSBM_M_step_sparse_bernoulli_covariates', PACKAGE = 'missSBM', init_param, Y, R, X, Z, configuration)
+M_step_sparse_bernoulli_covariates <- function(init_param, Y, R, X, Z, sym, configuration) {
+    .Call('_missSBM_M_step_sparse_bernoulli_covariates', PACKAGE = 'missSBM', init_param, Y, R, X, Z, sym, configuration)
 }
 
 E_step_sparse_bernoulli_nocovariate <- function(Y, R, Z, theta, pi, rescale = TRUE) {

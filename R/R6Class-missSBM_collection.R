@@ -37,7 +37,7 @@ missSBM_collection <-
     # a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     smoothing_forward = function(control) {
 
-      trace <- control$trace > 0; control$trace <- FALSE
+      trace <- control$trace; control$trace <- FALSE
       control_fast <- control
       control_fast$maxIter <- 2
       n <- private$missSBM_fit[[1]]$fittedSBM$nbNodes
@@ -106,7 +106,7 @@ missSBM_collection <-
     # control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
     smoothing_backward = function(control) {
 
-      trace <- control$trace > 0; control$trace <- FALSE
+      trace <- control$trace; control$trace <- FALSE
       control_fast <- control
       control_fast$maxIter <- 2
       n <- private$missSBM_fit[[1]]$fittedSBM$nbNodes
@@ -179,11 +179,9 @@ missSBM_collection <-
     #' @description method to launch the estimation of the collection of models
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     estimate = function(control) {
-      trace_main <- control$trace > 0
-      control$trace <- ifelse (control$trace > 1, TRUE, FALSE)
-      if (trace_main) cat("\n")
+      if (control$trace) cat("\n")
       private$missSBM_fit <- mclapply(private$missSBM_fit, function(model) {
-        if (trace_main) cat(" Performing VEM inference for model with", model$fittedSBM$nbBlocks,"blocks.\r")
+        if (control$trace) cat(" Performing VEM inference for model with", model$fittedSBM$nbBlocks,"blocks.\r")
         model$doVEM(control)
         model
       }, mc.cores = control$cores)
@@ -192,7 +190,6 @@ missSBM_collection <-
     #' @description method for performing smoothing of the ICL
     #' @param control a list of parameters controlling the smoothing. See details of regular function [smooth()]
     smooth = function(control) {
-      if (control$trace > 0) control$trace <- TRUE else control$trace <- FALSE
       if (control$trace) cat("\n Smoothing ICL\n")
       prop_swap <- control$prop_swap
       if (length(prop_swap) == 1) prop_swap <- rep(prop_swap, control$iterates)

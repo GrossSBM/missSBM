@@ -52,8 +52,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // M_step_sparse_bernoulli_covariates
-Rcpp::List M_step_sparse_bernoulli_covariates(Rcpp::List init_param, const arma::sp_mat& Y, const arma::sp_mat& R, const arma::cube& X, const arma::mat& Z, Rcpp::List configuration);
-RcppExport SEXP _missSBM_M_step_sparse_bernoulli_covariates(SEXP init_paramSEXP, SEXP YSEXP, SEXP RSEXP, SEXP XSEXP, SEXP ZSEXP, SEXP configurationSEXP) {
+Rcpp::List M_step_sparse_bernoulli_covariates(Rcpp::List init_param, const arma::sp_mat& Y, const arma::sp_mat& R, const arma::cube& X, const arma::mat& Z, const bool sym, Rcpp::List configuration);
+RcppExport SEXP _missSBM_M_step_sparse_bernoulli_covariates(SEXP init_paramSEXP, SEXP YSEXP, SEXP RSEXP, SEXP XSEXP, SEXP ZSEXP, SEXP symSEXP, SEXP configurationSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -62,8 +62,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::sp_mat& >::type R(RSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const bool >::type sym(symSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type configuration(configurationSEXP);
-    rcpp_result_gen = Rcpp::wrap(M_step_sparse_bernoulli_covariates(init_param, Y, R, X, Z, configuration));
+    rcpp_result_gen = Rcpp::wrap(M_step_sparse_bernoulli_covariates(init_param, Y, R, X, Z, sym, configuration));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -138,7 +139,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_vLL_complete_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_vLL_complete_sparse_bernoulli_nocovariate, 5},
     {"_missSBM_vLL_complete_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_vLL_complete_sparse_bernoulli_covariates, 6},
     {"_missSBM_M_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_nocovariate, 4},
-    {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 6},
+    {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 7},
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
