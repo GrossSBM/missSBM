@@ -40,8 +40,6 @@ missSBM_collection <-
       trace <- control$trace; control$trace <- FALSE
       control_fast <- control
       control_fast$maxIter <- 2
-      n <- private$missSBM_fit[[1]]$fittedSBM$nbNodes
-      nb_swap <- floor(control$prop_swap * n)
       sampling <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov   <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
@@ -57,6 +55,7 @@ missSBM_collection <-
         if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- base_net %*% t(base_net)
         ## current clustering
         cl0 <- private$missSBM_fit[[k]]$fittedSBM$memberships
+
         cl_splitable <- (1:vBlocks[k])[tabulate(cl0, nbins = vBlocks[k]) >= 4]
         sd <- sapply(cl_splitable, function(k_) sd(base_net[cl0 == k_, cl0 == k_]))
         cl_splitable <- cl_splitable[sd > 0]
@@ -74,32 +73,36 @@ missSBM_collection <-
           }, mc.cores = control$cores)
 
           ## build list of candidate clustering after splits
-          cl_candidates <- mclapply(cl_splitable, function(k_)  {
+          cl_candidates <- lapply(cl_splitable, function(k_)  {
             split <- cl_split[[k_]]
             split[cl_split[[k_]] == 1] <- k_
             split[cl_split[[k_]] == 2] <- vBlocks[k] + 1
             candidate <- cl0
             candidate[candidate == k_] <- split
-            as.numeric(as.factor(candidate)) # relabeling to start from 1
-          }, mc.cores = control$cores)
+            ## in case of empty classes, add randomly one guy in thoses classes
+            candidate <- factor(candidate, levels = 1:(vBlocks[k] + 1))
+            absent <- which(tabulate(candidate) == 0)
+            swap <- base::sample(1:length(candidate), length(absent))
+            candidate[swap] <- absent
+            as.numeric(candidate) # relabeling to start from 1
+          })
 
-          loglik_candidates <- mclapply(cl_candidates, function(cl_) {
-            swaps <- base::sample(1:n, nb_swap)
-            cl_[swaps] <- base::sample(cl_[swaps])
+          icl_candidates <- mclapply(cl_candidates, function(cl_) {
             model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
             model$doVEM(control_fast)
-            model$loglik
+            model$ICL
           }, mc.cores = control$cores) %>% unlist()
 
-          best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
+          best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.min(icl_candidates)]], useCov)
           best_one$doVEM(control)
 
-          if (best_one$loglik > private$missSBM_fit[[k + 1]]$loglik) {
+          if (best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
             private$missSBM_fit[[k + 1]] <- best_one
           }
 
         }
       }
+
       if (trace) cat("\r                                                                                                    \r")
     },
     # method for performing backward smoothing of the ICL
@@ -109,9 +112,6 @@ missSBM_collection <-
       trace <- control$trace; control$trace <- FALSE
       control_fast <- control
       control_fast$maxIter <- 2
-      n <- private$missSBM_fit[[1]]$fittedSBM$nbNodes
-      nb_swap <- floor(control$prop_swap * n)
-
       sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
       useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
@@ -119,32 +119,33 @@ missSBM_collection <-
       if (trace) cat("   Going backward ")
       vBlocks <- self$vBlocks
       for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {
-        if (vBlocks[k] >= 2 ) {
-          if (trace) cat("+")
-          cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships)
-          ## build list of candidate clustering after merge
-          cl_candidates <- mclapply(combn(vBlocks[k], 2, simplify = FALSE), function(couple) {
-            cl_merged <- cl0
-            levels(cl_merged)[which(levels(cl_merged) == paste(couple[1]))] <- paste(couple[2])
-            levels(cl_merged) <- as.character(1:(vBlocks[k] - 1))
-            as.integer(cl_merged)
-          }, mc.cores = control$cores)
+        if (trace) cat("+")
+        cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships, 1:vBlocks[k])
+        absent <- which(tabulate(cl0) == 0)
+        swap <- base::sample(1:length(cl0), length(absent))
+        cl0[swap] <- absent
 
-          loglik_candidates <- mclapply(cl_candidates, function(cl_) {
-            swaps <- base::sample(1:n, nb_swap)
-            cl_[swaps] <- base::sample(cl_[swaps])
-            model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
-            model$doVEM(control_fast)
-            model$loglik
-          }, mc.cores = control$cores) %>% unlist()
+        ## build list of candidate clustering after merge
+        cl_candidates <- lapply(combn(vBlocks[k], 2, simplify = FALSE), function(couple) {
+          cl_merged <- cl0
+          levels(cl_merged)[couple] <- couple[1]
+          levels(cl_merged) <- as.character(1:(nlevels(cl0) - 1))
+          as.integer(cl_merged)
+        })
 
-          best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.max(loglik_candidates)]], useCov)
-          best_one$doVEM(control)
+        icl_candidates <- mclapply(cl_candidates, function(cl_) {
+          model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
+          model$doVEM(control_fast)
+          model$ICL
+        }, mc.cores = control$cores) %>% unlist()
 
-          if (best_one$loglik > private$missSBM_fit[[k - 1]]$loglik) {
-            private$missSBM_fit[[k - 1]] <- best_one
-          }
+        best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.min(icl_candidates)]], useCov)
+        best_one$doVEM(control)
+
+        if (best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
+          private$missSBM_fit[[k - 1]] <- best_one
         }
+
       }
       if (trace) cat("\r                                                                                                    \r")
     }

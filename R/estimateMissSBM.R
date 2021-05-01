@@ -102,13 +102,14 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
 
   ## Default control parameters overwritten by user specification
   ctrl <- list(threshold = 1e-2, trace = TRUE, cores = 2, imputation = "median", similarity = l1_similarity,
-               maxIter = 50, fixPointIter = 5, iterates = 1, prop_swap = 0, smoothing = "both")
+               maxIter = 50, fixPointIter = 3, iterates = 1, prop_swap = 0, smoothing = "both", clusterInit = NULL)
   ctrl[names(control)] <- control
   if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
-  clusterInit <- partlyObservedNet$clustering(vBlocks, ctrl$imputation)
+  clusterInit <- ctrl$clusterInit
+  if (is.null(clusterInit)) clusterInit <- partlyObservedNet$clustering(vBlocks, ctrl$imputation)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
