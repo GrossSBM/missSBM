@@ -60,7 +60,6 @@ p <- RES %>% dplyr::select(-Psi) %>% pivot_longer(c(ARI, MSE), names_to = "measu
   group_by(variant) %>%
   ggplot() + theme_bw() + viridis::scale_colour_viridis(discrete = TRUE) + viridis::scale_fill_viridis(discrete = TRUE) +
   aes(x = factor(delta), y = value, fill = variant) +
-  geom_boxplot() + geom_point(alpha = 0.5) + facet_wrap(~ measure, scales = "free")
+  geom_violin() + geom_point(alpha = 0.25, size = .25) + facet_wrap(~ measure, scales = "free")
 
-
-# print(p)
+print(p)

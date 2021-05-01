@@ -169,7 +169,11 @@ missSBM_fit <-
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
     entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood
-    vExpec  = function(value) {private$SBM$vExpec + private$sampling$vExpec},
+    vExpec  = function(value) {
+      private$sampling$vExpec +
+        ifelse(private$sampling$type %in% c("block-dyad", "block-node", "double-standard"),
+               private$SBM$vExpec, private$SBM$vExpec_corrected)
+    },
     #' @field penalty double, value of the penalty term in ICL
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
