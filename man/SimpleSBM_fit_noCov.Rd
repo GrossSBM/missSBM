@@ -21,7 +21,7 @@ It is not designed not be call by the user
 
 \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
 
-\item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood with correctio to be comparable with NMAR criteria}
+\item{\code{vExpec_corrected}}{double: variational approximation of the expectation complete log-likelihood with correctio to be comparable with NMAR criteria}
 }
 \if{html}{\out{</div>}}
 }
