@@ -157,7 +157,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     vExpec = function(value) {
       private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
     },
-    #' @field vExpec_corrected double: variational approximation of the expectation complete log-likelihood with correctio to be comparable with NMAR criteria
+    #' @field vExpec_corrected double: variational approximation of the expectation complete log-likelihood with correction to be comparable with NMAR criteria
     vExpec_corrected = function(value) {
       vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
       vLL_IMP <- private$vLL_complete(self$imputation, private$S, private$Z, private$theta$mean, private$pi)
@@ -210,7 +210,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     vExpec = function(value) {
       private$vLL_complete(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
     },
-    #' @field vExpec_corrected double: variational approximation of the expectation complete log-likelihood with correctio to be comparable with NMAR criteria
+    #' @field vExpec_corrected double: variational approximation of the expectation complete log-likelihood with correction to be comparable with NMAR criteria
     vExpec_corrected = function(value) {
       vLL_MAR <- private$vLL_complete(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
       vLL_IMP <- private$vLL_complete(self$imputation, private$S, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
