@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9930</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9940</span>
       </span>
     </div>
 
@@ -181,8 +181,8 @@ More specifically, the data collection may be missing for some countries in the 
   <span class="op">)</span></code></pre></div>
 <pre><code>##    
 ##      1  2
-##   1 17  0
-##   2  0 66</code></pre>
+##   1 17  1
+##   2  0 65</code></pre>
 <p>The model finally fitted on the network data can be represented thanks to a plot method applying on objects with class <code>SBM</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
@@ -241,7 +241,7 @@ More specifically, the data collection may be missing for some countries in the 
 <p>and the parameters in the SBM associated with the covariate:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_power_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></code></pre></div>
-<pre><code>## [1] -5.484458</code></pre>
+<pre><code>## [1] -12.66113</code></pre>
 </div>
 <div id="trade-data" class="section level4">
 <h4 class="hasAnchor">
@@ -290,7 +290,7 @@ More specifically, the data collection may be missing for some countries in the 
 <pre><code>## [1] -1.9077099  0.9773688</code></pre>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_trade_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></code></pre></div>
-<pre><code>## [1] 0.1360537</code></pre>
+<pre><code>## [1] 0.1955906</code></pre>
 </div>
 </div>
 </div>
