@@ -68,7 +68,7 @@ missSBM_collection <-
             A <- 1/(1+exp(-A/sd(A)))
             D <- 1/sqrt(rowSums(abs(A)))
             L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
-            Un <- base::svd(L, nu = 2, nv = 0)$u
+            Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
             Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
             ClusterR::KMeans_rcpp(Un, 2, num_init = 10)$clusters
           }, mc.cores = control$cores)

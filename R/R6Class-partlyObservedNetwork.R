@@ -119,8 +119,8 @@ partlyObservedNetwork <-
       ## normalized absolute Laplacian with Gaussian kernel
       D <- 1/sqrt(rowSums(abs(A)))
       L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
-      U <- base::svd(L, nu = max(vBlocks), nv = 0)$u
-#      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
+##      U <- base::svd(L, nu = max(vBlocks), nv = 0)$u
+      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
       res <- lapply(vBlocks, function(k) {
         cl <- rep(1L, n)
         if (k != 1) {
