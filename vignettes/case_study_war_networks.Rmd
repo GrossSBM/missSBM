@@ -97,21 +97,19 @@ We would like to compare our results with the clustering obtained on the fully o
 
 ```{r inference full, results='hide'}
 collection_sbm_full <- 
-  estimateMissSBM(belligerent_adjacency, vBlocks, sampling = "node")
+  estimateMissSBM(belligerent_adjacency, vBlocks, sampling = "node", control = list(iterates = 2, smoothing = "both"))
 ```
 
 As expected, the ICL on the fully observed network is better. But more interestingly, the number of groups selected may differ in the the presence of missing data.
 
 ```{r plot comparison full}
-res_full <- data.frame(
-  ICL     = collection_sbm_full$ICL,
-  nbBlocks = vBlocks, 
-  type    = "full"
-)
-rbind(res_missing, res_full) %>% 
+rbind(
+  data.frame(ICL = collection_sbm_full$ICL, nbBlocks = vBlocks, type = "full"),
+  data.frame(ICL = collection_sbm$ICL, nbBlocks = vBlocks, type = "missing")
+) %>% 
   ggplot(aes(x = nbBlocks, y = ICL, group = type, color = type)) + 
   labs(title = "Model selection", x = "#blocks", y = "Integrated Classification Likelihood") +
-    geom_line() + theme_bw()
+  geom_line() + theme_bw()
 ```
 
 Indeed, two classes found on the fully observed network fuse in the SBM fitted on the partially observed network.

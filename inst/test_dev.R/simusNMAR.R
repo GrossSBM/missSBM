@@ -18,7 +18,7 @@ rho_max <- 0.9
 delta <- seq(0, rho_max-rho_min, 0.1)
 list_psi <- map(delta, ~matrix(rho_min + .x, 3, 3) + diag(3) * (rho_max-rho_min - 2 * .x))
 
-control <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 0)
+control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, trace = 0)
 
 ## Simulation
 nbrSimu <- 100
