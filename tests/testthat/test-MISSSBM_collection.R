@@ -22,6 +22,8 @@ test_that("missSBMcollection works", {
   collection$estimate(control)
   expect_is(collection, "missSBM_collection")
 
+  control$iterates  <- 1
+
   control$smoothing <- "forward"
   collection$smooth(control)
   expect_is(collection, "missSBM_collection")
