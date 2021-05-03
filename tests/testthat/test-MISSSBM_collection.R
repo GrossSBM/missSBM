@@ -16,19 +16,22 @@ test_that("missSBMcollection works", {
     clusterInit = cl, 1, TRUE, TRUE)
 
   ## control parameter for the VEM
-  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, cores = 1, trace = 0, iterates = 1)
+  control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, cores = 1, trace = 0, iterates = 0, smoothing = "both")
 
   ## VEM Estimation on each element of the collection
   collection$estimate(control)
   expect_is(collection, "missSBM_collection")
 
-  smooth(collection, "forward", control)
+  control$smoothing <- "forward"
+  collection$smooth(control)
   expect_is(collection, "missSBM_collection")
 
-  smooth(collection, "backward", control)
+  control$smoothing <- "backward"
+  collection$smooth(control)
   expect_is(collection, "missSBM_collection")
 
-  smooth(collection, "both", control)
+  control$smoothing <- "both"
+  collection$smooth(control)
   expect_is(collection, "missSBM_collection")
 })
 

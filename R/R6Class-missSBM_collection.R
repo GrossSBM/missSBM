@@ -7,8 +7,7 @@
 #' Fields are accessed via active binding and cannot be changed by the user.
 #'
 #' This class comes with a set of R6 methods, some of them being useful for the user and exported
-#' as S3 methods. See the documentation for [show()], [print()] and [smooth()], the latter being
-#' used to smooth the ICL on a collection of model, as post-treatment.
+#' as S3 methods. See the documentation for [show()] and [print()]
 #'
 #' @examples
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
@@ -189,7 +188,7 @@ missSBM_collection <-
       invisible(self)
     },
     #' @description method for performing smoothing of the ICL
-    #' @param control a list of parameters controlling the smoothing. See details of regular function [smooth()]
+    #' @param control a list of parameters controlling the smoothing, similar to those found in the regular function [estimateMissSBM()]
     smooth = function(control) {
       if (control$trace) cat("\n Smoothing ICL\n")
       prop_swap <- control$prop_swap
@@ -233,43 +232,3 @@ missSBM_collection <-
     }
   )
 )
-
-#' Smooth the path ICL in a collection of missSBM_fit models
-#'
-#' Apply a split and/or merge strategy of the clustering in a path of models in a collection
-#' of SBM ordered by number of block. The goal is to find better initialization. This results
-#' in a "smoothing" of the ICL, that should be close to concave.
-#'
-#' @param Robject an object with class missSBM_collection, i.e. an output from [estimateMissSBM()]
-#' @param type character indicating what kind of ICL smoothing should be use among "forward", "backward" or "both". Default is "both".
-#' @param control a list controlling the variational EM algorithm. See details.
-#'
-#' @details The list of parameters \code{control} controls the optimization process and the variational EM algorithm, with the following entries
-#'  \itemize{
-#'  \item{"iterates": }{integer for the number of iterations of smoothing. Default is 1.}
-#'  \item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
-#'         by less than threshold. Default is 1e-3.}
-#'  \item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
-#'        Default is 100 with no covariate, 50 otherwise.}
-#'  \item{"fixPointIter": }{number of fix-point iterations in the V-E step.
-#'        Default is 5 with no covariate, 2 otherwise.}
-#'  \item{"cores": }{integer for number of cores used. Default is 1.}
-#'  \item{"trace": }{integer for verbosity. Useless when \code{cores} > 1}
-#' }
-#' @return An invisible missSBM_collection, in which the ICL has been smoothed
-#' @export
-smooth <- function(Robject, type = c("both", "forward", "backward"), control = list()) {
-
-  stopifnot(inherits(Robject, "missSBM_collection"))
-
-  ## defaut control parameter for VEM, overwritten by user specification
-  ctrl <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, cores = 1, trace = 1, iterates = 1, prop_swap = 00)
-  ctrl[names(control)] <- control
-  ctrl$smoothing <- match.arg(type)
-  if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
-
-  ## Run the smoothing
-  Robject$smooth(ctrl)
-
-  invisible(Robject)
-}

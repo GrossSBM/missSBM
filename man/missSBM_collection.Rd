@@ -11,8 +11,7 @@ of an object with class \code{\link{missSBM_collection}}, described here.
 Fields are accessed via active binding and cannot be changed by the user.
 
 This class comes with a set of R6 methods, some of them being useful for the user and exported
-as S3 methods. See the documentation for \code{\link[=show]{show()}}, \code{\link[=print]{print()}} and \code{\link[=smooth]{smooth()}}, the latter being
-used to smooth the ICL on a collection of model, as post-treatment.
+as S3 methods. See the documentation for \code{\link[=show]{show()}} and \code{\link[=print]{print()}}
 }
 \examples{
 ## Sample 75\% of dyads in  French political Blogosphere's network data
@@ -113,7 +112,7 @@ method for performing smoothing of the ICL
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{control}}{a list of parameters controlling the smoothing. See details of regular function \code{\link[=smooth]{smooth()}}}
+\item{\code{control}}{a list of parameters controlling the smoothing, similar to those found in the regular function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
 }
 \if{html}{\out{</div>}}
 }
