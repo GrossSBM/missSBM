@@ -20,7 +20,7 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       adjacencyMatrix = refAlgo$sampledNet,
       vBlocks = truth$nBlocks,
       sampling = sampling,
-      control = list(trace = 0)
+      control = list(trace = FALSE)
     )
     newAlgo <- missSBM_out$bestModel
 
@@ -86,7 +86,7 @@ test_that("check consistency against Tim's code for dyad sampling with covariate
       vBlocks     = truth$nBlocks,
       sampling    = ifelse(sampling == "dyad-covariates", "covar-dyad", "covar-node"),
       covariates  = refAlgo$covariates,
-      control     = list(trace = 0)
+      control     = list(trace = FALSE)
     )
     newAlgo <- missSBM_out$bestModel
 

@@ -17,7 +17,7 @@
 #' @details The list of parameters \code{control} tunes more advanced features, such as the
 #' initialization, how covariates are handled in the model, and the variational EM algorithm:
 #'  \itemize{
-#'  \item{"useCovSBM": }{logical. If \code{covariates} is not null, should they be used for the
+#'  \item{"useCov": }{logical. If \code{covariates} is not null, should they be used for the
 #'         for the SBM inference (or just for the sampling)? Default is TRUE.}
 #'  \item{"clusterInit": }{Initial method for clustering: either a character ("spectral")
 #'         or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
@@ -102,8 +102,8 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
     )
   ctrl[names(control)] <- control
   ## If no covariate is provided, you cannot ask for using them
-  if (length(covariates) == 0) control$useCov <- FALSE
-  if (control$useCov) stopifnot(sampling %in% available_samplings_covariates)
+  if (length(covariates) == 0) ctrl$useCov <- FALSE
+  if (ctrl$useCov) stopifnot(sampling %in% available_samplings_covariates)
   ## We shall use 'future' in the future...
   if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
 
