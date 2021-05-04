@@ -157,29 +157,26 @@ missSBM_collection <-
     #' @param partlyObservedNet An object with class [`partlyObservedNetwork`].
     #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial clustering: a list of vectors, each with size \code{ncol(adjacencyMatrix)}.
-    #' @param cores integer for number of cores used. Default is 1.
-    #' @param trace integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1
-    #' @param useCov logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    initialize = function(partlyObservedNet, sampling, clusterInit, cores, trace, useCov) {
+    #' @param control a list of parameters controlling advanced features. Only 'cores', 'trace' and 'useCov' are relevant here. See [estimateMissSBM()] for details.
+    initialize = function(partlyObservedNet, sampling, clusterInit, control) {
 
-      if (trace) cat("\n")
-      if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-      if (trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
-      if (trace) cat("\n")
+      if (control$trace) cat("\n")
+      if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
+      if (control$trace) cat("\n\tImputation assumes a '", sampling,"' network-sampling process\n", sep = "")
+      if (control$trace) cat("\n")
 
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       private$partlyObservedNet <- partlyObservedNet
-      private$missSBM_fit <-lapply(clusterInit,
+      private$missSBM_fit <- mclapply(clusterInit,
         function(cl0) {
-          if (trace) cat(" Initialization of model with", length(unique(cl0)), "blocks.", "\r")
-          missSBM_fit$new(partlyObservedNet, sampling, cl0, useCov)
-        }
+          if (control$trace) cat(" Initialization of model with", length(unique(cl0)), "blocks.", "\n")
+          missSBM_fit$new(partlyObservedNet, sampling, cl0, control$useCov)
+        }, mc.cores = control$cores
       )
     },
     #' @description method to launch the estimation of the collection of models
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     estimate = function(control) {
-      if (control$trace) cat("\n")
       private$missSBM_fit <- mclapply(private$missSBM_fit, function(model) {
         if (control$trace) cat(" Performing VEM inference for model with", model$fittedSBM$nbBlocks,"blocks.\r")
         model$doVEM(control)

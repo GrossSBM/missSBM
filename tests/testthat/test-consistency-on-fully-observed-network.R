@@ -36,9 +36,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
       partlyObservedNet  = partlyObservedNet,
       sampling    = "node",
       clusterInit = list(cl0),
-      cores       = 1,
-      trace       = TRUE,
-      useCov      = TRUE
+      control = list(cores = 1, trace = TRUE, useCov = TRUE)
   )
   my_collection$estimate(control)
 

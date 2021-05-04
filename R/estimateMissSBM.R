@@ -87,23 +87,24 @@
 #' predict(myModel)[1:5, 1:5]
 #'
 #' @export
-estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NULL, control = list()) {
+estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = list(), control = list()) {
 
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
   stopifnot(is.numeric(vBlocks))
   stopifnot(is.character(sampling))
-
-  ## If no covariate is provided, you cannot ask for using them
-  if (is.null(covariates)) control$useCov <- FALSE
-  ## If nothing specified by the user, use covariates by default
-  else if (is.null(control$useCov)) control$useCov <- TRUE
-  if (control$useCov) stopifnot(sampling %in% available_samplings_covariates)
+  stopifnot(is.list(covariates))
 
   ## Default control parameters overwritten by user specification
-  ctrl <- list(threshold = 1e-2, trace = TRUE, cores = 2, imputation = "median", similarity = l1_similarity,
-               maxIter = 50, fixPointIter = 3, iterates = 1, prop_swap = 0, smoothing = "both", clusterInit = NULL)
+  ctrl <- list(
+    threshold = 1e-2, trace = TRUE, cores = 2, imputation = "median", similarity = l1_similarity, useCov = TRUE,
+    maxIter = 50, fixPointIter = 3, iterates = 1, prop_swap = 0, smoothing = "both", clusterInit = NULL
+    )
   ctrl[names(control)] <- control
+  ## If no covariate is provided, you cannot ask for using them
+  if (length(covariates) == 0) control$useCov <- FALSE
+  if (control$useCov) stopifnot(sampling %in% available_samplings_covariates)
+  ## We shall use 'future' in the future...
   if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
 
   ## Prepare network data for estimation with missing data
@@ -116,9 +117,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = NUL
       partlyObservedNet  = partlyObservedNet,
       sampling           = sampling,
       clusterInit        = clusterInit,
-      cores              = ctrl$cores,
-      trace              = ctrl$trace,
-      useCov             = ctrl$useCov
+      control            = ctrl
   )
 
   ## Launch estimation of each missSBM_fit

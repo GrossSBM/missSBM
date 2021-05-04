@@ -8,7 +8,7 @@ estimateMissSBM(
   adjacencyMatrix,
   vBlocks,
   sampling,
-  covariates = NULL,
+  covariates = list(),
   control = list()
 )
 }

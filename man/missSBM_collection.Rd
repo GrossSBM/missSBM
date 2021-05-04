@@ -55,14 +55,7 @@ class(collection)
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$new(
-  partlyObservedNet,
-  sampling,
-  clusterInit,
-  cores,
-  trace,
-  useCov
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$new(partlyObservedNet, sampling, clusterInit, control)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -74,11 +67,7 @@ constructor for networkSampling
 
 \item{\code{clusterInit}}{Initial clustering: a list of vectors, each with size \code{ncol(adjacencyMatrix)}.}
 
-\item{\code{cores}}{integer for number of cores used. Default is 1.}
-
-\item{\code{trace}}{integer for verbosity (0, 1, 2). Default is 1. Useless when \code{cores} > 1}
-
-\item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+\item{\code{control}}{a list of parameters controlling advanced features. Only 'cores', 'trace' and 'useCov' are relevant here. See \code{\link[=estimateMissSBM]{estimateMissSBM()}} for details.}
 }
 \if{html}{\out{</div>}}
 }
