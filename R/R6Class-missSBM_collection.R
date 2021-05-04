@@ -68,7 +68,7 @@ missSBM_collection <-
             L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
             Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
             Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-            ClusterR::KMeans_rcpp(Un, 2, num_init = 10)$clusters
+            kmeans(Un, 2, nstart = 10)$cluster ## ClusterR::KMeans_rcpp() fdails on matrix(c(1,-1,-1,-1,-1,1,1,1), 4, 2)
           }, mc.cores = control$cores)
 
           ## build list of candidate clustering after splits
