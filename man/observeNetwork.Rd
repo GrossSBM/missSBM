@@ -42,7 +42,7 @@ This function draws observations in an adjacency matrix according to a given net
 The list of parameters \code{control} tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:
 \itemize{
-\item{"useCovSBM": }{logical. If \code{covariates} is not null, should they be used for the
+\item{"useCov": }{logical. If \code{covariates} is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.}
 \item{"clusterInit": }{Initial method for clustering: either a character ("spectral")
 or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
