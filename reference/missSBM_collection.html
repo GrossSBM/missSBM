@@ -180,14 +180,7 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 <p><hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
 <p>constructor for networkSampling</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>
-  <span class='va'>partlyObservedNet</span>,
-  <span class='va'>sampling</span>,
-  <span class='va'>clusterInit</span>,
-  <span class='va'>cores</span>,
-  <span class='va'>trace</span>,
-  <span class='va'>useCov</span>
-<span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>partlyObservedNet</span>, <span class='va'>sampling</span>, <span class='va'>clusterInit</span>, <span class='va'>control</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
@@ -197,11 +190,7 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 
 <dt><code>clusterInit</code></dt><dd><p>Initial clustering: a list of vectors, each with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>.</p></dd>
 
-<dt><code>cores</code></dt><dd><p>integer for number of cores used. Default is 1.</p></dd>
-
-<dt><code>trace</code></dt><dd><p>integer for verbosity (0, 1, 2). Default is 1. Useless when <code>cores</code> &gt; 1</p></dd>
-
-<dt><code>useCov</code></dt><dd><p>logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></dd>
+<dt><code>control</code></dt><dd><p>a list of parameters controlling advanced features. Only 'cores', 'trace' and 'useCov' are relevant here. See <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code> for details.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
@@ -259,7 +248,8 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 #&gt; 
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
-#&gt;  Initialization of model with 3 blocks.  Initialization of model with 4 blocks.  Initialization of model with 5 blocks. 
+#&gt;  Initialization of 3 model(s). 
+#&gt;  Performing VEM inference
 #&gt; 
 #&gt;  Smoothing ICL
 #&gt;    Going forward ++                                                                                                       Going backward ++                                                                                                    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>)</span>

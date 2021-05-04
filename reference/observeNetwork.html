@@ -191,7 +191,7 @@ of <code>covariates</code> must be N x N matrix.</p></td>
 
     <p>The list of parameters <code>control</code> tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul>
-<li><p>"useCovSBM": logical. If <code>covariates</code> is not null, should they be used for the
+<li><p>"useCov": logical. If <code>covariates</code> is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
 <li><p>"clusterInit": Initial method for clustering: either a character ("spectral")
 or a list with <code><a href='https://rdrr.io/r/base/length.html'>length(vBlocks)</a></code> vectors, each with size  <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>,
