@@ -1,14 +1,13 @@
 library(missSBM)
-library(igraph)
 library(ggplot2)
 
 data("frenchblog2007", package = "missSBM")
 class(frenchblog2007)
-adjacencyMatrix <- frenchblog2007 %>% as_adj(sparse = FALSE)
-party <- vertex.attributes(frenchblog2007)$party
+adjacencyMatrix <- frenchblog2007 %>% igraph::as_adj(sparse = FALSE)
+party <- igraph::vertex.attributes(frenchblog2007)$party
 vBlocks <- 1:12
 
-sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 4, trace = 2))
+sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 4))
 
 set.seed(17)
 

@@ -29,7 +29,7 @@
 #'
 #' @import R6 methods igraph nloptr Matrix
 #' @importFrom Rcpp sourceCpp
-#' @useDynLib missSBM
+#' @useDynLib missSBM, .registration = TRUE
 #' @docType package
 #' @name missSBM
 NULL

@@ -78,7 +78,7 @@ missSBM_fit <-
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
-    doVEM = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = 1)) {
+    doVEM = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
 
       ## Initialization of quantities that monitor convergence
       delta_par <- vector("numeric", control$maxIter); delta_par[1] <- NA

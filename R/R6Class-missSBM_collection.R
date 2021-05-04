@@ -167,18 +167,20 @@ missSBM_collection <-
 
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       private$partlyObservedNet <- partlyObservedNet
-      private$missSBM_fit <- mclapply(clusterInit,
+      if (control$trace) cat(" Initialization of", length(clusterInit), "model(s).", "\n")
+      private$missSBM_fit <- lapply(clusterInit,
         function(cl0) {
-          if (control$trace) cat(" Initialization of model with", length(unique(cl0)), "blocks.", "\n")
           missSBM_fit$new(partlyObservedNet, sampling, cl0, control$useCov)
-        }, mc.cores = control$cores
+        }
       )
     },
     #' @description method to launch the estimation of the collection of models
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     estimate = function(control) {
+      if (control$trace) cat(" Performing VEM inference\n")
       private$missSBM_fit <- mclapply(private$missSBM_fit, function(model) {
-        if (control$trace) cat(" Performing VEM inference for model with", model$fittedSBM$nbBlocks,"blocks.\r")
+        if (control$trace) cat(" \tModel with", model$fittedSBM$nbBlocks,"blocks.\r")
+        control$trace <- FALSE
         model$doVEM(control)
         model
       }, mc.cores = control$cores)
