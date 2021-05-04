@@ -1,19 +1,16 @@
 library(missSBM)
 library(igraph)
 library(ggplot2)
-library(future.apply)
-
-set.seed(222)
-#future::plan("sequential")
-future::plan("multisession", workers = 10)
 
 data("frenchblog2007", package = "missSBM")
 class(frenchblog2007)
 adjacencyMatrix <- frenchblog2007 %>% as_adj(sparse = FALSE)
 party <- vertex.attributes(frenchblog2007)$party
-vBlocks <- 1:13
+vBlocks <- 1:12
 
-sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node")
+sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 4))
+
+set.seed(17)
 
 samplingParameters <- base::sample(
   x       = c(0.2, 0.8),
@@ -27,8 +24,7 @@ sampledNet <-
     clusters        = sbm_full$bestModel$fittedSBM$memberships
   )
 
-
-sbm_node  <- estimateMissSBM(sampledNet, vBlocks, "node", control = list(trace = 2, iterates = 1))
+sbm_node  <- estimateMissSBM(sampledNet, vBlocks, "node", control = list(trace = 2, core = 4))
 
 sbm_block <- estimateMissSBM(sampledNet, vBlocks, "block-node", control = list(trace = 2, iterates = 3))
 
