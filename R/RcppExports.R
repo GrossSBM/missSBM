@@ -2,38 +2,38 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 vLL_complete_sparse_bernoulli_nocovariate <- function(Y, R, Z, theta, pi) {
-    .Call('_missSBM_vLL_complete_sparse_bernoulli_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi)
+    .Call(`_missSBM_vLL_complete_sparse_bernoulli_nocovariate`, Y, R, Z, theta, pi)
 }
 
 vLL_complete_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi) {
-    .Call('_missSBM_vLL_complete_sparse_bernoulli_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi)
+    .Call(`_missSBM_vLL_complete_sparse_bernoulli_covariates`, Y, R, M, Z, Gamma, pi)
 }
 
 M_step_sparse_bernoulli_nocovariate <- function(Y, R, Z, sym = TRUE) {
-    .Call('_missSBM_M_step_sparse_bernoulli_nocovariate', PACKAGE = 'missSBM', Y, R, Z, sym)
+    .Call(`_missSBM_M_step_sparse_bernoulli_nocovariate`, Y, R, Z, sym)
 }
 
 M_step_sparse_bernoulli_covariates <- function(init_param, Y, R, X, Z, sym, configuration) {
-    .Call('_missSBM_M_step_sparse_bernoulli_covariates', PACKAGE = 'missSBM', init_param, Y, R, X, Z, sym, configuration)
+    .Call(`_missSBM_M_step_sparse_bernoulli_covariates`, init_param, Y, R, X, Z, sym, configuration)
 }
 
 E_step_sparse_bernoulli_nocovariate <- function(Y, R, Z, theta, pi, rescale = TRUE) {
-    .Call('_missSBM_E_step_sparse_bernoulli_nocovariate', PACKAGE = 'missSBM', Y, R, Z, theta, pi, rescale)
+    .Call(`_missSBM_E_step_sparse_bernoulli_nocovariate`, Y, R, Z, theta, pi, rescale)
 }
 
 E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, symmetric = TRUE, rescale = TRUE) {
-    .Call('_missSBM_E_step_sparse_bernoulli_covariates', PACKAGE = 'missSBM', Y, R, M, Z, Gamma, pi, symmetric, rescale)
+    .Call(`_missSBM_E_step_sparse_bernoulli_covariates`, Y, R, M, Z, Gamma, pi, symmetric, rescale)
 }
 
 cpp_test_nlopt <- function() {
-    .Call('_missSBM_cpp_test_nlopt', PACKAGE = 'missSBM')
+    .Call(`_missSBM_cpp_test_nlopt`)
 }
 
 cpp_test_packing <- function() {
-    .Call('_missSBM_cpp_test_packing', PACKAGE = 'missSBM')
+    .Call(`_missSBM_cpp_test_packing`)
 }
 
 roundProduct <- function(covariates_list, beta) {
-    .Call('_missSBM_roundProduct', PACKAGE = 'missSBM', covariates_list, beta)
+    .Call(`_missSBM_roundProduct`, covariates_list, beta)
 }
 
