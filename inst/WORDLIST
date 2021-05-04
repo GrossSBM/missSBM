@@ -52,7 +52,6 @@ nloptr
 observedNetwork
 partlyObservedNet
 partlyObservedNetwork
-posteriori
 rSampling
 sampleSimpleSBM
 sampledNetwork
@@ -61,6 +60,6 @@ simpleSBM
 subtypes
 undirected
 unexporting
-useCovSBM
+useCov
 variational
 www
