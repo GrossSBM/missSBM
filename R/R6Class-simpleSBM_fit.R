@@ -204,7 +204,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+      as(.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect) * private$S, "dgCMatrix")
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -213,10 +213,9 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #' @field vExpec_corrected double: variational approximation of the expectation complete log-likelihood with correction to be comparable with NMAR criteria
     vExpec_corrected = function(value) {
       vLL_MAR <- private$vLL_complete(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
-      # vLL_IMP <- private$vLL_complete(self$imputation, private$S, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
-      # vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
-      # vLL
-      vLL_MAR
+      vLL_IMP <- private$vLL_complete(self$imputation, private$S, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
+      vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
+      vLL
     }
   )
 )

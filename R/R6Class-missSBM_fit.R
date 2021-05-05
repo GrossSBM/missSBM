@@ -162,10 +162,7 @@ missSBM_fit <-
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
-    entropyImputed = function(value) {
-      res <- -sum(xlogx(private$nu) + xlogx(1 - private$nu))
-      res
-    },
+    entropyImputed = function(value) { - sum(xlogx(private$nu) + xlogx(1 - private$nu)) },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
     entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood

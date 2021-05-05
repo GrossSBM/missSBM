@@ -50,7 +50,7 @@ double vLL_complete_sparse_bernoulli_covariates(
   for(; Yij != Yij_end; ++Yij) {
     for(uword q=0; q < Q; q++){
       for (uword l=0; l < Q; l++) {
-        loglik += Z(Yij.row(),q) * Z(Yij.col(),l) * (Gamma(q,l) + M(Yij.row(),Yij.col()));
+        loglik += (*Yij) * Z(Yij.row(),q) * Z(Yij.col(),l) * (Gamma(q,l) + M(Yij.row(),Yij.col()));
       }
     }
   }
