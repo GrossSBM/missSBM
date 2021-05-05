@@ -30,11 +30,13 @@ dev
 doi
 dyad
 dyads
+elbo
 estimateMissSBM
 fixPointIter
 ggplot
 großBM
 https
+icl
 igraph
 intra
 magrittr
