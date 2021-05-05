@@ -77,7 +77,7 @@ as S3 methods. See the documentation for show() and print()" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9940</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9950</span>
       </span>
     </div>
 
@@ -173,6 +173,7 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 <li><p><a href='#method-new'><code>missSBM_collection$new()</code></a></p></li>
 <li><p><a href='#method-estimate'><code>missSBM_collection$estimate()</code></a></p></li>
 <li><p><a href='#method-smooth'><code>missSBM_collection$smooth()</code></a></p></li>
+<li><p><a href='#method-plot'><code>missSBM_collection$plot()</code></a></p></li>
 <li><p><a href='#method-show'><code>missSBM_collection$show()</code></a></p></li>
 <li><p><a href='#method-print'><code>missSBM_collection$print()</code></a></p></li>
 <li><p><a href='#method-clone'><code>missSBM_collection$clone()</code></a></p></li>
@@ -211,6 +212,16 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
 <dt><code>control</code></dt><dd><p>a list of parameters controlling the smoothing, similar to those found in the regular function <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code></p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-plot"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot()</a></code></h3>
+<p>plot method for missSBM_collection</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>plot</span><span class='op'>(</span>type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"icl"</span>, <span class='st'>"elbo"</span>, <span class='st'>"monitoring"</span><span class='op'>)</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>type</code></dt><dd><p>the type specifies the field to plot, either "icl", "elbo" or "monitoring". Default is "icl"</p></dd>
 
 </dl><p></div></p>
 <p><hr>

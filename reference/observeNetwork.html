@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9940</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9950</span>
       </span>
     </div>
 
@@ -200,11 +200,10 @@ providing a user-defined clustering. Default is "spectral".</p></li>
 <code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. <code>covariates</code> is a list of size-N vectors).</p></li>
 <li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
-by less than threshold. Default is 1e-3.</p></li>
+by less than threshold. Default is 1e-2.</p></li>
 <li><p>"maxIter": V-EM algorithm stops when the number of iteration exceeds maxIter.
-Default is 100 with no covariate, 50 otherwise.</p></li>
-<li><p>"fixPointIter": number of fix-point iterations in the V-E step.
-Default is 5 with no covariate, 2 otherwise.</p></li>
+Default is 50.</p></li>
+<li><p>"fixPointIter": number of fix-point iterations in the V-E step. Default is 3.</p></li>
 <li><p>"smoothing": character indicating what kind of smoothing should be use among "forward", "backward", "both" or "none". Default is "both".</p></li>
 <li><p>"iterates": integer for the number of iterations of smoothing. Only relevant when smoothing is different from "none". Default is 1.</p></li>
 <li><p>"cores": integer for number of cores used. Default is 2.</p></li>
