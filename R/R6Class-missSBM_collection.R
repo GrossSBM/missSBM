@@ -214,7 +214,7 @@ missSBM_collection <-
       }
     },
     #' @description plot method for missSBM_collection
-    #' @param type the type specifies the field to plot, either "icl", "elbo" or "monitoring"
+    #' @param type the type specifies the field to plot, either "icl", "elbo" or "monitoring". Default is "icl"
     plot = function(type = c("icl", "elbo", "monitoring")) {
       gg_obj <- switch(match.arg(type),
           "icl"        = private$plot_icl(),

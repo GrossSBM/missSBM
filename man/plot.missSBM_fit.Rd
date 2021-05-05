@@ -16,7 +16,7 @@
 
 \item{type}{the type specifies the field to plot, either "expected", "imputed", "meso",  or "monitoring"}
 
-\item{dimLabels}{: a list of two characters specifying the labels of the nodes. Default to \list(row= 'node',col = 'node'))}
+\item{dimLabels}{: a list of two characters specifying the labels of the nodes. Default to \code{list(row= 'node',col = 'node')})}
 
 \item{...}{additional parameters for S3 compatibility. Not used}
 }

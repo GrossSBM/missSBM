@@ -249,7 +249,7 @@ summary.missSBM_fit <- function(object, ...) {
 #'
 #' @param x an object with class [`missSBM_fit`]
 #' @param type the type specifies the field to plot, either "expected", "imputed", "meso",  or "monitoring"
-#' @param dimLabels : a list of two characters specifying the labels of the nodes. Default to \list(row= 'node',col = 'node'))
+#' @param dimLabels : a list of two characters specifying the labels of the nodes. Default to \code{list(row= 'node',col = 'node')})
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @export
 #' @import ggplot2

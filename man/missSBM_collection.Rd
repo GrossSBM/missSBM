@@ -119,7 +119,7 @@ plot method for missSBM_collection
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{the type specifies the field to plot, either "icl", "elbo" or "monitoring"}
+\item{\code{type}}{the type specifies the field to plot, either "icl", "elbo" or "monitoring". Default is "icl"}
 }
 \if{html}{\out{</div>}}
 }
