@@ -221,7 +221,7 @@ The choice of the sampling parameters leads to more likely observe dyads with im
 We then perform estimation on the missing data drawn according to the trade covariate.
 
 ```{r estimate trade}
-collection_sbm_trade_miss <-estimateMissSBM(sampleNet_trade_miss, vBlocks = vBlocks, sampling = "covar-dyad", covariates = list(trade))
+collection_sbm_trade_miss <- estimateMissSBM(sampleNet_trade_miss, vBlocks = vBlocks, sampling = "covar-dyad", covariates = list(trade))
 collection_sbm_trade_miss$bestModel$fittedSampling$parameters
 collection_sbm_trade_miss$bestModel$fittedSBM$covarParam
 ```

@@ -207,10 +207,12 @@ missSBM_collection <-
       if (control$trace) cat("\n Smoothing ICL\n")
       prop_swap <- control$prop_swap
       if (length(prop_swap) == 1) prop_swap <- rep(prop_swap, control$iterates)
-      for (i in 1:control$iterates) {
-        control$prop_swap <- prop_swap[i]
-        if (control$smoothing %in% c('forward' , 'both')) private$smoothing_forward(control)
-        if (control$smoothing %in% c('backward', 'both')) private$smoothing_backward(control)
+      if (control$iterates > 0) {
+        for (i in 1:control$iterates) {
+          control$prop_swap <- prop_swap[i]
+          if (control$smoothing %in% c('forward' , 'both')) private$smoothing_forward(control)
+          if (control$smoothing %in% c('backward', 'both')) private$smoothing_backward(control)
+        }
       }
     },
     #' @description plot method for missSBM_collection
