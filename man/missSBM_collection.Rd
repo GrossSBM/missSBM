@@ -44,6 +44,7 @@ class(collection)
 \item \href{#method-new}{\code{missSBM_collection$new()}}
 \item \href{#method-estimate}{\code{missSBM_collection$estimate()}}
 \item \href{#method-smooth}{\code{missSBM_collection$smooth()}}
+\item \href{#method-plot}{\code{missSBM_collection$plot()}}
 \item \href{#method-show}{\code{missSBM_collection$show()}}
 \item \href{#method-print}{\code{missSBM_collection$print()}}
 \item \href{#method-clone}{\code{missSBM_collection$clone()}}
@@ -102,6 +103,23 @@ method for performing smoothing of the ICL
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{control}}{a list of parameters controlling the smoothing, similar to those found in the regular function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-plot}{}}}
+\subsection{Method \code{plot()}}{
+plot method for missSBM_collection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$plot(type = c("icl", "elbo", "monitoring"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{the type specifies the field to plot, either "icl", "elbo" or "monitoring"}
 }
 \if{html}{\out{</div>}}
 }

@@ -1,4 +1,5 @@
 library(missSBM)
+library(aricode)
 library(ggplot2)
 
 data("frenchblog2007", package = "missSBM")
@@ -7,9 +8,7 @@ adjacencyMatrix <- frenchblog2007 %>% igraph::as_adj(sparse = FALSE)
 party <- igraph::vertex.attributes(frenchblog2007)$party
 vBlocks <- 1:12
 
-sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 4))
-
-set.seed(17)
+sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 10))
 
 samplingParameters <- base::sample(
   x       = c(0.2, 0.8),
@@ -38,7 +37,7 @@ ggplot(aes(x = cumsum(iteration), y = elbo, color = sampling)) + theme_bw(base_s
   theme(axis.title = element_blank()) + geom_point() + geom_line()
 
 ICLs <- rbind.data.frame(
-  data.frame(Q = vBlocks, ICL = sbm_node$ICL , sampling = "node"),
+  ,
   data.frame(Q = vBlocks, ICL = sbm_block$ICL , sampling = "block-node"),
   data.frame(Q = vBlocks, ICL = sbm_full$ICL , sampling = "fully observed")
 )
@@ -46,3 +45,6 @@ ICLs <- rbind.data.frame(
 ggplot(ICLs, aes(x = Q, y = ICL, color = sampling)) + theme_bw(base_size = 20) +
   theme(axis.title = element_blank()) + geom_point() + geom_line()
 
+ARI(sbm_full$bestModel$fittedSBM$memberships, sbm_node$bestModel$fittedSBM$memberships)
+
+ARI(sbm_full$bestModel$fittedSBM$memberships, sbm_block$bestModel$fittedSBM$memberships)

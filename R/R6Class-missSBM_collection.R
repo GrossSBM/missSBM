@@ -147,6 +147,21 @@ missSBM_collection <-
 
       }
       if (trace) cat("\r                                                                                                    \r")
+    },
+    plot_icl = function() {
+      qplot(self$vBlocks, self$ICL, geom = "line") + theme_bw() + geom_point() +
+        labs(x = "#blocks", y = "Integrated Classification likelihood") + ggtitle("Model Selection")
+    },
+    plot_elbo = function() {
+      elbo <- sapply(self$models, function(model) model$loglik)
+      qplot(self$vBlocks, elbo, geom = "line") + theme_bw() + geom_point() +
+        labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound") + ggtitle("Model Selection")
+    },
+    plot_monitoring = function() {
+      monitoring <- self$optimizationStatus
+      monitoring$nBlock <- as.factor(monitoring$nBlock)
+      ggplot(monitoring, aes(x = cumsum(iteration), y = elbo, color = nBlock)) + geom_line() + geom_point() +
+        theme_bw() + labs(x = "# cumulated V-EM iterations", y = "Evidence (variational) Lower Bound") + ggtitle("Optimization monitoring")
     }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,6 +212,16 @@ missSBM_collection <-
         if (control$smoothing %in% c('forward' , 'both')) private$smoothing_forward(control)
         if (control$smoothing %in% c('backward', 'both')) private$smoothing_backward(control)
       }
+    },
+    #' @description plot method for missSBM_collection
+    #' @param type the type specifies the field to plot, either "icl", "elbo" or "monitoring"
+    plot = function(type = c("icl", "elbo", "monitoring")) {
+      gg_obj <- switch(match.arg(type),
+          "icl"        = private$plot_icl(),
+          "elbo"       = private$plot_elbo(),
+          "monitoring" = private$plot_monitoring()
+      )
+      gg_obj
     },
     #' @description show method for missSBM_collection
     show = function() {

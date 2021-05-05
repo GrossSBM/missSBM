@@ -249,17 +249,18 @@ summary.missSBM_fit <- function(object, ...) {
 #'
 #' @param x an object with class [`missSBM_fit`]
 #' @param type the type specifies the field to plot, either "expected", "imputed", "meso",  or "monitoring"
+#' @param dimLabels : a list of two characters specifying the labels of the nodes. Default to \list(row= 'node',col = 'node'))
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
 #' @importFrom sbm plotMyMatrix
-plot.missSBM_fit <- function(x, type = c("expected", "imputed", "meso", "monitoring"), ...) {
+plot.missSBM_fit <- function(x, type = c("expected", "imputed", "meso", "monitoring"), dimLabels = list(row= 'node',col = 'node'), ...) {
   stopifnot(is_missSBMfit(x))
   gg_obj <- switch(match.arg(type),
-    "expected"   = x$fittedSBM$plot("expected"),
+    "expected"   = plotMyMatrix(x$fittedSBM$expectation, dimLabels, list(row = x$fittedSBM$memberships)),
     "meso"       = x$fittedSBM$plot("meso"),
-    "imputed"    = plotMyMatrix(as.matrix(predict(x)),  clustering = list(row = x$fittedSBM$memberships)),
+    "imputed"    = plotMyMatrix(as.matrix(predict(x)), dimLabels,  list(row = x$fittedSBM$memberships)),
     "monitoring" = ggplot(x$monitoring, aes(x = .data$iteration, y = .data$elbo)) + geom_line() + theme_bw()
   )
   if (type != "meso") gg_obj ## return ggobject unless igraph is invoked
