@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{missSBM_fit}(
   x,
-  type = c("expected", "imputed", "meso", "monitoring"),
+  type = c("imputed", "expected", "meso", "monitoring"),
   dimLabels = list(row = "node", col = "node"),
   ...
 )
@@ -14,7 +14,7 @@
 \arguments{
 \item{x}{an object with class \code{\link{missSBM_fit}}}
 
-\item{type}{the type specifies the field to plot, either "expected", "imputed", "meso",  or "monitoring"}
+\item{type}{the type specifies the field to plot, either "imputed", "expected", "meso",  or "monitoring"}
 
 \item{dimLabels}{: a list of two characters specifying the labels of the nodes. Default to \code{list(row= 'node',col = 'node')})}
 

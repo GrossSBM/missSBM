@@ -4,11 +4,11 @@ library(ggplot2)
 
 data("frenchblog2007", package = "missSBM")
 class(frenchblog2007)
-adjacencyMatrix <- frenchblog2007 %>% igraph::as_adj(sparse = FALSE)
+adjacencyMatrix <- igraph::as_adj(frenchblog2007)
 party <- igraph::vertex.attributes(frenchblog2007)$party
 vBlocks <- 1:12
 
-sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 10))
+sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 10, iterates = 1))
 
 samplingParameters <- base::sample(
   x       = c(0.2, 0.8),

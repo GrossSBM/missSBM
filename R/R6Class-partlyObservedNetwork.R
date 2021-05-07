@@ -68,7 +68,7 @@ partlyObservedNetwork <-
       ## TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
 
       ## TODO: later, should also include Poisson/Gaussian models
-      stopifnot(all.equal(sort(unique(as.numeric(adjacencyMatrix[!is.na(adjacencyMatrix)]))), c(0,1)))
+      stopifnot(all.equal(sort(setdiff(unique(as.numeric(adjacencyMatrix)), NA)), c(0,1)))
 
       ## type of SBM
       private$directed <- ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE)
@@ -128,7 +128,7 @@ partlyObservedNetwork <-
           Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
           Un[is.nan(Un)] <- 0
           cl_ <- as.integer(
-            ClusterR::KMeans_rcpp(Un, k, num_init = 25)$clusters
+            ClusterR::KMeans_rcpp(Un, k, num_init = 100, initializer = "kmeans++")$clusters
           )
          ## handing lonely souls
          cl[connected] <- cl_
