@@ -64,7 +64,7 @@ constructor for networkSampling
 \describe{
 \item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
 
-\item{\code{sampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
+\item{\code{sampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
 \item{\code{clusterInit}}{Initial clustering: a list of vectors, each with size \code{ncol(adjacencyMatrix)}.}
 

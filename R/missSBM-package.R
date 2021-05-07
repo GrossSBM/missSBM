@@ -13,7 +13,7 @@
 #' \itemize{
 #' \item{[`missSBM_fit`]}{an object that put together an SBM fit and and network sampling fit - the main point of the missSBM package !}
 #' \item{[`missSBM_collection`]}{an object to store a collection of missSBM_fit, ordered by number of block}
-#' \item{[`SimpleSBM_fit_NMAR`]}{an object to define and store an SBM fit with NMAR values}
+#' \item{[`SimpleSBM_fit_MNAR`]}{an object to define and store an SBM fit with MNAR values}
 #' \item{[`SimpleSBM_fit_noCov`]}{an object to define and store an SBM fit without covariate, MAR values}
 #' \item{[`SimpleSBM_fit_withCov`]}{an object to define and store an SBM fit with covariates, MAR values}
 #' \item{[`networkSampling`]}{an object to define and store a network sampling fit}

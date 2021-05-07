@@ -27,7 +27,7 @@ plot(my_missSBM_fit, "imputed")
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}} or
-\code{\link{SimpleSBM_fit_NMAR}} inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
+\code{\link{SimpleSBM_fit_MNAR}} inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
 
 \item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
 
@@ -73,7 +73,7 @@ constructor for networkSampling
 \describe{
 \item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
 
-\item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
+\item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
 
 \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
 

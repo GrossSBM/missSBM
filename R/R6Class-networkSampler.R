@@ -182,8 +182,8 @@ R6::R6Class(classname = "blockDyadSampler",
 ## ================================================================================
 ## NODE-CENTERED SAMPLINGS
 ## - SIMPLE NODE (MAR)
-## - BLOCK-NODE (NMAR)
-## - DEGREE (NMAR)
+## - BLOCK-NODE (MNAR)
+## - DEGREE (MNAR)
 
 #' Class for defining a simple node sampler
 simpleNodeSampler <-

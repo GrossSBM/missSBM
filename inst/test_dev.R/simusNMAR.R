@@ -39,14 +39,14 @@ RES <- lapply(1:nbrSimu, function(i) {
   MAR <- missSBM_fit$new(A_obs, "dyad", cl_init)
   out <- MAR$doVEM(control)
 
-  NMAR <- missSBM_fit$new(A_obs, "block-dyad", cl_init)
-  out <- NMAR$doVEM(control)
+  MNAR <- missSBM_fit$new(A_obs, "block-dyad", cl_init)
+  out <- MNAR$doVEM(control)
 
   res <- data.frame(
-    ARI = c(aricode::ARI(NMAR$fittedSBM$memberships,A$memberships), aricode::ARI(MAR$fittedSBM$memberships,A$memberships)),
-    MSE = c(sqrt(sum((NMAR$fittedSBM$connectParam$mean-theta$mean)^2)), sqrt(sum((MAR$fittedSBM$connectParam$mean-theta$mean)^2))),
-    Psi = c(sqrt(sum((NMAR$fittedSampling$parameters-psi)^2)), NA),
-    variant = c("NMAR", "MAR")
+    ARI = c(aricode::ARI(MNAR$fittedSBM$memberships,A$memberships), aricode::ARI(MAR$fittedSBM$memberships,A$memberships)),
+    MSE = c(sqrt(sum((MNAR$fittedSBM$connectParam$mean-theta$mean)^2)), sqrt(sum((MAR$fittedSBM$connectParam$mean-theta$mean)^2))),
+    Psi = c(sqrt(sum((MNAR$fittedSampling$parameters-psi)^2)), NA),
+    variant = c("MNAR", "MAR")
   )
   res$simu  <- i
   res$delta <- psi[2,1] - psi[1,1]

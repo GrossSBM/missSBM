@@ -170,7 +170,7 @@ missSBM_collection <-
   public = list(
     #' @description constructor for networkSampling
     #' @param partlyObservedNet An object with class [`partlyObservedNetwork`].
-    #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
+    #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial clustering: a list of vectors, each with size \code{ncol(adjacencyMatrix)}.
     #' @param control a list of parameters controlling advanced features. Only 'cores', 'trace' and 'useCov' are relevant here. See [estimateMissSBM()] for details.
     initialize = function(partlyObservedNet, sampling, clusterInit, control) {

@@ -39,7 +39,7 @@ networkSamplingDyads_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param nu the matrix of (uncorrected) imputation for missing entries
-    update_imputation = function(nu) {nu} # good for MCAR on node, dyads and NMAR with blocks
+    update_imputation = function(nu) {nu} # good for MCAR on node, dyads and MNAR with blocks
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -85,7 +85,7 @@ networkSamplingNodes_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param nu the matrix of (uncorrected) imputation for missing entries
-    update_imputation = function(nu) {nu} ## good for MCAR on node, dyads and NMAR with blocks
+    update_imputation = function(nu) {nu} ## good for MCAR on node, dyads and MNAR with blocks
   ),
   active = list(
     #' @field penalty double, value of the penalty term in ICL

@@ -72,7 +72,7 @@ node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete 
 \item{"covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)}
 \item{"snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)}
 }
-\item Not Missing At Random (NMAR)
+\item Missing Not At Random (MNAR)
 \itemize{
 \item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)}
 \item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)}

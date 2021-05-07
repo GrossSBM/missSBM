@@ -39,7 +39,7 @@ missSBM_fit <-
   public = list(
     #' @description constructor for networkSampling
     #' @param partlyObservedNet An object with class [`partlyObservedNetwork`].
-    #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
+    #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.
     #' @param useCov logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
     initialize = function(partlyObservedNet, netSampling, clusterInit, useCov = TRUE) {
@@ -55,7 +55,7 @@ missSBM_fit <-
 
       if (length(covariates) == 0) {
         if (netSampling %in% c("double-standard", "block-node", "block-dyad")) {
-          private$SBM <- SimpleSBM_fit_NMAR$new(partlyObservedNet, clusterInit)
+          private$SBM <- SimpleSBM_fit_MNAR$new(partlyObservedNet, clusterInit)
         } else {
           private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
         }
@@ -149,7 +149,7 @@ missSBM_fit <-
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
     #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`] or
-    #' [`SimpleSBM_fit_NMAR`] inheriting from class [`sbm::SimpleSBM_fit`]
+    #' [`SimpleSBM_fit_MNAR`] inheriting from class [`sbm::SimpleSBM_fit`]
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
     fittedSampling = function(value) {private$sampling},
