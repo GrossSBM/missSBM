@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_withCov • missSBM</title>
+<title>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_MNAR • missSBM</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_withCov" />
+<meta property="og:title" content="This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM. — SimpleSBM_fit_MNAR" />
 <meta property="og:description" content="This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
 This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM." />
 
@@ -132,7 +132,7 @@ This internal class is designed to adjust a binary Stochastic Block Model in the
     <div class="page-header">
     <h1>This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.</h1>
     <small class="dont-index">Source: <a href='https://github.com/grossSBM/missSBM/blob/master/R/R6Class-simpleSBM_fit.R'><code>R/R6Class-simpleSBM_fit.R</code></a></small>
-    <div class="hidden name"><code>SimpleSBM_fit_withCov.Rd</code></div>
+    <div class="hidden name"><code>SimpleSBM_fit_MNAR.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -147,15 +147,13 @@ This internal class is designed to adjust a binary Stochastic Block Model in the
     <p>It is not designed not be call by the user</p>
     <h2 class="hasAnchor" id="super-classes"><a class="anchor" href="#super-classes"></a>Super classes</h2>
 
-    <p><code><a href='https://grosssbm.github.io/sbm/reference/SBM.html'>sbm::SBM</a></code> -&gt; <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM.html'>sbm::SimpleSBM</a></code> -&gt; <code><a href='SimpleSBM_fit.html'>missSBM::SimpleSBM_fit</a></code> -&gt; <code>SimpleSBM_fit_withCov</code></p>
+    <p><code><a href='https://grosssbm.github.io/sbm/reference/SBM.html'>sbm::SBM</a></code> -&gt; <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM.html'>sbm::SimpleSBM</a></code> -&gt; <code><a href='SimpleSBM_fit.html'>missSBM::SimpleSBM_fit</a></code> -&gt; <code><a href='SimpleSBM_fit_noCov.html'>missSBM::SimpleSBM_fit_noCov</a></code> -&gt; <code>SimpleSBM_MNAR_noCov</code></p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl>
 <dt><code>imputation</code></dt><dd><p>the matrix of imputed values</p></dd>
 
 <dt><code>vExpec</code></dt><dd><p>double: variational approximation of the expectation complete log-likelihood</p></dd>
-
-<dt><code>vExpec_corrected</code></dt><dd><p>double: variational approximation of the expectation complete log-likelihood with correction to be comparable with MNAR criteria</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -164,9 +162,10 @@ This internal class is designed to adjust a binary Stochastic Block Model in the
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
 <ul>
-<li><p><a href='#method-update_parameters'><code>SimpleSBM_fit_withCov$update_parameters()</code></a></p></li>
-<li><p><a href='#method-update_blocks'><code>SimpleSBM_fit_withCov$update_blocks()</code></a></p></li>
-<li><p><a href='#method-clone'><code>SimpleSBM_fit_withCov$clone()</code></a></p></li>
+<li><p><a href='#method-new'><code>SimpleSBM_fit_MNAR$new()</code></a></p></li>
+<li><p><a href='#method-update_parameters'><code>SimpleSBM_fit_MNAR$update_parameters()</code></a></p></li>
+<li><p><a href='#method-update_blocks'><code>SimpleSBM_fit_MNAR$update_blocks()</code></a></p></li>
+<li><p><a href='#method-clone'><code>SimpleSBM_fit_MNAR$clone()</code></a></p></li>
 </ul>
 <p><details ><summary>Inherited methods</summary>
 <ul>
@@ -178,37 +177,46 @@ This internal class is designed to adjust a binary Stochastic Block Model in the
 <li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></p></li>
 <li><p><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-show'><code>sbm::SimpleSBM$show()</code></a></span></p></li>
 <li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-doVEM'><code>missSBM::SimpleSBM_fit$doVEM()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-initialize'><code>missSBM::SimpleSBM_fit$initialize()</code></a></span></p></li>
 <li><p><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-reorder'><code>missSBM::SimpleSBM_fit$reorder()</code></a></span></p></li>
 </ul>
 </details>
 
 <hr>
-<a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
-<p>update parameters estimation (M-step)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_withCov</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
+<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
+<p>constructor for simpleSBM_fit for missSBM purpose</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_MNAR</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>networkData</span>, <span class='va'>clusterInit</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>...</code></dt><dd><p>use for compatibility</p></dd>
+<dt><code>networkData</code></dt><dd><p>a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork</p></dd>
 
-<dt><code>control</code></dt><dd><p>a list to tune nlopt for optimization, see documentation of nloptr</p></dd>
+<dt><code>clusterInit</code></dt><dd><p>Initial clustering: a vector with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering with <code>nbBlocks</code> levels.</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-update_parameters"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_parameters()</code></h3>
+<p>update parameters estimation (M-step)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_MNAR</span><span class='op'>$</span><span class='fu'>update_parameters</span><span class='op'>(</span>nu <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>nu</code></dt><dd><p>currently imputed values</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-update_blocks"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>update_blocks()</code></h3>
 <p>update variational estimation of blocks (VE-step)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_withCov</span><span class='op'>$</span><span class='fu'>update_blocks</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_MNAR</span><span class='op'>$</span><span class='fu'>update_blocks</span><span class='op'>(</span>log_lambda <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>...</code></dt><dd><p>use for compatibility</p></dd>
+<dt><code>log_lambda</code></dt><dd><p>additional term sampling dependent used to de-bias estimation of tau</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_withCov</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>SimpleSBM_fit_MNAR</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

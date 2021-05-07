@@ -152,7 +152,7 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href='ht
 
     <p><div class="r6-active-bindings"></p><dl>
 <dt><code>fittedSBM</code></dt><dd><p>the fitted SBM with class <code><a href='SimpleSBM_fit_noCov.html'>SimpleSBM_fit_noCov</a></code>, <code><a href='SimpleSBM_fit_withCov.html'>SimpleSBM_fit_withCov</a></code> or
-<code><a href='SimpleSBM_fit_NMAR.html'>SimpleSBM_fit_NMAR</a></code> inheriting from class <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM_fit.html'>sbm::SimpleSBM_fit</a></code></p></dd>
+<code><a href='SimpleSBM_fit_MNAR.html'>SimpleSBM_fit_MNAR</a></code> inheriting from class <code><a href='https://grosssbm.github.io/sbm/reference/SimpleSBM_fit.html'>sbm::SimpleSBM_fit</a></code></p></dd>
 
 <dt><code>fittedSampling</code></dt><dd><p>the fitted sampling, inheriting from class <code><a href='networkSampling.html'>networkSampling</a></code> and corresponding fits</p></dd>
 
@@ -194,7 +194,7 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href='ht
 <p><div class="arguments"></p><dl>
 <dt><code>partlyObservedNet</code></dt><dd><p>An object with class <code><a href='partlyObservedNetwork.html'>partlyObservedNetwork</a></code>.</p></dd>
 
-<dt><code>netSampling</code></dt><dd><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and NMAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></dd>
+<dt><code>netSampling</code></dt><dd><p>The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")</p></dd>
 
 <dt><code>clusterInit</code></dt><dd><p>Initial clustering: a vector with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with <code>clusterInit</code>.</p></dd>
 
