@@ -207,9 +207,14 @@ missSBM_collection <-
       if (control$iterates > 0) {
         if (control$trace) cat("\n Looking for better solutions\n")
         for (i in 1:control$iterates) {
-          if (control$trace) cat("\t Pass",i,)
-          if (control$exploration %in% c('forward' , 'both')) private$explore_forward(control)
-          if (control$exploration %in% c('backward', 'both')) private$explore_backward(control)
+          if (control$exploration %in% c('forward' , 'both')) {
+            if (control$trace) cat(" Pass",i)
+            private$explore_forward(control)
+          }
+          if (control$exploration %in% c('backward', 'both')) {
+            if (control$trace) cat(" Pass",i)
+            private$explore_backward(control)
+          }
         }
       }
     },
