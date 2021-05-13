@@ -9,7 +9,6 @@ The missSBM package provides the following top-level functions functions:
 \itemize{
 \item{\code{\link{observeNetwork}}}{a function to draw a partially observe network from an existing, fully observed network according to a variety of sampling designs}
 \item{\code{\link{estimateMissSBM}}}{a function to perform inference of SBM from a partially observed under various sampling designs.}
-\item{\code{\link{smooth}}}{a function to smooth an existing collection of missSBM estimation, to avoid being trapped in local maxima.}
 }
 }
 \details{

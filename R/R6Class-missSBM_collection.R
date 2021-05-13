@@ -32,9 +32,9 @@ missSBM_collection <-
     partlyObservedNet = NULL, # network data with convenient encoding (object of class 'partlyObservedNetwork')
     missSBM_fit       = NULL, # a list of models
 
-    # method for performing forward smoothing of the ICL
+    # method for performing forward exploration of the ICL
     # a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
-    smoothing_forward = function(control) {
+    explore_forward = function(control) {
 
       trace <- control$trace; control$trace <- FALSE
       control_fast <- control
@@ -104,9 +104,9 @@ missSBM_collection <-
 
       if (trace) cat("\r                                                                                                    \r")
     },
-    # method for performing backward smoothing of the ICL
+    # method for performing backward exploration of the ICL
     # control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
-    smoothing_backward = function(control) {
+    explore_backward = function(control) {
 
       trace <- control$trace; control$trace <- FALSE
       control_fast <- control
@@ -201,17 +201,15 @@ missSBM_collection <-
       }, mc.cores = control$cores)
       invisible(self)
     },
-    #' @description method for performing smoothing of the ICL
-    #' @param control a list of parameters controlling the smoothing, similar to those found in the regular function [estimateMissSBM()]
-    smooth = function(control) {
-      if (control$trace) cat("\n Smoothing ICL\n")
-      prop_swap <- control$prop_swap
-      if (length(prop_swap) == 1) prop_swap <- rep(prop_swap, control$iterates)
+    #' @description method for performing exploration of the ICL
+    #' @param control a list of parameters controlling the exploration, similar to those found in the regular function [estimateMissSBM()]
+    explore = function(control) {
       if (control$iterates > 0) {
+        if (control$trace) cat("\n Looking for better solutions\n")
         for (i in 1:control$iterates) {
-          control$prop_swap <- prop_swap[i]
-          if (control$smoothing %in% c('forward' , 'both')) private$smoothing_forward(control)
-          if (control$smoothing %in% c('backward', 'both')) private$smoothing_backward(control)
+          if (control$trace) cat("\t Pass",i,)
+          if (control$exploration %in% c('forward' , 'both')) private$explore_forward(control)
+          if (control$exploration %in% c('backward', 'both')) private$explore_backward(control)
         }
       }
     },

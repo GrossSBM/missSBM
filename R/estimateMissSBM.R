@@ -30,8 +30,8 @@
 #'  \item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
 #'        Default is 50.}
 #'  \item{"fixPointIter": }{number of fix-point iterations in the V-E step. Default is 3.}
-#'  \item{"smoothing": }{character indicating what kind of smoothing should be use among "forward", "backward", "both" or "none". Default is "both".}
-#'  \item{"iterates": }{integer for the number of iterations of smoothing. Only relevant when smoothing is different from "none". Default is 1.}
+#'  \item{"exploration": }{character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".}
+#'  \item{"iterates": }{integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.}
 #'  \item{"cores": }{integer for number of cores used. Default is 2.}
 #'  \item{"trace": }{logical for verbosity. Default is TRUE.}
 #' }
@@ -97,7 +97,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   ## Default control parameters overwritten by user specification
   ctrl <- list(
     threshold = 1e-2, trace = TRUE, cores = 2, imputation = "median", similarity = l1_similarity, useCov = TRUE,
-    maxIter = 50, fixPointIter = 3, iterates = 1, prop_swap = 0, smoothing = "both", clusterInit = NULL
+    maxIter = 50, fixPointIter = 3, iterates = 1, exploration = "both", clusterInit = NULL
     )
   ctrl[names(control)] <- control
   ## If no covariate is provided, you cannot ask for using them
@@ -122,8 +122,8 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   ## Launch estimation of each missSBM_fit
   myCollection$estimate(ctrl)
 
-  ## Launch estimation of each missSBM_fit
-  myCollection$smooth(ctrl)
+  ## Looking for better models around
+  myCollection$explore(ctrl)
 
   ## Return the collection of adjusted missSBM_fit
   myCollection

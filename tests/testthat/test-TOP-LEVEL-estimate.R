@@ -25,7 +25,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
     cl0 <- partlyObservedNet$clustering(1:Q)[[Q]]
 
     ## control parameter for the VEM
-    control <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 0, smoothing = "none")
+    control <- list(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 0, exploration = "none")
 
     ## Perform inference with internal classes
     missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, sampling, cl0, TRUE)

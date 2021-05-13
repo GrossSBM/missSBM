@@ -84,7 +84,7 @@ corrplot(partlyObservedNet_war,
 
 ### Estimation with missing data
 
-We can now adjust a Stochastic Block Model with the function `estimate` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to smoothed the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust. The smoothing type (forward, backward, both or none, and number of iteration can be tuned via the `control` argument).
+We can now adjust a Stochastic Block Model with the function `estimateMissSBM` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to avoid local minimal and get a robust Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust. The exploration type (forward, backward, both or none, and number of iteration can be tuned via the `control` argument).
 
 ```{r inference node, results='hide'}
 vBlocks <- 1:5
@@ -93,11 +93,11 @@ collection_sbm <- estimateMissSBM(partlyObservedNet_war, vBlocks, sampling = "no
 
 ### Estimation on fully observed network
 
-We would like to compare our results with the clustering obtained on the fully observed network. To this end, we adjust - and smooth - a collection of SBM on the original adjacency matrix:
+We would like to compare our results with the clustering obtained on the fully observed network. To this end, we adjust  a collection of SBM on the original adjacency matrix:
 
 ```{r inference full, results='hide'}
 collection_sbm_full <- 
-  estimateMissSBM(belligerent_adjacency, vBlocks, sampling = "node", control = list(iterates = 2, smoothing = "both"))
+  estimateMissSBM(belligerent_adjacency, vBlocks, sampling = "node", control = list(iterates = 2))
 ```
 
 As expected, the ICL on the fully observed network is better. But more interestingly, the number of groups selected may differ in the the presence of missing data.
@@ -136,7 +136,7 @@ This part shows how to account for covariates in the model.
 
 #### Military power
 
-We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate. We run the inference on the fully observed network^[Note that smoothing is not performed to alleviate computational time.]: 
+We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate. We run the inference on the fully observed network: 
 
 ```{r war network with covariates full, results = 'hide'} 
 vBlocks <- 1:3

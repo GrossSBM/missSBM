@@ -1,6 +1,6 @@
 # missSBM dev 
  
-  - faster smoothing, now integrated by default in estimateMissSBM
+  - faster model exploration (used to be called 'smoothing'), now integrated by default in estimateMissSBM
   - Now use sparse Matrices to encode 0 and NAs
   - complete rewriting of optimization routines (E and M steps) with C++ armadillo routines
   - hopefully better initialization

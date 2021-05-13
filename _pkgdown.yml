@@ -42,7 +42,6 @@ reference:
     - '`predict.missSBM_fit`'
     - '`plot.missSBM_fit`'
     - '`missSBM_collection`'
-    - '`smooth`'
 - title: Data sets
   desc: ~
   contents:

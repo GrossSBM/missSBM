@@ -43,7 +43,7 @@ class(collection)
 \itemize{
 \item \href{#method-new}{\code{missSBM_collection$new()}}
 \item \href{#method-estimate}{\code{missSBM_collection$estimate()}}
-\item \href{#method-smooth}{\code{missSBM_collection$smooth()}}
+\item \href{#method-explore}{\code{missSBM_collection$explore()}}
 \item \href{#method-plot}{\code{missSBM_collection$plot()}}
 \item \href{#method-show}{\code{missSBM_collection$show()}}
 \item \href{#method-print}{\code{missSBM_collection$print()}}
@@ -91,18 +91,18 @@ method to launch the estimation of the collection of models
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-smooth"></a>}}
-\if{latex}{\out{\hypertarget{method-smooth}{}}}
-\subsection{Method \code{smooth()}}{
-method for performing smoothing of the ICL
+\if{html}{\out{<a id="method-explore"></a>}}
+\if{latex}{\out{\hypertarget{method-explore}{}}}
+\subsection{Method \code{explore()}}{
+method for performing exploration of the ICL
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$smooth(control)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{missSBM_collection$explore(control)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{control}}{a list of parameters controlling the smoothing, similar to those found in the regular function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+\item{\code{control}}{a list of parameters controlling the exploration, similar to those found in the regular function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
 }
 \if{html}{\out{</div>}}
 }

@@ -35,7 +35,7 @@ purrr::map_dbl(cl0, ARI, sbm_covar_full$bestModel$fittedSBM$memberships)
 
 ctrl <- list(
   threshold = 1e-2, trace = TRUE, cores = 1, imputation = "median", similarity = missSBM:::l1_similarity, useCov = TRUE,
-  maxIter = 50, fixPointIter = 3, iterates = 0, prop_swap = 0, smoothing = "both", clusterInit = NULL
+  maxIter = 50, fixPointIter = 3, iterates = 0, prop_swap = 0, exploration = "both", clusterInit = NULL
 )
 
 my_collection <- missSBM_collection$new(net, sampling = "node", cl0, control = ctrl)

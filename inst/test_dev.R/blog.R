@@ -1,12 +1,14 @@
 library(missSBM)
+library(greed)
 library(aricode)
 library(ggplot2)
 
 data("frenchblog2007", package = "missSBM")
-class(frenchblog2007)
 adjacencyMatrix <- igraph::as_adj(frenchblog2007)
 party <- igraph::vertex.attributes(frenchblog2007)$party
 vBlocks <- 1:12
+
+greed_full <- greed(adjacencyMatrix, model = new("sbm", type = "undirected"))
 
 sbm_full  <- estimateMissSBM(adjacencyMatrix, vBlocks, "node", control = list(core = 10, iterates = 1))
 
