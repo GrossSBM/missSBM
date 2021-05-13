@@ -91,7 +91,7 @@
       <h1 data-toc-skip>missSBM: a case study with war networks</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">Last update: 2021-05-07</h4>
+            <h4 class="date">Last update: 2021-05-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/grossSBM/missSBM/blob/master/vignettes/case_study_war_networks.Rmd"><code>vignettes/case_study_war_networks.Rmd</code></a></small>
       <div class="hidden name"><code>case_study_war_networks.Rmd</code></div>
@@ -151,7 +151,7 @@ More specifically, the data collection may be missing for some countries in the 
 <div id="estimation-with-missing-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#estimation-with-missing-data" class="anchor"></a>Estimation with missing data</h3>
-<p>We can now adjust a Stochastic Block Model with the function <code>estimate</code> under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to smoothed the Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust. The smoothing type (forward, backward, both or none, and number of iteration can be tuned via the <code>control</code> argument).</p>
+<p>We can now adjust a Stochastic Block Model with the function <code>estimateMissSBM</code> under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to avoid local minimal and get a robust Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust. The exploration type (forward, backward, both or none, and number of iteration can be tuned via the <code>control</code> argument).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vBlocks</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>
 <span class="va">collection_sbm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">partlyObservedNet_war</span>, <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"node"</span><span class="op">)</span></code></pre></div>
@@ -159,10 +159,10 @@ More specifically, the data collection may be missing for some countries in the 
 <div id="estimation-on-fully-observed-network" class="section level3">
 <h3 class="hasAnchor">
 <a href="#estimation-on-fully-observed-network" class="anchor"></a>Estimation on fully observed network</h3>
-<p>We would like to compare our results with the clustering obtained on the fully observed network. To this end, we adjust - and smooth - a collection of SBM on the original adjacency matrix:</p>
+<p>We would like to compare our results with the clustering obtained on the fully observed network. To this end, we adjust a collection of SBM on the original adjacency matrix:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_full</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span>, <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"node"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>iterates <span class="op">=</span> <span class="fl">2</span>, smoothing <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span>, <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"node"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>iterates <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>As expected, the ICL on the fully observed network is better. But more interestingly, the number of groups selected may differ in the the presence of missing data.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span>
@@ -199,7 +199,7 @@ More specifically, the data collection may be missing for some countries in the 
 <div id="military-power" class="section level4">
 <h4 class="hasAnchor">
 <a href="#military-power" class="anchor"></a>Military power</h4>
-<p>We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate. We run the inference on the fully observed network<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
+<p>We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate. We run the inference on the fully observed network:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vBlocks</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>
 <span class="va">collection_sbm_power_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span>, vBlocks <span class="op">=</span> <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"node"</span>, covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">belligerent_power</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
@@ -279,10 +279,10 @@ More specifically, the data collection may be missing for some countries in the 
 ##  Initialization of 3 model(s). 
 ##  Performing VEM inference
 ## 
-##  Smoothing ICL
-##    Going forward ++
+##  Looking for better solutions
+##  Pass 1   Going forward ++
                                                                                                     
-   Going backward ++
+ Pass 1   Going backward ++
                                                                                                     </code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_trade_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSampling</span><span class="op">$</span><span class="va">parameters</span></code></pre></div>
@@ -313,12 +313,6 @@ More specifically, the data collection may be missing for some countries in the 
 <p>Singer, J David, Stuart Bremer, and John Stuckey. 1972. “Capability Distribution, Uncertainty, and Major Power War, 1820-1965.” <em>Peace, War, and Numbers</em> 19: 48.</p>
 </div>
 </div>
-</div>
-<div class="footnotes">
-<hr>
-<ol>
-<li id="fn1"><p>Note that smoothing is not performed to alleviate computational time.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
   </div>
 

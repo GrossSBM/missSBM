@@ -172,7 +172,7 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 <ul>
 <li><p><a href='#method-new'><code>missSBM_collection$new()</code></a></p></li>
 <li><p><a href='#method-estimate'><code>missSBM_collection$estimate()</code></a></p></li>
-<li><p><a href='#method-smooth'><code>missSBM_collection$smooth()</code></a></p></li>
+<li><p><a href='#method-explore'><code>missSBM_collection$explore()</code></a></p></li>
 <li><p><a href='#method-plot'><code>missSBM_collection$plot()</code></a></p></li>
 <li><p><a href='#method-show'><code>missSBM_collection$show()</code></a></p></li>
 <li><p><a href='#method-print'><code>missSBM_collection$print()</code></a></p></li>
@@ -205,13 +205,13 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-smooth"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/stats/smooth.html'>smooth()</a></code></h3>
-<p>method for performing smoothing of the ICL</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>smooth</span><span class='op'>(</span><span class='va'>control</span><span class='op'>)</span></pre><p></div></p>
+<a id="method-explore"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>explore()</code></h3>
+<p>method for performing exploration of the ICL</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>missSBM_collection</span><span class='op'>$</span><span class='fu'>explore</span><span class='op'>(</span><span class='va'>control</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>control</code></dt><dd><p>a list of parameters controlling the smoothing, similar to those found in the regular function <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code></p></dd>
+<dt><code>control</code></dt><dd><p>a list of parameters controlling the exploration, similar to those found in the regular function <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code></p></dd>
 
 </dl><p></div></p>
 <p><hr>
@@ -262,8 +262,8 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 #&gt;  Initialization of 3 model(s). 
 #&gt;  Performing VEM inference
 #&gt; 
-#&gt;  Smoothing ICL
-#&gt;    Going forward ++                                                                                                       Going backward ++                                                                                                    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>)</span>
+#&gt;  Looking for better solutions
+#&gt;  Pass 1   Going forward ++                                                                                                     Pass 1   Going backward ++                                                                                                    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "missSBM_collection" "R6"                </div><div class='input'>
 
 </div></pre>

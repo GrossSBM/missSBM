@@ -195,8 +195,8 @@ by less than threshold. Default is 1e-2.</p></li>
 <li><p>"maxIter": V-EM algorithm stops when the number of iteration exceeds maxIter.
 Default is 50.</p></li>
 <li><p>"fixPointIter": number of fix-point iterations in the V-E step. Default is 3.</p></li>
-<li><p>"smoothing": character indicating what kind of smoothing should be use among "forward", "backward", "both" or "none". Default is "both".</p></li>
-<li><p>"iterates": integer for the number of iterations of smoothing. Only relevant when smoothing is different from "none". Default is 1.</p></li>
+<li><p>"exploration": character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".</p></li>
+<li><p>"iterates": integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
 <li><p>"cores": integer for number of cores used. Default is 2.</p></li>
 <li><p>"trace": logical for verbosity. Default is TRUE.</p></li>
 </ul>
@@ -250,8 +250,8 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 #&gt;  Initialization of 5 model(s). 
 #&gt;  Performing VEM inference
 #&gt; 
-#&gt;  Smoothing ICL
-#&gt;    Going forward ++++                                                                                                       Going backward ++++                                                                                                    </div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
+#&gt;  Looking for better solutions
+#&gt;  Pass 1   Going forward ++++                                                                                                     Pass 1   Going backward ++++                                                                                                    </div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
 </div><div class='output co'>#&gt; [1] 23895.67 22101.14 21079.67 21117.05 21176.92</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
