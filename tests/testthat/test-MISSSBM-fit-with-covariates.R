@@ -8,11 +8,11 @@ source("utils_test.R", local = TRUE)
 ## control parameter for the VEM
 control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 5, trace = TRUE)
 
-## Consistency
-tol_truth <- .2
-tol_ARI   <- .7
-
 test_that("missSBM with covariates and dyad sampling works", {
+
+  ## Consistency
+  tol_truth <- .2
+  tol_ARI   <- .7
 
   sampler_undirected_cov$rNetwork(store = TRUE)
 
@@ -85,6 +85,10 @@ test_that("missSBM with covariates and dyad sampling works", {
 })
 
 test_that("miss SBM with covariates and node sampling works", {
+
+  ## Consistency
+  tol_truth <- .2
+  tol_ARI   <- .5
 
   sampler_undirected_cov_node$rNetwork(store = TRUE)
 
