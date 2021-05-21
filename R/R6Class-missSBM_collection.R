@@ -233,9 +233,10 @@ missSBM_collection <-
       cat("--------------------------------------------------------\n")
       cat("COLLECTION OF", length(self$vBlocks), "SBM fits          \n")
       cat("========================================================\n")
-      cat(" - Number of blocks considers: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
+      cat(" - Number of blocks considered: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
       cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nbBlocks, "\n", sep = "")
       cat(" - Fields: $models, $ICL, $vBlocks, $bestModel, $optimizationStatus\n")
+      cat(" - Method: $estimate(), $explore(), $plot() \n")
     },
     #' @description User friendly print method
     print = function() { self$show() }

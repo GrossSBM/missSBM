@@ -131,9 +131,9 @@ missSBM_fit <-
     show = function() {
       cat("missSBM-fit\n")
       cat("==================================================================\n")
-      cat("Structure for storing a SBM fitted under missing data condition   \n")
+      cat("Structure for storing an SBM fitted under missing data condition  \n")
       cat("==================================================================\n")
-      cat("* Useful fields (most are special object themselves with methods) \n")
+      cat("* Useful fields (first 2 special objects themselves with methods) \n")
       cat("  $fittedSBM (the adjusted stochastic block model)                \n")
       cat("  $fittedSampling (the estimated sampling process)                \n")
       cat("  $imputedNetwork (the adjacency matrix with imputed values)      \n")
