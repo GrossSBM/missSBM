@@ -180,7 +180,9 @@ must be a size-N vector;  if the covariates are dyad-centered, each entry of <co
     <p>Returns an R6 object with class <code><a href='missSBM_collection.html'>missSBM_collection</a></code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The list of parameters <code>control</code> tunes more advanced features, such as the
+    <p>Internal functions use <code>future_lapply</code>, so set your plan to <code>'multisession'</code> or
+<code>'multicore'</code> to use several cores/workers.
+The list of parameters <code>control</code> tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul>
 <li><p>"useCov": logical. If <code>covariates</code> is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
@@ -197,7 +199,6 @@ Default is 50.</p></li>
 <li><p>"fixPointIter": number of fix-point iterations in the V-E step. Default is 3.</p></li>
 <li><p>"exploration": character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".</p></li>
 <li><p>"iterates": integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
-<li><p>"cores": integer for number of cores used. Default is 2.</p></li>
 <li><p>"trace": logical for verbosity. Default is TRUE.</p></li>
 </ul>
 
@@ -225,7 +226,7 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## SBM parameters</span>
-<span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>150</span> <span class='co'># number of nodes</span>
+<span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>100</span> <span class='co'># number of nodes</span>
 <span class='va'>Q</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>   <span class='co'># number of clusters</span>
 <span class='va'>pi</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>Q</span><span class='op'>)</span><span class='op'>/</span><span class='va'>Q</span>     <span class='co'># block proportion</span>
 <span class='va'>theta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>.45</span>,<span class='va'>Q</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>.05</span> <span class='op'>)</span> <span class='co'># connectivity matrix</span>
@@ -236,6 +237,9 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 
 <span class='co'>## generate a undirected binary SBM with no covariate</span>
 <span class='va'>sbm</span> <span class='op'>&lt;-</span> <span class='fu'>sbm</span><span class='fu'>::</span><span class='fu'><a href='https://grosssbm.github.io/sbm/reference/sampleSimpleSBM.html'>sampleSimpleSBM</a></span><span class='op'>(</span><span class='va'>N</span>, <span class='va'>pi</span>, <span class='va'>theta</span><span class='op'>)</span>
+
+<span class='co'>## Uncomment to set parallel computing with future</span>
+<span class='co'>## future::plan("multicore", workers = 2)</span>
 
 <span class='co'>## Sample some dyads data + Infer SBM with missing data</span>
 <span class='va'>collection</span> <span class='op'>&lt;-</span>
@@ -249,35 +253,38 @@ node-centered samplings. See doi: <a href='https://doi.org/10.1080/01621459.2018
 #&gt; 
 #&gt;  Initialization of 5 model(s). 
 #&gt;  Performing VEM inference
-#&gt; 
+#&gt;  	Model with 5 blocks. 	Model with 1 blocks. 	Model with 4 blocks. 	Model with 3 blocks. 	Model with 2 blocks.
 #&gt;  Looking for better solutions
-#&gt;  Pass 1   Going forward ++++                                                                                                     Pass 1   Going backward ++++                                                                                                    </div><div class='input'><span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
-</div><div class='output co'>#&gt; [1] 23895.67 22101.14 21079.67 21117.05 21176.92</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+#&gt;  Pass 1   Going forward ++++                                                                                                     Pass 1   Going backward ++++                                                                                                    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>collection</span>, <span class='st'>"monitoring"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>collection</span>, <span class='st'>"icl"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='va'>collection</span><span class='op'>$</span><span class='va'>ICL</span>
+</div><div class='output co'>#&gt; [1] 10584.442  9886.688  9485.626  9534.831  9587.181</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span><span class='op'>$</span><span class='va'>fittedSBM</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.52627512 0.05327869 0.04764454
-#&gt; [2,] 0.05327869 0.50684932 0.05200790
-#&gt; [3,] 0.04764454 0.05200790 0.49546828
+#&gt; [1,] 0.50247919 0.05509355 0.05696972
+#&gt; [2,] 0.05509355 0.50953677 0.05164995
+#&gt; [3,] 0.05696972 0.05164995 0.53003541
 #&gt; </div><div class='input'>
 <span class='va'>myModel</span> <span class='op'>&lt;-</span> <span class='va'>collection</span><span class='op'>$</span><span class='va'>bestModel</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"expected"</span><span class='op'>)</span>
-</div><div class='img'><img src='estimateMissSBM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"imputed"</span><span class='op'>)</span>
-</div><div class='img'><img src='estimateMissSBM-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"meso"</span><span class='op'>)</span>
-</div><div class='img'><img src='estimateMissSBM-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"sampling"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.7530201</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"imputed"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-4.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"meso"</span><span class='op'>)</span>
+</div><div class='img'><img src='estimateMissSBM-5.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"sampling"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.7553535</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>myModel</span>, <span class='st'>"connectivity"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $mean
 #&gt;            [,1]       [,2]       [,3]
-#&gt; [1,] 0.52627512 0.05327869 0.04764454
-#&gt; [2,] 0.05327869 0.50684932 0.05200790
-#&gt; [3,] 0.04764454 0.05200790 0.49546828
+#&gt; [1,] 0.50247919 0.05509355 0.05696972
+#&gt; [2,] 0.05509355 0.50953677 0.05164995
+#&gt; [3,] 0.05696972 0.05164995 0.53003541
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>
 </div><div class='output co'>#&gt; 5 x 5 sparse Matrix of class "dgCMatrix"
-#&gt;                               
-#&gt; [1,] .         . 0.0520079 . .
-#&gt; [2,] .         . 1.0000000 1 .
-#&gt; [3,] 0.0520079 1 .         . 1
-#&gt; [4,] .         1 .         . .
-#&gt; [5,] .         . 1.0000000 . .</div><div class='input'>
+#&gt;                                                   
+#&gt; [1,] .          . 0.05164995 .          .         
+#&gt; [2,] .          . 1.00000000 1.00000000 .         
+#&gt; [3,] 0.05164995 1 .          1.00000000 .         
+#&gt; [4,] .          1 1.00000000 .          0.05509355
+#&gt; [5,] .          . .          0.05509355 .         </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

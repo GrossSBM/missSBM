@@ -189,7 +189,9 @@ of <code>covariates</code> must be N x N matrix.</p></td>
     <p>an adjacency matrix with the same dimension as the input, yet with additional NAs.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The list of parameters <code>control</code> tunes more advanced features, such as the
+    <p>Internal functions use <code>future_lapply</code>, so set your plan to <code>'multisession'</code> or
+<code>'multicore'</code> to use several cores/workers.
+The list of parameters <code>control</code> tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul>
 <li><p>"useCov": logical. If <code>covariates</code> is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
@@ -206,7 +208,6 @@ Default is 50.</p></li>
 <li><p>"fixPointIter": number of fix-point iterations in the V-E step. Default is 3.</p></li>
 <li><p>"exploration": character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".</p></li>
 <li><p>"iterates": integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
-<li><p>"cores": integer for number of cores used. Default is 2.</p></li>
 <li><p>"trace": logical for verbosity. Default is TRUE.</p></li>
 </ul>
 

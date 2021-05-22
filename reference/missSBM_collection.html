@@ -191,7 +191,7 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 
 <dt><code>clusterInit</code></dt><dd><p>Initial clustering: a list of vectors, each with size <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(adjacencyMatrix)</a></code>.</p></dd>
 
-<dt><code>control</code></dt><dd><p>a list of parameters controlling advanced features. Only 'cores', 'trace' and 'useCov' are relevant here. See <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code> for details.</p></dd>
+<dt><code>control</code></dt><dd><p>a list of parameters controlling advanced features. Only 'trace' and 'useCov' are relevant here. See <code><a href='estimateMissSBM.html'>estimateMissSBM()</a></code> for details.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
@@ -248,24 +248,27 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href='
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Sample 75% of dyads in  French political Blogosphere's network data</span>
+    <pre class="examples"><div class='input'><span class='co'>## Uncomment to set parallel computing with future</span>
+<span class='co'>## future::plan("multicore", workers = 2)</span>
+
+<span class='co'>## Sample 75% of dyads in  French political Blogosphere's network data</span>
 <span class='va'>adjacencyMatrix</span> <span class='op'>&lt;-</span> <span class='fu'>missSBM</span><span class='fu'>::</span><span class='va'><a href='frenchblog2007.html'>frenchblog2007</a></span> <span class='op'>%&gt;%</span>
-  <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> <span class='op'>(</span>sparse <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/delete_vertices.html'>delete.vertices</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html'>as_adj</a></span> <span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>missSBM</span><span class='fu'>::</span><span class='fu'><a href='observeNetwork.html'>observeNetwork</a></span><span class='op'>(</span>sampling <span class='op'>=</span> <span class='st'>"dyad"</span>, parameters <span class='op'>=</span> <span class='fl'>0.75</span><span class='op'>)</span>
-<span class='va'>collection</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimateMissSBM.html'>estimateMissSBM</a></span><span class='op'>(</span><span class='va'>adjacencyMatrix</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='st'>"dyad"</span><span class='op'>)</span>
+<span class='va'>collection</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimateMissSBM.html'>estimateMissSBM</a></span><span class='op'>(</span><span class='va'>adjacencyMatrix</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, sampling <span class='op'>=</span> <span class='st'>"dyad"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; 
 #&gt;  Adjusting Variational EM for Stochastic Block Model
 #&gt; 
 #&gt; 	Imputation assumes a 'dyad' network-sampling process
 #&gt; 
-#&gt;  Initialization of 3 model(s). 
+#&gt;  Initialization of 5 model(s). 
 #&gt;  Performing VEM inference
-#&gt; 
+#&gt;  	Model with 3 blocks. 	Model with 1 blocks. 	Model with 4 blocks. 	Model with 5 blocks. 	Model with 2 blocks.
 #&gt;  Looking for better solutions
-#&gt;  Pass 1   Going forward ++                                                                                                     Pass 1   Going backward ++                                                                                                    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>)</span>
+#&gt;  Pass 1   Going forward ++++                                                                                                     Pass 1   Going backward ++++                                                                                                    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>collection</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "missSBM_collection" "R6"                </div><div class='input'>
-
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
