@@ -91,7 +91,7 @@
       <h1 data-toc-skip>missSBM: a case study with war networks</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">Last update: 2021-05-21</h4>
+            <h4 class="date">Last update: 2021-05-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/grossSBM/missSBM/blob/master/vignettes/case_study_war_networks.Rmd"><code>vignettes/case_study_war_networks.Rmd</code></a></small>
       <div class="hidden name"><code>case_study_war_networks.Rmd</code></div>
@@ -237,11 +237,11 @@ More specifically, the data collection may be missing for some countries in the 
 <p>Then we can access the estimated sampling parameters:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_power_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSampling</span><span class="op">$</span><span class="va">parameters</span></code></pre></div>
-<pre><code>## [1]  -1.941027 608.412212</code></pre>
+<pre><code>## [1]  -2.122186 604.955129</code></pre>
 <p>and the parameters in the SBM associated with the covariate:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_power_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></code></pre></div>
-<pre><code>## [1] -4.603878</code></pre>
+<pre><code>## [1] -2.584689</code></pre>
 </div>
 <div id="trade-data" class="section level4">
 <h4 class="hasAnchor">
@@ -286,10 +286,10 @@ More specifically, the data collection may be missing for some countries in the 
                                                                                                     </code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_trade_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSampling</span><span class="op">$</span><span class="va">parameters</span></code></pre></div>
-<pre><code>## [1] -1.977321  1.007006</code></pre>
+<pre><code>## [1] -1.857767  0.991421</code></pre>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collection_sbm_trade_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></code></pre></div>
-<pre><code>## [1] 0.1573639</code></pre>
+<pre><code>## [1] 0.1400318</code></pre>
 </div>
 </div>
 </div>
