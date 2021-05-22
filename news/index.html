@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0-9990</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -132,6 +132,24 @@
       <small>Source: <a href='https://github.com/grossSBM/missSBM/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="misssbm-100" class="section level1">
+<h1 class="page-header" data-toc-text="1.0.0">
+<a href="#misssbm-100" class="anchor"></a>missSBM 1.0.0<small> Unreleased </small>
+</h1>
+<ul>
+<li>now rely on future_lapply for parallel computing (plan to be set by the user)</li>
+<li>faster model exploration (used to be called ‘smoothing’), now integrated by default in estimateMissSBM</li>
+<li>Use sparse Matrices to encode 0 and NAs</li>
+<li>complete rewriting of optimization routines (E and M steps) with C++ armadillo routines</li>
+<li>Better initialization and embedded C++ kmeans implementation</li>
+<li>important bug fix in MAR case</li>
+<li>bug fix in inference on covariates</li>
+<li>bug fixed in blockDyad-sampling</li>
+<li>missSBM::SimpleSBM_fit_missSBM now inherits from from sbm::SimpleSBM rather than sbm::SimpleSBM_fit</li>
+<li>change field ‘<span class="math inline"><em>n</em><em>e</em><em>t</em><em>M</em><em>a</em><em>t</em><em>r</em><em>i</em><em>x</em>′<em>t</em><em>o</em>′</span>networkData’ to comply with new interface in sbm</li>
+<li>defunct functions estimate, sample and simulate are no longer supported</li>
+</ul>
+</div>
     <div id="misssbm-030-2020-11-18" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
 <a href="#misssbm-030-2020-11-18" class="anchor"></a>missSBM 0.3.0 [2020-11-18]<small> 2020-11-18 </small>
