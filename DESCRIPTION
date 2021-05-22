@@ -50,7 +50,6 @@ Collate:
     'R6Class-networkSampler.R'
     'R6Class-partlyObservedNetwork.R'
     'RcppExports.R'
-    'defunct.R'
     'er_network.R'
     'estimateMissSBM.R'
     'frenchblog2007.R'
