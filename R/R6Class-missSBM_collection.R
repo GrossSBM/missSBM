@@ -10,16 +10,19 @@
 #' as S3 methods. See the documentation for [show()] and [print()]
 #'
 #' @examples
+#' ## Uncomment to set parallel computing with future
+#' ## future::plan("multicore", workers = 2)
+#'
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
 #' adjacencyMatrix <- missSBM::frenchblog2007 %>%
-#'   igraph::as_adj (sparse = FALSE) %>%
+#'   igraph::delete.vertices(1:100) %>%
+#'   igraph::as_adj () %>%
 #'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
-#' collection <- estimateMissSBM(adjacencyMatrix, 3:5, sampling = "dyad")
+#' collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
 #' class(collection)
 #'
-#'
 #' @rdname missSBM_collection
-#' @importFrom parallel mclapply
+#' @importFrom future.apply future_lapply
 #' @include R6Class-missSBM_fit.R
 #' @export
 missSBM_collection <-
@@ -45,7 +48,6 @@ missSBM_collection <-
       if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going forward ")
       vBlocks <- self$vBlocks[-length(self$vBlocks)]
-
       for (k in seq_along(vBlocks)) {
         if (trace) cat("+")
 
@@ -61,15 +63,16 @@ missSBM_collection <-
 
         if (length(cl_splitable) > 0) {
           cl_split <- vector("list", vBlocks[k])
-          cl_split[cl_splitable] <- mclapply(cl_splitable, function(k_) {
-            A <- base_net[cl0 == k_, cl0 == k_]
-            A <- 1/(1+exp(-A/sd(A)))
-            D <- 1/sqrt(rowSums(abs(A)))
-            L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
-            Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
-            Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-            kmeans_missSBM(Un, 2)
-          }, mc.cores = control$cores)
+          cl_split[cl_splitable] <-
+            future_lapply(cl_splitable, function(k_) {
+              A <- base_net[cl0 == k_, cl0 == k_]
+              A <- 1/(1+exp(-A/sd(A)))
+              D <- 1/sqrt(rowSums(abs(A)))
+              L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
+              Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
+              Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+              kmeans_missSBM(Un, 2)
+            }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
 
           ## build list of candidate clustering after splits
           cl_candidates <- lapply(cl_splitable, function(k_)  {
@@ -86,11 +89,11 @@ missSBM_collection <-
             as.numeric(candidate) # relabeling to start from 1
           })
 
-          icl_candidates <- mclapply(cl_candidates, function(cl_) {
+          icl_candidates <- future_lapply(cl_candidates, function(cl_) {
             model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
             model$doVEM(control_fast)
             model$ICL
-          }, mc.cores = control$cores) %>% unlist()
+          }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random")) %>% unlist()
 
           best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.min(icl_candidates)]], useCov)
           best_one$doVEM(control)
@@ -132,11 +135,11 @@ missSBM_collection <-
           as.integer(cl_merged)
         })
 
-        icl_candidates <- mclapply(cl_candidates, function(cl_) {
+        icl_candidates <- future_lapply(cl_candidates, function(cl_) {
           model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
           model$doVEM(control_fast)
           model$ICL
-        }, mc.cores = control$cores) %>% unlist()
+        }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random")) %>% unlist()
 
         best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.min(icl_candidates)]], useCov)
         best_one$doVEM(control)
@@ -172,7 +175,7 @@ missSBM_collection <-
     #' @param partlyObservedNet An object with class [`partlyObservedNetwork`].
     #' @param sampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial clustering: a list of vectors, each with size \code{ncol(adjacencyMatrix)}.
-    #' @param control a list of parameters controlling advanced features. Only 'cores', 'trace' and 'useCov' are relevant here. See [estimateMissSBM()] for details.
+    #' @param control a list of parameters controlling advanced features. Only 'trace' and 'useCov' are relevant here. See [estimateMissSBM()] for details.
     initialize = function(partlyObservedNet, sampling, clusterInit, control) {
 
       if (control$trace) cat("\n")
@@ -193,12 +196,12 @@ missSBM_collection <-
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     estimate = function(control) {
       if (control$trace) cat(" Performing VEM inference\n")
-      private$missSBM_fit <- mclapply(private$missSBM_fit, function(model) {
+      private$missSBM_fit <- future_lapply(private$missSBM_fit, function(model) {
         if (control$trace) cat(" \tModel with", model$fittedSBM$nbBlocks,"blocks.\r")
         control$trace <- FALSE
         model$doVEM(control)
         model
-      }, mc.cores = control$cores)
+      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
       invisible(self)
     },
     #' @description method for performing exploration of the ICL

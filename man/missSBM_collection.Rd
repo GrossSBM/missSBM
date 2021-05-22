@@ -14,13 +14,16 @@ This class comes with a set of R6 methods, some of them being useful for the use
 as S3 methods. See the documentation for \code{\link[=show]{show()}} and \code{\link[=print]{print()}}
 }
 \examples{
+## Uncomment to set parallel computing with future
+## future::plan("multicore", workers = 2)
+
 ## Sample 75\% of dyads in  French political Blogosphere's network data
 adjacencyMatrix <- missSBM::frenchblog2007 \%>\%
-  igraph::as_adj (sparse = FALSE) \%>\%
+  igraph::delete.vertices(1:100) \%>\%
+  igraph::as_adj () \%>\%
   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
-collection <- estimateMissSBM(adjacencyMatrix, 3:5, sampling = "dyad")
+collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
 class(collection)
-
 
 }
 \section{Active bindings}{
@@ -68,7 +71,7 @@ constructor for networkSampling
 
 \item{\code{clusterInit}}{Initial clustering: a list of vectors, each with size \code{ncol(adjacencyMatrix)}.}
 
-\item{\code{control}}{a list of parameters controlling advanced features. Only 'cores', 'trace' and 'useCov' are relevant here. See \code{\link[=estimateMissSBM]{estimateMissSBM()}} for details.}
+\item{\code{control}}{a list of parameters controlling advanced features. Only 'trace' and 'useCov' are relevant here. See \code{\link[=estimateMissSBM]{estimateMissSBM()}} for details.}
 }
 \if{html}{\out{</div>}}
 }

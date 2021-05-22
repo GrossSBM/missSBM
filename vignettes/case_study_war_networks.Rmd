@@ -33,6 +33,14 @@ library(ggplot2)
 library(corrplot)
 library(magrittr)
 library(missSBM)
+library(future)
+```
+
+**missSBM** integrates some features of the **future** package to perform parallel computing: you can set your plan now to speed the fit by relying on 2 workers as follows:
+
+```{r future-plan}
+library(future)
+plan("multisession", workers = 2)
 ```
 
 ## The war network
@@ -224,6 +232,12 @@ We then perform estimation on the missing data drawn according to the trade cova
 collection_sbm_trade_miss <- estimateMissSBM(sampleNet_trade_miss, vBlocks = vBlocks, sampling = "covar-dyad", covariates = list(trade))
 collection_sbm_trade_miss$bestModel$fittedSampling$parameters
 collection_sbm_trade_miss$bestModel$fittedSBM$covarParam
+```
+
+When you are done, do not forget to get back to the standard sequential plan with future.
+
+```{r future-plan-unset}
+future::plan("sequential")
 ```
 
 ## References

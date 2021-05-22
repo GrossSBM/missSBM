@@ -1,9 +1,10 @@
 # missSBM dev 
- 
+
+  - now rely on future_lapply  for parallel computing (plan to be set by the user)
   - faster model exploration (used to be called 'smoothing'), now integrated by default in estimateMissSBM
-  - Now use sparse Matrices to encode 0 and NAs
+  - Use sparse Matrices to encode 0 and NAs
   - complete rewriting of optimization routines (E and M steps) with C++ armadillo routines
-  - hopefully better initialization
+  - Better initialization and embedded C++ kmeans implementation
   - important bug fix in MAR case
   - bug fix in inference on covariates
   - bug fixed in blockDyad-sampling

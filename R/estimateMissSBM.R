@@ -14,7 +14,9 @@
 #'
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
-#' @details The list of parameters \code{control} tunes more advanced features, such as the
+#' @details Internal functions use \code{future_lapply}, so set your plan to \code{'multisession'} or
+#' \code{'multicore'} to use several cores/workers.
+#' The list of parameters \code{control} tunes more advanced features, such as the
 #' initialization, how covariates are handled in the model, and the variational EM algorithm:
 #'  \itemize{
 #'  \item{"useCov": }{logical. If \code{covariates} is not null, should they be used for the
@@ -32,7 +34,6 @@
 #'  \item{"fixPointIter": }{number of fix-point iterations in the V-E step. Default is 3.}
 #'  \item{"exploration": }{character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".}
 #'  \item{"iterates": }{integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.}
-#'  \item{"cores": }{integer for number of cores used. Default is 2.}
 #'  \item{"trace": }{logical for verbosity. Default is TRUE.}
 #' }
 #'
@@ -58,7 +59,7 @@
 #' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
 #' @examples
 #' ## SBM parameters
-#' N <- 150 # number of nodes
+#' N <- 100 # number of nodes
 #' Q <- 3   # number of clusters
 #' pi <- rep(1,Q)/Q     # block proportion
 #' theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
@@ -70,10 +71,16 @@
 #' ## generate a undirected binary SBM with no covariate
 #' sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 #'
+#' ## Uncomment to set parallel computing with future
+#' ## future::plan("multicore", workers = 2)
+#'
 #' ## Sample some dyads data + Infer SBM with missing data
 #' collection <-
 #'    observeNetwork(sbm$networkData, sampling, samplingParameters) %>%
 #'    estimateMissSBM(vBlocks = 1:5, sampling = sampling)
+#' plot(collection, "monitoring")
+#' plot(collection, "icl")
+#'
 #' collection$ICL
 #' coef(collection$bestModel$fittedSBM, "connectivity")
 #'
@@ -96,15 +103,13 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
 
   ## Default control parameters overwritten by user specification
   ctrl <- list(
-    threshold = 1e-2, trace = TRUE, cores = 2, imputation = "median", similarity = l1_similarity, useCov = TRUE,
+    threshold = 1e-2, trace = TRUE, imputation = "median", similarity = l1_similarity, useCov = TRUE,
     maxIter = 50, fixPointIter = 3, iterates = 1, exploration = "both", clusterInit = NULL
     )
   ctrl[names(control)] <- control
   ## If no covariate is provided, you cannot ask for using them
   if (length(covariates) == 0) ctrl$useCov <- FALSE
   if (ctrl$useCov) stopifnot(sampling %in% available_samplings_covariates)
-  ## We shall use 'future' in the future...
-  if(Sys.info()['sysname'] == "Windows") ctrl$cores <- 1
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)

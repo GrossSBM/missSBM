@@ -84,6 +84,8 @@ R6::R6Class(classname = "SimpleSBM_fit",
         if (trace) cat(" iteration #:", iterate, "\r")
 
         theta_old <- private$theta # save old value of parameters to assess convergence
+        Z_old     <- private$Z
+        pi_old    <- private$pi
 
         # Variational E-Step
         for (i in seq.int(fixPointIter)) self$update_blocks()
@@ -94,8 +96,17 @@ R6::R6Class(classname = "SimpleSBM_fit",
         # Assess convergence
         objective[iterate] <- self$loglik
         delta_par[iterate] <- sqrt(sum((private$theta$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
-        delta_obj[iterate] <- (objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
+        delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
         stop <- (iterate > maxIter) |  ((delta_par[iterate] < threshold) & (delta_obj[iterate] < threshold))
+
+        # Step back of elbo decreases
+        if (objective[iterate] < objective[iterate-1]) {
+          private$theta <- theta_old
+          private$Z     <- Z_old
+          private$pi    <- pi_old
+          iterate <- iterate - 1
+          stop <- TRUE
+        }
       }
       self$reorder()
       if (trace) cat("\n")

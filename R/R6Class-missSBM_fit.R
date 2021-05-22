@@ -97,6 +97,8 @@ missSBM_fit <-
         if (control$trace) cat(" iteration #:", iterate, "\r")
 
         theta_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
+        SBM_old   <- private$SBM$clone()
+
         ## ______________________________________________________
         ## Variational E-Step
         #
@@ -115,11 +117,18 @@ missSBM_fit <-
         # update the parameters of network sampling process (a.k.a psi)
         private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
 
-        ## Check convergence
+        # Assess convergence
         objective[iterate] <- self$loglik
         delta_par[iterate] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
         delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
-        stop <- (iterate > control$maxIter) |  ((delta_par[iterate] < control$threshold) & (delta_obj[iterate] < control$threshold))
+        stop <- (iterate > control$maxIter) | ((delta_par[iterate] < control$threshold) & (delta_obj[iterate] < control$threshold))
+
+        # Step back if elbo decreases
+        if (objective[iterate] < objective[iterate-1] & iterate > 2) {
+          private$SBM <- SBM_old
+          iterate <- iterate - 1
+          stop <- TRUE
+        }
       }
       private$SBM$reorder()
 

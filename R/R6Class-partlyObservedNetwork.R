@@ -108,6 +108,7 @@ partlyObservedNetwork <-
       A <- self$imputation(imputation)
       n <- ncol(A)
       if (self$is_directed) A <- A %*% t(A)
+      ## A <- A %*% t(A)
       # A <- as.matrix(1/(1 + exp(-A/sd(A)))) ## caveat: the matrix is dense; pros: lonely node are automatically handled
 
       ## handling lonely souls
@@ -120,7 +121,7 @@ partlyObservedNetwork <-
       L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
 ##      U <- base::svd(L, nu = max(vBlocks), nv = 0)$u
       U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
-      res <- lapply(vBlocks, function(k) {
+      res <- future_lapply(vBlocks, function(k) {
         cl <- rep(1L, n)
         if (k != 1) {
           Un <- U[, 1:k, drop = FALSE]
@@ -134,8 +135,7 @@ partlyObservedNetwork <-
          cl[unconnected] <- which.min(rowsum(D, cl_))
         }
         cl
-      }
-      )
+      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
       res
     },
     #' @description basic imputation from existing clustering

@@ -39,6 +39,8 @@ https
 icl
 igraph
 intra
+kmeans
+lapply
 magrittr
 maxIter
 meso

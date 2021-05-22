@@ -1,4 +1,4 @@
-set.seed(1234)
+set.seed(12345)
 library(sbm)
 library(aricode)
 
@@ -38,7 +38,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate, node sampl
 
   ## correctness
   expect_lt(error(mySBM$connectParam$mean, sampler_undirected_nocov$connectParam$mean), 0.05)
-  expect_gt(ARI(mySBM$memberships       , sampler_undirected_nocov$memberships), 0.95)
+  expect_gt(ARI(mySBM$memberships        , sampler_undirected_nocov$memberships), 0.95)
 
 })
 

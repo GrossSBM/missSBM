@@ -39,6 +39,8 @@ an adjacency matrix with the same dimension as the input, yet with additional NA
 This function draws observations in an adjacency matrix according to a given network sampling design.
 }
 \details{
+Internal functions use \code{future_lapply}, so set your plan to \code{'multisession'} or
+\code{'multicore'} to use several cores/workers.
 The list of parameters \code{control} tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:
 \itemize{
@@ -57,7 +59,6 @@ Default is 50.}
 \item{"fixPointIter": }{number of fix-point iterations in the V-E step. Default is 3.}
 \item{"exploration": }{character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".}
 \item{"iterates": }{integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.}
-\item{"cores": }{integer for number of cores used. Default is 2.}
 \item{"trace": }{logical for verbosity. Default is TRUE.}
 }
 
