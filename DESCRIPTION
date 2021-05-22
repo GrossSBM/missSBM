@@ -1,14 +1,15 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 0.3.0-9990
+Version: 1.0.0
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
-  person("Pierre", "Barbillon", role = c("aut"), email = "pierre.barbillon@agroparistech.fr",
+  person("Pierre", "Barbillon", role = "aut", email = "pierre.barbillon@agroparistech.fr",
       comment = c(ORCID = "0000-0002-7766-7693")),
-  person("Timothée", "Tabouy", role = c("aut"), email = "timothee.tabouy@agroparistech.fr"),
-  person("Jean-Benoist", "Léger", role = c("ctb"), email = "jbleger@hds.utc.fr"),
+  person("Timothée", "Tabouy", role = "aut", email = "timothee.tabouy@agroparistech.fr"),
+  person("Jean-Benoist", "Léger", role = "ctb", email = "jbleger@hds.utc.fr", comment = "provided C++ implementaion of K-means"),
+  person("François", "Gindraud", role = "ctb", email = "francois.gindraud@gmail.com", comment = "provided C++ interface to NLopt"),
   person("großBM team", role = c("ctb"))
   )
 Maintainer: Julien Chiquet <julien.chiquet@inrae.fr>
