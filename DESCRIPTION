@@ -26,7 +26,6 @@ Depends: R (>= 3.4.0)
 Imports: 
     Rcpp,
     methods,
-    ClusterR,
     igraph,
     nloptr (>= 1.2.0),
     ggplot2,

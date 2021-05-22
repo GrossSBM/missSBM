@@ -102,7 +102,6 @@ partlyObservedNetwork <-
     #' @param vBlocks The vector of number of blocks considered in the collection.
     #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
-    #' @importFrom ClusterR KMeans_rcpp
     clustering = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
 
@@ -128,7 +127,8 @@ partlyObservedNetwork <-
           Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
           Un[is.nan(Un)] <- 0
           cl_ <- as.integer(
-            ClusterR::KMeans_rcpp(Un, k, num_init = 100, initializer = "kmeans++")$clusters
+            ## ClusterR::KMeans_rcpp(Un, k, num_init = 100, initializer = "kmeans++")$clusters
+            kmeans(Un, k, nstart = 100)$cl
           )
          ## handing lonely souls
          cl[connected] <- cl_
