@@ -1,13 +1,14 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 0.3.0-9950
+Version: 0.3.0-9990
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
   person("Pierre", "Barbillon", role = c("aut"), email = "pierre.barbillon@agroparistech.fr",
       comment = c(ORCID = "0000-0002-7766-7693")),
   person("Timothée", "Tabouy", role = c("aut"), email = "timothee.tabouy@agroparistech.fr"),
+  person("Jean-Benoist", "Léger", role = c("ctb"), email = "jbleger@hds.utc.fr"),
   person("großBM team", role = c("ctb"))
   )
 Maintainer: Julien Chiquet <julien.chiquet@inrae.fr>
@@ -51,6 +52,7 @@ Collate:
     'er_network.R'
     'estimateMissSBM.R'
     'frenchblog2007.R'
+    'kmeans.R'
     'missSBM-package.R'
     'observeNetwork.R'
     'war.R'

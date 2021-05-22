@@ -127,8 +127,7 @@ partlyObservedNetwork <-
           Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
           Un[is.nan(Un)] <- 0
           cl_ <- as.integer(
-            ## ClusterR::KMeans_rcpp(Un, k, num_init = 100, initializer = "kmeans++")$clusters
-            kmeans(Un, k, nstart = 100)$cl
+            kmeans_missSBM(Un, k)
           )
          ## handing lonely souls
          cl[connected] <- cl_
