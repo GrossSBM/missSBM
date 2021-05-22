@@ -1,4 +1,4 @@
-#' @importFrom stat dist
+#' @importFrom stats dist
 kmeans_missSBM <- function(coordinates, k)
 {
 
