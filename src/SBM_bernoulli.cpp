@@ -130,7 +130,6 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
       const arma::mat gamma = metadata.map<GAMMA_ID>(params);
       const arma::vec beta = metadata.map<BETA_ID>(params);
 
-      uword N = Z.n_rows;
       uword Q = Z.n_cols;
       uword K = X.n_slices;
       double loglik = 0;
@@ -138,8 +137,6 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
       arma::mat gr_gamma = zeros<mat>(Q,Q);
       arma::vec gr_beta  = zeros<vec>(K);
 
-      sp_mat::const_iterator Yij     = Y.begin();
-      sp_mat::const_iterator Yij_end = Y.end();
       sp_mat::const_iterator Rij     = R.begin();
       sp_mat::const_iterator Rij_end = R.end();
 
@@ -224,7 +221,7 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_covariates(
   //  log_tau.each_col() += sum( (Y % M) * Z, 1)  + sum( (Y % M).t() * Z, 1) ;
 
   for(; Rij != Rij_end; ++Rij) {
-    for(int q=0; q < Q; q++){
+    for(arma::uword q=0; q < Q; q++){
        log_tau(Rij.row(), q) -= accu(Z.row(Rij.col()) % log (1 + exp(Gamma.row(q) + M(Rij.row(),Rij.col())))) ;
        if (symmetric) {
          log_tau(Rij.col(), q) -= accu(Z.row(Rij.row()) % log (1 + exp(Gamma.row(q) + M(Rij.col(),Rij.row())))) ;
