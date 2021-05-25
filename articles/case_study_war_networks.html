@@ -91,7 +91,7 @@
       <h1 data-toc-skip>missSBM: a case study with war networks</h1>
                         <h4 class="author">missSBM team</h4>
             
-            <h4 class="date">Last update: 2021-05-22</h4>
+            <h4 class="date">Last update: 2021-05-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/grossSBM/missSBM/blob/master/vignettes/case_study_war_networks.Rmd"><code>vignettes/case_study_war_networks.Rmd</code></a></small>
       <div class="hidden name"><code>case_study_war_networks.Rmd</code></div>
@@ -113,8 +113,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HenrikBengtsson/future">future</a></span><span class="op">)</span></code></pre></div>
 <p><strong>missSBM</strong> integrates some features of the <strong>future</strong> package to perform parallel computing: you can set your plan now to speed the fit by relying on 2 workers as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HenrikBengtsson/future">future</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="the-war-network" class="section level2">
 <h2 class="hasAnchor">
