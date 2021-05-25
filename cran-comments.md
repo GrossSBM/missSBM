@@ -1,4 +1,7 @@
 
+The new version of missSBM includes the following changes. This should also correct the error due to the recent update of
+the revdependency 'sbm'.
+
 ## missSBM 1.0.0
 
   - compatibility with the new CRAN version of packge 'sbm' 

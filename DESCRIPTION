@@ -15,7 +15,7 @@ Authors@R: c(
 Maintainer: Julien Chiquet <julien.chiquet@inrae.fr>
 Description: When a network is partially observed (here, NAs in the adjacency matrix rather than 1 or 0 
   due to missing information between node pairs), it is possible to account for the underlying process
-  that generates those NAs. 'missSBM', presented in 'Barbillon, Chiquet and Tabouy' (2021) <arxiv:1906.12201>,
+  that generates those NAs. 'missSBM', presented in 'Barbillon, Chiquet and Tabouy' (2021) <arXiv:1906.12201>,
   adjusts the popular stochastic block model from network data sampled under various missing data conditions, 
   as described in 'Tabouy, Barbillon and Chiquet' (2019) <doi:10.1080/01621459.2018.1562934>.
 URL: https://grosssbm.github.io/missSBM/
