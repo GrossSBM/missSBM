@@ -23,14 +23,13 @@
 
 ## R CMD check results
 
-── R CMD check results ────────────────────────────────────── missSBM 0.3.1 ────
-Duration: 1m 15.5s
+── R CMD check results ────────────────────────────────────── missSBM 1.0.0 ────
 
 > checking installed package size ... NOTE
-    installed size is  6.2Mb
+    installed size is 10.9Mb
     sub-directories of 1Mb or more:
-      libs   4.1Mb
+      libs   8.7Mb
 
-0 errors ✓ | 0 warnings ✓ | 1 note x
+0 errors ✓ | 0 warnings ✓ | 1 note 
 
 R CMD check succeeded
