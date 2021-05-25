@@ -15,9 +15,11 @@ coverage](https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg)]
 > When a network is partially observed (here, NAs in the adjacency
 > matrix rather than 1 or 0 due to missing information between node
 > pairs), it is possible to account for the underlying process that
-> generates those NAs. ‘missSBM’ adjusts the popular stochastic block
-> model from network data observed under various missing data
-> conditions, as described in Tabouy, Barbillon and Chiquet (2019)
+> generates those NAs. ‘missSBM’, presented in ‘Barbillon, Chiquet and
+> Tabouy’ (2021) <https://arxiv.org/abs/1906.12201>, adjusts the popular
+> stochastic block model from network data observed under various
+> missing data conditions, as described in ‘Tabouy, Barbillon and
+> Chiquet’ (2019)
 > [10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934).
 
 ## Installation
@@ -42,3 +44,7 @@ Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational
 Inference for Stochastic Block Models from Sampled Data”, *Journal of
 the American Statistical Association*, DOI:
 [10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934)
+
+Pierre Barbillon, Julien Chiquet & Timothée Tabouy (2021) “missSBM: An R
+Package for Handling Missing Values in the Stochastic Block Model”,
+*arXiv preprint*, DOI: <https://arxiv.org/abs/1906.12201>

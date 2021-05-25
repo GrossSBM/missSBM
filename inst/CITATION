@@ -1,7 +1,7 @@
 citHeader("To cite missSBM in publications, please use:")
 
 citEntry(entry = "article",
-  key = "missSBM",
+  key = "missSBM_jasa",
   author = c("Timothée Tabouy", "Pierre Barbillon", "Julien Chiquet"),
   title = "Variational Inference for Stochastic Block Models from Sampled Data",
   journal = "Journal of the American Statistical Association",
@@ -9,4 +9,14 @@ citEntry(entry = "article",
   volume = "0", pages = "1--20",
   url = "https://doi.org/10.1080/01621459.2018.1562934",
   textVersion = "T. Tabouy, P. Barbillon and J. Chiquet: Variational Inference for Stochastic Block Models from Sampled Data, JASA, 2019"
+)
+
+citEntry(entry = "article",
+  key = "missSBM_jss",
+  author = c("Pierre Barbillon", "Julien Chiquet", "Timothée Tabouy"),
+  title = "missSBM: An R Package for Handling Missing Values in the Stochastic Block Model",
+  journal = "arXiv",
+  year = "2021",
+  url = "https://arxiv.org/abs/1906.12201",
+  textVersion = "P. Barbillon, J. Chiquet and T. Tabouy: missSBM: An R Package for Handling Missing Values in the Stochastic Block Model, arXiv preprint"
 )
