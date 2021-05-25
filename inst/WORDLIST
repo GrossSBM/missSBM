@@ -1,6 +1,7 @@
 Blogosphere
 CMD
 CQ
+Chiquet’
 Codecov
 DOI
 Dyad
@@ -15,9 +16,12 @@ SBM
 SBMs
 Sarkees
 SimpleSBM
+Tabouy’
 VE
 Variational
 Wayman
+arXiv
+arxiv
 blockDyad
 cloneable
 clusterInit
@@ -26,7 +30,6 @@ covar
 covarArray
 covarMatrix
 de
-dev
 doi
 dyad
 dyads
@@ -56,6 +59,7 @@ nloptr
 observedNetwork
 partlyObservedNet
 partlyObservedNetwork
+preprint
 rSampling
 sampleSimpleSBM
 sampledNetwork
