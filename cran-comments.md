@@ -17,10 +17,9 @@
 ## Tested environments
 
 - tested remotely with github action (macOS, Ubuntu, Windows release)
-- tested remotely with win-builder (release, devel, old)
-- tested remotely with R-hub (release Ubuntu, Fedora, Solaris, mac/CRAN setup)
-
-- tested locally on Ubuntu 20.04, R 4.0.2
+- tested remotely with win-builder (OK on release, old, failure on R-devel)
+- tested remotely with R-hub (release Ubuntu, devel Fedora, release Solaris, release macOS High Sierra)
+- tested locally on Ubuntu 20.04, R 4.1.0
 
 ## R CMD check results
 
