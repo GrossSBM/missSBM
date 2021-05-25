@@ -39,8 +39,7 @@ library(future)
 **missSBM** integrates some features of the **future** package to perform parallel computing: you can set your plan now to speed the fit by relying on 2 workers as follows:
 
 ```{r future-plan}
-library(future)
-plan("multisession", workers = 2)
+future::plan("multisession", workers = 2)
 ```
 
 ## The war network
