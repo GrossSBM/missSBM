@@ -31,14 +31,12 @@ Imports:
     igraph,
     nloptr (>= 1.2.0),
     ggplot2,
-    future,
     future.apply,
     R6,
     rlang,
     sbm,
     magrittr,
     Matrix
-Remotes: grosssbm/sbm
 LinkingTo: Rcpp, RcppArmadillo, nloptr (>= 1.2.0)
 Collate:
     'utils_missSBM.R'
@@ -61,6 +59,7 @@ Suggests:
     aricode,
     blockmodels,
     corrplot,
+    future,
     testthat (>= 2.1.0),
     covr,
     knitr,
