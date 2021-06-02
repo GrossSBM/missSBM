@@ -11,17 +11,14 @@ lambda  <- matrix(.25,3,3) + diag(3) * (.15)
 theta <- list(mean = lambda)
 
 ## sampling parameters
-rho_min <- 0.1
-rho_max <- 0.9
-delta <- seq(0, rho_max-rho_min, 0.1)
-list_psi <- map(delta, ~matrix(rho_min + .x, 3, 3) + diag(3) * (rho_max-rho_min - 2 * .x))
-
+delta <- seq(0, .4, 0.05)
+list_psi <- map(delta, ~matrix(0.1 + .x, 3, 3) + diag(3) * (max(delta) - .x))
 control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, trace = 0)
 
 ## Simulation
 nbrSimu <- 100
 
-future::plan("multisession", workers = 10)
+future::plan("multicore", workers = 10)
 
 RES <- lapply(1:nbrSimu, function(i) {
   res <- future.apply::future_lapply(list_psi, function(psi) {
