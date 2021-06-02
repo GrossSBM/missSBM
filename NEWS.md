@@ -1,6 +1,6 @@
-# missSBM dev version
+# missSBM development version
 
-ongoing...
+  - various improvements: store less, ...
 
 # missSBM 1.0.0 [2021-05-25]
 

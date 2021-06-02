@@ -80,21 +80,22 @@ partlyObservedNetwork <-
 
       ## sets of observed / unobserved dyads
       if (private$directed) {
-        dyads <- upper.tri(adjacencyMatrix) | lower.tri(adjacencyMatrix)
+        dyads <- .row(dim(adjacencyMatrix)) != .col(dim(adjacencyMatrix))
       } else {
-        dyads <- upper.tri(adjacencyMatrix)
+        dyads <- .row(dim(adjacencyMatrix)) < .col(dim(adjacencyMatrix))
       }
       ## where are my observations?
-      obs   <- which(!is.na(adjacencyMatrix) & dyads, arr.ind = TRUE )
-      miss  <- which( is.na(adjacencyMatrix) & dyads, arr.ind = TRUE )
+      NAs   <- is.na(adjacencyMatrix)
+      obs   <- which(!NAs & dyads, arr.ind = TRUE )
+      miss  <- which( NAs & dyads, arr.ind = TRUE )
       ## where are my non-zero entries?
-      nzero <- which(!is.na(adjacencyMatrix) & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
+      nzero <- which(!NAs & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
 
       ## sampling matrix (indicating who is observed)
       private$R <- Matrix::sparseMatrix(obs[,1] , obs[,2] ,x = 1, dims = dim(adjacencyMatrix))
       private$S <- Matrix::sparseMatrix(miss[,1], miss[,2],x = 1, dims = dim(adjacencyMatrix))
       ## network matrix (only none zero, non NA values)
-      private$Y   <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
+      private$Y <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
 
     },
     #' @description method to cluster network data with missing value
