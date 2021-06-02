@@ -10,9 +10,7 @@ networkSamplingDyads_fit <-
   private = list(
     card_D   = NULL, # number of possible dyads in the network
     card_D_o = NULL, # number of observed dyads in the network
-    card_D_m = NULL, # number of missing dyads in the network
-    D_miss   = NULL,  # where are the missing dyads
-    D_obs    = NULL  # observed dyads
+    card_D_m = NULL  # number of missing dyads in the network
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -23,11 +21,9 @@ networkSamplingDyads_fit <-
     #' @param name a character for the name of sampling to fit on the partlyObservedNetwork
     initialize = function(partlyObservedNetwork, name) {
       private$name     <- name
-      private$D_miss   <- partlyObservedNetwork$missingDyads
-      private$D_obs    <- partlyObservedNetwork$observedDyads
       private$card_D   <- partlyObservedNetwork$nbDyads
       private$card_D_o <- sum(partlyObservedNetwork$samplingMatrix)
-      private$card_D_m <- sum(partlyObservedNetwork$samplingMatrixBar)
+      private$card_D_m <- private$card_D - private$card_D_o
     },
     #' @description show method
     show = function() {
@@ -72,8 +68,8 @@ networkSamplingNodes_fit <-
       private$name     <- name
       private$N_obs    <- partlyObservedNetwork$observedNodes
       private$card_N   <- partlyObservedNetwork$nbNodes
-      private$card_N_o <- sum( partlyObservedNetwork$observedNodes)
-      private$card_N_m <- sum(!partlyObservedNetwork$observedNodes)
+      private$card_N_o <- sum(partlyObservedNetwork$observedNodes)
+      private$card_N_m <- private$card_N - private$card_N_o
     },
     #' @description show method
     show = function() {
@@ -105,7 +101,7 @@ dyadSampling_fit <-
     #' @param ... used for compatibility
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "dyad")
-      private$psi <- check_boundaries(private$card_D_o / (private$card_D_m + private$card_D_o))
+      private$psi <- check_boundaries(private$card_D_o / private$card_D)
     }
   ),
   active = list(

@@ -50,7 +50,12 @@ partlyObservedNetwork <-
     samplingMatrixBar  = function(value) {private$S},
     #' @field observedNodes a vector of observed and non-observed nodes (observed means at least one non NA value)
     observedNodes   = function(value) {
-      (rowSums(private$S) + colSums(private$S)) == 0
+      if (private$directed) {
+        res <- rowSums(private$R) == (self$nbNodes - 1)
+      } else {
+        res <- (rowSums(private$R | t(private$R))) == (self$nbNodes - 1)
+      }
+      res
      }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,7 +121,7 @@ partlyObservedNetwork <-
       connected   <- setdiff(1:n, unconnected)
       A <- A[connected,connected]
 
-      ## normalized absolute Laplacian with Gaussian kernel
+      ## normalized Laplacian
       D <- 1/sqrt(rowSums(abs(A)))
       L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
 ##      U <- base::svd(L, nu = max(vBlocks), nv = 0)$u
