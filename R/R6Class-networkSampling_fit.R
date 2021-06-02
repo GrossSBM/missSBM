@@ -120,13 +120,17 @@ covarDyadSampling_fit <-
   inherit = networkSamplingDyads_fit,
   public = list(
     #' @description constructor
-    #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
+    #' @param partialNet a object with class partlyObservedNetwork representing the observed data with possibly missing entries
     #' @param ... used for compatibility
-    initialize = function(partlyObservedNetwork, ...) {
-      super$initialize(partlyObservedNetwork, "covar-dyad")
-      dyads <- rbind(partlyObservedNetwork$observedDyads, partlyObservedNetwork$missingDyads)
-      X <- cbind(1, apply(partlyObservedNetwork$covarArray, 3, function(x) x[dyads]))
-      y <- partlyObservedNetwork$samplingMatrix[dyads]
+    initialize = function(partialNet, ...) {
+      super$initialize(partialNet, "covar-dyad")
+      if (partialNet$is_directed) {
+        dyads <- which(.row(dim(partialNet$networkData)) != .col(dim(partialNet$networkData)), arr.ind = TRUE)
+      } else {
+        dyads <- which(.row(dim(partialNet$networkData)) < .col(dim(partialNet$networkData)), arr.ind = TRUE)
+      }
+      X <- cbind(1, apply(partialNet$covarArray, 3, function(x) x[dyads]))
+      y <- partialNet$samplingMatrix[dyads]
       glm_out     <- glm.fit(X, y, family = binomial())
       private$psi <- coefficients(glm_out)
       y_hat <- fitted(glm_out)

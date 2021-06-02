@@ -46,8 +46,6 @@ clustering_init <- map(v_nBlocks, function(nBlocks) {
  cl
 }) %>% setNames(paste0(v_nBlocks, " blocks"))
 
-counts <- map(clustering_init, tabulate)
-
 A <- as_adjacency_matrix(epinions_graph, attr= "weight")
 observed  <- as(1*(A !=  0), "dgCMatrix")
 trusted   <- as(1*(A ==  1), "dgCMatrix")
@@ -56,3 +54,5 @@ epinions <- list(
   observed = as(1*(A !=  0), "dgCMatrix"),
   trusted  = as(1*(A ==  1), "dgCMatrix")
   )
+
+save(epinions, clustering_init)

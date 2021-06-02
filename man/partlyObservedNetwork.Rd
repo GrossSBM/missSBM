@@ -28,10 +28,6 @@ This class is not exported to the user
 
 \item{\code{covarMatrix}}{the matrix of covariates}
 
-\item{\code{missingDyads}}{array indices of missing dyads}
-
-\item{\code{observedDyads}}{array indices of observed dyads}
-
 \item{\code{samplingMatrix}}{matrix of observed and non-observed edges}
 
 \item{\code{samplingMatrixBar}}{matrix of observed and non-observed edges}

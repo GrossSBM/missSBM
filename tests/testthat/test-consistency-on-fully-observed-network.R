@@ -12,7 +12,6 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   partlyObservedNet <- missSBM:::partlyObservedNetwork$new(A)
   expect_equal(ncol(A), partlyObservedNet$nbNodes)
   expect_equal(ncol(A) * (ncol(A) - 1)/2, partlyObservedNet$nbDyads)
-  expect_equal(length(partlyObservedNet$missingDyads), 0)
   expect_equal(rep(TRUE, ncol(A)), partlyObservedNet$observedNodes)
 
   ## initial clustering
