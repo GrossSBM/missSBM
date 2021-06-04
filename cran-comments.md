@@ -1,34 +1,30 @@
 
+This submission is in response to a request from a CRAN maintainer.
+
 ## missSBM 1.0.1
 
 Minor version with less conservative unitary tests to avoid random error during (CRAN) checks
 
 ## Tested environments
 
-Rhub
-Windows R Under development (unstable)
-Windows R version 4.0.5
-Ubuntu Linux 20.04.1 LTS, R-release, GCC
-Fedora Linux, R-devel, clang, gfortran
-Oracle Solaris 10, x86, 32 bit, R-release
-macOS 10.13.6 High Sierra, R-release, CRAN's setup
+Success
 
-- tested remotely with github action (macOS, Ubuntu, Windows release)
-- tested remotely with win-builder (OK on release, old, failure on R-devel)
-- tested remotely with R-hub (release Ubuntu, devel Fedora, release Solaris, release macOS High Sierra)
+- tested remotely with github action (R release on macOS 10.15, Ubuntu 20.04, Windows Server 2019)
+- tested remotely with win-builder (R version 4.0.5, R version 4.1.0,  R unstable)
+- tested remotely with R-hub 
+     * R-release: Ubuntu, Solaris, Windows Server 2008 R2 SP1, macOS HighSierra
+     * R devel: Fedora,
+     * Windows Server 2008 R2 SP1 R old-release
 - tested locally on Ubuntu 20.04, R 4.1.0
+
+Failure: Windows Server 2008 R2 SP1, R-devel, 32/64 bit
 
 ## R CMD check results
 
 On Ubuntu 20.04, Fedora Linux 1 NOTE about installed size
 
-── R CMD check results ────────────────────────────────────── missSBM 1.0.0 ────
-
 * checking installed package size ... NOTE
-  installed size is 15.7Mb
+  installed size is 10.8Mb
   sub-directories of 1Mb or more:
-    libs    8.7Mb
+    libs   8.7Mb
 
-0 errors ✓ | 0 warnings ✓ | 1 note 
-
-R CMD check succeeded
