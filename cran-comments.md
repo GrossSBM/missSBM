@@ -10,7 +10,9 @@ Windows R Under development (unstable)
 Windows R version 4.0.5
 Ubuntu Linux 20.04.1 LTS, R-release, GCC
 Fedora Linux, R-devel, clang, gfortran
-	
+Oracle Solaris 10, x86, 32 bit, R-release
+macOS 10.13.6 High Sierra, R-release, CRAN's setup
+
 - tested remotely with github action (macOS, Ubuntu, Windows release)
 - tested remotely with win-builder (OK on release, old, failure on R-devel)
 - tested remotely with R-hub (release Ubuntu, devel Fedora, release Solaris, release macOS High Sierra)
