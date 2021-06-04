@@ -9,7 +9,7 @@ Minor version with less conservative unitary tests to avoid random error during 
 
 Success
 
-- tested remotely with github action (R release on macOS 10.15, Ubuntu 20.04, Windows Server 2019)
+- tested remotely with github action (R release on macOS 10.15, Ubuntu 20.04, Debian gcc, Windows Server 2019)
 - tested remotely with win-builder (R version 4.0.5, R version 4.1.0,  R unstable)
 - tested remotely with R-hub 
      * R-release: Ubuntu, Solaris, Windows Server 2008 R2 SP1, macOS HighSierra
@@ -21,7 +21,7 @@ Failure: Windows Server 2008 R2 SP1, R-devel, 32/64 bit
 
 ## R CMD check results
 
-On Ubuntu 20.04, Fedora Linux 1 NOTE about installed size
+On Ubuntu 20.04, Debian Gcc and Fedora Linux 1 NOTE about installation size
 
 * checking installed package size ... NOTE
   installed size is 10.8Mb
