@@ -9,6 +9,7 @@
 ^\.Rproj\.user$
 ^README.Rmd
 ^inst/tries
+^inst/simus
 ^inst/tests_against_timCode
 ^vignettes/*_cache$
 ^vignettes/cache$

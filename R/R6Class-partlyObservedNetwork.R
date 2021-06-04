@@ -11,7 +11,7 @@ partlyObservedNetwork <-
   ## PRIVATE MEMBERS
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   private = list(
-    Y        = NULL, # adjacency matrix
+    Y        = NULL, # adjacency matrix (sparse encoding: NA and 0 are not encoded)
     X        = NULL, # the covariates matrix
     phi      = NULL, # the covariates array
     directed = NULL, # directed network of not

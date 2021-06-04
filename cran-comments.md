@@ -1,24 +1,16 @@
 
-The new version of missSBM includes the following changes. This should also correct the error due to the recent update of
-the revdependency 'sbm'.
+## missSBM 1.0.1
 
-## missSBM 1.0.0
-
-  - compatibility with the new CRAN version of packge 'sbm' 
-  - now rely on future_lapply  for parallel computing (plan to be set by the user)
-  - faster model exploration (used to be called 'smoothing'), now integrated by default in estimateMissSBM
-  - Use sparse Matrices to encode 0 and NAs
-  - complete rewriting of optimization routines (E and M steps) with C++ armadillo routines
-  - Better initialization and embedded C++ kmeans implementation
-  - important bug fix in MAR case
-  - bug fix in inference on covariates
-  - bug fixed in blockDyad-sampling
-  - missSBM::SimpleSBM_fit_missSBM now inherits from from sbm::SimpleSBM rather than sbm::SimpleSBM_fit
-  - change field '$netMatrix' to '$networkData' to comply with new interface in sbm
-  - defunct functions estimate, sample and simulate are no longer supported
+Minor version with less conservative unitary tests to avoid random error during (CRAN) checks
 
 ## Tested environments
 
+Rhub
+Windows R Under development (unstable)
+Windows R version 4.0.5
+Ubuntu Linux 20.04.1 LTS, R-release, GCC
+Fedora Linux, R-devel, clang, gfortran
+	
 - tested remotely with github action (macOS, Ubuntu, Windows release)
 - tested remotely with win-builder (OK on release, old, failure on R-devel)
 - tested remotely with R-hub (release Ubuntu, devel Fedora, release Solaris, release macOS High Sierra)
@@ -26,12 +18,14 @@ the revdependency 'sbm'.
 
 ## R CMD check results
 
+On Ubuntu 20.04, Fedora Linux 1 NOTE about installed size
+
 ── R CMD check results ────────────────────────────────────── missSBM 1.0.0 ────
 
-> checking installed package size ... NOTE
-    installed size is 10.9Mb
-    sub-directories of 1Mb or more:
-      libs   8.7Mb
+* checking installed package size ... NOTE
+  installed size is 15.7Mb
+  sub-directories of 1Mb or more:
+    libs    8.7Mb
 
 0 errors ✓ | 0 warnings ✓ | 1 note 
 

@@ -1,6 +1,7 @@
-# missSBM development version
+# missSBM 1.0.1 [2021-06-04]
 
-  - various improvements: store less, ...
+  - less conservative tests to avoid random failure in CRAN checks
+  - tiny improvements in partlyObservedNetwork (less storage)
 
 # missSBM 1.0.0 [2021-05-25]
 
