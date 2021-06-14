@@ -1,3 +1,7 @@
+# missSBM development
+
+nothing new
+
 # missSBM 1.0.1 [2021-06-04]
 
   - less conservative tests to avoid random failure in CRAN checks
