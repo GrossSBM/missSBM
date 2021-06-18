@@ -102,25 +102,21 @@ partlyObservedNetwork <-
     #' @param vBlocks The vector of number of blocks considered in the collection.
     #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
+    #' @importFrom Matrix Diagonal
     clustering = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
 
       A <- self$imputation(imputation)
       n <- ncol(A)
-      if (self$is_directed) A <- A %*% t(A)
-      ## A <- A %*% t(A)
-      # A <- as.matrix(1/(1 + exp(-A/sd(A)))) ## caveat: the matrix is dense; pros: lonely node are automatically handled
-
+      A <- A %*% t(A) ## get second order paths between  node
       ## handling lonely souls
       unconnected <- which(rowSums(abs(A)) == 0)
       connected   <- setdiff(1:n, unconnected)
       A <- A[connected,connected]
-
-      ## normalized Laplacian
-      D <- 1/sqrt(rowSums(abs(A)))
-      L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
-##      U <- base::svd(L, nu = max(vBlocks), nv = 0)$u
-      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
+      ## Spectral clustering with Normalized weighted Laplacian
+      d <- 1/sqrt(rowSums(abs(A)))
+      D <- Diagonal(x = d)
+      U <- eigen_arma(- D %*% A %*% D, max(vBlocks))
       res <- future_lapply(vBlocks, function(k) {
         cl <- rep(1L, n)
         if (k != 1) {
@@ -132,7 +128,7 @@ partlyObservedNetwork <-
           )
          ## handing lonely souls
          cl[connected] <- cl_
-         cl[unconnected] <- which.min(rowsum(D, cl_))
+         cl[unconnected] <- which.max(rowsum(d, cl_))
         }
         cl
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))

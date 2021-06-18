@@ -1,6 +1,6 @@
 # missSBM development
 
-nothing new
+  - faster spectral clustering
 
 # missSBM 1.0.1 [2021-06-04]
 

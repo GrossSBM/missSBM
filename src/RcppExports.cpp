@@ -102,6 +102,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// eigen_arma
+NumericMatrix eigen_arma(const arma::sp_mat& L, const int& Kmax);
+RcppExport SEXP _missSBM_eigen_arma(SEXP LSEXP, SEXP KmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type L(LSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Kmax(KmaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(eigen_arma(L, Kmax));
+    return rcpp_result_gen;
+END_RCPP
+}
 // kmeans_cpp
 IntegerVector kmeans_cpp(const arma::mat& coordinates, arma::mat& input_centroids);
 RcppExport SEXP _missSBM_kmeans_cpp(SEXP coordinatesSEXP, SEXP input_centroidsSEXP) {
@@ -154,6 +166,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 7},
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
+    {"_missSBM_eigen_arma", (DL_FUNC) &_missSBM_eigen_arma, 2},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
     {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},

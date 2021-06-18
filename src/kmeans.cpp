@@ -7,6 +7,14 @@ using namespace Rcpp;
 using namespace arma;
 
 // [[Rcpp::export]]
+NumericMatrix eigen_arma(const arma::sp_mat& L, const int& Kmax) {
+    arma::vec eigval;
+    arma::mat eigvec;
+    arma::eigs_sym(eigval, eigvec, L, Kmax);
+    return (Rcpp::wrap( eigvec )) ;
+}
+
+// [[Rcpp::export]]
 IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroids) {
 
     arma::mat centroids = input_centroids;

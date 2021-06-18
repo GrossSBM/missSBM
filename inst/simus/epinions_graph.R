@@ -22,9 +22,12 @@ epinions_graph <- read_delim(
 min_degree <- 1
 epinions_graph <- delete.vertices(epinions_graph, which(degree(epinions_graph) < min_degree))
 
+## random subgraph
+## epinions_graph <- indusubgraph(epinions_graph, sample.int(n = gorder(epinions_graph), size = 2000))
+
 ## =========================================================================
 ##
-## Initial clustering: 
+## Initial clustering:
 
 L <- graph.laplacian(
   as.undirected(epinions_graph),
