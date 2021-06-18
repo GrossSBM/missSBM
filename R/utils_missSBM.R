@@ -71,19 +71,19 @@ getCovarArray <- function(X, s) {
   phi
 }
 
-#'
-#' @importFrom Matrix drop0
-dropNA <- function(x) {
-    if(!is(x, "matrix")) stop("x needs to be a matrix!")
-
-    zeros <- which(x==0, arr.ind=TRUE)
-    ## keep zeros
-    x[is.na(x)] <- 0
-    x[zeros] <- NA
-    x <- drop0(x)
-    x[zeros] <- 0
-    x
-}
+# #'
+# #' @importFrom Matrix drop0
+# dropNA <- function(x) {
+#     if(!is(x, "matrix")) stop("x needs to be a matrix!")
+#
+#     zeros <- which(x==0, arr.ind=TRUE)
+#     ## keep zeros
+#     x[is.na(x)] <- 0
+#     x[zeros] <- NA
+#     x <- drop0(x)
+#     x[zeros] <- 0
+#     x
+# }
 
 .logistic <- function(x) {1/(1 + exp(-x))}
 .logit    <- function(x) {log(x/(1 - x))}

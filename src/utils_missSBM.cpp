@@ -1,17 +1,31 @@
-#include "RcppArmadillo.h"
+#define ARMA_DONT_USE_OPENMP
 
+#include "RcppArmadillo.h"
 // [[Rcpp::depends(RcppArmadillo)]]
-// [[Rcpp::plugins(cpp11)]]
 
 using namespace Rcpp;
 using namespace arma;
 
 // [[Rcpp::export]]
-NumericMatrix eigen_arma(const arma::sp_mat& L, const int& Kmax) {
+Rcpp::NumericMatrix roundProduct(Rcpp::List covariates_list, arma::vec beta) {
+
+  uword N = Rcpp::as<mat>(covariates_list[0]).n_rows;
+  uword P = Rcpp::as<mat>(covariates_list[0]).n_cols;
+  arma::mat result = arma::zeros<arma::mat>(N,P);
+
+  for (unsigned int k = 0; k < beta.size(); k++) {
+    result += Rcpp::as<mat>(covariates_list[k]) * beta[k];
+  }
+
+  return Rcpp::wrap(result);
+}
+
+// [[Rcpp::export]]
+arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax) {
     arma::vec eigval;
     arma::mat eigvec;
     arma::eigs_sym(eigval, eigvec, L, Kmax);
-    return (Rcpp::wrap( eigvec )) ;
+    return eigvec ;
 }
 
 // [[Rcpp::export]]

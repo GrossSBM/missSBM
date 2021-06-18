@@ -1,8 +1,6 @@
+#define ARMA_DONT_USE_OPENMP
 #include "RcppArmadillo.h"
-
 // [[Rcpp::depends(RcppArmadillo)]]
-// [[Rcpp::depends(nloptr)]]
-// [[Rcpp::plugins(cpp11)]]
 
 #include "nlopt_wrapper.h"
 #include "packing.h"

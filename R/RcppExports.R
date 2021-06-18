@@ -25,14 +25,6 @@ E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, symmetric 
     .Call(`_missSBM_E_step_sparse_bernoulli_covariates`, Y, R, M, Z, Gamma, pi, symmetric, rescale)
 }
 
-eigen_arma <- function(L, Kmax) {
-    .Call(`_missSBM_eigen_arma`, L, Kmax)
-}
-
-kmeans_cpp <- function(coordinates, input_centroids) {
-    .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
-}
-
 cpp_test_nlopt <- function() {
     .Call(`_missSBM_cpp_test_nlopt`)
 }
@@ -43,5 +35,13 @@ cpp_test_packing <- function() {
 
 roundProduct <- function(covariates_list, beta) {
     .Call(`_missSBM_roundProduct`, covariates_list, beta)
+}
+
+eigen_arma <- function(L, Kmax) {
+    .Call(`_missSBM_eigen_arma`, L, Kmax)
+}
+
+kmeans_cpp <- function(coordinates, input_centroids) {
+    .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
 }
 
