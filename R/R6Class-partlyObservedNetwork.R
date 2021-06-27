@@ -64,7 +64,6 @@ partlyObservedNetwork <-
 
       ## SANITY CHECKS (on data)
       stopifnot(inherits(adjacencyMatrix, "matrix") | inherits(adjacencyMatrix, "dgCMatrix"))
-      ## TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
 
       ## TODO: later, should also include Poisson/Gaussian models
       stopifnot(all.equal(sort(setdiff(unique(as.numeric(adjacencyMatrix)), NA)), c(0,1)))

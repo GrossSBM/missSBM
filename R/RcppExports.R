@@ -37,6 +37,10 @@ roundProduct <- function(covariates_list, beta) {
     .Call(`_missSBM_roundProduct`, covariates_list, beta)
 }
 
+spectral_clustering <- function(A, Kmax) {
+    .Call(`_missSBM_spectral_clustering`, A, Kmax)
+}
+
 eigen_arma <- function(L, Kmax) {
     .Call(`_missSBM_eigen_arma`, L, Kmax)
 }

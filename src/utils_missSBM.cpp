@@ -21,6 +21,37 @@ Rcpp::NumericMatrix roundProduct(Rcpp::List covariates_list, arma::vec beta) {
 }
 
 // [[Rcpp::export]]
+arma::mat spectral_clustering(const arma::sp_mat& A, const int& Kmax) {
+
+  // handling lonely souls
+  arma::colvec d =  abs(A) * ones(A.n_rows, 1);
+  // uvec unconnected = find(d == 0) ;
+  // uvec connected   = find(d != 0) ;
+  //
+  // // remove unconnected nodes
+  arma::sp_mat L = A;
+
+  // compute normalized weighted Laplacian
+  sp_mat::const_iterator Lij     = L.begin();
+  sp_mat::const_iterator Lij_end = L.end();
+
+  for(; Lij != Lij_end; ++Lij) {
+    if (d(Lij.row()) * d(Lij.col()) != 0) {
+      L(Lij.row(), Lij.col()) = -(*Lij) /sqrt( d(Lij.row()) * d(Lij.col()) );
+    } else {
+      L(Lij.row(), Lij.col()) = 0 ;
+    }
+  }
+
+  // Normalized eigen values
+  arma::vec eigval;
+  arma::mat eigvec;
+  arma::eigs_sym(eigval, eigvec, L, Kmax);
+
+  return(eigvec) ;
+}
+
+// [[Rcpp::export]]
 arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax) {
     arma::vec eigval;
     arma::mat eigvec;

@@ -33,6 +33,7 @@ Imports:
     nloptr (>= 1.2.0),
     ggplot2,
     future.apply,
+    RSpectra,
     R6,
     rlang,
     sbm,

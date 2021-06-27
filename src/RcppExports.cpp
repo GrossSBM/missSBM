@@ -134,6 +134,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// spectral_clustering
+arma::mat spectral_clustering(const arma::sp_mat& A, const int& Kmax);
+RcppExport SEXP _missSBM_spectral_clustering(SEXP ASEXP, SEXP KmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< const int& >::type Kmax(KmaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(spectral_clustering(A, Kmax));
+    return rcpp_result_gen;
+END_RCPP
+}
 // eigen_arma
 arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax);
 RcppExport SEXP _missSBM_eigen_arma(SEXP LSEXP, SEXP KmaxSEXP) {
@@ -169,6 +181,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
+    {"_missSBM_spectral_clustering", (DL_FUNC) &_missSBM_spectral_clustering, 2},
     {"_missSBM_eigen_arma", (DL_FUNC) &_missSBM_eigen_arma, 2},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
     {NULL, NULL, 0}
