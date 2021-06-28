@@ -21,7 +21,7 @@ Rcpp::NumericMatrix roundProduct(Rcpp::List covariates_list, arma::vec beta) {
 }
 
 // [[Rcpp::export]]
-arma::mat spectral_clustering(const arma::sp_mat& A, const int& Kmax) {
+arma::mat spectral_clustering(const arma::sp_mat& A, const arma::vec& vBlocks) {
 
   // handling lonely souls
   arma::colvec d =  abs(A) * ones(A.n_rows, 1);
@@ -36,8 +36,9 @@ arma::mat spectral_clustering(const arma::sp_mat& A, const int& Kmax) {
   sp_mat::const_iterator Lij_end = L.end();
 
   for(; Lij != Lij_end; ++Lij) {
-    if (d(Lij.row()) * d(Lij.col()) != 0) {
-      L(Lij.row(), Lij.col()) = -(*Lij) /sqrt( d(Lij.row()) * d(Lij.col()) );
+    double normalize = d(Lij.row()) * d(Lij.col()) ;
+    if (normalize > 0.0) {
+      L(Lij.row(), Lij.col()) = -(*Lij) / sqrt(normalize);
     } else {
       L(Lij.row(), Lij.col()) = 0 ;
     }
@@ -46,7 +47,17 @@ arma::mat spectral_clustering(const arma::sp_mat& A, const int& Kmax) {
   // Normalized eigen values
   arma::vec eigval;
   arma::mat eigvec;
-  arma::eigs_sym(eigval, eigvec, L, Kmax);
+  arma::eigs_sym(eigval, eigvec, L, vBlocks.n_elem);
+
+  Rcpp::List clustering(vBlocks.n_elem) ;
+
+  arma::mat means;
+
+  for (uword k = 0; k < vBlocks.n_elem; k++) {
+
+    clustering[k] = arma::kmeans(means, eigvec.cols(0, vBlocks(k)), random_subset, 10, true) ;
+
+  }
 
   return(eigvec) ;
 }

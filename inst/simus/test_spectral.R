@@ -1,4 +1,5 @@
 library(missSBM)
+library(aricode)
 library(sbm)
 library(Matrix)
 
@@ -14,3 +15,10 @@ A <- sbm$networkData
 diag(A) <- 0
 A <- Matrix(A)
 out <- missSBM:::spectral_clustering(A, 10)
+
+Un <- out[, 1:5]
+Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+pairs(Un)
+
+ARI(kmeans(Un, 5)$cl, sbm$memberships)
+
