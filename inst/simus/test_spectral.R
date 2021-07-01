@@ -1,5 +1,6 @@
 library(missSBM)
 library(aricode)
+library(purrr)
 library(sbm)
 library(Matrix)
 
@@ -14,11 +15,8 @@ sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 A <- sbm$networkData
 diag(A) <- 0
 A <- Matrix(A)
-out <- missSBM:::spectral_clustering(A, 10)
 
-Un <- out[, 1:5]
-Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-pairs(Un)
+clusterings <- missSBM:::spectral_clustering(A, 1:10)
 
-ARI(kmeans(Un, 5)$cl, sbm$memberships)
+clusterings %>% map( as.vector) %>% map_dbl(ARI, sbm$memberships) %>% plot()
 

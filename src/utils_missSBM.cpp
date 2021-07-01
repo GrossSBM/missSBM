@@ -21,53 +21,16 @@ Rcpp::NumericMatrix roundProduct(Rcpp::List covariates_list, arma::vec beta) {
 }
 
 // [[Rcpp::export]]
-arma::mat spectral_clustering(const arma::sp_mat& A, const arma::vec& vBlocks) {
+arma::mat dist_l2(const arma::mat& M) {
 
-  // handling lonely souls
-  arma::colvec d =  abs(A) * ones(A.n_rows, 1);
-  // uvec unconnected = find(d == 0) ;
-  // uvec connected   = find(d != 0) ;
-  //
-  // // remove unconnected nodes
-  arma::sp_mat L = A;
-
-  // compute normalized weighted Laplacian
-  sp_mat::const_iterator Lij     = L.begin();
-  sp_mat::const_iterator Lij_end = L.end();
-
-  for(; Lij != Lij_end; ++Lij) {
-    double normalize = d(Lij.row()) * d(Lij.col()) ;
-    if (normalize > 0.0) {
-      L(Lij.row(), Lij.col()) = -(*Lij) / sqrt(normalize);
-    } else {
-      L(Lij.row(), Lij.col()) = 0 ;
+  uword n = M.n_rows ;
+  arma::mat D = trimatu(zeros(n, n)) ;
+  for (uword i = 0; i < n; i++) {
+    for (uword j = i + 1 ; j < n; j++) {
+      D(i,j) = sqrt(accu(pow(M.row(i) - M.row(j), 2))) ;
     }
   }
-
-  // Normalized eigen values
-  arma::vec eigval;
-  arma::mat eigvec;
-  arma::eigs_sym(eigval, eigvec, L, vBlocks.n_elem);
-
-  Rcpp::List clustering(vBlocks.n_elem) ;
-
-  arma::mat means;
-
-  for (uword k = 0; k < vBlocks.n_elem; k++) {
-
-    clustering[k] = arma::kmeans(means, eigvec.cols(0, vBlocks(k)), random_subset, 10, true) ;
-
-  }
-
-  return(eigvec) ;
-}
-
-// [[Rcpp::export]]
-arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax) {
-    arma::vec eigval;
-    arma::mat eigvec;
-    arma::eigs_sym(eigval, eigvec, L, Kmax);
-    return eigvec ;
+  return(D) ;
 }
 
 // [[Rcpp::export]]
@@ -125,3 +88,69 @@ IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroi
 
     return Rcpp::wrap(classif);
 }
+
+// [[Rcpp::export]]
+Rcpp::List spectral_clustering(const arma::sp_mat& A, const arma::vec& vBlocks) {
+
+  uword n = A.n_cols ;
+
+  // handling lonely souls
+  arma::colvec d =  abs(A) * ones(A.n_rows, 1);
+  // uvec unconnected = find(d == 0) ;
+  // uvec connected   = find(d != 0) ;
+  //
+  // // remove unconnected nodes
+  arma::sp_mat L = A;
+
+  // compute normalized weighted Laplacian
+  sp_mat::const_iterator Lij     = L.begin();
+  sp_mat::const_iterator Lij_end = L.end();
+
+  for(; Lij != Lij_end; ++Lij) {
+    double normalize = d(Lij.row()) * d(Lij.col()) ;
+    if (normalize > 0.0) {
+      L(Lij.row(), Lij.col()) = -(*Lij) / sqrt(normalize);
+    } else {
+      L(Lij.row(), Lij.col()) = 0 ;
+    }
+  }
+
+  // Normalized eigen values
+  arma::vec eigval;
+  arma::mat eigvec ;
+  arma::eigs_sym(eigval, eigvec, L, vBlocks.max());
+
+  Rcpp::List clustering(vBlocks.n_elem) ;
+
+  for (uword k = 0; k < vBlocks.n_elem; k++) {
+    if (vBlocks(k) == 1) {
+      clustering[k] = arma::ones(n, 1) ;
+    } else {
+
+      arma::mat coordinates = eigvec.cols(0, vBlocks(k)-1) ;
+      arma::mat dists = dist_l2(coordinates) ;
+      uvec init_centroids = ind2sub(size(dists), dists.index_max()) ;
+
+      while (init_centroids.n_elem < vBlocks(k)) {
+        uword i = min(dists.rows(init_centroids)).index_max() ;
+        init_centroids.resize(init_centroids.n_elem + 1) ;
+        init_centroids.back() = i ;
+      }
+
+      arma::mat centroids = coordinates.rows(init_centroids) ;
+      clustering[k] = kmeans_cpp(coordinates, centroids) + 1;
+    }
+
+  }
+
+  return(clustering) ;
+}
+
+// [[Rcpp::export]]
+arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax) {
+    arma::vec eigval;
+    arma::mat eigvec;
+    arma::eigs_sym(eigval, eigvec, L, Kmax);
+    return eigvec ;
+}
+
