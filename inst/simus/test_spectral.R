@@ -5,7 +5,7 @@ library(sbm)
 library(Matrix)
 
 ## SBM parameters
-N <- 2000 # number of nodes
+N <- 1000 # number of nodes
 Q <- 5   # number of clusters
 pi <- rep(1,Q)/Q     # block proportion
 theta <- list(mean = diag(.25,Q) + .1 ) # connectivity matrix
@@ -14,9 +14,15 @@ theta <- list(mean = diag(.25,Q) + .1 ) # connectivity matrix
 sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 A <- sbm$networkData
 diag(A) <- 0
-A <- Matrix(A)
+A <- as(A, 'dgCMatrix')
+myNet <- missSBM:::partlyObservedNetwork$new(A)
 
-clusterings <- missSBM:::spectral_clustering(A, 1:10)
+vBlocks <- 1:10
+timings_new <- system.time(clusterings     <- myNet$clustering(vBlocks))[3]
+timings_old <- system.time(clusterings_old <- myNet$clustering_old(vBlocks))[3]
 
-clusterings %>% map( as.vector) %>% map_dbl(ARI, sbm$memberships) %>% plot()
+ARI_new <- clusterings %>% map( as.vector) %>% map_dbl(ARI, sbm$memberships)
+ARI_old <- clusterings_old %>% map( as.vector) %>% map_dbl(ARI, sbm$memberships)
 
+plot(vBlocks, ARI_old, type = 'l', col = 'red')
+lines(vBlocks, ARI_new, type = 'l', col = 'blue')

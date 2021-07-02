@@ -102,7 +102,7 @@ partlyObservedNetwork <-
     #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom Matrix Diagonal
-    clustering = function(vBlocks,
+    clustering_old = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
 
       A <- self$imputation(imputation)
@@ -131,6 +131,17 @@ partlyObservedNetwork <-
         }
         cl
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      res
+    },
+    #' @description method to cluster network data with missing value
+    #' @param vBlocks The vector of number of blocks considered in the collection.
+    #' @param imputation character indicating the type of imputation among "median", "average"
+    #' @importFrom stats binomial glm.fit residuals
+    #' @importFrom Matrix Diagonal
+    clustering = function(vBlocks,
+                          imputation = ifelse(is.null(private$phi), "median", "average")) {
+      A <- self$imputation("zero")
+      res <- spectral_clustering(A, vBlocks) %>% lapply(as.vector)
       res
     },
     #' @description basic imputation from existing clustering

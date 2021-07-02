@@ -134,29 +134,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// dist_l2
-arma::mat dist_l2(const arma::mat& M);
-RcppExport SEXP _missSBM_dist_l2(SEXP MSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist_l2(M));
-    return rcpp_result_gen;
-END_RCPP
-}
-// kmeans_cpp
-IntegerVector kmeans_cpp(const arma::mat& coordinates, arma::mat& input_centroids);
-RcppExport SEXP _missSBM_kmeans_cpp(SEXP coordinatesSEXP, SEXP input_centroidsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type coordinates(coordinatesSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type input_centroids(input_centroidsSEXP);
-    rcpp_result_gen = Rcpp::wrap(kmeans_cpp(coordinates, input_centroids));
-    return rcpp_result_gen;
-END_RCPP
-}
 // spectral_clustering
 Rcpp::List spectral_clustering(const arma::sp_mat& A, const arma::vec& vBlocks);
 RcppExport SEXP _missSBM_spectral_clustering(SEXP ASEXP, SEXP vBlocksSEXP) {
@@ -181,6 +158,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// kmeans_cpp
+IntegerVector kmeans_cpp(const arma::mat& coordinates, arma::mat& input_centroids);
+RcppExport SEXP _missSBM_kmeans_cpp(SEXP coordinatesSEXP, SEXP input_centroidsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type coordinates(coordinatesSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type input_centroids(input_centroidsSEXP);
+    rcpp_result_gen = Rcpp::wrap(kmeans_cpp(coordinates, input_centroids));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_vLL_complete_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_vLL_complete_sparse_bernoulli_nocovariate, 5},
@@ -192,10 +181,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
-    {"_missSBM_dist_l2", (DL_FUNC) &_missSBM_dist_l2, 1},
-    {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
     {"_missSBM_spectral_clustering", (DL_FUNC) &_missSBM_spectral_clustering, 2},
     {"_missSBM_eigen_arma", (DL_FUNC) &_missSBM_eigen_arma, 2},
+    {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
     {NULL, NULL, 0}
 };
 

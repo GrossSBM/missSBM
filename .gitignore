@@ -46,6 +46,8 @@ src/*.dll
 /docs/
 inst/doc
 
+# html files
+*.html
 
 # Mac bullsh.
 .DS_Store
