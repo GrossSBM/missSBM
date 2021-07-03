@@ -102,7 +102,7 @@ partlyObservedNetwork <-
     #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom Matrix Diagonal
-    clustering_old = function(vBlocks,
+    clustering = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
 
       A <- self$imputation(imputation)
@@ -114,8 +114,8 @@ partlyObservedNetwork <-
       A <- A[connected,connected]
       ## Spectral clustering with Normalized weighted Laplacian
       d <- 1/sqrt(rowSums(abs(A)))
-      D <- Diagonal(x = d)
-      U <- eigen_arma(- D %*% A %*% D, max(vBlocks))
+      L <- sweep(sweep(A, 1, d, "*"), 2, d, "*")
+      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
       res <- future_lapply(vBlocks, function(k) {
         cl <- rep(1L, n)
         if (k != 1) {
@@ -138,16 +138,18 @@ partlyObservedNetwork <-
     #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom Matrix Diagonal
-    clustering = function(vBlocks,
+    clustering_new = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
-      A <- self$imputation("zero")
-      res <- spectral_clustering(A, vBlocks) %>% lapply(as.vector)
+      A <- self$imputation(imputation)
+      res <- spectral_clustering(A, vBlocks)
       res
     },
     #' @description basic imputation from existing clustering
     #' @param type a character, the type of imputation. Either "median" or "average"
     imputation = function(type = c("median", "average", "zero")) {
       adjMat <- private$Y
+      type   <- match.arg(type)
+      ## When there are covariartes
       if (!is.null(private$phi)) {
         obs <- which(private$R != 0)
         y <- as.vector(adjMat[obs])
@@ -162,6 +164,13 @@ partlyObservedNetwork <-
                "median"   = median(adjMat, na.rm = TRUE),
                "zero"     = 0
         ))
+      # if (type == "median" & median(adjMat, na.rm = TRUE) != 0) {
+      #   miss <- which(private$R == 0)
+      #   suppressMessages(adjMat[miss]) <- median(adjMat, na.rm = TRUE)
+      # }
+      # if (type == "average")
+      #   suppressMessages(adjMat[miss]) <- mean(adjMat, na.rm = TRUE)
+
       if (!private$directed)
         suppressMessages(adjMat[lower.tri(adjMat)] <- Matrix::t(adjMat)[lower.tri(adjMat)])
 
