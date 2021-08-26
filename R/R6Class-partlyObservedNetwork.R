@@ -100,52 +100,16 @@ partlyObservedNetwork <-
     #' @description method to cluster network data with missing value
     #' @param vBlocks The vector of number of blocks considered in the collection.
     #' @param imputation character indicating the type of imputation among "median", "average"
-    #' @importFrom stats binomial glm.fit residuals
-    #' @importFrom Matrix Diagonal
     clustering = function(vBlocks,
-                          imputation = ifelse(is.null(private$phi), "median", "average")) {
-
-      A <- self$imputation(imputation)
-      n <- ncol(A)
-      A <- A %*% t(A) ## get second order paths between  node
-      ## handling lonely souls
-      unconnected <- which(rowSums(abs(A)) == 0)
-      connected   <- setdiff(1:n, unconnected)
-      A <- A[connected,connected]
-      ## Spectral clustering with Normalized weighted Laplacian
-      d <- 1/sqrt(rowSums(abs(A)))
-      L <- sweep(sweep(A, 1, d, "*"), 2, d, "*")
-      U <- eigen(L, symmetric = TRUE)$vectors[, 1:max(vBlocks), drop = FALSE]
-      res <- future_lapply(vBlocks, function(k) {
-        cl <- rep(1L, n)
-        if (k != 1) {
-          Un <- U[, 1:k, drop = FALSE]
-          Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-          Un[is.nan(Un)] <- 0
-          cl_ <- as.integer(
-            kmeans_missSBM(Un, k)
-          )
-         ## handing lonely souls
-         cl[connected] <- cl_
-         cl[unconnected] <- which.max(rowsum(d, cl_))
-        }
-        cl
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
-      res
-    },
-    #' @description method to cluster network data with missing value
-    #' @param vBlocks The vector of number of blocks considered in the collection.
-    #' @param imputation character indicating the type of imputation among "median", "average"
-    #' @importFrom stats binomial glm.fit residuals
-    #' @importFrom Matrix Diagonal
-    clustering_new = function(vBlocks,
-                          imputation = ifelse(is.null(private$phi), "median", "average")) {
-      A <- self$imputation(imputation)
+                            imputation = ifelse(is.null(private$phi), "median", "average")) {
+      A   <- self$imputation(imputation)
       res <- spectral_clustering(A, vBlocks)
       res
     },
     #' @description basic imputation from existing clustering
     #' @param type a character, the type of imputation. Either "median" or "average"
+    #' @importFrom stats binomial glm.fit residuals
+    #' @importFrom Matrix Diagonal
     imputation = function(type = c("median", "average", "zero")) {
       adjMat <- private$Y
       type   <- match.arg(type)

@@ -37,14 +37,6 @@ roundProduct <- function(covariates_list, beta) {
     .Call(`_missSBM_roundProduct`, covariates_list, beta)
 }
 
-spectral_clustering <- function(A, vBlocks) {
-    .Call(`_missSBM_spectral_clustering`, A, vBlocks)
-}
-
-eigen_arma <- function(L, Kmax) {
-    .Call(`_missSBM_eigen_arma`, L, Kmax)
-}
-
 kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
 }

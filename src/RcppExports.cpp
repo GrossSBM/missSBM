@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // vLL_complete_sparse_bernoulli_nocovariate
 double vLL_complete_sparse_bernoulli_nocovariate(const arma::sp_mat& Y, const arma::sp_mat& R, const arma::mat& Z, const arma::mat& theta, const arma::vec& pi);
 RcppExport SEXP _missSBM_vLL_complete_sparse_bernoulli_nocovariate(SEXP YSEXP, SEXP RSEXP, SEXP ZSEXP, SEXP thetaSEXP, SEXP piSEXP) {
@@ -134,30 +139,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// spectral_clustering
-Rcpp::List spectral_clustering(const arma::sp_mat& A, const arma::vec& vBlocks);
-RcppExport SEXP _missSBM_spectral_clustering(SEXP ASEXP, SEXP vBlocksSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::sp_mat& >::type A(ASEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type vBlocks(vBlocksSEXP);
-    rcpp_result_gen = Rcpp::wrap(spectral_clustering(A, vBlocks));
-    return rcpp_result_gen;
-END_RCPP
-}
-// eigen_arma
-arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax);
-RcppExport SEXP _missSBM_eigen_arma(SEXP LSEXP, SEXP KmaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::sp_mat& >::type L(LSEXP);
-    Rcpp::traits::input_parameter< const int& >::type Kmax(KmaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(eigen_arma(L, Kmax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // kmeans_cpp
 IntegerVector kmeans_cpp(const arma::mat& coordinates, arma::mat& input_centroids);
 RcppExport SEXP _missSBM_kmeans_cpp(SEXP coordinatesSEXP, SEXP input_centroidsSEXP) {
@@ -181,8 +162,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
-    {"_missSBM_spectral_clustering", (DL_FUNC) &_missSBM_spectral_clustering, 2},
-    {"_missSBM_eigen_arma", (DL_FUNC) &_missSBM_eigen_arma, 2},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
     {NULL, NULL, 0}
 };

@@ -16,9 +16,9 @@ list_psi <- map(delta, ~matrix(0.1 + .x, 3, 3) + diag(3) * (max(delta) - .x))
 control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, trace = 0)
 
 ## Simulation
-nbrSimu <- 100
+nbrSimu <- 50
 
-future::plan("multicore", workers = 10)
+future::plan("multicore", workers = 4)
 
 RES <- lapply(1:nbrSimu, function(i) {
   res <- future.apply::future_lapply(list_psi, function(psi) {
