@@ -1,4 +1,8 @@
-#include <RcppArmadillo.h>
+// we only include RcppArmadillo.h which pulls Rcpp.h in for us
+#include "RcppArmadillo.h"
+
+// via the depends attribute we tell Rcpp to create hooks for
+// RcppArmadillo so that the build process will know what to do
 // [[Rcpp::depends(RcppArmadillo)]]
 
 using namespace Rcpp;
@@ -158,9 +162,9 @@ Rcpp::IntegerVector k_means(const arma::mat& coordinates, const uword & K) {
 // [[Rcpp::export]]
 Rcpp::List spectral_clustering_cpp(const arma::sp_mat& A, const arma::vec& vBlocks) {
 
-  wall_clock timer;
-  timer.tic();
-  double timing ;
+  // wall_clock timer;
+  // timer.tic();
+  // double timing ;
 
   // initialization
   uword n = A.n_cols ;
@@ -215,10 +219,3 @@ Rcpp::List spectral_clustering_cpp(const arma::sp_mat& A, const arma::vec& vBloc
   return(clustering) ;
 }
 
-// [[Rcpp::export]]
-arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax) {
-    arma::vec eigval;
-    arma::mat eigvec;
-    arma::eigs_sym(eigval, eigvec, L, Kmax);
-    return eigvec ;
-}

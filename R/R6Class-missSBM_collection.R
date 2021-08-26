@@ -53,7 +53,7 @@ missSBM_collection <-
 
         ## current  imputed network
         base_net <- private$missSBM_fit[[k]]$imputedNetwork
-        if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- base_net %*% t(base_net)
+        if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- .5 * (base_net + t(base_net))
         ## current clustering
         cl0 <- private$missSBM_fit[[k]]$fittedSBM$memberships
 
