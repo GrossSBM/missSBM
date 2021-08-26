@@ -1,4 +1,3 @@
-#define ARMA_DONT_USE_OPENMP
 #include "RcppArmadillo.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 

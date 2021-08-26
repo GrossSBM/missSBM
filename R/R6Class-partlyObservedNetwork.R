@@ -103,7 +103,7 @@ partlyObservedNetwork <-
     clustering = function(vBlocks,
                             imputation = ifelse(is.null(private$phi), "median", "average")) {
       A   <- self$imputation(imputation)
-      res <- spectral_clustering(A, vBlocks)
+      res <- spectral_clustering_cpp(A, vBlocks)
       res
     },
     #' @description basic imputation from existing clustering

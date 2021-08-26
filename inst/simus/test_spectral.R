@@ -5,7 +5,7 @@ library(sbm)
 library(profvis)
 
 ## SBM parameters
-N <- 1000 # number of nodes
+N <- 10000 # number of nodes
 Q <- 10   # number of clusters
 pi <- rep(1,Q)/Q     # block proportion
 theta <- list(mean = diag(.25,Q) + .1 ) # connectivity matrix
@@ -17,7 +17,7 @@ diag(A) <- 0
 A <- as(A, 'dgCMatrix')
 
 vBlocks <- 1:20
-profvis({clusterings <- spectral_clustering_R(A, vBlocks)})
+profvis({clusterings <- spectral_clustering_cpp(A, vBlocks)})
 
 ARI <- clusterings %>% map( as.vector) %>% map_dbl(aricode::ARI, sbm$memberships)
 plot(vBlocks, ARI, type = 'l', col = 'red')

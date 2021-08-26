@@ -4,7 +4,7 @@ library(aricode)
 library(profvis)
 
 ## SBM parameters
-N <- 1000 # number of nodes
+N <- 10000 # number of nodes
 Q <- 5   # number of clusters
 pi <- rep(1,Q)/Q     # block proportion
 theta <- list(mean = diag(.25,Q) + .1 ) # connectivity matrix

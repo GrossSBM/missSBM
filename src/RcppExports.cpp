@@ -151,6 +151,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// spectral_clustering_cpp
+Rcpp::List spectral_clustering_cpp(const arma::sp_mat& A, const arma::vec& vBlocks);
+RcppExport SEXP _missSBM_spectral_clustering_cpp(SEXP ASEXP, SEXP vBlocksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vBlocks(vBlocksSEXP);
+    rcpp_result_gen = Rcpp::wrap(spectral_clustering_cpp(A, vBlocks));
+    return rcpp_result_gen;
+END_RCPP
+}
+// eigen_arma
+arma::mat eigen_arma(const arma::sp_mat& L, const int& Kmax);
+RcppExport SEXP _missSBM_eigen_arma(SEXP LSEXP, SEXP KmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type L(LSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Kmax(KmaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(eigen_arma(L, Kmax));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_vLL_complete_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_vLL_complete_sparse_bernoulli_nocovariate, 5},
@@ -163,6 +187,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
+    {"_missSBM_spectral_clustering_cpp", (DL_FUNC) &_missSBM_spectral_clustering_cpp, 2},
+    {"_missSBM_eigen_arma", (DL_FUNC) &_missSBM_eigen_arma, 2},
     {NULL, NULL, 0}
 };
 

@@ -41,3 +41,12 @@ kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
 }
 
+#' @export
+spectral_clustering_cpp <- function(A, vBlocks) {
+    .Call(`_missSBM_spectral_clustering_cpp`, A, vBlocks)
+}
+
+eigen_arma <- function(L, Kmax) {
+    .Call(`_missSBM_eigen_arma`, L, Kmax)
+}
+
