@@ -66,12 +66,13 @@ missSBM_collection <-
           cl_split[cl_splitable] <-
             future_lapply(cl_splitable, function(k_) {
               A <- base_net[cl0 == k_, cl0 == k_]
-              A <- 1/(1+exp(-A/sd(A)))
-              D <- 1/sqrt(rowSums(abs(A)))
-              L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
-              Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
-              Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-              kmeans_missSBM(Un, 2)
+              spectral_clustering_cpp(A, 2)[[1]]
+              # A <- 1/(1+exp(-A/sd(A)))
+              # D <- 1/sqrt(rowSums(abs(A)))
+              # L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
+              # Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
+              # Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+              # kmeans_missSBM(Un, 2)
             }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
 
           ## build list of candidate clustering after splits

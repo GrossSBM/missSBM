@@ -44,7 +44,7 @@ kmeans_cpp <- function(coordinates, input_centroids) {
 #' Absolute Spectral Clustering
 #'
 #' @param A a dgCMatrix
-#' @param vBlocks a vector of integer for the succesive number of blocks considered
+#' @param vBlocks a vector of integer for the successive number of blocks considered
 #'
 #' @return a list of vector of clustering memberships
 #'
