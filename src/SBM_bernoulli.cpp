@@ -1,9 +1,8 @@
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
-#include "RcppArmadillo.h"
-
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
 // [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::depends(nloptr)]]
+// [[Rcpp::plugins(cpp11)]]
+
+#include <RcppArmadillo.h>
 
 #include "nlopt_wrapper.h"
 #include "packing.h"

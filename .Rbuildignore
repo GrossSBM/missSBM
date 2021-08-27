@@ -4,7 +4,6 @@
 ^appveyor\.yml$
 ^\.travis\.yml$
 ^LICENSE\.md$
-^src/Makevars$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README.Rmd

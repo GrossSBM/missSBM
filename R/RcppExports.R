@@ -41,6 +41,13 @@ kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
 }
 
+#' Absolute Spectral Clustering
+#'
+#' @param A a dgCMatrix
+#' @param vBlocks a vector of integer for the succesive number of blocks considered
+#'
+#' @return a list of vector of clustering memberships
+#'
 #' @export
 spectral_clustering_cpp <- function(A, vBlocks) {
     .Call(`_missSBM_spectral_clustering_cpp`, A, vBlocks)
