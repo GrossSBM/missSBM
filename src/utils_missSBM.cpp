@@ -73,85 +73,32 @@ IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroi
     return Rcpp::wrap(classif);
 }
 
-// Internal function for fast computation of Euclidean distance
-arma::mat dist_l2(const arma::mat& M) {
+Rcpp::IntegerVector k_means_with_arma(const arma::mat& coordinates, const uword & K) {
 
-  uword n = M.n_rows ;
-  arma::mat D = trimatu(zeros(n, n)) ;
-  for (uword i = 0; i < n; i++) {
-    for (uword j = i + 1 ; j < n; j++) {
-      D(i,j) = norm(M.row(i) - M.row(j), 2) ;
-    }
-  }
-  return(D) ;
-}
-
-Rcpp::IntegerVector k_means(const arma::mat& coordinates, const uword & K) {
-
-  uword n = coordinates.n_rows ;
-  // initial centroids are chosen to maximize distance between them
-  arma::mat dists = dist_l2(coordinates) ;
-  uvec init_centroids = ind2sub(size(dists), dists.index_max()) ;
-  while (init_centroids.n_elem < K) {
-    uword i = min(dists.rows(init_centroids)).index_max() ;
-    init_centroids.resize(init_centroids.n_elem + 1) ;
-    init_centroids.back() = i ;
-  }
-  arma::mat centroids = coordinates.rows(init_centroids) ;
-
-  // k-means clustering
-  arma::uvec classif = zeros<uvec>(n);
-  arma::uvec old_classif;
-  unsigned int niter = 0;
-
-  do
-  {
-    old_classif = classif;
-
-    for(unsigned int i = 0; i < n; i++)
-    {
-
-      double dmin = norm(rowvec(coordinates.row(i)-centroids.row(0)),2);
-      unsigned int imin=0;
-      for(unsigned int c=1;c<centroids.n_rows;c++)
-      {
-        double d = norm(rowvec(coordinates.row(i)-centroids.row(c)),2);
-        if(d<dmin)
-        {
-          dmin=d;
-          imin=c;
-        }
-      }
-      classif(i) = imin;
-    }
-
-    centroids.fill(0);
-
-    colvec S(n);
-    S.fill(0);
-    for(unsigned int i = 0; i < n; i++)
-    {
-      centroids.row(classif(i)) += coordinates.row(i);
-      S(classif(i)) += 1;
-
-    }
-
-    for(unsigned int c=0;c<centroids.n_rows;c++)
-    {
-      centroids.row(c) /= 1.0*S(c);
-    }
-
-    niter++;
-
-  } while(accu(classif-old_classif) !=0 && niter < coordinates.n_rows);
+  uword n = coordinates.n_cols ;
+  arma::mat centroids;
+  bool status = arma::kmeans(centroids, coordinates, K, static_spread, 10, false);
 
   IntegerVector clustering(n) ;
-  for(unsigned i = 0; i <n; ++i) {
-    clustering[i] = classif[i] + 1;
-  }
+  for(unsigned int i = 0; i < n; i++)
+    {
+      double dmin = norm(coordinates.col(i)-centroids.col(0),2);
+      unsigned int imin=0;
+      for(unsigned int c=1;c<centroids.n_cols;c++)
+        {
+          double d = norm(coordinates.col(i)-centroids.col(c),2);
+          if(d<dmin)
+            {
+              dmin=d;
+              imin=c;
+            }
+        }
+      clustering(i) = imin + 1;
+    }
 
   return(clustering);
 }
+
 
 //' Absolute Spectral Clustering
 //'
@@ -210,7 +157,7 @@ Rcpp::List spectral_clustering_cpp(const arma::sp_mat& A, const arma::vec& vBloc
       // we only consider K eigen vectors for K groups
       arma::mat coordinates = normalise(eigvec.cols(0, vBlocks(k)-1), 1, 1) ;
 
-      clustering[k] = k_means(coordinates, vBlocks(k)) ;
+      clustering[k] = k_means_with_arma(coordinates.t(), vBlocks(k)) ;
     }
 
   }
