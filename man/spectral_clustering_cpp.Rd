@@ -9,7 +9,7 @@ spectral_clustering_cpp(A, vBlocks)
 \arguments{
 \item{A}{a dgCMatrix}
 
-\item{vBlocks}{a vector of integer for the succesive number of blocks considered}
+\item{vBlocks}{a vector of integer for the successive number of blocks considered}
 }
 \value{
 a list of vector of clustering memberships

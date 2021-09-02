@@ -17,7 +17,6 @@ diag(A) <- 0
 A <- as(A, 'dgCMatrix')
 
 vBlocks <- 1:20
-profvis({clusterings <- spectral_clustering_cpp(A, vBlocks)})
 
 ARI <- clusterings %>% map( as.vector) %>% map_dbl(aricode::ARI, sbm$memberships)
 plot(vBlocks, ARI, type = 'l', col = 'red')
