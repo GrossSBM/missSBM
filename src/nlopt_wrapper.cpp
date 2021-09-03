@@ -48,8 +48,10 @@ static nlopt_algorithm algorithm_from_name(const std::string & name) {
 // nlopt wrapper non-template helpers
 
 std::unique_ptr<NloptStruct, NloptDeleter> new_nlopt_optimizer(const Rcpp::List & config, std::size_t size) {
+
     auto algorithm = algorithm_from_name(Rcpp::as<std::string>(config["algorithm"]));
     auto opt = std::unique_ptr<NloptStruct, NloptDeleter>(nlopt_create(algorithm, size));
+
     if(!opt) {
         throw Rcpp::exception("nlopt_create");
     }

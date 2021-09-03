@@ -151,15 +151,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// spectral_clustering_cpp
-Rcpp::List spectral_clustering_cpp(const arma::sp_mat& A, const arma::vec& vBlocks);
-RcppExport SEXP _missSBM_spectral_clustering_cpp(SEXP ASEXP, SEXP vBlocksSEXP) {
+// spectral_clustering_sparse
+Rcpp::List spectral_clustering_sparse(const arma::sp_mat& A, const arma::vec& vBlocks);
+RcppExport SEXP _missSBM_spectral_clustering_sparse(SEXP ASEXP, SEXP vBlocksSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::sp_mat& >::type A(ASEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vBlocks(vBlocksSEXP);
-    rcpp_result_gen = Rcpp::wrap(spectral_clustering_cpp(A, vBlocks));
+    rcpp_result_gen = Rcpp::wrap(spectral_clustering_sparse(A, vBlocks));
+    return rcpp_result_gen;
+END_RCPP
+}
+// spectral_clustering_dense
+Rcpp::List spectral_clustering_dense(const arma::mat& A, const arma::vec& vBlocks);
+RcppExport SEXP _missSBM_spectral_clustering_dense(SEXP ASEXP, SEXP vBlocksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vBlocks(vBlocksSEXP);
+    rcpp_result_gen = Rcpp::wrap(spectral_clustering_dense(A, vBlocks));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -175,7 +187,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
-    {"_missSBM_spectral_clustering_cpp", (DL_FUNC) &_missSBM_spectral_clustering_cpp, 2},
+    {"_missSBM_spectral_clustering_sparse", (DL_FUNC) &_missSBM_spectral_clustering_sparse, 2},
+    {"_missSBM_spectral_clustering_dense", (DL_FUNC) &_missSBM_spectral_clustering_dense, 2},
     {NULL, NULL, 0}
 };
 

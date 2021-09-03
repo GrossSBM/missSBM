@@ -66,7 +66,10 @@ missSBM_collection <-
           cl_split[cl_splitable] <-
             future_lapply(cl_splitable, function(k_) {
               A <- base_net[cl0 == k_, cl0 == k_]
-              spectral_clustering_cpp(A, 2)[[1]]
+              res <- switch(class(A),
+                       "dgCMatrix" = spectral_clustering_sparse(A, 2),
+                                     spectral_clustering_dense(as.matrix(A), 2))
+              res[[1]]
               # A <- 1/(1+exp(-A/sd(A)))
               # D <- 1/sqrt(rowSums(abs(A)))
               # L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")

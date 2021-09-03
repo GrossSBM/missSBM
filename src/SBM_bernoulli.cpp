@@ -1,8 +1,8 @@
+#include "RcppArmadillo.h"
+
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::depends(nloptr)]]
 // [[Rcpp::plugins(cpp11)]]
-
-#include <RcppArmadillo.h>
 
 #include "nlopt_wrapper.h"
 #include "packing.h"
@@ -111,7 +111,7 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
     const bool sym,
     Rcpp::List configuration) {
 
-     // Conversion from R, prepare optimization
+    // Conversion from R, prepare optimization
     const auto init_Gamma = Rcpp::as<arma::mat>(init_param["Gamma"]); // (Q,Q)
     const auto init_beta  = Rcpp::as<arma::vec>(init_param["beta"]);  // (M,1)
 
@@ -158,6 +158,7 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
 
         return (-loglik);
     };
+
     OptimizerResult result = minimize_objective_on_parameters(optimizer.get(), objective_and_grad, parameters);
 
     arma::mat Gamma = metadata.copy<GAMMA_ID>(parameters.data());

@@ -103,7 +103,12 @@ partlyObservedNetwork <-
     clustering = function(vBlocks,
                             imputation = ifelse(is.null(private$phi), "median", "average")) {
       A   <- self$imputation(imputation)
-      res <- spectral_clustering_cpp(A, vBlocks)
+      if (inherits(A, "dgCMatrix")) {
+        res <- spectral_clustering_sparse(A, vBlocks)
+      }
+      else {
+        res <- spectral_clustering_dense(as.matrix(A), vBlocks)
+      }
       res
     },
     #' @description basic imputation from existing clustering
@@ -111,33 +116,24 @@ partlyObservedNetwork <-
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom Matrix Diagonal
     imputation = function(type = c("median", "average", "zero")) {
-      adjMat <- private$Y
       type   <- match.arg(type)
       ## When there are covariartes
+      adjMat <- private$Y
       if (!is.null(private$phi)) {
+        adjMat <- as.matrix(adjMat)
         obs <- which(private$R != 0)
         y <- as.vector(adjMat[obs])
         X <- cbind(1, apply(private$phi, 3, function(x) x[obs]))
 ### TODO: make it work for other model than Bernoulli / family than binomial
         adjMat[obs] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
       }
-      miss <- which(private$R == 0)
-      suppressMessages(adjMat[miss] <-
-        switch(match.arg(type),
-               "average"  = mean(adjMat, na.rm = TRUE),
-               "median"   = median(adjMat, na.rm = TRUE),
-               "zero"     = 0
-        ))
-      # if (type == "median" & median(adjMat, na.rm = TRUE) != 0) {
-      #   miss <- which(private$R == 0)
-      #   suppressMessages(adjMat[miss]) <- median(adjMat, na.rm = TRUE)
-      # }
-      # if (type == "average")
-      #   suppressMessages(adjMat[miss]) <- mean(adjMat, na.rm = TRUE)
-
-      if (!private$directed)
-        suppressMessages(adjMat[lower.tri(adjMat)] <- Matrix::t(adjMat)[lower.tri(adjMat)])
-
+      if (type == "median") {
+        impute <- median(adjMat, na.rm = TRUE)
+        if (impute != 0) adjMat <- adjMat + private$S * impute
+      } else if (type == "average") {
+        adjMat <- adjMat + private$S * mean(adjMat, na.rm = TRUE)
+      }
+      if (!private$directed) adjMat <- adjMat + t(adjMat)
       adjMat
     }
   )

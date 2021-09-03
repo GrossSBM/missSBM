@@ -49,7 +49,19 @@ kmeans_cpp <- function(coordinates, input_centroids) {
 #' @return a list of vector of clustering memberships
 #'
 #' @export
-spectral_clustering_cpp <- function(A, vBlocks) {
-    .Call(`_missSBM_spectral_clustering_cpp`, A, vBlocks)
+spectral_clustering_sparse <- function(A, vBlocks) {
+    .Call(`_missSBM_spectral_clustering_sparse`, A, vBlocks)
+}
+
+#' Absolute Spectral Clustering
+#'
+#' @param A a matrix
+#' @param vBlocks a vector of integer for the successive number of blocks considered
+#'
+#' @return a list of vector of clustering memberships
+#'
+#' @export
+spectral_clustering_dense <- function(A, vBlocks) {
+    .Call(`_missSBM_spectral_clustering_dense`, A, vBlocks)
 }
 

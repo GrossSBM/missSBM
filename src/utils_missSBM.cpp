@@ -1,4 +1,7 @@
-#include <RcppArmadillo.h>
+#include "RcppArmadillo.h"
+
+// [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::plugins(cpp11)]]
 
 using namespace Rcpp;
 using namespace arma;
@@ -109,7 +112,7 @@ Rcpp::IntegerVector k_means_with_arma(const arma::mat& coordinates, const uword 
 //'
 //' @export
 // [[Rcpp::export]]
-Rcpp::List spectral_clustering_cpp(const arma::sp_mat& A, const arma::vec& vBlocks) {
+Rcpp::List spectral_clustering_sparse(const arma::sp_mat& A, const arma::vec& vBlocks) {
 
   // wall_clock timer;
   // timer.tic();
@@ -164,6 +167,51 @@ Rcpp::List spectral_clustering_cpp(const arma::sp_mat& A, const arma::vec& vBloc
 
   // timing = timer.toc();
   // std::cout << "kmeans: number of seconds: " << timing << std::endl;
+
+  return(clustering) ;
+}
+
+//' Absolute Spectral Clustering
+//'
+//' @param A a matrix
+//' @param vBlocks a vector of integer for the successive number of blocks considered
+//'
+//' @return a list of vector of clustering memberships
+//'
+//' @export
+// [[Rcpp::export]]
+Rcpp::List spectral_clustering_dense(const arma::mat& A, const arma::vec& vBlocks) {
+
+  // initialization
+  uword n = A.n_cols ;
+  arma::mat L = A ;
+  if (!L.is_symmetric()) L = .5 * (L + L.t()) ;
+
+  // Compute normalized weighted Laplacian
+  arma::colvec d =  1 / sqrt( abs(L) * ones(n, 1) ) ;
+  L = - diagmat(d) * L * diagmat(d);
+
+  // Normalized eigen values
+  arma::vec eigval;
+  arma::mat eigvec ;
+  arma::eig_sym (eigval, eigvec, L);
+
+  // k-means clustering for varying number of groups
+  Rcpp::List clustering(vBlocks.n_elem) ;
+  for (uword k = 0; k < vBlocks.n_elem; k++) {
+    if (vBlocks(k) == 1) {
+      IntegerVector ones(n) ;
+      for(unsigned i = 0; i <n; ++i) { ones[i] = 1; }
+      clustering[k] = ones ;
+    } else {
+
+      // we only consider K eigen vectors for K groups
+      arma::mat coordinates = normalise(eigvec.cols(0, vBlocks(k)-1), 1, 1) ;
+
+      clustering[k] = k_means_with_arma(coordinates.t(), vBlocks(k)) ;
+    }
+
+  }
 
   return(clustering) ;
 }

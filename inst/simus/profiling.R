@@ -25,3 +25,9 @@ sum( (mySBM$connectParam$mean - sbm$connectParam$mean)^2)
 
 htmlwidgets::saveWidget(prof_total, "profile.html")
 
+prof_imputation <- profvis({
+  networkData <- missSBM:::partlyObservedNetwork$new(sbm$networkData)
+  A <- networkData$imputation()
+})
+
+htmlwidgets::saveWidget(prof_imputation, "~/Desktop/prof_imput.html")
