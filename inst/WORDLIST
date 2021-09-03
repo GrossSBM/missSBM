@@ -30,6 +30,7 @@ covar
 covarArray
 covarMatrix
 de
+dgCMatrix
 doi
 dyad
 dyads
