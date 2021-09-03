@@ -99,10 +99,8 @@ partlyObservedNetwork <-
     },
     #' @description method to cluster network data with missing value
     #' @param vBlocks The vector of number of blocks considered in the collection.
-    #' @param imputation character indicating the type of imputation among "median", "average"
-    clustering = function(vBlocks,
-                            imputation = ifelse(is.null(private$phi), "median", "average")) {
-      A   <- self$imputation(imputation)
+    clustering = function(vBlocks) {
+      A   <- self$imputation()
       if (inherits(A, "dgCMatrix")) {
         res <- spectral_clustering_sparse(A, vBlocks)
       }
@@ -112,27 +110,19 @@ partlyObservedNetwork <-
       res
     },
     #' @description basic imputation from existing clustering
-    #' @param type a character, the type of imputation. Either "median" or "average"
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom Matrix Diagonal
-    imputation = function(type = c("median", "average", "zero")) {
-      type   <- match.arg(type)
-      ## When there are covariartes
+    imputation = function() {
+      ### TODO: make it work for other model than Bernoulli / family than binomial
       adjMat <- private$Y
-      if (!is.null(private$phi)) {
-        adjMat <- as.matrix(adjMat)
-        obs <- which(private$R != 0)
+      obs <- which(private$R != 0)
+      if (!is.null(private$phi)) {0
         y <- as.vector(adjMat[obs])
         X <- cbind(1, apply(private$phi, 3, function(x) x[obs]))
-### TODO: make it work for other model than Bernoulli / family than binomial
         adjMat[obs] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
+        adjMat <- as.matrix(adjMat + private$S * mean(adjMat[obs]))
       }
-      if (type == "median") {
-        impute <- median(adjMat, na.rm = TRUE)
-        if (impute != 0) adjMat <- adjMat + private$S * impute
-      } else if (type == "average") {
-        adjMat <- adjMat + private$S * mean(adjMat, na.rm = TRUE)
-      }
+      adjMat <- adjMat + private$S * mean(adjMat[obs])
       if (!private$directed) adjMat <- adjMat + t(adjMat)
       adjMat
     }

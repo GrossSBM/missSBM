@@ -76,18 +76,13 @@ constructor
 \subsection{Method \code{clustering()}}{
 method to cluster network data with missing value
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(
-  vBlocks,
-  imputation = ifelse(is.null(private$phi), "median", "average")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(vBlocks)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{vBlocks}}{The vector of number of blocks considered in the collection.}
-
-\item{\code{imputation}}{character indicating the type of imputation among "median", "average"}
 }
 \if{html}{\out{</div>}}
 }
@@ -98,16 +93,9 @@ method to cluster network data with missing value
 \subsection{Method \code{imputation()}}{
 basic imputation from existing clustering
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(type = c("median", "average", "zero"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation()}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{type}}{a character, the type of imputation. Either "median" or "average"}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

@@ -212,7 +212,7 @@ doubleStandardSampling_fit <-
       super$initialize(partlyObservedNetwork, "double-standard")
       private$So      <- sum(partlyObservedNetwork$networkData)
       private$So.bar  <- private$card_D_o - private$So
-      self$update_parameters(partlyObservedNetwork$imputation("average") * partlyObservedNetwork$samplingMatrixBar)
+      self$update_parameters(partlyObservedNetwork$imputation() * partlyObservedNetwork$samplingMatrixBar)
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
     #' @param nu an adjacency matrix with imputed values (only)
@@ -232,9 +232,10 @@ doubleStandardSampling_fit <-
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
-      res <- log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
-        log(1 - private$psi[2]) * private$Sm + log(1 - private$psi[1]) * private$Sm.bar
-      res
+      sum(c(log(private$psi[2]) * private$So,
+            log(private$psi[1]) * private$So.bar,
+            log(1 - private$psi[2]) * private$Sm,
+            log(1 - private$psi[1]) * private$Sm.bar), na.rm = TRUE)
     }
   )
 )

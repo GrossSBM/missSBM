@@ -45,8 +45,6 @@ test_that("Consistency of sampling fit for undirected bernoulli withou covariate
 
     if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
-    } else {
-      expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth * 3 )
     }
 
   }
@@ -91,8 +89,6 @@ test_that("Consistency of sampling fit for directed network, no covariates", {
 
     if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
-    } else {
-      expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth * 3 )
     }
 
   }

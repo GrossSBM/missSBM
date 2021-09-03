@@ -34,7 +34,13 @@ A <- sbm$networkData
 diag(A) <- 0
 
 vBlocks <- 1:20
-clusterings <- spectral_clustering_dense(A, vBlocks)
+clusterings_ds <- spectral_clustering_dense(A, vBlocks)
 
-ARI <- clusterings %>% map( as.vector) %>% map_dbl(aricode::ARI, sbm$memberships)
+ARI <- clusterings_ds %>% map( as.vector) %>% map_dbl(aricode::ARI, sbm$memberships)
+plot(vBlocks, ARI, type = 'l', col = 'red')
+
+vBlocks <- 1:20
+clusterings_sp <- spectral_clustering_sparse(as(A, 'dgCMatrix'), vBlocks)
+
+ARI <- clusterings_sp %>% map( as.vector) %>% map_dbl(aricode::ARI, sbm$memberships)
 plot(vBlocks, ARI, type = 'l', col = 'red')
