@@ -103,6 +103,7 @@ partlyObservedNetwork <-
     #' @param imputation character indicating the type of imputation among "median", "average"
     #' @importFrom stats binomial glm.fit residuals
     #' @importFrom Matrix Diagonal
+    #' @importFrom RSpectra eigs_sym
     clustering = function(vBlocks,
                           imputation = ifelse(is.null(private$phi), "median", "average")) {
 
@@ -112,12 +113,11 @@ partlyObservedNetwork <-
       ## handling lonely souls
       unconnected <- which(rowSums(abs(A)) == 0)
       connected   <- setdiff(1:n, unconnected)
-      A <- A[connected,connected]
+      A <- A[connected, connected]
       ## Spectral clustering with Normalized weighted Laplacian
       d <- 1/sqrt(rowSums(abs(A)))
       D <- Diagonal(x = d)
-      # U <- eigen_arma(- D %*% A %*% D, max(vBlocks))
-      U <- eigen(- D %*% A %*% D, TRUE)$vectors[, 1:max(vBlocks) , drop = FALSE]
+      U <- eigs_sym(D %*% A %*% D, max(vBlocks))$vectors
       res <- future_lapply(vBlocks, function(k) {
         cl <- rep(1L, n)
         if (k != 1) {
