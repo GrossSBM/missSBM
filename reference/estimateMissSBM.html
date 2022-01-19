@@ -175,7 +175,7 @@ node-centered samplings. See doi: <a href="https://doi.org/10.1080/01621459.2018
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Initialization of 5 model(s). </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Performing VEM inference</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 3 blocks. 	Model with 2 blocks. 	Model with 4 blocks. 	Model with 1 blocks. 	Model with 5 blocks.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 4 blocks. 	Model with 1 blocks. 	Model with 5 blocks. 	Model with 3 blocks. 	Model with 2 blocks.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Looking for better solutions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Pass 1   Going forward ++++                                                                                                     Pass 1   Going backward ++++                                                                                                    </span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">collection</span>, <span class="st">"monitoring"</span><span class="op">)</span></span>
@@ -184,13 +184,13 @@ node-centered samplings. See doi: <a href="https://doi.org/10.1080/01621459.2018
 <span class="r-plt img"><img src="estimateMissSBM-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">collection</span><span class="op">$</span><span class="va">ICL</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10545.144  9995.570  9526.513  9553.468  9599.804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10667.809  9872.159  9440.930  9462.602  9496.247</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">collection</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span>, <span class="st">"connectivity"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]      [,2]       [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.51732102 0.0622172 0.05555556</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.06221720 0.5012594 0.05018360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05555556 0.0501836 0.48936169</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]       [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.56578947 0.03498542 0.05899281</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.03498542 0.49732618 0.06720433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05899281 0.06720433 0.51882842</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">myModel</span> <span class="op">&lt;-</span> <span class="va">collection</span><span class="op">$</span><span class="va">bestModel</span></span>
@@ -201,22 +201,22 @@ node-centered samplings. See doi: <a href="https://doi.org/10.1080/01621459.2018
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myModel</span>, <span class="st">"meso"</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="estimateMissSBM-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">myModel</span>, <span class="st">"sampling"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7509091</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7523232</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">myModel</span>, <span class="st">"connectivity"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]      [,2]       [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.51732102 0.0622172 0.05555556</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.06221720 0.5012594 0.05018360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05555556 0.0501836 0.48936169</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]       [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.56578947 0.03498542 0.05899281</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.03498542 0.49732618 0.06720433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05899281 0.06720433 0.51882842</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">myModel</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 x 5 sparse Matrix of class "dgCMatrix"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] . .         .         .         1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] . .         .         0.5173208 .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] . .         .         0.0622172 1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] . 0.5173208 0.0622172 .         0.0622172</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1 .         1.0000000 0.0622172 .        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] .         0.4973262 0.4973262 . 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.4973262 .         1.0000000 . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.4973262 1.0000000 .         1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] .         .         1.0000000 . 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1.0000000 .         1.0000000 1 .</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
