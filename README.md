@@ -8,7 +8,7 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/missSBM)](https://cran.r-project.org/package=missSBM)
 [![](https://img.shields.io/github/last-commit/grossSBM/missSBM.svg)](https://github.com/GrossSBM/missSBM/commits/master)
 [![Codecov test
-coverage](https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg)](https://codecov.io/gh/GrossSBM/missSBM?branch=master)
+coverage](https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg)](https://app.codecov.io/gh/GrossSBM/missSBM?branch=master)
 
 <!-- badges: end -->
 
