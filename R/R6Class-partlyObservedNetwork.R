@@ -116,7 +116,8 @@ partlyObservedNetwork <-
       ## Spectral clustering with Normalized weighted Laplacian
       d <- 1/sqrt(rowSums(abs(A)))
       D <- Diagonal(x = d)
-      U <- eigen_arma(- D %*% A %*% D, max(vBlocks))
+      # U <- eigen_arma(- D %*% A %*% D, max(vBlocks))
+      U <- eigen(- D %*% A %*% D, TRUE)$vectors[, 1:max(vBlocks) , drop = FALSE]
       res <- future_lapply(vBlocks, function(k) {
         cl <- rep(1L, n)
         if (k != 1) {
