@@ -4,6 +4,7 @@
 #pragma once
 
 #include <Rcpp.h>
+// #include <nlopt.h>
 #include <nloptrAPI.h>
 
 #include <memory>      // unique_ptr
