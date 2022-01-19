@@ -1,9 +1,9 @@
 
 This submission is in response to a request from a CRAN maintainer.
 
-## missSBM 1.0.1
+## missSBM 1.0.2
 
-Minor version with less conservative unitary tests to avoid random error during (CRAN) checks
+Fix linking problem with new version of nloptR
 
 ## Tested environments
 

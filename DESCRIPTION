@@ -1,7 +1,7 @@
 Package: missSBM
 Type: Package
 Title: Handling Missing Data in Stochastic Block Models
-Version: 1.0.1-9000
+Version: 1.0.2
 Authors@R: c(
   person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
@@ -30,7 +30,7 @@ Imports:
     Rcpp,
     methods,
     igraph,
-    nloptr (>= 1.2.0),
+    nloptr,
     ggplot2,
     future.apply,
     R6,
@@ -38,6 +38,8 @@ Imports:
     sbm,
     magrittr,
     Matrix
+Remotes:
+    astamm/nloptr
 LinkingTo: Rcpp, RcppArmadillo, nloptr (>= 1.2.0)
 Collate:
     'utils_missSBM.R'
