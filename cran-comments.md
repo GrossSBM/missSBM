@@ -3,7 +3,7 @@ This submission is in response to a request from a CRAN maintainer.
 
 ## missSBM 1.0.2
 
-Fix linking problem with new version of nloptR
+Fix linking problem with new version of nloptR (2.0.0)
 
 ## Tested environments
 

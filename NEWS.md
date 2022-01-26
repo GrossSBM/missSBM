@@ -1,6 +1,6 @@
-# missSBM development
+# missSBM 1.0.2
 
-  - faster spectral clustering
+  - Fix linking problem with new version of nloptR (2.0.0)
 
 # missSBM 1.0.1 [2021-06-04]
 
