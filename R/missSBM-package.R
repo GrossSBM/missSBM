@@ -24,7 +24,10 @@
 #' @author Pierre Barbillon \email{pierre.barbillon@@agroparistech.fr}
 #' @author Julien Chiquet \email{julien.chiquet@@inrae.fr}
 #' @author Timothée Tabouy \email{timothee.tabouy@@gmail.com}
-#' @references Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, \doi{10.1080/01621459.2018.1562934}
+#' @references
+#' Pierre Barbillon, Julien Chiquet & Timothée Tabouy (2022) "missSBM: An R Package for Handling Missing Values in the Stochastic Block Model", Journal of Statistical Software, \doi{10.18637/jss.v101.i12}
+#'
+#' Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational Inference for Stochastic Block Models from Sampled Data”, Journal of the American Statistical Association, \doi{10.1080/01621459.2018.1562934}
 #'
 #' @import R6 methods igraph nloptr Matrix
 #' @importFrom Rcpp sourceCpp
