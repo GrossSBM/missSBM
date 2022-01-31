@@ -39,7 +39,7 @@ Imports:
     magrittr,
     Matrix,
     RSpectra
-LinkingTo: Rcpp, RcppArmadillo, nloptr (>= 2.0.0)
+LinkingTo: Rcpp, RcppArmadillo, nloptr
 Collate:
     'utils_missSBM.R'
     'R6Class-networkSampling.R'
