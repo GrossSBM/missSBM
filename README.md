@@ -40,11 +40,13 @@ devtools::install_github("grossSBM/missSBM")
 
 Please cite our work using the following reference:
 
+Barbillon, P., Chiquet, J., & Tabouy, T. (2022). missSBM: An R Package
+for Handling Missing Values in the Stochastic Block Model. Journal of
+Statistical Software, 101(12), 1–32. DOI:
+[10.18637/jss.v101.i12](https://doi.org/10.18637/jss.v101.i12)
+
 Timothée Tabouy, Pierre Barbillon & Julien Chiquet (2019) “Variational
 Inference for Stochastic Block Models from Sampled Data”, *Journal of
 the American Statistical Association*, DOI:
 [10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934)
 
-Pierre Barbillon, Julien Chiquet & Timothée Tabouy (2021) “missSBM: An R
-Package for Handling Missing Values in the Stochastic Block Model”,
-*arXiv preprint*, DOI: <https://arxiv.org/abs/1906.12201>
