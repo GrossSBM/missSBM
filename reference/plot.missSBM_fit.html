@@ -18,7 +18,7 @@ SBM (network or connectivity), and a plot monitoring the optimization."><!-- mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ SBM (network or connectivity), and a plot monitoring the optimization."><!-- mat
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -77,29 +77,38 @@ SBM (network or connectivity), and a plot monitoring the optimization.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for missSBM_fit</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"imputed"</span>, <span class="st">"expected"</span>, <span class="st">"meso"</span>, <span class="st">"monitoring"</span><span class="op">)</span>,
-  dimLabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>row <span class="op">=</span> <span class="st">"node"</span>, col <span class="op">=</span> <span class="st">"node"</span><span class="op">)</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for missSBM_fit</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"imputed"</span>, <span class="st">"expected"</span>, <span class="st">"meso"</span>, <span class="st">"monitoring"</span><span class="op">)</span>,</span>
+<span>  dimLabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>row <span class="op">=</span> <span class="st">"node"</span>, col <span class="op">=</span> <span class="st">"node"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>an object with class <code><a href="missSBM_fit.html">missSBM_fit</a></code></p></dd>
+
+
 <dt>type</dt>
 <dd><p>the type specifies the field to plot, either "imputed", "expected", "meso",  or "monitoring"</p></dd>
+
+
 <dt>dimLabels</dt>
 <dd><p>: a list of two characters specifying the labels of the nodes. Default to <code>list(row= 'node',col = 'node')</code>)</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional parameters for S3 compatibility. Not used</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a ggplot object</p>
+    
+
+<p>a ggplot object</p>
     </div>
 
   </div>
@@ -114,7 +123,7 @@ SBM (network or connectivity), and a plot monitoring the optimization.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

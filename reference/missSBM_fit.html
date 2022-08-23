@@ -21,7 +21,7 @@ as S3 methods. See the documentation for  show(), print(), fitted(), predict(), 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@ as S3 methods. See the documentation for  show(), print(), fitted(), predict(), 
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -134,16 +134,16 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href="ht
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-new"><code>missSBM_fit$new()</code></a></p></li>
-<li><p><a href="#method-doVEM"><code>missSBM_fit$doVEM()</code></a></p></li>
-<li><p><a href="#method-show"><code>missSBM_fit$show()</code></a></p></li>
-<li><p><a href="#method-print"><code>missSBM_fit$print()</code></a></p></li>
-<li><p><a href="#method-clone"><code>missSBM_fit$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-new"></a><div class="section">
+<ul><li><p><a href="#method-missSBM_fit-new"><code>missSBM_fit$new()</code></a></p></li>
+<li><p><a href="#method-missSBM_fit-doVEM"><code>missSBM_fit$doVEM()</code></a></p></li>
+<li><p><a href="#method-missSBM_fit-show"><code>missSBM_fit$show()</code></a></p></li>
+<li><p><a href="#method-missSBM_fit-print"><code>missSBM_fit$print()</code></a></p></li>
+<li><p><a href="#method-missSBM_fit-clone"><code>missSBM_fit$clone()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-missSBM_fit-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor for networkSampling</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/missSBM_fit.html">missSBM_fit</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">partlyObservedNet</span>, <span class="va">netSampling</span>, <span class="va">clusterInit</span>, useCov <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/missSBM_fit.html">missSBM_fit</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">partlyObservedNet</span>, <span class="va">netSampling</span>, <span class="va">clusterInit</span>, useCov <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -167,13 +167,13 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href="ht
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-doVEM"></a><div class="section">
+</div><p></p><hr><a id="method-missSBM_fit-doVEM"></a><div class="section">
 <h3 id="method-dovem-">Method <code>doVEM()</code><a class="anchor" aria-label="anchor" href="#method-dovem-"></a></h3>
 <p>a method to perform inference of the current missSBM fit with variational EM</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">doVEM</span><span class="op">(</span>
-  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fl">0.01</span>, maxIter <span class="op">=</span> <span class="fl">100</span>, fixPointIter <span class="op">=</span> <span class="fl">3</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">doVEM</span><span class="op">(</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fl">0.01</span>, maxIter <span class="op">=</span> <span class="fl">100</span>, fixPointIter <span class="op">=</span> <span class="fl">3</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -185,27 +185,27 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href="ht
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-show"></a><div class="section">
+</div><p></p><hr><a id="method-missSBM_fit-show"></a><div class="section">
 <h3 id="method-show-">Method <code>show()</code><a class="anchor" aria-label="anchor" href="#method-show-"></a></h3>
 <p>show method for missSBM_fit</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">show</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">show</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
-</div><p></p><hr><a id="method-print"></a><div class="section">
+</div><p></p><hr><a id="method-missSBM_fit-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
 <p>User friendly print method</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
-</div><p></p><hr><a id="method-clone"></a><div class="section">
+</div><p></p><hr><a id="method-missSBM_fit-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -223,11 +223,11 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href="ht
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Sample 75% of dyads in  French political Blogosphere's network data</span></span>
-<span class="r-in"><span class="va">adjMatrix</span> <span class="op">&lt;-</span> <span class="fu">missSBM</span><span class="fu">::</span><span class="va"><a href="frenchblog2007.html">frenchblog2007</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html" class="external-link">as_adj</a></span> <span class="op">(</span>sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">missSBM</span><span class="fu">::</span><span class="fu"><a href="observeNetwork.html">observeNetwork</a></span><span class="op">(</span>sampling <span class="op">=</span> <span class="st">"dyad"</span>, parameters <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">collection</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">adjMatrix</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">5</span>, sampling <span class="op">=</span> <span class="st">"dyad"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Sample 75% of dyads in  French political Blogosphere's network data</span></span></span>
+<span class="r-in"><span><span class="va">adjMatrix</span> <span class="op">&lt;-</span> <span class="fu">missSBM</span><span class="fu">::</span><span class="va"><a href="frenchblog2007.html">frenchblog2007</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html" class="external-link">as_adj</a></span> <span class="op">(</span>sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">missSBM</span><span class="fu">::</span><span class="fu"><a href="observeNetwork.html">observeNetwork</a></span><span class="op">(</span>sampling <span class="op">=</span> <span class="st">"dyad"</span>, parameters <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">collection</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">adjMatrix</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">5</span>, sampling <span class="op">=</span> <span class="st">"dyad"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Adjusting Variational EM for Stochastic Block Model</span>
@@ -236,15 +236,15 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href="ht
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Initialization of 3 model(s). </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Performing VEM inference</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 4 blocks. 	Model with 5 blocks. 	Model with 3 blocks.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 5 blocks. 	Model with 4 blocks. 	Model with 3 blocks.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Looking for better solutions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Pass 1   Going forward ++                                                                                                     Pass 1   Going backward ++                                                                                                    </span>
-<span class="r-in"><span class="va">my_missSBM_fit</span> <span class="op">&lt;-</span> <span class="va">collection</span><span class="op">$</span><span class="va">bestModel</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">my_missSBM_fit</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">my_missSBM_fit</span> <span class="op">&lt;-</span> <span class="va">collection</span><span class="op">$</span><span class="va">bestModel</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">my_missSBM_fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "missSBM_fit" "R6"         </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">my_missSBM_fit</span>, <span class="st">"imputed"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">my_missSBM_fit</span>, <span class="st">"imputed"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="missSBM_fit-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -259,7 +259,7 @@ as S3 methods. See the documentation for  <code>show()</code>, <code><a href="ht
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

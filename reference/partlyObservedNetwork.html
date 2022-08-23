@@ -18,7 +18,7 @@ An R6 Class used for internal representation of a partially observed network"><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ An R6 Class used for internal representation of a partially observed network"><!
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -131,19 +131,19 @@ An R6 Class used for internal representation of a partially observed network"><!
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-new"><code>partlyObservedNetwork$new()</code></a></p></li>
-<li><p><a href="#method-clustering"><code>partlyObservedNetwork$clustering()</code></a></p></li>
-<li><p><a href="#method-imputation"><code>partlyObservedNetwork$imputation()</code></a></p></li>
-<li><p><a href="#method-clone"><code>partlyObservedNetwork$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-new"></a><div class="section">
+<ul><li><p><a href="#method-partlyObservedNetwork-new"><code>partlyObservedNetwork$new()</code></a></p></li>
+<li><p><a href="#method-partlyObservedNetwork-clustering"><code>partlyObservedNetwork$clustering()</code></a></p></li>
+<li><p><a href="#method-partlyObservedNetwork-imputation"><code>partlyObservedNetwork$imputation()</code></a></p></li>
+<li><p><a href="#method-partlyObservedNetwork-clone"><code>partlyObservedNetwork$clone()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-partlyObservedNetwork-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/partlyObservedNetwork.html">partlyObservedNetwork</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  <span class="va">adjacencyMatrix</span>,
-  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  similarity <span class="op">=</span> <span class="fu">missSBM</span><span class="fu">:::</span><span class="va">l1_similarity</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/partlyObservedNetwork.html">partlyObservedNetwork</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span>  <span class="va">adjacencyMatrix</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  similarity <span class="op">=</span> <span class="fu">missSBM</span><span class="fu">:::</span><span class="va">l1_similarity</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -163,14 +163,14 @@ An R6 Class used for internal representation of a partially observed network"><!
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-clustering"></a><div class="section">
+</div><p></p><hr><a id="method-partlyObservedNetwork-clustering"></a><div class="section">
 <h3 id="method-clustering-">Method <code>clustering()</code><a class="anchor" aria-label="anchor" href="#method-clustering-"></a></h3>
 <p>method to cluster network data with missing value</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">partlyObservedNetwork</span><span class="op">$</span><span class="fu">clustering</span><span class="op">(</span>
-  <span class="va">vBlocks</span>,
-  imputation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">private</span><span class="op">$</span><span class="va">phi</span><span class="op">)</span>, <span class="st">"median"</span>, <span class="st">"average"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">partlyObservedNetwork</span><span class="op">$</span><span class="fu">clustering</span><span class="op">(</span></span>
+<span>  <span class="va">vBlocks</span>,</span>
+<span>  imputation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">private</span><span class="op">$</span><span class="va">phi</span><span class="op">)</span>, <span class="st">"median"</span>, <span class="st">"average"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -186,11 +186,11 @@ An R6 Class used for internal representation of a partially observed network"><!
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-imputation"></a><div class="section">
+</div><p></p><hr><a id="method-partlyObservedNetwork-imputation"></a><div class="section">
 <h3 id="method-imputation-">Method <code>imputation()</code><a class="anchor" aria-label="anchor" href="#method-imputation-"></a></h3>
 <p>basic imputation from existing clustering</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">partlyObservedNetwork</span><span class="op">$</span><span class="fu">imputation</span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"average"</span>, <span class="st">"zero"</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">partlyObservedNetwork</span><span class="op">$</span><span class="fu">imputation</span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"average"</span>, <span class="st">"zero"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -202,11 +202,11 @@ An R6 Class used for internal representation of a partially observed network"><!
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-clone"></a><div class="section">
+</div><p></p><hr><a id="method-partlyObservedNetwork-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">partlyObservedNetwork</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">partlyObservedNetwork</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -234,7 +234,7 @@ An R6 Class used for internal representation of a partially observed network"><!
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

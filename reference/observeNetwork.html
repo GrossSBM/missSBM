@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -75,40 +75,55 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">observeNetwork</span><span class="op">(</span>
-  <span class="va">adjacencyMatrix</span>,
-  <span class="va">sampling</span>,
-  <span class="va">parameters</span>,
-  clusters <span class="op">=</span> <span class="cn">NULL</span>,
-  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  similarity <span class="op">=</span> <span class="fu">missSBM</span><span class="fu">:::</span><span class="va">l1_similarity</span>,
-  intercept <span class="op">=</span> <span class="fl">0</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">observeNetwork</span><span class="op">(</span></span>
+<span>  <span class="va">adjacencyMatrix</span>,</span>
+<span>  <span class="va">sampling</span>,</span>
+<span>  <span class="va">parameters</span>,</span>
+<span>  clusters <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  similarity <span class="op">=</span> <span class="fu">missSBM</span><span class="fu">:::</span><span class="va">l1_similarity</span>,</span>
+<span>  intercept <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>adjacencyMatrix</dt>
 <dd><p>The N x N adjacency matrix of the network to sample.</p></dd>
+
+
 <dt>sampling</dt>
 <dd><p>The sampling design used to observe the adjacency matrix, see details.</p></dd>
+
+
 <dt>parameters</dt>
 <dd><p>The sampling parameters (adapted to each sampling, see details).</p></dd>
+
+
 <dt>clusters</dt>
 <dd><p>An optional clustering membership vector of the nodes. Only necessary for block samplings.</p></dd>
+
+
 <dt>covariates</dt>
 <dd><p>An optional list with M entries (the M covariates). If the covariates are node-centered,
 each entry of <code>covariates</code>. must be a size-N vector;  if the covariates are dyad-centered, each entry
 of <code>covariates</code> must be N x N matrix.</p></dd>
+
+
 <dt>similarity</dt>
 <dd><p>An optional function to compute similarities between node covariates. Default is
 <code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered.</p></dd>
+
+
 <dt>intercept</dt>
 <dd><p>An optional intercept term to be added in case of the presence of covariates. Default is 0.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an adjacency matrix with the same dimension as the input, yet with additional NAs.</p>
+    
+
+<p>an adjacency matrix with the same dimension as the input, yet with additional NAs.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -132,7 +147,7 @@ Default is 50.</p></li>
 <li><p>"iterates": integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
 <li><p>"trace": logical for verbosity. Default is TRUE.</p></li>
 </ul><p>The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See doi: <a href="https://doi.org/10.1080/01621459.2018.1562934" class="external-link">10.1080/01621459.2018.1562934</a>
+node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562934" class="external-link">doi:10.1080/01621459.2018.1562934</a>
  for a complete description.</p><ul><li><p>Missing at Random (MAR)</p><ul><li><p>"dyad": parameter = p = Prob(Dyad(i,j) is observed)</p></li>
 <li><p>"node": parameter = p = Prob(Node i is observed)</p></li>
 <li><p>"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))</p></li>
@@ -148,39 +163,39 @@ node-centered samplings. See doi: <a href="https://doi.org/10.1080/01621459.2018
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## SBM parameters</span></span>
-<span class="r-in"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of nodes</span></span>
-<span class="r-in"><span class="va">Q</span> <span class="op">&lt;-</span> <span class="fl">3</span>   <span class="co"># number of clusters</span></span>
-<span class="r-in"><span class="va">pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">Q</span><span class="op">)</span><span class="op">/</span><span class="va">Q</span>     <span class="co"># block proportion</span></span>
-<span class="r-in"><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">.45</span>,<span class="va">Q</span><span class="op">)</span> <span class="op">+</span> <span class="fl">.05</span> <span class="op">)</span> <span class="co"># connectivity matrix</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## simulate an unidrected binary SBM without covariate</span></span>
-<span class="r-in"><span class="va">sbm</span> <span class="op">&lt;-</span> <span class="fu">sbm</span><span class="fu">::</span><span class="fu"><a href="https://grosssbm.github.io/sbm/reference/sampleSimpleSBM.html" class="external-link">sampleSimpleSBM</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">pi</span>, <span class="va">theta</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Sample network data</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># some sampling design and their associated parameters</span></span>
-<span class="r-in"><span class="va">sampling_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">   <span class="st">"dyad"</span> <span class="op">=</span> <span class="fl">.3</span>,</span>
-<span class="r-in">   <span class="st">"node"</span> <span class="op">=</span> <span class="fl">.3</span>,</span>
-<span class="r-in">   <span class="st">"double-standard"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span class="r-in">   <span class="st">"block-node"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.3</span>, <span class="fl">.8</span>, <span class="fl">.5</span><span class="op">)</span>,</span>
-<span class="r-in">   <span class="st">"block-dyad"</span> <span class="op">=</span> <span class="va">theta</span><span class="op">$</span><span class="va">mean</span>,</span>
-<span class="r-in">   <span class="st">"degree"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.01</span>, <span class="fl">.01</span><span class="op">)</span>,</span>
-<span class="r-in">   <span class="st">"snowball"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">.1</span><span class="op">)</span></span>
-<span class="r-in"> <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">observed_networks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">for</span> <span class="op">(</span><span class="va">sampling</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sampling_parameters</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">observed_networks</span><span class="op">[[</span><span class="va">sampling</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span>
-<span class="r-in">     <span class="fu">missSBM</span><span class="fu">::</span><span class="fu">observeNetwork</span><span class="op">(</span></span>
-<span class="r-in">       adjacencyMatrix <span class="op">=</span> <span class="va">sbm</span><span class="op">$</span><span class="va">networkData</span>,</span>
-<span class="r-in">       sampling        <span class="op">=</span> <span class="va">sampling</span>,</span>
-<span class="r-in">       parameters      <span class="op">=</span> <span class="va">sampling_parameters</span><span class="op">[[</span><span class="va">sampling</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">       cluster         <span class="op">=</span> <span class="va">sbm</span><span class="op">$</span><span class="va">memberships</span></span>
-<span class="r-in">     <span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## SBM parameters</span></span></span>
+<span class="r-in"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of nodes</span></span></span>
+<span class="r-in"><span><span class="va">Q</span> <span class="op">&lt;-</span> <span class="fl">3</span>   <span class="co"># number of clusters</span></span></span>
+<span class="r-in"><span><span class="va">pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">Q</span><span class="op">)</span><span class="op">/</span><span class="va">Q</span>     <span class="co"># block proportion</span></span></span>
+<span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">.45</span>,<span class="va">Q</span><span class="op">)</span> <span class="op">+</span> <span class="fl">.05</span> <span class="op">)</span> <span class="co"># connectivity matrix</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## simulate an unidrected binary SBM without covariate</span></span></span>
+<span class="r-in"><span><span class="va">sbm</span> <span class="op">&lt;-</span> <span class="fu">sbm</span><span class="fu">::</span><span class="fu"><a href="https://grosssbm.github.io/sbm/reference/sampleSimpleSBM.html" class="external-link">sampleSimpleSBM</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">pi</span>, <span class="va">theta</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Sample network data</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># some sampling design and their associated parameters</span></span></span>
+<span class="r-in"><span><span class="va">sampling_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   <span class="st">"dyad"</span> <span class="op">=</span> <span class="fl">.3</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"node"</span> <span class="op">=</span> <span class="fl">.3</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"double-standard"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="fl">0.8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"block-node"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.3</span>, <span class="fl">.8</span>, <span class="fl">.5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"block-dyad"</span> <span class="op">=</span> <span class="va">theta</span><span class="op">$</span><span class="va">mean</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"degree"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.01</span>, <span class="fl">.01</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   <span class="st">"snowball"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">observed_networks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">sampling</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sampling_parameters</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">observed_networks</span><span class="op">[[</span><span class="va">sampling</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>     <span class="fu">missSBM</span><span class="fu">::</span><span class="fu">observeNetwork</span><span class="op">(</span></span></span>
+<span class="r-in"><span>       adjacencyMatrix <span class="op">=</span> <span class="va">sbm</span><span class="op">$</span><span class="va">networkData</span>,</span></span>
+<span class="r-in"><span>       sampling        <span class="op">=</span> <span class="va">sampling</span>,</span></span>
+<span class="r-in"><span>       parameters      <span class="op">=</span> <span class="va">sampling_parameters</span><span class="op">[[</span><span class="va">sampling</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>       cluster         <span class="op">=</span> <span class="va">sbm</span><span class="op">$</span><span class="va">memberships</span></span></span>
+<span class="r-in"><span>     <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -195,7 +210,7 @@ node-centered samplings. See doi: <a href="https://doi.org/10.1080/01621459.2018
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

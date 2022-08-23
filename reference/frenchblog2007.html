@@ -19,7 +19,7 @@ the &quot;Observatoire Présidentielle&quot; project. Originally part of the 'mi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -37,7 +37,7 @@ the &quot;Observatoire Présidentielle&quot; project. Originally part of the 'mi
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -79,7 +79,7 @@ the "Observatoire Présidentielle" project. Originally part of the 'mixer' packa
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="va">frenchblog2007</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">frenchblog2007</span></span></code></pre></div>
     </div>
 
     <div id="format">
@@ -94,8 +94,8 @@ clustering of the nodes.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">frenchblog2007</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">frenchblog2007</span><span class="op">)</span><span class="op">$</span><span class="va">party</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">frenchblog2007</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">frenchblog2007</span><span class="op">)</span><span class="op">$</span><span class="va">party</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "green"        "green"        "green"        "green"        "green"       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [6] "green"        "green"        "right"        "right"        "right"       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [11] "right"        "right"        "right"        "right"        "right"       </span>
@@ -136,10 +136,10 @@ clustering of the nodes.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [186] "liberal"      "liberal"      "liberal"      "liberal"      "liberal"     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [191] "liberal"      "liberal"      "liberal"      "liberal"      "liberal"     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [196] "liberal"     </span>
-<span class="r-in"><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/plot.igraph.html" class="external-link">plot.igraph</a></span><span class="op">(</span><span class="va">frenchblog2007</span>,</span>
-<span class="r-in">  vertex.color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">frenchblog2007</span><span class="op">)</span><span class="op">$</span><span class="va">party</span><span class="op">)</span>,</span>
-<span class="r-in">  vertex.label <span class="op">=</span> <span class="cn">NA</span></span>
-<span class="r-in"> <span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/plot.igraph.html" class="external-link">plot.igraph</a></span><span class="op">(</span><span class="va">frenchblog2007</span>,</span></span>
+<span class="r-in"><span>  vertex.color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">frenchblog2007</span><span class="op">)</span><span class="op">$</span><span class="va">party</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  vertex.label <span class="op">=</span> <span class="cn">NA</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
 <span class="r-plt img"><img src="frenchblog2007-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -155,7 +155,7 @@ clustering of the nodes.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
