@@ -1,4 +1,4 @@
-## missSBM 1.0.3
+# missSBM 1.0.3
 
 - Tiny adaptation due to new Matrix version 1.4-2
 - fix for HTML5 in documentation, plus various typos

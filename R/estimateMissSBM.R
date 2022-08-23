@@ -77,7 +77,7 @@
 #' ## Sample some dyads data + Infer SBM with missing data
 #' collection <-
 #'    observeNetwork(sbm$networkData, sampling, samplingParameters) %>%
-#'    estimateMissSBM(vBlocks = 1:5, sampling = sampling)
+#'    estimateMissSBM(vBlocks = 1:4, sampling = sampling)
 #' plot(collection, "monitoring")
 #' plot(collection, "icl")
 #'
