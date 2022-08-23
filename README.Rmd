@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 [![Codecov test coverage](https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg)](https://app.codecov.io/gh/GrossSBM/missSBM?branch=master)
 
 [![R-CMD-check](https://github.com/GrossSBM/missSBM/workflows/R-CMD-check/badge.svg)](https://github.com/GrossSBM/missSBM/actions)
+[![R-CMD-check](https://github.com/GrossSBM/missSBM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/GrossSBM/missSBM/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 > When a network is partially observed (here, NAs in the adjacency matrix rather than 1 or 0  due to missing information between node pairs), it is possible to account for the underlying process that generates those NAs. 'missSBM', presented in 'Barbillon, Chiquet and Tabouy' (2022) 
