@@ -27,15 +27,15 @@ It has a rSampling method which takes an adjacency matrix as an input and send b
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{networkSampling$new()}}
-\item \href{#method-show}{\code{networkSampling$show()}}
-\item \href{#method-print}{\code{networkSampling$print()}}
-\item \href{#method-clone}{\code{networkSampling$clone()}}
+\item \href{#method-networkSampling-new}{\code{networkSampling$new()}}
+\item \href{#method-networkSampling-show}{\code{networkSampling$show()}}
+\item \href{#method-networkSampling-print}{\code{networkSampling$print()}}
+\item \href{#method-networkSampling-clone}{\code{networkSampling$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-networkSampling-new"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampling-new}{}}}
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
@@ -53,8 +53,8 @@ constructor for networkSampling
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-show"></a>}}
-\if{latex}{\out{\hypertarget{method-show}{}}}
+\if{html}{\out{<a id="method-networkSampling-show"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampling-show}{}}}
 \subsection{Method \code{show()}}{
 show method
 \subsection{Usage}{
@@ -72,8 +72,8 @@ show method
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-networkSampling-print"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampling-print}{}}}
 \subsection{Method \code{print()}}{
 User friendly print method
 \subsection{Usage}{
@@ -82,8 +82,8 @@ User friendly print method
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-networkSampling-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampling-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

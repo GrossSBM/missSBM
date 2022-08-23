@@ -14,22 +14,22 @@ Class for defining a double-standard sampler
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{doubleStandardSampler$new()}}
-\item \href{#method-clone}{\code{doubleStandardSampler$clone()}}
+\item \href{#method-doubleStandardSampler-new}{\code{doubleStandardSampler$new()}}
+\item \href{#method-doubleStandardSampler-clone}{\code{doubleStandardSampler$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show">}\href{../../missSBM/html/networkSampling.html#method-show}{\code{missSBM::networkSampling$show()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix">}\href{../../missSBM/html/networkSampler.html#method-rSamplingMatrix}{\code{missSBM::networkSampler$rSamplingMatrix()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-doubleStandardSampler-new"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampler-new}{}}}
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
@@ -49,8 +49,8 @@ constructor for networkSampling
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-doubleStandardSampler-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampler-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

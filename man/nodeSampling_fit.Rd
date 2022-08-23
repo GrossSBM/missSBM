@@ -21,23 +21,23 @@ Class for fitting a node sampling
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{nodeSampling_fit$new()}}
-\item \href{#method-clone}{\code{nodeSampling_fit$clone()}}
+\item \href{#method-nodeSampling_fit-new}{\code{nodeSampling_fit$new()}}
+\item \href{#method-nodeSampling_fit-clone}{\code{nodeSampling_fit$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show">}\href{../../missSBM/html/networkSamplingNodes_fit.html#method-show}{\code{missSBM::networkSamplingNodes_fit$show()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation">}\href{../../missSBM/html/networkSamplingNodes_fit.html#method-update_imputation}{\code{missSBM::networkSamplingNodes_fit$update_imputation()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_parameters">}\href{../../missSBM/html/networkSamplingNodes_fit.html#method-update_parameters}{\code{missSBM::networkSamplingNodes_fit$update_parameters()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>missSBM::networkSamplingNodes_fit$show()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-update_imputation'><code>missSBM::networkSamplingNodes_fit$update_imputation()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-update_parameters'><code>missSBM::networkSamplingNodes_fit$update_parameters()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-nodeSampling_fit-new"></a>}}
+\if{latex}{\out{\hypertarget{method-nodeSampling_fit-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -55,8 +55,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-nodeSampling_fit-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-nodeSampling_fit-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

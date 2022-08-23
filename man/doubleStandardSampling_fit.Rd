@@ -21,23 +21,23 @@ Class for fitting a double-standard sampling
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{doubleStandardSampling_fit$new()}}
-\item \href{#method-update_parameters}{\code{doubleStandardSampling_fit$update_parameters()}}
-\item \href{#method-update_imputation}{\code{doubleStandardSampling_fit$update_imputation()}}
-\item \href{#method-clone}{\code{doubleStandardSampling_fit$clone()}}
+\item \href{#method-doubleStandardSampling_fit-new}{\code{doubleStandardSampling_fit$new()}}
+\item \href{#method-doubleStandardSampling_fit-update_parameters}{\code{doubleStandardSampling_fit$update_parameters()}}
+\item \href{#method-doubleStandardSampling_fit-update_imputation}{\code{doubleStandardSampling_fit$update_imputation()}}
+\item \href{#method-doubleStandardSampling_fit-clone}{\code{doubleStandardSampling_fit$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show">}\href{../../missSBM/html/networkSamplingDyads_fit.html#method-show}{\code{missSBM::networkSamplingDyads_fit$show()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>missSBM::networkSamplingDyads_fit$show()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-doubleStandardSampling_fit-new"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -55,8 +55,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_parameters"></a>}}
-\if{latex}{\out{\hypertarget{method-update_parameters}{}}}
+\if{html}{\out{<a id="method-doubleStandardSampling_fit-update_parameters"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-update_parameters}{}}}
 \subsection{Method \code{update_parameters()}}{
 a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
 \subsection{Usage}{
@@ -74,8 +74,8 @@ a method to update the estimation of the parameters. By default, nothing to do (
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_imputation"></a>}}
-\if{latex}{\out{\hypertarget{method-update_imputation}{}}}
+\if{html}{\out{<a id="method-doubleStandardSampling_fit-update_imputation"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-update_imputation}{}}}
 \subsection{Method \code{update_imputation()}}{
 a method to update the imputation of the missing entries.
 \subsection{Usage}{
@@ -91,8 +91,8 @@ a method to update the imputation of the missing entries.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-doubleStandardSampling_fit-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

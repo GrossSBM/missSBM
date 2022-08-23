@@ -44,18 +44,18 @@ class(collection)
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{missSBM_collection$new()}}
-\item \href{#method-estimate}{\code{missSBM_collection$estimate()}}
-\item \href{#method-explore}{\code{missSBM_collection$explore()}}
-\item \href{#method-plot}{\code{missSBM_collection$plot()}}
-\item \href{#method-show}{\code{missSBM_collection$show()}}
-\item \href{#method-print}{\code{missSBM_collection$print()}}
-\item \href{#method-clone}{\code{missSBM_collection$clone()}}
+\item \href{#method-missSBM_collection-new}{\code{missSBM_collection$new()}}
+\item \href{#method-missSBM_collection-estimate}{\code{missSBM_collection$estimate()}}
+\item \href{#method-missSBM_collection-explore}{\code{missSBM_collection$explore()}}
+\item \href{#method-missSBM_collection-plot}{\code{missSBM_collection$plot()}}
+\item \href{#method-missSBM_collection-show}{\code{missSBM_collection$show()}}
+\item \href{#method-missSBM_collection-print}{\code{missSBM_collection$print()}}
+\item \href{#method-missSBM_collection-clone}{\code{missSBM_collection$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-missSBM_collection-new"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-new}{}}}
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
@@ -77,8 +77,8 @@ constructor for networkSampling
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-estimate"></a>}}
-\if{latex}{\out{\hypertarget{method-estimate}{}}}
+\if{html}{\out{<a id="method-missSBM_collection-estimate"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-estimate}{}}}
 \subsection{Method \code{estimate()}}{
 method to launch the estimation of the collection of models
 \subsection{Usage}{
@@ -94,8 +94,8 @@ method to launch the estimation of the collection of models
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-explore"></a>}}
-\if{latex}{\out{\hypertarget{method-explore}{}}}
+\if{html}{\out{<a id="method-missSBM_collection-explore"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-explore}{}}}
 \subsection{Method \code{explore()}}{
 method for performing exploration of the ICL
 \subsection{Usage}{
@@ -111,8 +111,8 @@ method for performing exploration of the ICL
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-plot"></a>}}
-\if{latex}{\out{\hypertarget{method-plot}{}}}
+\if{html}{\out{<a id="method-missSBM_collection-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-plot}{}}}
 \subsection{Method \code{plot()}}{
 plot method for missSBM_collection
 \subsection{Usage}{
@@ -128,8 +128,8 @@ plot method for missSBM_collection
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-show"></a>}}
-\if{latex}{\out{\hypertarget{method-show}{}}}
+\if{html}{\out{<a id="method-missSBM_collection-show"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-show}{}}}
 \subsection{Method \code{show()}}{
 show method for missSBM_collection
 \subsection{Usage}{
@@ -138,8 +138,8 @@ show method for missSBM_collection
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-missSBM_collection-print"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-print}{}}}
 \subsection{Method \code{print()}}{
 User friendly print method
 \subsection{Usage}{
@@ -148,8 +148,8 @@ User friendly print method
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-missSBM_collection-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -109,7 +109,7 @@ partlyObservedNetwork <-
 
       A <- self$imputation(imputation)
       n <- ncol(A)
-      A <- A %*% t(A) ## get second order paths between  node
+      A <- A %*% t(A) ## get second order paths between node
       ## handling lonely souls
       unconnected <- which(rowSums(abs(A)) == 0)
       connected   <- setdiff(1:n, unconnected)

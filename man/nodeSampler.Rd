@@ -14,22 +14,22 @@ Virtual class for all node-centered samplers
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-clone}{\code{nodeSampler$clone()}}
+\item \href{#method-nodeSampler-clone}{\code{nodeSampler$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show">}\href{../../missSBM/html/networkSampling.html#method-show}{\code{missSBM::networkSampling$show()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="initialize">}\href{../../missSBM/html/networkSampler.html#method-initialize}{\code{missSBM::networkSampler$initialize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix">}\href{../../missSBM/html/networkSampler.html#method-rSamplingMatrix}{\code{missSBM::networkSampler$rSamplingMatrix()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="initialize"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-initialize'><code>missSBM::networkSampler$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-nodeSampler-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-nodeSampler-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

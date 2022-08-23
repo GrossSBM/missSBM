@@ -29,22 +29,22 @@ with class partlyObservedNetwork.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{networkSampler$new()}}
-\item \href{#method-rSamplingMatrix}{\code{networkSampler$rSamplingMatrix()}}
-\item \href{#method-clone}{\code{networkSampler$clone()}}
+\item \href{#method-networkSampler-new}{\code{networkSampler$new()}}
+\item \href{#method-networkSampler-rSamplingMatrix}{\code{networkSampler$rSamplingMatrix()}}
+\item \href{#method-networkSampler-clone}{\code{networkSampler$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show">}\href{../../missSBM/html/networkSampling.html#method-show}{\code{missSBM::networkSampling$show()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-networkSampler-new"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampler-new}{}}}
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
@@ -66,8 +66,8 @@ constructor for networkSampling
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-rSamplingMatrix"></a>}}
-\if{latex}{\out{\hypertarget{method-rSamplingMatrix}{}}}
+\if{html}{\out{<a id="method-networkSampler-rSamplingMatrix"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampler-rSamplingMatrix}{}}}
 \subsection{Method \code{rSamplingMatrix()}}{
 a method for drawing a sampling matrix according to the current sampling design
 \subsection{Usage}{
@@ -76,8 +76,8 @@ a method for drawing a sampling matrix according to the current sampling design
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-networkSampler-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampler-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

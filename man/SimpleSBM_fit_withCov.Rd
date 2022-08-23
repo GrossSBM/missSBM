@@ -28,30 +28,30 @@ It is not designed not be call by the user
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-update_parameters}{\code{SimpleSBM_fit_withCov$update_parameters()}}
-\item \href{#method-update_blocks}{\code{SimpleSBM_fit_withCov$update_blocks()}}
-\item \href{#method-clone}{\code{SimpleSBM_fit_withCov$clone()}}
+\item \href{#method-SimpleSBM_fit_withCov-update_parameters}{\code{SimpleSBM_fit_withCov$update_parameters()}}
+\item \href{#method-SimpleSBM_fit_withCov-update_blocks}{\code{SimpleSBM_fit_withCov$update_blocks()}}
+\item \href{#method-SimpleSBM_fit_withCov-clone}{\code{SimpleSBM_fit_withCov$clone()}}
 }
 }
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print">}\href{../../sbm/html/SBM.html#method-print}{\code{sbm::SBM$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork">}\href{../../sbm/html/SBM.html#method-rNetwork}{\code{sbm::SBM$rNetwork()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot">}\href{../../sbm/html/SimpleSBM.html#method-plot}{\code{sbm::SimpleSBM$plot()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict">}\href{../../sbm/html/SimpleSBM.html#method-predict}{\code{sbm::SimpleSBM$predict()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges">}\href{../../sbm/html/SimpleSBM.html#method-rEdges}{\code{sbm::SimpleSBM$rEdges()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships">}\href{../../sbm/html/SimpleSBM.html#method-rMemberships}{\code{sbm::SimpleSBM$rMemberships()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show">}\href{../../sbm/html/SimpleSBM.html#method-show}{\code{sbm::SimpleSBM$show()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM">}\href{../../missSBM/html/SimpleSBM_fit.html#method-doVEM}{\code{missSBM::SimpleSBM_fit$doVEM()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize">}\href{../../missSBM/html/SimpleSBM_fit.html#method-initialize}{\code{missSBM::SimpleSBM_fit$initialize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder">}\href{../../missSBM/html/SimpleSBM_fit.html#method-reorder}{\code{missSBM::SimpleSBM_fit$reorder()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-SBM-print'><code>sbm::SBM$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-SBM-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-plot'><code>sbm::SimpleSBM$plot()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-predict'><code>sbm::SimpleSBM$predict()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>missSBM::SimpleSBM_fit$doVEM()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-initialize'><code>missSBM::SimpleSBM_fit$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>missSBM::SimpleSBM_fit$reorder()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_parameters"></a>}}
-\if{latex}{\out{\hypertarget{method-update_parameters}{}}}
+\if{html}{\out{<a id="method-SimpleSBM_fit_withCov-update_parameters"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-update_parameters}{}}}
 \subsection{Method \code{update_parameters()}}{
 update parameters estimation (M-step)
 \subsection{Usage}{
@@ -69,8 +69,8 @@ update parameters estimation (M-step)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_blocks"></a>}}
-\if{latex}{\out{\hypertarget{method-update_blocks}{}}}
+\if{html}{\out{<a id="method-SimpleSBM_fit_withCov-update_blocks"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-update_blocks}{}}}
 \subsection{Method \code{update_blocks()}}{
 update variational estimation of blocks (VE-step)
 \subsection{Usage}{
@@ -86,8 +86,8 @@ update variational estimation of blocks (VE-step)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-SimpleSBM_fit_withCov-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

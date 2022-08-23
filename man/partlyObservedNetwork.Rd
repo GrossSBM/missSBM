@@ -39,15 +39,15 @@ This class is not exported to the user
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{partlyObservedNetwork$new()}}
-\item \href{#method-clustering}{\code{partlyObservedNetwork$clustering()}}
-\item \href{#method-imputation}{\code{partlyObservedNetwork$imputation()}}
-\item \href{#method-clone}{\code{partlyObservedNetwork$clone()}}
+\item \href{#method-partlyObservedNetwork-new}{\code{partlyObservedNetwork$new()}}
+\item \href{#method-partlyObservedNetwork-clustering}{\code{partlyObservedNetwork$clustering()}}
+\item \href{#method-partlyObservedNetwork-imputation}{\code{partlyObservedNetwork$imputation()}}
+\item \href{#method-partlyObservedNetwork-clone}{\code{partlyObservedNetwork$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-partlyObservedNetwork-new"></a>}}
+\if{latex}{\out{\hypertarget{method-partlyObservedNetwork-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -71,8 +71,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clustering"></a>}}
-\if{latex}{\out{\hypertarget{method-clustering}{}}}
+\if{html}{\out{<a id="method-partlyObservedNetwork-clustering"></a>}}
+\if{latex}{\out{\hypertarget{method-partlyObservedNetwork-clustering}{}}}
 \subsection{Method \code{clustering()}}{
 method to cluster network data with missing value
 \subsection{Usage}{
@@ -93,8 +93,8 @@ method to cluster network data with missing value
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-imputation"></a>}}
-\if{latex}{\out{\hypertarget{method-imputation}{}}}
+\if{html}{\out{<a id="method-partlyObservedNetwork-imputation"></a>}}
+\if{latex}{\out{\hypertarget{method-partlyObservedNetwork-imputation}{}}}
 \subsection{Method \code{imputation()}}{
 basic imputation from existing clustering
 \subsection{Usage}{
@@ -110,8 +110,8 @@ basic imputation from existing clustering
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-partlyObservedNetwork-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-partlyObservedNetwork-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

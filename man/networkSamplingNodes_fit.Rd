@@ -23,23 +23,23 @@ Virtual class used to define a family of networkSamplingNodes_fit
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{networkSamplingNodes_fit$new()}}
-\item \href{#method-show}{\code{networkSamplingNodes_fit$show()}}
-\item \href{#method-update_parameters}{\code{networkSamplingNodes_fit$update_parameters()}}
-\item \href{#method-update_imputation}{\code{networkSamplingNodes_fit$update_imputation()}}
-\item \href{#method-clone}{\code{networkSamplingNodes_fit$clone()}}
+\item \href{#method-networkSamplingNodes_fit-new}{\code{networkSamplingNodes_fit$new()}}
+\item \href{#method-networkSamplingNodes_fit-show}{\code{networkSamplingNodes_fit$show()}}
+\item \href{#method-networkSamplingNodes_fit-update_parameters}{\code{networkSamplingNodes_fit$update_parameters()}}
+\item \href{#method-networkSamplingNodes_fit-update_imputation}{\code{networkSamplingNodes_fit$update_imputation()}}
+\item \href{#method-networkSamplingNodes_fit-clone}{\code{networkSamplingNodes_fit$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-new"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -57,8 +57,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-show"></a>}}
-\if{latex}{\out{\hypertarget{method-show}{}}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-show"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-show}{}}}
 \subsection{Method \code{show()}}{
 show method
 \subsection{Usage}{
@@ -67,8 +67,8 @@ show method
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_parameters"></a>}}
-\if{latex}{\out{\hypertarget{method-update_parameters}{}}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-update_parameters"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-update_parameters}{}}}
 \subsection{Method \code{update_parameters()}}{
 a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
 \subsection{Usage}{
@@ -84,8 +84,8 @@ a method to update the estimation of the parameters. By default, nothing to do (
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_imputation"></a>}}
-\if{latex}{\out{\hypertarget{method-update_imputation}{}}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-update_imputation"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-update_imputation}{}}}
 \subsection{Method \code{update_imputation()}}{
 a method to update the imputation of the missing entries.
 \subsection{Usage}{
@@ -101,8 +101,8 @@ a method to update the imputation of the missing entries.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

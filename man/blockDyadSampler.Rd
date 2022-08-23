@@ -21,22 +21,22 @@ Class for defining a block dyad sampler
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{blockDyadSampler$new()}}
-\item \href{#method-clone}{\code{blockDyadSampler$clone()}}
+\item \href{#method-blockDyadSampler-new}{\code{blockDyadSampler$new()}}
+\item \href{#method-blockDyadSampler-clone}{\code{blockDyadSampler$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print">}\href{../../missSBM/html/networkSampling.html#method-print}{\code{missSBM::networkSampling$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show">}\href{../../missSBM/html/networkSampling.html#method-show}{\code{missSBM::networkSampling$show()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix">}\href{../../missSBM/html/networkSampler.html#method-rSamplingMatrix}{\code{missSBM::networkSampler$rSamplingMatrix()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-blockDyadSampler-new"></a>}}
+\if{latex}{\out{\hypertarget{method-blockDyadSampler-new}{}}}
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
@@ -63,8 +63,8 @@ constructor for networkSampling
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-blockDyadSampler-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-blockDyadSampler-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

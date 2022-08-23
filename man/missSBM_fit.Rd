@@ -52,16 +52,16 @@ plot(my_missSBM_fit, "imputed")
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{missSBM_fit$new()}}
-\item \href{#method-doVEM}{\code{missSBM_fit$doVEM()}}
-\item \href{#method-show}{\code{missSBM_fit$show()}}
-\item \href{#method-print}{\code{missSBM_fit$print()}}
-\item \href{#method-clone}{\code{missSBM_fit$clone()}}
+\item \href{#method-missSBM_fit-new}{\code{missSBM_fit$new()}}
+\item \href{#method-missSBM_fit-doVEM}{\code{missSBM_fit$doVEM()}}
+\item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
+\item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
+\item \href{#method-missSBM_fit-clone}{\code{missSBM_fit$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-missSBM_fit-new"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-new}{}}}
 \subsection{Method \code{new()}}{
 constructor for networkSampling
 \subsection{Usage}{
@@ -83,8 +83,8 @@ constructor for networkSampling
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-doVEM"></a>}}
-\if{latex}{\out{\hypertarget{method-doVEM}{}}}
+\if{html}{\out{<a id="method-missSBM_fit-doVEM"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-doVEM}{}}}
 \subsection{Method \code{doVEM()}}{
 a method to perform inference of the current missSBM fit with variational EM
 \subsection{Usage}{
@@ -102,8 +102,8 @@ a method to perform inference of the current missSBM fit with variational EM
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-show"></a>}}
-\if{latex}{\out{\hypertarget{method-show}{}}}
+\if{html}{\out{<a id="method-missSBM_fit-show"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-show}{}}}
 \subsection{Method \code{show()}}{
 show method for missSBM_fit
 \subsection{Usage}{
@@ -112,8 +112,8 @@ show method for missSBM_fit
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-missSBM_fit-print"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-print}{}}}
 \subsection{Method \code{print()}}{
 User friendly print method
 \subsection{Usage}{
@@ -122,8 +122,8 @@ User friendly print method
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-missSBM_fit-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

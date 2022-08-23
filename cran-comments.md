@@ -2,6 +2,11 @@
 This submission is in response to a request from a CRAN maintainer.
 The DOI in the CITATION is for a new JSS publication that will be registered after publication on CRAN.
 
+## missSBM 1.0.3
+
+- Adaptation due to new Matrix version 1.4-2
+- fix for HTML5 in documentation
+
 ## missSBM 1.0.2
 
 - Fix linking problem with new version of nloptR (2.0.0)
