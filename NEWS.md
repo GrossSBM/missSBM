@@ -1,3 +1,8 @@
+## missSBM 1.0.3
+
+- Tiny adaptation due to new Matrix version 1.4-2
+- fix for HTML5 in documentation, plus various typos
+
 # missSBM 1.0.2
 
   - Fix linking problem with new version of nloptR (2.0.0)
