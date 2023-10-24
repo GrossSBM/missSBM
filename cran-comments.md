@@ -1,10 +1,8 @@
 
-This submission is in response to a request from a CRAN maintainer due to upcoming switch to HTML5 in documentation
 
-## missSBM 1.0.3
+# missSBM 1.0.4 (2023-10-19)
 
-- Adaptation due to new Matrix version 1.4-2
-- fix for HTML5 in documentation
+minor fix in package documentation due to evolution of roxygen2 7.0.0 <https://github.com/r-lib/roxygen2/issues/1491>, as asked by CRAN maintainer
 
 ## Tested environments
 

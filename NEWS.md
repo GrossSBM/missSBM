@@ -1,3 +1,7 @@
+# missSBM 1.0.4 (2023-10-19)
+
+- minor fix in package documentation due to evolution of roxygen2 7.0.0 <https://github.com/r-lib/roxygen2/issues/1491>.
+
 # missSBM 1.0.3
 
 - Tiny adaptation due to new Matrix version 1.4-2
