@@ -10,7 +10,7 @@ observeNetwork(
   parameters,
   clusters = NULL,
   covariates = list(),
-  similarity = missSBM:::l1_similarity,
+  similarity = l1_similarity,
   intercept = 0
 )
 }
@@ -28,7 +28,7 @@ each entry of \code{covariates}. must be a size-N vector;  if the covariates are
 of \code{covariates} must be N x N matrix.}
 
 \item{similarity}{An optional function to compute similarities between node covariates. Default is
-\code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered.}
+\code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered.}
 
 \item{intercept}{An optional intercept term to be added in case of the presence of covariates. Default is 0.}
 }
@@ -50,7 +50,7 @@ for the SBM inference (or just for the sampling)? Default is TRUE.}
 or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
 providing a user-defined clustering. Default is "spectral".}
 \item{"similarity": }{An R x R -> R function to compute similarities between node covariates. Default is
-\code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
+\code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. \code{covariates} is a list of size-N vectors).}
 \item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 by less than threshold. Default is 1e-2.}

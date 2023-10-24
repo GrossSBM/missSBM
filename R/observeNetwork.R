@@ -10,7 +10,7 @@
 #'     each entry of \code{covariates}. must be a size-N vector;  if the covariates are dyad-centered, each entry
 #'     of \code{covariates} must be N x N matrix.
 #' @param similarity An optional function to compute similarities between node covariates. Default is
-#' \code{missSBM:::l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered.
+#' \code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered.
 #' @param intercept An optional intercept term to be added in case of the presence of covariates. Default is 0.
 #'
 #' @inherit estimateMissSBM details
@@ -52,7 +52,7 @@
 #'      )
 #' }
 #' @export
-observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = list(), similarity = missSBM:::l1_similarity, intercept = 0) {
+observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = list(), similarity = l1_similarity, intercept = 0) {
 
 ### TEMPORARY FIX
   adjacencyMatrix[is.na(adjacencyMatrix)] <- 0

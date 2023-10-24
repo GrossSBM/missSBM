@@ -54,7 +54,7 @@ constructor
 \if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$new(
   adjacencyMatrix,
   covariates = list(),
-  similarity = missSBM:::l1_similarity
+  similarity = l1_similarity
 )}\if{html}{\out{</div>}}
 }
 

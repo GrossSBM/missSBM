@@ -5,6 +5,14 @@ available_samplings <- c("dyad", "covar-dyad", "node", "covar-node", "block-node
 
 available_samplings_covariates <- c("dyad", "covar-dyad", "node", "covar-node")
 
+#' L1-similarity
+#'
+#' Compute l1-similarity between two vectors
+#' @param x a vector
+#' @param y a vector
+#'
+#' @return a vector equal to -abs(x-y)
+#' @export
 l1_similarity <- function(x, y) {-abs(x - y)}
 
 clustering_indicator <- function(clustering) {

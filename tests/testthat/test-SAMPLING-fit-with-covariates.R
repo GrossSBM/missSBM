@@ -46,8 +46,8 @@ test_that("Parameter estimation in node-centered sampling with covariates", {
   ### Draw a SBM model (Bernoulli, undirected) with covariates
   intercept  <- .5
 
-  adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov_node$networkData, "covar-node", covarParam, covariates = covarList_node, intercept = intercept, similarity = missSBM:::l1_similarity)
-  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, missSBM:::l1_similarity)
+  adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov_node$networkData, "covar-node", covarParam, covariates = covarList_node, intercept = intercept, similarity = l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, l1_similarity)
 
   fittedSampling <- missSBM:::covarNodeSampling_fit$new(partlyObservedNet)
   expect_is(fittedSampling, "covarNodeSampling_fit")
@@ -62,7 +62,7 @@ test_that("Parameter estimation in node-centered sampling with covariates but ig
 
   psi <- 0.9
   adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov_node$networkData, "node", psi)
-  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, l1_similarity)
 
   fittedSampling <- missSBM:::nodeSampling_fit$new(partlyObservedNet)
   expect_is(fittedSampling, "nodeSampling_fit")

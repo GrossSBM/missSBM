@@ -1,3 +1,4 @@
+Benoist
 Blogosphere
 CMD
 CQ
@@ -9,6 +10,8 @@ Gibler
 ICL
 JSS
 MNAR
+NLopt
+ORCID
 Observatoire
 PPI
 Présidentielle
@@ -20,12 +23,9 @@ Tabouy’
 VE
 Variational
 Wayman
-arXiv
-arxiv
 blockDyad
 cloneable
 clusterInit
-correlatesofwar
 covar
 covarArray
 covarMatrix
@@ -38,9 +38,9 @@ estimateMissSBM
 fixPointIter
 ggplot
 großBM
-https
 icl
 igraph
+implementaion
 intra
 jss
 kmeans
@@ -61,8 +61,8 @@ nloptr
 observedNetwork
 partlyObservedNet
 partlyObservedNetwork
-preprint
 rSampling
+roxygen
 sampleSimpleSBM
 sampledNetwork
 sbm
@@ -72,4 +72,3 @@ undirected
 unexporting
 useCov
 variational
-www

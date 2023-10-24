@@ -11,7 +11,7 @@ directed <- FALSE
 
 ### Draw a SBM model (Bernoulli, undirected) with covariates
 covarMatrix <- simplify2array(covarList_node)
-covarArray  <- missSBM:::getCovarArray(covarMatrix, missSBM:::l1_similarity)
+covarArray  <- missSBM:::getCovarArray(covarMatrix, l1_similarity)
 
 ## tolerance for tests
 tol <- 2e-1

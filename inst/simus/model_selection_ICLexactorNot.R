@@ -20,7 +20,7 @@ nbrSimu <- 20
 
 default_ctrl <-
   list(threshold = 0.01, trace = FALSE, imputation = "median",
-      similarity = missSBM:::l1_similarity, useCov = TRUE, maxIter = 50,
+      similarity = l1_similarity, useCov = TRUE, maxIter = 50,
       fixPointIter = 3, iterates = 1, exploration = "both",
       clusterInit = NULL)
 

@@ -27,7 +27,7 @@ covarParam  <- rnorm(M, 1, 2) * base::sample(c(-1,1), M, replace = TRUE)
 
 ## the special case of covariates defined on "nodes"
 covarList_node <- replicate(M, rnorm(N_cov ,mean = 0, sd = 1), simplify = FALSE)
-covarArray <- missSBM:::getCovarArray(simplify2array(covarList_node), missSBM:::l1_similarity)
+covarArray <- missSBM:::getCovarArray(simplify2array(covarList_node), l1_similarity)
 covarList_node_similarity <- lapply(1:M, function(m) covarArray[,,m])
 
 

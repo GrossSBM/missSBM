@@ -60,7 +60,7 @@ partlyObservedNetwork <-
     #' @param adjacencyMatrix The adjacency matrix of the network
     #' @param covariates A list with M entries (the M covariates), each of whom being either a size-N vector or N x N matrix.
     #' @param similarity An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).
-    initialize = function(adjacencyMatrix, covariates = list(), similarity = missSBM:::l1_similarity) {
+    initialize = function(adjacencyMatrix, covariates = list(), similarity = l1_similarity) {
 
       ## SANITY CHECKS (on data)
       stopifnot(inherits(adjacencyMatrix, "matrix") | inherits(adjacencyMatrix, "dgCMatrix"))

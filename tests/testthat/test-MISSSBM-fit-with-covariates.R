@@ -98,10 +98,10 @@ test_that("miss SBM with covariates and node sampling works", {
 
   ## sampled the network
   intercept  <- .5
-  adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov_node$networkData, "covar-node", covarParam, covariates = covarList_node, intercept = intercept, similarity = missSBM:::l1_similarity)
+  adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov_node$networkData, "covar-node", covarParam, covariates = covarList_node, intercept = intercept, similarity = l1_similarity)
 
   ## Prepare network data for estimation with missing data
-  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, l1_similarity)
   cl <- partlyObservedNet$clustering(Q)[[1]]
 
   ## Perform inference
@@ -135,7 +135,7 @@ test_that("miss SBM with covariates and node sampling works", {
   adjMatrix <- missSBM::observeNetwork(sampler_undirected_cov_node$networkData, "node", psi)
 
   ## Prepare network data for estimation with missing data
-  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, missSBM:::l1_similarity)
+  partlyObservedNet <- missSBM:::partlyObservedNetwork$new(adjMatrix, covarList_node, l1_similarity)
   cl <- partlyObservedNet$clustering(Q)[[1]]
 
   ## Perform inference
