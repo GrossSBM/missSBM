@@ -6,7 +6,7 @@
 #'
 #' @format An igraph object with 196 nodes. The vertex attribute "party" provides a possible
 #' clustering of the nodes.
-#' @source \url{https://www.linkfluence.com/}
+#' @source \url{https://www.meltwater.com/en/suite/consumer-intelligence?utm_source=direct&utm_medium=linkfluence}
 #' @examples
 #' data(frenchblog2007)
 #' igraph::V(frenchblog2007)$party

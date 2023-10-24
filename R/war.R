@@ -19,6 +19,6 @@
 #' igraph::gorder(war$belligerent)
 #' igraph::edges(war$alliance)
 #' igraph::get.graph.attribute(war$alliance)
-#' @source networks were extracted from <https://www.correlatesofwar.org/>
+#' @source networks were extracted from <https://correlatesofwar.org/>
 "war"
 

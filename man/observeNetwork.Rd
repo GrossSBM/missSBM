@@ -28,7 +28,7 @@ each entry of \code{covariates}. must be a size-N vector;  if the covariates are
 of \code{covariates} must be N x N matrix.}
 
 \item{similarity}{An optional function to compute similarities between node covariates. Default is
-\code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered.}
+\code{\link{l1_similarity}}, that is, -abs(x-y). Only relevant when the covariates are node-centered.}
 
 \item{intercept}{An optional intercept term to be added in case of the presence of covariates. Default is 0.}
 }
@@ -44,22 +44,22 @@ Internal functions use \code{future_lapply}, so set your plan to \code{'multises
 The list of parameters \code{control} tunes more advanced features, such as the
 initialization, how covariates are handled in the model, and the variational EM algorithm:
 \itemize{
-\item{"useCov": }{logical. If \code{covariates} is not null, should they be used for the
-for the SBM inference (or just for the sampling)? Default is TRUE.}
-\item{"clusterInit": }{Initial method for clustering: either a character ("spectral")
+\item useCov logical. If \code{covariates} is not null, should they be used for the
+for the SBM inference (or just for the sampling)? Default is TRUE.
+\item clusterInit Initial method for clustering: either a character ("spectral")
 or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
-providing a user-defined clustering. Default is "spectral".}
-\item{"similarity": }{An R x R -> R function to compute similarities between node covariates. Default is
+providing a user-defined clustering. Default is "spectral".
+similarity An R x R -> R function to compute similarities between node covariates. Default is
 \code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
-(i.e. \code{covariates} is a list of size-N vectors).}
-\item{"threshold": }{V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
-by less than threshold. Default is 1e-2.}
-\item{"maxIter": }{V-EM algorithm stops when the number of iteration exceeds maxIter.
-Default is 50.}
-\item{"fixPointIter": }{number of fix-point iterations in the V-E step. Default is 3.}
-\item{"exploration": }{character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".}
-\item{"iterates": }{integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.}
-\item{"trace": }{logical for verbosity. Default is TRUE.}
+(i.e. \code{covariates} is a list of size-N vectors).
+\item threshold V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
+by less than threshold. Default is 1e-2.
+\item maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
+Default is 50.
+\item fixPointIter number of fix-point iterations in the V-E step. Default is 3.
+\item exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".
+\item iterates integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.
+\item trace logical for verbosity. Default is TRUE.
 }
 
 The different sampling designs are split into two families in which we find dyad-centered and
@@ -67,18 +67,17 @@ node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete 
 \itemize{
 \item Missing at Random (MAR)
 \itemize{
-\item{"dyad": parameter = p = Prob(Dyad(i,j) is observed)}
-\item{"node": parameter = p = Prob(Node i is observed)}
-\item{"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))}
-\item{"covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)}
-\item{"snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)}
+\item dyad parameter = p = Prob(Dyad(i,j) is observed)
+\item node parameter = p = Prob(Node i is observed)
+\item covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))
+\item covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)
+\item snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)
 }
 \item Missing Not At Random (MNAR)
 \itemize{
-\item{"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)}
-\item{"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)}
-\item{"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)}
-\item{"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))}
+\item double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)
+\item block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)
+\item block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)
 }
 }
 }
