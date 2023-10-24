@@ -121,34 +121,33 @@ must be a size-N vector;  if the covariates are dyad-centered, each entry of <co
     <p>Internal functions use <code>future_lapply</code>, so set your plan to <code>'multisession'</code> or
 <code>'multicore'</code> to use several cores/workers.
 The list of parameters <code>control</code> tunes more advanced features, such as the
-initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul><li><p>"useCov": logical. If <code>covariates</code> is not null, should they be used for the
+initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul><li><p>useCov logical. If <code>covariates</code> is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
-<li><p>"clusterInit": Initial method for clustering: either a character ("spectral")
+<li><p>clusterInit Initial method for clustering: either a character ("spectral")
 or a list with <code>length(vBlocks)</code> vectors, each with size  <code>ncol(adjacencyMatrix)</code>,
-providing a user-defined clustering. Default is "spectral".</p></li>
-<li><p>"similarity": An R x R -&gt; R function to compute similarities between node covariates. Default is
+providing a user-defined clustering. Default is "spectral".
+similarity An R x R -&gt; R function to compute similarities between node covariates. Default is
 <code>l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. <code>covariates</code> is a list of size-N vectors).</p></li>
-<li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
+<li><p>threshold V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 by less than threshold. Default is 1e-2.</p></li>
-<li><p>"maxIter": V-EM algorithm stops when the number of iteration exceeds maxIter.
+<li><p>maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
 Default is 50.</p></li>
-<li><p>"fixPointIter": number of fix-point iterations in the V-E step. Default is 3.</p></li>
-<li><p>"exploration": character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".</p></li>
-<li><p>"iterates": integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
-<li><p>"trace": logical for verbosity. Default is TRUE.</p></li>
+<li><p>fixPointIter number of fix-point iterations in the V-E step. Default is 3.</p></li>
+<li><p>exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".</p></li>
+<li><p>iterates integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
+<li><p>trace logical for verbosity. Default is TRUE.</p></li>
 </ul><p>The different sampling designs are split into two families in which we find dyad-centered and
 node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562934" class="external-link">doi:10.1080/01621459.2018.1562934</a>
- for a complete description.</p><ul><li><p>Missing at Random (MAR)</p><ul><li><p>"dyad": parameter = p = Prob(Dyad(i,j) is observed)</p></li>
-<li><p>"node": parameter = p = Prob(Node i is observed)</p></li>
-<li><p>"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))</p></li>
-<li><p>"covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)</p></li>
-<li><p>"snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)</p></li>
+ for a complete description.</p><ul><li><p>Missing at Random (MAR)</p><ul><li><p>dyad parameter = p = Prob(Dyad(i,j) is observed)</p></li>
+<li><p>node parameter = p = Prob(Node i is observed)</p></li>
+<li><p>covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))</p></li>
+<li><p>covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)</p></li>
+<li><p>snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)</p></li>
 </ul></li>
-<li><p>Missing Not At Random (MNAR)</p><ul><li><p>"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)</p></li>
-<li><p>"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)</p></li>
-<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)</p></li>
-<li><p>"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))</p></li>
+<li><p>Missing Not At Random (MNAR)</p><ul><li><p>double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)</p></li>
+<li><p>block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)</p></li>
+<li><p>block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)</p></li>
 </ul></li>
 </ul></div>
     <div id="see-also">
@@ -186,7 +185,7 @@ node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Initialization of 4 model(s). </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Performing VEM inference</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 3 blocks. 	Model with 2 blocks. 	Model with 1 blocks. 	Model with 4 blocks.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 3 blocks. 	Model with 4 blocks. 	Model with 2 blocks. 	Model with 1 blocks.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Looking for better solutions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Pass 1   Going forward +++                                                                                                     Pass 1   Going backward +++                                                                                                    </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">collection</span>, <span class="st">"monitoring"</span><span class="op">)</span></span></span>
@@ -195,13 +194,13 @@ node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562
 <span class="r-plt img"><img src="estimateMissSBM-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">collection</span><span class="op">$</span><span class="va">ICL</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10467.332  9704.645  9312.211  9362.429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10727.041 10117.879  9677.508  9710.897</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">collection</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span>, <span class="st">"connectivity"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]       [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.51449264 0.04250796 0.03948899</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.04250796 0.51193596 0.05370121</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.03948899 0.05370121 0.47351006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.53846155 0.06264776 0.05827506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.06264776 0.51861700 0.05270093</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05827506 0.05270093 0.46612466</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">myModel</span> <span class="op">&lt;-</span> <span class="va">collection</span><span class="op">$</span><span class="va">bestModel</span></span></span>
@@ -212,22 +211,22 @@ node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myModel</span>, <span class="st">"meso"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="estimateMissSBM-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">myModel</span>, <span class="st">"sampling"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7519192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.74</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">myModel</span>, <span class="st">"connectivity"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]       [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.51449264 0.04250796 0.03948899</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.04250796 0.51193596 0.05370121</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.03948899 0.05370121 0.47351006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.53846155 0.06264776 0.05827506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.06264776 0.51861700 0.05270093</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05827506 0.05270093 0.46612466</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">myModel</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 x 5 sparse Matrix of class "dgCMatrix"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] .          0.05370121 .          0.04250796 .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.05370121 .          0.03948899 .          1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] .          0.03948899 .          .          0.5144926</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.04250796 .          .          .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] .          1.00000000 0.51449264 .          .        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] .          .          0.05827506 .          0.05827506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] .          .          0.06264776 0.05270093 1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05827506 0.06264776 .          .          1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] .          0.05270093 .          .          0.05827506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.05827506 1.00000000 1.00000000 0.05827506 .         </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

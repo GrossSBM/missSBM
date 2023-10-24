@@ -112,7 +112,7 @@ of <code>covariates</code> must be N x N matrix.</p></dd>
 
 <dt>similarity</dt>
 <dd><p>An optional function to compute similarities between node covariates. Default is
-<code>l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered.</p></dd>
+<code><a href="l1_similarity.html">l1_similarity</a></code>, that is, -abs(x-y). Only relevant when the covariates are node-centered.</p></dd>
 
 
 <dt>intercept</dt>
@@ -130,34 +130,33 @@ of <code>covariates</code> must be N x N matrix.</p></dd>
     <p>Internal functions use <code>future_lapply</code>, so set your plan to <code>'multisession'</code> or
 <code>'multicore'</code> to use several cores/workers.
 The list of parameters <code>control</code> tunes more advanced features, such as the
-initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul><li><p>"useCov": logical. If <code>covariates</code> is not null, should they be used for the
+initialization, how covariates are handled in the model, and the variational EM algorithm:</p><ul><li><p>useCov logical. If <code>covariates</code> is not null, should they be used for the
 for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
-<li><p>"clusterInit": Initial method for clustering: either a character ("spectral")
+<li><p>clusterInit Initial method for clustering: either a character ("spectral")
 or a list with <code>length(vBlocks)</code> vectors, each with size  <code>ncol(adjacencyMatrix)</code>,
-providing a user-defined clustering. Default is "spectral".</p></li>
-<li><p>"similarity": An R x R -&gt; R function to compute similarities between node covariates. Default is
+providing a user-defined clustering. Default is "spectral".
+similarity An R x R -&gt; R function to compute similarities between node covariates. Default is
 <code>l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. <code>covariates</code> is a list of size-N vectors).</p></li>
-<li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
+<li><p>threshold V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 by less than threshold. Default is 1e-2.</p></li>
-<li><p>"maxIter": V-EM algorithm stops when the number of iteration exceeds maxIter.
+<li><p>maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
 Default is 50.</p></li>
-<li><p>"fixPointIter": number of fix-point iterations in the V-E step. Default is 3.</p></li>
-<li><p>"exploration": character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".</p></li>
-<li><p>"iterates": integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
-<li><p>"trace": logical for verbosity. Default is TRUE.</p></li>
+<li><p>fixPointIter number of fix-point iterations in the V-E step. Default is 3.</p></li>
+<li><p>exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".</p></li>
+<li><p>iterates integer for the number of iterations during exploration. Only relevant when <code>exploration</code> is different from "none". Default is 1.</p></li>
+<li><p>trace logical for verbosity. Default is TRUE.</p></li>
 </ul><p>The different sampling designs are split into two families in which we find dyad-centered and
 node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562934" class="external-link">doi:10.1080/01621459.2018.1562934</a>
- for a complete description.</p><ul><li><p>Missing at Random (MAR)</p><ul><li><p>"dyad": parameter = p = Prob(Dyad(i,j) is observed)</p></li>
-<li><p>"node": parameter = p = Prob(Node i is observed)</p></li>
-<li><p>"covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))</p></li>
-<li><p>"covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)</p></li>
-<li><p>"snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)</p></li>
+ for a complete description.</p><ul><li><p>Missing at Random (MAR)</p><ul><li><p>dyad parameter = p = Prob(Dyad(i,j) is observed)</p></li>
+<li><p>node parameter = p = Prob(Node i is observed)</p></li>
+<li><p>covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))</p></li>
+<li><p>covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)</p></li>
+<li><p>snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)</p></li>
 </ul></li>
-<li><p>Missing Not At Random (MNAR)</p><ul><li><p>"double-standard": parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)</p></li>
-<li><p>"block-node": parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)</p></li>
-<li><p>"block-dyad": parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)</p></li>
-<li><p>"degree": parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))</p></li>
+<li><p>Missing Not At Random (MNAR)</p><ul><li><p>double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)</p></li>
+<li><p>block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)</p></li>
+<li><p>block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)</p></li>
 </ul></li>
 </ul></div>
 
