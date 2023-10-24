@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.4</span>
       </span>
     </div>
 
@@ -91,9 +91,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>missSBM: a case study with war networks</h1>
-                        <h4 data-toc-skip class="author">missSBM team</h4>
+                        <h4 data-toc-skip class="author">missSBM
+team</h4>
             
-            <h4 data-toc-skip class="date">Last update: 2022-08-23</h4>
+            <h4 data-toc-skip class="date">Last update: 2023-10-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/grossSBM/missSBM/blob/HEAD/vignettes/case_study_war_networks.Rmd" class="external-link"><code>vignettes/case_study_war_networks.Rmd</code></a></small>
       <div class="hidden name"><code>case_study_war_networks.Rmd</code></div>
@@ -105,43 +106,78 @@
 <div class="section level2">
 <h2 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
 </h2>
-<p>On top of <strong>missSBM</strong>, our analysis will rely on the <strong>igraph</strong> package for network data manipulation, and <strong>ggplot2</strong> and <strong>magrittr</strong> for representation.</p>
+<p>On top of <strong>missSBM</strong>, our analysis will rely on the
+<strong>igraph</strong> package for network data manipulation, and
+<strong>ggplot2</strong> and <strong>magrittr</strong> for
+representation.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org" class="external-link">igraph</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/taiyun/corrplot" class="external-link">corrplot</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://grosssbm.github.io/missSBM/" class="external-link">missSBM</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span></code></pre></div>
-<p><strong>missSBM</strong> integrates some features of the <strong>future</strong> package to perform parallel computing: you can set your plan now to speed the fit by relying on 2 workers as follows:</p>
+<p><strong>missSBM</strong> integrates some features of the
+<strong>future</strong> package to perform parallel computing: you can
+set your plan now to speed the fit by relying on 2 workers as
+follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="the-war-network">The war network<a class="anchor" aria-label="anchor" href="#the-war-network"></a>
 </h2>
-<p>The <code>war</code> data set comes with the <code>missSBM</code> package:</p>
+<p>The <code>war</code> data set comes with the <code>missSBM</code>
+package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"war"</span><span class="op">)</span></span></code></pre></div>
-<p>This data set contains a list of two networks (<code>belligerent</code> and <code>alliance</code>) where the nodes are countries; an edge in the network <code>belligerent</code> means that the two countries have been at war at least once between years 1816 to 2007; an edge in network <code>alliance</code> means that the two countries have had a formal alliance between years 1816 and 2012. The network <code>belligerent</code> have less nodes since countries which have not been at war at all are not considered.</p>
-<p>These two networks were extracted from <a href="https://www.correlatesofwar.org/" class="external-link">https://www.correlatesofwar.org/</a> (see <span class="citation">Sarkees and Wayman (<a href="#ref-sarkees2010resort" role="doc-biblioref">2010</a>)</span> for war data, and <span class="citation">Gibler (<a href="#ref-gibler2008international" role="doc-biblioref">2008</a>)</span> for formal alliance). Version 4.0 was used for war data and version 4.1 for formal alliance. On the top of the two networks, two covariates were considered. One covariate is concerned with military power of the states (see <span class="citation">Singer, Bremer, and Stuckey (<a href="#ref-singer1972capability" role="doc-biblioref">1972</a>)</span>, version 5.0 was used) and the other is concerned with trade exchanges between country (see <span class="citation">Barbieri, Keshk, and Pollins (<a href="#ref-barbieri2012correlates" role="doc-biblioref">2016</a>)</span> and <span class="citation">Barbieri, Keshk, and Pollins (<a href="#ref-barbieri2009trading" role="doc-biblioref">2009</a>)</span>, version 4.0 was used). In the following, we focus on the network <code>war$belligerent</code>, which is provided as an igraph object:</p>
+<p>This data set contains a list of two networks
+(<code>belligerent</code> and <code>alliance</code>) where the nodes are
+countries; an edge in the network <code>belligerent</code> means that
+the two countries have been at war at least once between years 1816 to
+2007; an edge in network <code>alliance</code> means that the two
+countries have had a formal alliance between years 1816 and 2012. The
+network <code>belligerent</code> have less nodes since countries which
+have not been at war at all are not considered.</p>
+<p>These two networks were extracted from <a href="https://www.correlatesofwar.org/" class="external-link">https://www.correlatesofwar.org/</a>
+(see <span class="citation">Sarkees and Wayman (<a href="#ref-sarkees2010resort" role="doc-biblioref">2010</a>)</span> for
+war data, and <span class="citation">Gibler (<a href="#ref-gibler2008international" role="doc-biblioref">2008</a>)</span> for formal alliance). Version 4.0
+was used for war data and version 4.1 for formal alliance. On the top of
+the two networks, two covariates were considered. One covariate is
+concerned with military power of the states (see <span class="citation">Singer, Bremer, and Stuckey (<a href="#ref-singer1972capability" role="doc-biblioref">1972</a>)</span>,
+version 5.0 was used) and the other is concerned with trade exchanges
+between country (see <span class="citation">Barbieri, Keshk, and Pollins
+(<a href="#ref-barbieri2012correlates" role="doc-biblioref">2016</a>)</span> and <span class="citation">Barbieri, Keshk, and Pollins (<a href="#ref-barbieri2009trading" role="doc-biblioref">2009</a>)</span>,
+version 4.0 was used). In the following, we focus on the network
+<code>war$belligerent</code>, which is provided as an igraph object:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">war</span><span class="op">$</span><span class="va">belligerent</span>,</span>
-<span>     vertex.shape<span class="op">=</span><span class="st">"none"</span>, vertex.label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">war</span><span class="op">$</span><span class="va">belligerent</span><span class="op">)</span><span class="op">$</span><span class="va">name</span>,</span>
+<span>     vertex.shape<span class="op">=</span><span class="st">"none"</span>, vertex.label<span class="op">=</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">war</span><span class="op">$</span><span class="va">belligerent</span><span class="op">)</span><span class="op">$</span><span class="va">name</span>,</span>
 <span>     vertex.label.color <span class="op">=</span> <span class="st">"steel blue"</span>, vertex.label.font<span class="op">=</span><span class="fl">1.5</span>,</span>
 <span>     vertex.label.cex<span class="op">=</span><span class="fl">.6</span>, edge.color<span class="op">=</span><span class="st">"gray70"</span>, edge.width <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="case_study_war_networks_files/figure-html/war%20network%20plot-1.png" width="672"></p>
-<p>To pursue our analysis, we extract the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and a covariate on the dyads describing the intensity of trade between two countries.</p>
+<p>To pursue our analysis, we extract the adjacency matrix of the
+network, a covariate on the vertices describing the military power of
+each country, and a covariate on the dyads describing the intensity of
+trade between two countries.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">belligerent_adjacency</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html" class="external-link">as_adj</a></span><span class="op">(</span><span class="va">war</span><span class="op">$</span><span class="va">belligerent</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">belligerent_adjacency</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/as_adjacency_matrix.html" class="external-link">as_adj</a></span><span class="op">(</span><span class="va">war</span><span class="op">$</span><span class="va">belligerent</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">belligerent_power</span>     <span class="op">&lt;-</span> <span class="va">war</span><span class="op">$</span><span class="va">belligerent</span><span class="op">$</span><span class="va">power</span></span>
 <span><span class="va">belligerent_trade</span>     <span class="op">&lt;-</span> <span class="va">war</span><span class="op">$</span><span class="va">belligerent</span><span class="op">$</span><span class="va">trade</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="generating-missing-data">Generating missing data<a class="anchor" aria-label="anchor" href="#generating-missing-data"></a>
 </h3>
-<p>Even though the dataset was complete, we can assume that some data may be missing for the sake of illustration.<br>
-More specifically, the data collection may be missing for some countries in the sense that data were collected comprehensively for a subset of countries and for the other countries we only observe their edges with the first subset and not within them. Thus, the sampling is node-centered and collects edges information accordingly (there will be a block of missing data on the diagonal of the adjacency matrix). To this end we rely on the function <code>observeNetwork</code> in <strong>missSBM</strong>:</p>
+<p>Even though the dataset was complete, we can assume that some data
+may be missing for the sake of illustration.<br>
+More specifically, the data collection may be missing for some countries
+in the sense that data were collected comprehensively for a subset of
+countries and for the other countries we only observe their edges with
+the first subset and not within them. Thus, the sampling is
+node-centered and collects edges information accordingly (there will be
+a block of missing data on the diagonal of the adjacency matrix). To
+this end we rely on the function <code>observeNetwork</code> in
+<strong>missSBM</strong>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">partlyObservedNet_war</span> <span class="op">&lt;-</span> <span class="fu">missSBM</span><span class="fu">::</span><span class="fu"><a href="../reference/observeNetwork.html">observeNetwork</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span>, sampling <span class="op">=</span> <span class="st">"node"</span>, parameters <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html" class="external-link">corrplot</a></span><span class="op">(</span><span class="va">partlyObservedNet_war</span>, </span>
@@ -157,7 +193,14 @@ More specifically, the data collection may be missing for some countries in the 
 <div class="section level3">
 <h3 id="estimation-with-missing-data">Estimation with missing data<a class="anchor" aria-label="anchor" href="#estimation-with-missing-data"></a>
 </h3>
-<p>We can now adjust a Stochastic Block Model with the function <code>estimateMissSBM</code> under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to avoid local minimal and get a robust Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of group/block more robust. The exploration type (forward, backward, both or none, and number of iteration can be tuned via the <code>control</code> argument).</p>
+<p>We can now adjust a Stochastic Block Model with the function
+<code>estimateMissSBM</code> under this type of sampling: by default, we
+use a forward/backward (split and merge) strategy on the clustering to
+avoid local minimal and get a robust Integrated Classification
+Likelihood Criterion, commonly used to perform model selection. This
+will make the choice of the number of group/block more robust. The
+exploration type (forward, backward, both or none, and number of
+iteration can be tuned via the <code>control</code> argument).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vBlocks</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span></span>
 <span><span class="va">collection_sbm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">partlyObservedNet_war</span>, <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"node"</span><span class="op">)</span></span></code></pre></div>
@@ -165,11 +208,15 @@ More specifically, the data collection may be missing for some countries in the 
 <div class="section level3">
 <h3 id="estimation-on-fully-observed-network">Estimation on fully observed network<a class="anchor" aria-label="anchor" href="#estimation-on-fully-observed-network"></a>
 </h3>
-<p>We would like to compare our results with the clustering obtained on the fully observed network. To this end, we adjust a collection of SBM on the original adjacency matrix:</p>
+<p>We would like to compare our results with the clustering obtained on
+the fully observed network. To this end, we adjust a collection of SBM
+on the original adjacency matrix:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">collection_sbm_full</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span>, <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"node"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>iterates <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>As expected, the ICL on the fully observed network is better. But more interestingly, the number of groups selected may differ in the the presence of missing data.</p>
+<p>As expected, the ICL on the fully observed network is better. But
+more interestingly, the number of groups selected may differ in the the
+presence of missing data.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ICL <span class="op">=</span> <span class="va">collection_sbm_full</span><span class="op">$</span><span class="va">ICL</span>, nbBlocks <span class="op">=</span> <span class="va">vBlocks</span>, type <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span>,</span>
@@ -179,7 +226,8 @@ More specifically, the data collection may be missing for some countries in the 
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Model selection"</span>, x <span class="op">=</span> <span class="st">"#blocks"</span>, y <span class="op">=</span> <span class="st">"Integrated Classification Likelihood"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="case_study_war_networks_files/figure-html/plot%20comparison%20full-1.png" width="480"></p>
-<p>Indeed, two classes found on the fully observed network fuse in the SBM fitted on the partially observed network.</p>
+<p>Indeed, two classes found on the fully observed network fuse in the
+SBM fitted on the partially observed network.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span></span>
 <span>  <span class="va">collection_sbm</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">memberships</span>,</span>
@@ -190,7 +238,9 @@ More specifically, the data collection may be missing for some countries in the 
 <span><span class="co">##   1 14  0  0</span></span>
 <span><span class="co">##   2  0 37  0</span></span>
 <span><span class="co">##   3  0  0 32</span></span></code></pre>
-<p>The model finally fitted on the network data can be represented thanks to a plot method applying on objects with class <code>SBM</code>:</p>
+<p>The model finally fitted on the network data can be represented
+thanks to a plot method applying on objects with class
+<code>SBM</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">collection_sbm</span><span class="op">$</span><span class="va">bestModel</span>, type <span class="op">=</span> <span class="st">"expected"</span><span class="op">)</span></span></code></pre></div>
@@ -206,17 +256,27 @@ More specifically, the data collection may be missing for some countries in the 
 <div class="section level4">
 <h4 id="military-power">Military power<a class="anchor" aria-label="anchor" href="#military-power"></a>
 </h4>
-<p>We first consider a covariate reflecting the military power of the country, hence associated to the nodes. We typically expect a part of the network to be explained by this covariate. We run the inference on the fully observed network:</p>
+<p>We first consider a covariate reflecting the military power of the
+country, hence associated to the nodes. We typically expect a part of
+the network to be explained by this covariate. We run the inference on
+the fully observed network:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vBlocks</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span>
 <span><span class="va">collection_sbm_power_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span>, vBlocks <span class="op">=</span> <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"node"</span>, covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">belligerent_power</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p>Note that by default, the distribution of edges depends on the covariate(s) in any are included in the model.</p>
-<p>The covariate provided as a vector is transferred on edges through an <span class="math inline">\(\ell_1\)</span> similarity: for edge <span class="math inline">\((i,j)\)</span> the associated covariate is defined by <span class="math inline">\(|x_i-x_j|\)</span> where <span class="math inline">\(x_i\)</span> denotes the covariate for node <span class="math inline">\(i\)</span>. Another similarity measure could be provided via the option <code>similarity</code>.</p>
+<p>Note that by default, the distribution of edges depends on the
+covariate(s) in any are included in the model.</p>
+<p>The covariate provided as a vector is transferred on edges through an
+<span class="math inline">\(\ell_1\)</span> similarity: for edge <span class="math inline">\((i,j)\)</span> the associated covariate is defined
+by <span class="math inline">\(|x_i-x_j|\)</span> where <span class="math inline">\(x_i\)</span> denotes the covariate for node <span class="math inline">\(i\)</span>. Another similarity measure could be
+provided via the option <code>similarity</code>.</p>
 <p>The estimated effect of the covariate is obtained through</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">collection_sbm_power_full</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] -12.27494</span></span></code></pre>
-<p>The covariate could be responsible for the sampling. The state with bigger military power are more likely to be fully observed than the others. We will simulate this sampling. An intercept is considered by default in the sampling model.</p>
+<p>The covariate could be responsible for the sampling. The state with
+bigger military power are more likely to be fully observed than the
+others. We will simulate this sampling. An intercept is considered by
+default in the sampling model.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nWar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">belligerent_adjacency</span><span class="op">)</span></span>
 <span><span class="va">parameters_sample</span> <span class="op">&lt;-</span> <span class="fl">600</span></span>
@@ -238,7 +298,9 @@ More specifically, the data collection may be missing for some countries in the 
 <span>  mar          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="case_study_war_networks_files/figure-html/power_sampling-2.png" width="480"></p>
-<p>Then, we can estimate the model by setting the sampling to be <code>covar-node</code>. We can still choose whether to consider or not the covariate in the SBM.</p>
+<p>Then, we can estimate the model by setting the sampling to be
+<code>covar-node</code>. We can still choose whether to consider or not
+the covariate in the SBM.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">collection_sbm_power_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">sampleNet_power_miss</span>, vBlocks <span class="op">=</span> <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"covar-node"</span>, covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">belligerent_power</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then we can access the estimated sampling parameters:</p>
@@ -253,14 +315,17 @@ More specifically, the data collection may be missing for some countries in the 
 <div class="section level4">
 <h4 id="trade-data">Trade data<a class="anchor" aria-label="anchor" href="#trade-data"></a>
 </h4>
-<p>Another covariate is the average trade exchange between the states. This covariate is related to pairs of states hence to the dyads. We first build a matrix of dissimilarity according to this covariate:</p>
+<p>Another covariate is the average trade exchange between the states.
+This covariate is related to pairs of states hence to the dyads. We
+first build a matrix of dissimilarity according to this covariate:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trade</span> <span class="op">&lt;-</span> <span class="va">belligerent_trade</span> </span>
 <span><span class="va">trade</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">trade</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span><span class="va">trade</span> <span class="op">&lt;-</span> <span class="va">trade</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">trade</span><span class="op">)</span></span>
 <span><span class="va">trade</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">trade</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">trade</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span></span></code></pre></div>
-<p>We then conduct a similar analysis as with the power to see how it can be accounted for in the SBM.</p>
+<p>We then conduct a similar analysis as with the power to see how it
+can be accounted for in the SBM.</p>
 <p>We first sample according to it:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">parameters_sample</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -274,7 +339,9 @@ More specifically, the data collection may be missing for some countries in the 
 <span>  mar          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="case_study_war_networks_files/figure-html/samptrade-1.png" width="480"></p>
-<p>The choice of the sampling parameters leads to more likely observe dyads with important trade exchange. We then perform estimation on the missing data drawn according to the trade covariate.</p>
+<p>The choice of the sampling parameters leads to more likely observe
+dyads with important trade exchange. We then perform estimation on the
+missing data drawn according to the trade covariate.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">collection_sbm_trade_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">sampleNet_trade_miss</span>, vBlocks <span class="op">=</span> <span class="va">vBlocks</span>, sampling <span class="op">=</span> <span class="st">"covar-dyad"</span>, covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">trade</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>## 
@@ -299,7 +366,8 @@ More specifically, the data collection may be missing for some countries in the 
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">collection_sbm_trade_miss</span><span class="op">$</span><span class="va">bestModel</span><span class="op">$</span><span class="va">fittedSBM</span><span class="op">$</span><span class="va">covarParam</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.3397999</span></span></code></pre>
-<p>When you are done, do not forget to get back to the standard sequential plan with future.</p>
+<p>When you are done, do not forget to get back to the standard
+sequential plan with future.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -310,19 +378,29 @@ More specifically, the data collection may be missing for some countries in the 
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-barbieri2009trading" class="csl-entry">
-Barbieri, Katherine, Omar MG Keshk, and Brian M Pollins. 2009. <span>“Trading Data: Evaluating Our Assumptions and Coding Rules.”</span> <em>Conflict Management and Peace Science</em> 26 (5): 471–91.
+Barbieri, Katherine, Omar MG Keshk, and Brian M Pollins. 2009.
+<span>“Trading Data: Evaluating Our Assumptions and Coding
+Rules.”</span> <em>Conflict Management and Peace Science</em> 26 (5):
+471–91.
 </div>
 <div id="ref-barbieri2012correlates" class="csl-entry">
-Barbieri, Katherine, Omar Keshk, and Brian Pollins. 2016. <span>“Correlates of War Project Trade Data Set Codebook, Version 4.0.”</span> <em>Online: Http://Correlatesofwar. Org</em>.
+Barbieri, Katherine, Omar Keshk, and Brian Pollins. 2016.
+<span>“Correlates of War Project Trade Data Set Codebook, Version
+4.0.”</span> <em>Online: Http://Correlatesofwar. Org</em>.
 </div>
 <div id="ref-gibler2008international" class="csl-entry">
-Gibler, Douglas M. 2008. <em>International Military Alliances, 1648-2008</em>. CQ Press.
+Gibler, Douglas M. 2008. <em>International Military Alliances,
+1648-2008</em>. CQ Press.
 </div>
 <div id="ref-sarkees2010resort" class="csl-entry">
-Sarkees, Meredith Reid, and Frank Whelon Wayman. 2010. <em>Resort to War: A Data Guide to Inter-State, Extra-State, Intra-State, and Non-State Wars, 1816-2007</em>. Cq Pr.
+Sarkees, Meredith Reid, and Frank Whelon Wayman. 2010. <em>Resort to
+War: A Data Guide to Inter-State, Extra-State, Intra-State, and
+Non-State Wars, 1816-2007</em>. Cq Pr.
 </div>
 <div id="ref-singer1972capability" class="csl-entry">
-Singer, J David, Stuart Bremer, and John Stuckey. 1972. <span>“Capability Distribution, Uncertainty, and Major Power War, 1820-1965.”</span> <em>Peace, War, and Numbers</em> 19: 48.
+Singer, J David, Stuart Bremer, and John Stuckey. 1972.
+<span>“Capability Distribution, Uncertainty, and Major Power War,
+1820-1965.”</span> <em>Peace, War, and Numbers</em> 19: 48.
 </div>
 </div>
 </div>
@@ -345,7 +423,7 @@ Singer, J David, Stuart Bremer, and John Stuckey. 1972. <span>“Capability Dist
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

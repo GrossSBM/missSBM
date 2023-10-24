@@ -22,7 +22,7 @@ as S3 methods. See the documentation for show() and print()"><!-- mathjax --><sc
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.4</span>
       </span>
     </div>
 
@@ -241,8 +241,8 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href="
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Sample 75% of dyads in  French political Blogosphere's network data</span></span></span>
 <span class="r-in"><span><span class="va">adjacencyMatrix</span> <span class="op">&lt;-</span> <span class="fu">missSBM</span><span class="fu">::</span><span class="va"><a href="frenchblog2007.html">frenchblog2007</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/delete_vertices.html" class="external-link">delete.vertices</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html" class="external-link">as_adj</a></span> <span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/delete_vertices.html" class="external-link">delete.vertices</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_adjacency_matrix.html" class="external-link">as_adj</a></span> <span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">missSBM</span><span class="fu">::</span><span class="fu"><a href="observeNetwork.html">observeNetwork</a></span><span class="op">(</span>sampling <span class="op">=</span> <span class="st">"dyad"</span>, parameters <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">collection</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">adjacencyMatrix</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, sampling <span class="op">=</span> <span class="st">"dyad"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -253,7 +253,7 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href="
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Initialization of 5 model(s). </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Performing VEM inference</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 1 blocks. 	Model with 3 blocks. 	Model with 2 blocks. 	Model with 4 blocks. 	Model with 5 blocks.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 5 blocks. 	Model with 1 blocks. 	Model with 4 blocks. 	Model with 3 blocks. 	Model with 2 blocks.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Looking for better solutions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Pass 1   Going forward ++++                                                                                                     Pass 1   Going backward ++++                                                                                                    </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">collection</span><span class="op">)</span></span></span>
@@ -273,7 +273,7 @@ as S3 methods. See the documentation for <code>show()</code> and <code><a href="
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">missSBM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.4</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
 <span>  <span class="va">parameters</span>,</span>
 <span>  clusters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  similarity <span class="op">=</span> <span class="fu">missSBM</span><span class="fu">:::</span><span class="va">l1_similarity</span>,</span>
+<span>  similarity <span class="op">=</span> <span class="va">l1_similarity</span>,</span>
 <span>  intercept <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -112,7 +112,7 @@ of <code>covariates</code> must be N x N matrix.</p></dd>
 
 <dt>similarity</dt>
 <dd><p>An optional function to compute similarities between node covariates. Default is
-<code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered.</p></dd>
+<code>l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered.</p></dd>
 
 
 <dt>intercept</dt>
@@ -136,7 +136,7 @@ for the SBM inference (or just for the sampling)? Default is TRUE.</p></li>
 or a list with <code>length(vBlocks)</code> vectors, each with size  <code>ncol(adjacencyMatrix)</code>,
 providing a user-defined clustering. Default is "spectral".</p></li>
 <li><p>"similarity": An R x R -&gt; R function to compute similarities between node covariates. Default is
-<code>missSBM:::l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
+<code>l1_similarity</code>, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. <code>covariates</code> is a list of size-N vectors).</p></li>
 <li><p>"threshold": V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
 by less than threshold. Default is 1e-2.</p></li>
@@ -210,7 +210,7 @@ node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -88,7 +88,10 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/missSBM.html</loc>
+    <loc>/reference/l1_similarity.html</loc>
+  </url>
+  <url>
+    <loc>/reference/missSBM-package.html</loc>
   </url>
   <url>
     <loc>/reference/missSBM_collection.html</loc>
