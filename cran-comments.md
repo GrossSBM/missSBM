@@ -13,17 +13,17 @@ minor fix in package documentation due to evolution of roxygen2 7.0.0 <https://g
 	- Ubuntu Linux 20.04.1 LTS, R-release, GCC
 
 * tested remotely with github-action
-  - Linux ubuntu 20.04, R-release (github-action)
-  - Linux ubuntu 20.04, R-oldrel (github-action)
-  - Linux ubuntu 20.04, R-devel (github-action)
+  - Linux ubuntu 22.04, R-release (github-action)
+  - Linux ubuntu 22.04, R-oldrel (github-action)
+  - Linux ubuntu 22.04, R-devel (github-action)
   - Windows Server 2022, R-release, 64 bit
-  - macOS Big Sur 11, R-release (github action)
+  - macOS 12, R-release (github action)
 
-- tested remotely with win-builder (R version 4.1.2, R version 4.1.3)
+- tested remotely with win-builder (R version 4.3.1, R version 4.2.3, R unstable)
 
 ## R CMD check results
 
-On Ubuntu and Fedora Linux 1 NOTE about installation size
+1 NOTE about installation size
 
 * checking installed package size ... NOTE
   installed size is  7.2Mb
