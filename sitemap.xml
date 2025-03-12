@@ -1,150 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/case_study_war_networks.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SimpleSBM_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SimpleSBM_fit_MNAR.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SimpleSBM_fit_noCov.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SimpleSBM_fit_withCov.html</loc>
-  </url>
-  <url>
-    <loc>/reference/blockDyadSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/blockDyadSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/blockNodeSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/blockNodeSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/coef.missSBM_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/covarDyadSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/covarNodeSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/degreeSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/degreeSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/doubleStandardSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/doubleStandardSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dyadSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dyadSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/er_network.html</loc>
-  </url>
-  <url>
-    <loc>/reference/estimateMissSBM.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fitted.missSBM_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/frenchblog2007.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/l1_similarity.html</loc>
-  </url>
-  <url>
-    <loc>/reference/missSBM-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/missSBM_collection.html</loc>
-  </url>
-  <url>
-    <loc>/reference/missSBM_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/networkSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/networkSampling.html</loc>
-  </url>
-  <url>
-    <loc>/reference/networkSamplingDyads_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/networkSamplingNodes_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/nodeSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/nodeSampling_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/observeNetwork.html</loc>
-  </url>
-  <url>
-    <loc>/reference/partlyObservedNetwork.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.missSBM_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/predicted.missSBM_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simpleDyadSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simpleNodeSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/snowballSampler.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summary.missSBM_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/war.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/case_study_war_networks.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/SimpleSBM_fit.html</loc></url>
+<url><loc>/reference/SimpleSBM_fit_MNAR.html</loc></url>
+<url><loc>/reference/SimpleSBM_fit_noCov.html</loc></url>
+<url><loc>/reference/SimpleSBM_fit_withCov.html</loc></url>
+<url><loc>/reference/blockDyadSampler.html</loc></url>
+<url><loc>/reference/blockDyadSampling_fit.html</loc></url>
+<url><loc>/reference/blockNodeSampler.html</loc></url>
+<url><loc>/reference/blockNodeSampling_fit.html</loc></url>
+<url><loc>/reference/coef.missSBM_fit.html</loc></url>
+<url><loc>/reference/covarDyadSampling_fit.html</loc></url>
+<url><loc>/reference/covarNodeSampling_fit.html</loc></url>
+<url><loc>/reference/degreeSampler.html</loc></url>
+<url><loc>/reference/degreeSampling_fit.html</loc></url>
+<url><loc>/reference/doubleStandardSampler.html</loc></url>
+<url><loc>/reference/doubleStandardSampling_fit.html</loc></url>
+<url><loc>/reference/dyadSampler.html</loc></url>
+<url><loc>/reference/dyadSampling_fit.html</loc></url>
+<url><loc>/reference/er_network.html</loc></url>
+<url><loc>/reference/estimateMissSBM.html</loc></url>
+<url><loc>/reference/fitted.missSBM_fit.html</loc></url>
+<url><loc>/reference/frenchblog2007.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/l1_similarity.html</loc></url>
+<url><loc>/reference/missSBM-package.html</loc></url>
+<url><loc>/reference/missSBM_collection.html</loc></url>
+<url><loc>/reference/missSBM_fit.html</loc></url>
+<url><loc>/reference/networkSampler.html</loc></url>
+<url><loc>/reference/networkSampling.html</loc></url>
+<url><loc>/reference/networkSamplingDyads_fit.html</loc></url>
+<url><loc>/reference/networkSamplingNodes_fit.html</loc></url>
+<url><loc>/reference/nodeSampler.html</loc></url>
+<url><loc>/reference/nodeSampling_fit.html</loc></url>
+<url><loc>/reference/observeNetwork.html</loc></url>
+<url><loc>/reference/partlyObservedNetwork.html</loc></url>
+<url><loc>/reference/pipe.html</loc></url>
+<url><loc>/reference/plot.missSBM_fit.html</loc></url>
+<url><loc>/reference/predicted.missSBM_fit.html</loc></url>
+<url><loc>/reference/simpleDyadSampler.html</loc></url>
+<url><loc>/reference/simpleNodeSampler.html</loc></url>
+<url><loc>/reference/snowballSampler.html</loc></url>
+<url><loc>/reference/summary.missSBM_fit.html</loc></url>
+<url><loc>/reference/war.html</loc></url>
 </urlset>
+
