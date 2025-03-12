@@ -1,3 +1,7 @@
+# missSBM 1.0.5 (2025-03-12)
+
+- minor fix to comply with nlopt version 2.9.1 (NOCEDAL)
+
 # missSBM 1.0.4 (2023-10-19)
 
 - minor fix in package documentation due to evolution of roxygen2 7.0.0 <https://github.com/r-lib/roxygen2/issues/1491>.
