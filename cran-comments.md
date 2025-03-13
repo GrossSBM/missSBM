@@ -1,7 +1,7 @@
 
 # missSBM 1.0.5 (2025-03-12)
 
-minor fix to comply with nlopt version 2.9.1 (NOCEDAL)
+minor fix to comply with new nloptr package and nlopt version 2.9.1 (NOCEDAL)
 
 ## Tested environments
 
