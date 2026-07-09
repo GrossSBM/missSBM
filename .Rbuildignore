@@ -19,3 +19,4 @@
 
 ^\.github$
 ^CRAN-SUBMISSION$
+^\.claude$

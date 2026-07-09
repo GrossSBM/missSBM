@@ -346,7 +346,9 @@ degreeSampling_fit <-
     initialize = function(partlyObservedNetwork, blockInit, connectInit) {
       super$initialize(partlyObservedNetwork, "degree")
 
-      private$NAs <- as.matrix(partlyObservedNetwork$NAs)
+      NAs <- as.matrix(partlyObservedNetwork$samplingMatrixBar) != 0
+      if (!partlyObservedNetwork$is_directed) NAs <- NAs | t(NAs)
+      private$NAs <- NAs
       ## the node degrees - will remain the same
       private$D <- rowSums(partlyObservedNetwork$networkData, na.rm = TRUE)
 
@@ -366,12 +368,14 @@ degreeSampling_fit <-
       nu[!private$NAs] <- NA
       D2 <- rowSums(nu * (1 - nu), na.rm = TRUE) + private$D^2
       private$ksi <- check_boundaries(sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * private$D))
-      C <- .5 * nrow(imputedNet) - sum(!private$N_obs)
+      C  <- .5 * nrow(imputedNet) - sum(!private$N_obs)
+      s1 <- .5 * sum(private$D) - sum(private$D[!private$N_obs])
       s_hksi   <- sum(h(private$ksi))
       s_hksiD  <- sum(h(private$ksi) * private$D)
       s_hksiD2 <- sum(h(private$ksi) * D2)
-      b <- (2 * C * s_hksiD  - (.5 * sum(private$D) - sum(private$D[!private$N_obs])) * s_hksi) / (2 * s_hksiD2 * s_hksi - (2 * s_hksiD)^2)
-      a <- -(b * s_hksiD + C) / s_hksi
+      denom <- 2 * (s_hksi * s_hksiD2 - s_hksiD^2)
+      a <- (s1 * s_hksiD - C * s_hksiD2) / denom
+      b <- (C * s_hksiD - s1 * s_hksi) / denom
       private$psi <- c(a, b)
 
       ## update stat required to perform imputation

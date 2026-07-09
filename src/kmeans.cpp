@@ -31,11 +31,11 @@ IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroi
         for(unsigned int i=0;i<classif.n_rows;i++)
         {
 
-            double dmin = norm(rowvec(coordinates.row(i)-centroids.row(0)),2);
+            double dmin = norm(coordinates.row(i)-centroids.row(0),2);
             unsigned int imin=0;
             for(unsigned int c=1;c<centroids.n_rows;c++)
             {
-                double d = norm(rowvec(coordinates.row(i)-centroids.row(c)),2);
+                double d = norm(coordinates.row(i)-centroids.row(c),2);
                 if(d<dmin)
                 {
                     dmin=d;
@@ -47,9 +47,10 @@ IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroi
             classif(i) = imin;
         }
 
+        arma::mat centroids_old = centroids;
         centroids.fill(0);
 
-        colvec S(classif.n_rows);
+        colvec S(centroids.n_rows);
         S.fill(0);
         for(unsigned int i=0;i<classif.n_rows;i++)
         {
@@ -60,7 +61,13 @@ IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroi
 
         for(unsigned int c=0;c<centroids.n_rows;c++)
         {
-            centroids.row(c) /= 1.0*S(c);
+            // an empty cluster would otherwise divide by zero and propagate NaN;
+            // keep its previous centroid instead
+            if (S(c) > 0) {
+                centroids.row(c) /= 1.0*S(c);
+            } else {
+                centroids.row(c) = centroids_old.row(c);
+            }
         }
 
         niter++;

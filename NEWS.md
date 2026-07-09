@@ -1,3 +1,11 @@
+# missSBM 1.0.6
+
+- fix a crash in the "degree" sampling design (`degreeSampling_fit` referenced a
+  non-existent field on `partlyObservedNetwork`)
+- fix the closed-form update of the "degree" sampling parameters (wrong coefficients
+  in the Jaakkola-Jordan variational M-step); note that parameter recovery for this
+  design can still be biased under heavy missingness, this is a known limitation
+
 # missSBM 1.0.5 (2025-03-12)
 
 - minor fix to comply with nlopt version 2.9.1 (NOCEDAL)

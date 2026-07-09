@@ -11,8 +11,8 @@ samplings <- list(
   list(name = "node", psi = 0.5, class = "nodeSampling_fit", k = log(N)),
   list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit", k = log(N * (N-1)/2)),
   list(name = "block-node", psi = c(.3, .5, .7), class = "blockNodeSampling_fit", k = log(N)),
-  list(name = "block-dyad", psi = psi <- matrix(.5,3,3) + diag(3)*.3, class = "blockDyadSampling_fit", k = log(N * (N-1)/2))
-#  list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
+  list(name = "block-dyad", psi = psi <- matrix(.5,3,3) + diag(3)*.3, class = "blockDyadSampling_fit", k = log(N * (N-1)/2)),
+  list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
 )
 
 test_that("Consistency of sampling fit for undirected bernoulli withou covariate", {
@@ -35,7 +35,7 @@ test_that("Consistency of sampling fit for undirected bernoulli withou covariate
       "double-standard" = missSBM:::doubleStandardSampling_fit$new(partlyObservedNet),
       "block-node"      = missSBM:::blockNodeSampling_fit$new(partlyObservedNet, Z0),
       "block-dyad"      = missSBM:::blockDyadSampling_fit$new(partlyObservedNet, Z0),
-      "degree"          = missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sbm$connectParam$mean)
+      "degree"          = missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sampler_undirected_nocov$connectParam$mean)
     )
 
     expect_is(fittedSampling, sampling$class)
@@ -43,9 +43,14 @@ test_that("Consistency of sampling fit for undirected bernoulli withou covariate
     expect_equal(fittedSampling$penalty, sampling$k * length(sampling$psi))
     expect_lte(fittedSampling$vExpec, 0)
 
+    ## "degree" relies on a variational (Jaakkola-Jordan) approximation that is only
+    ## refined across successive EM iterations: a single update_parameters() call, as
+    ## performed here, is not expected to recover the truth to the same tolerance as
+    ## the other (closed-form) designs -- see test-TOP-LEVEL-estimate.R for a check of
+    ## the fully iterated fit.
     if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
-    } else {
+    } else if (sampling$name != "degree") {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth * 3 )
     }
 
@@ -57,8 +62,8 @@ samplings <- list(
   list(name = "node", psi = 0.5, class = "nodeSampling_fit", k = log(N)),
   list(name = "double-standard", psi =  c(.3, .6), class = "doubleStandardSampling_fit", k = log(N * (N-1))),
   list(name = "block-node", psi = c(.3, .5, .7), class = "blockNodeSampling_fit", k = log(N)),
-  list(name = "block-dyad", psi = psi <- matrix(seq(.9, .1, -.1),3,3), class = "blockDyadSampling_fit", k = log(N * (N-1)))
-#  list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
+  list(name = "block-dyad", psi = psi <- matrix(seq(.9, .1, -.1),3,3), class = "blockDyadSampling_fit", k = log(N * (N-1))),
+  list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
 )
 
 test_that("Consistency of sampling fit for directed network, no covariates", {
@@ -81,7 +86,7 @@ test_that("Consistency of sampling fit for directed network, no covariates", {
       "double-standard" = missSBM:::doubleStandardSampling_fit$new(partlyObservedNet),
       "block-node"      = missSBM:::blockNodeSampling_fit$new(partlyObservedNet, Z0),
       "block-dyad"      = missSBM:::blockDyadSampling_fit$new(partlyObservedNet, Z0),
-      "degree"          = missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sbm$connectParam$mean)
+      "degree"          = missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sampler_directed_nocov$connectParam$mean)
     )
 
     expect_is(fittedSampling, sampling$class)
@@ -89,9 +94,14 @@ test_that("Consistency of sampling fit for directed network, no covariates", {
     expect_equal(fittedSampling$penalty, sampling$k * length(sampling$psi))
     expect_lte(fittedSampling$vExpec, 0)
 
+    ## "degree" relies on a variational (Jaakkola-Jordan) approximation that is only
+    ## refined across successive EM iterations: a single update_parameters() call, as
+    ## performed here, is not expected to recover the truth to the same tolerance as
+    ## the other (closed-form) designs -- see test-TOP-LEVEL-estimate.R for a check of
+    ## the fully iterated fit.
     if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
-    } else {
+    } else if (sampling$name != "degree") {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth * 3 )
     }
 
