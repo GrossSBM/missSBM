@@ -24,118 +24,125 @@ plot(my_missSBM_fit, "imputed")
 
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}} or
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}} or
 \code{\link{SimpleSBM_fit_MNAR}} inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
 
-\item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
+    \item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
 
-\item{\code{imputedNetwork}}{The network data as a matrix with NAs values imputed with the current model}
+    \item{\code{imputedNetwork}}{The network data as a matrix with NAs values imputed with the current model}
 
-\item{\code{monitoring}}{a list carrying information about the optimization process}
+    \item{\code{monitoring}}{a list carrying information about the optimization process}
 
-\item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
+    \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
 
-\item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
+    \item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
 
-\item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
+    \item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
 
-\item{\code{penalty}}{double, value of the penalty term in ICL}
+    \item{\code{penalty}}{double, value of the penalty term in ICL}
 
-\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
+    \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-\item{\code{ICL}}{double: value of the integrated classification log-likelihood}
-}
-\if{html}{\out{</div>}}
+    \item{\code{ICL}}{double: value of the integrated classification log-likelihood}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-missSBM_fit-new}{\code{missSBM_fit$new()}}
-\item \href{#method-missSBM_fit-doVEM}{\code{missSBM_fit$doVEM()}}
-\item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
-\item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
-\item \href{#method-missSBM_fit-clone}{\code{missSBM_fit$clone()}}
-}
+  \itemize{
+    \item \href{#method-missSBM_fit-initialize}{\code{missSBM_fit$new()}}
+    \item \href{#method-missSBM_fit-doVEM}{\code{missSBM_fit$doVEM()}}
+    \item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
+    \item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
+    \item \href{#method-missSBM_fit-clone}{\code{missSBM_fit$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-missSBM_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-missSBM_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for networkSampling
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-missSBM_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-initialize}{}}}
+\subsection{\code{missSBM_fit$new()}}{
+  constructor for networkSampling
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
+      \item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
+      \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
+      \item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
-
-\item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
-
-\item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
-
-\item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-doVEM"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-doVEM}{}}}
-\subsection{Method \code{doVEM()}}{
-a method to perform inference of the current missSBM fit with variational EM
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$doVEM(
+\subsection{\code{missSBM_fit$doVEM()}}{
+  a method to perform inference of the current missSBM fit with variational EM
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$doVEM(
   control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE)
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-show"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-show}{}}}
-\subsection{Method \code{show()}}{
-show method for missSBM_fit
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$show()}\if{html}{\out{</div>}}
+\subsection{\code{missSBM_fit$show()}}{
+  show method for missSBM_fit
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$show()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-print"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-print}{}}}
-\subsection{Method \code{print()}}{
-User friendly print method
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$print()}\if{html}{\out{</div>}}
+\subsection{\code{missSBM_fit$print()}}{
+  User friendly print method
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$print()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{missSBM_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

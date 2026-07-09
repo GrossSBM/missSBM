@@ -5,110 +5,110 @@
 \title{Class for fitting a degree sampling}
 \description{
 Class for fitting a degree sampling
-
-Class for fitting a degree sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSamplingNodes_fit]{missSBM::networkSamplingNodes_fit}} -> \code{degreeSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{degreeSampling_fit}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{vExpec}}{variational expectation of the sampling}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{vExpec}}{variational expectation of the sampling}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-degreeSampling_fit-new}{\code{degreeSampling_fit$new()}}
-\item \href{#method-degreeSampling_fit-update_parameters}{\code{degreeSampling_fit$update_parameters()}}
-\item \href{#method-degreeSampling_fit-update_imputation}{\code{degreeSampling_fit$update_imputation()}}
-\item \href{#method-degreeSampling_fit-clone}{\code{degreeSampling_fit$clone()}}
+  \itemize{
+    \item \href{#method-degreeSampling_fit-initialize}{\code{degreeSampling_fit$new()}}
+    \item \href{#method-degreeSampling_fit-update_parameters}{\code{degreeSampling_fit$update_parameters()}}
+    \item \href{#method-degreeSampling_fit-update_imputation}{\code{degreeSampling_fit$update_imputation()}}
+    \item \href{#method-degreeSampling_fit-clone}{\code{degreeSampling_fit$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>missSBM::networkSamplingNodes_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>networkSamplingNodes_fit$show()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-degreeSampling_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-degreeSampling_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{degreeSampling_fit$new(partlyObservedNetwork, blockInit, connectInit)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-degreeSampling_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-degreeSampling_fit-initialize}{}}}
+\subsection{\code{degreeSampling_fit$new()}}{
+  constructor
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{degreeSampling_fit$new(partlyObservedNetwork, blockInit, connectInit)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
+      \item{\code{blockInit}}{n x Q matrix of initial block indicators}
+      \item{\code{connectInit}}{Q x Q matrix of initial block probabilities of connection}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
-
-\item{\code{blockInit}}{n x Q matrix of initial block indicators}
-
-\item{\code{connectInit}}{Q x Q matrix of initial block probabilities of connection}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-degreeSampling_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-degreeSampling_fit-update_parameters}{}}}
-\subsection{Method \code{update_parameters()}}{
-a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{degreeSampling_fit$update_parameters(imputedNet, ...)}\if{html}{\out{</div>}}
+\subsection{\code{degreeSampling_fit$update_parameters()}}{
+  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{degreeSampling_fit$update_parameters(imputedNet, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
+      \item{\code{...}}{used for compatibility}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
-
-\item{\code{...}}{used for compatibility}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-degreeSampling_fit-update_imputation"></a>}}
 \if{latex}{\out{\hypertarget{method-degreeSampling_fit-update_imputation}{}}}
-\subsection{Method \code{update_imputation()}}{
-a method to update the imputation of the missing entries.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{degreeSampling_fit$update_imputation(PI, ...)}\if{html}{\out{</div>}}
+\subsection{\code{degreeSampling_fit$update_imputation()}}{
+  a method to update the imputation of the missing entries.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{degreeSampling_fit$update_imputation(PI, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{PI}}{the matrix of inter/intra class probability of connection}
+      \item{\code{...}}{use for compatibility}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{PI}}{the matrix of inter/intra class probability of connection}
-
-\item{\code{...}}{use for compatibility}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-degreeSampling_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-degreeSampling_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{degreeSampling_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{degreeSampling_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{degreeSampling_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

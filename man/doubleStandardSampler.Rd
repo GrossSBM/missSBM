@@ -5,64 +5,62 @@
 \title{Class for defining a double-standard sampler}
 \description{
 Class for defining a double-standard sampler
-
-Class for defining a double-standard sampler
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSampler]{missSBM::networkSampler}} -> \code{\link[missSBM:dyadSampler]{missSBM::dyadSampler}} -> \code{doubleStandardSampler}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampler]{networkSampler}} -> \code{\link[missSBM:dyadSampler]{dyadSampler}} -> \code{doubleStandardSampler}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-doubleStandardSampler-new}{\code{doubleStandardSampler$new()}}
-\item \href{#method-doubleStandardSampler-clone}{\code{doubleStandardSampler$clone()}}
+  \itemize{
+    \item \href{#method-doubleStandardSampler-initialize}{\code{doubleStandardSampler$new()}}
+    \item \href{#method-doubleStandardSampler-clone}{\code{doubleStandardSampler$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>networkSampling$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>networkSampler$rSamplingMatrix()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-doubleStandardSampler-new"></a>}}
-\if{latex}{\out{\hypertarget{method-doubleStandardSampler-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for networkSampling
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{doubleStandardSampler$new(parameters = NA, adjMatrix = NA, directed = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-doubleStandardSampler-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampler-initialize}{}}}
+\subsection{\code{doubleStandardSampler$new()}}{
+  constructor for networkSampling
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{doubleStandardSampler$new(parameters = NA, adjMatrix = NA, directed = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{parameters}}{the vector of parameters associated to the sampling at play}
+      \item{\code{adjMatrix}}{matrix of adjacency}
+      \item{\code{directed}}{logical, directed network of not}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{parameters}}{the vector of parameters associated to the sampling at play}
-
-\item{\code{adjMatrix}}{matrix of adjacency}
-
-\item{\code{directed}}{logical, directed network of not}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-doubleStandardSampler-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-doubleStandardSampler-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{doubleStandardSampler$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{doubleStandardSampler$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{doubleStandardSampler$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -5,91 +5,91 @@
 \title{Class for fitting a block-node sampling}
 \description{
 Class for fitting a block-node sampling
-
-Class for fitting a block-node sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSamplingNodes_fit]{missSBM::networkSamplingNodes_fit}} -> \code{blockNodeSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{blockNodeSampling_fit}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{vExpec}}{variational expectation of the sampling}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{vExpec}}{variational expectation of the sampling}
 
-\item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
-}
-\if{html}{\out{</div>}}
+    \item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-blockNodeSampling_fit-new}{\code{blockNodeSampling_fit$new()}}
-\item \href{#method-blockNodeSampling_fit-update_parameters}{\code{blockNodeSampling_fit$update_parameters()}}
-\item \href{#method-blockNodeSampling_fit-clone}{\code{blockNodeSampling_fit$clone()}}
+  \itemize{
+    \item \href{#method-blockNodeSampling_fit-initialize}{\code{blockNodeSampling_fit$new()}}
+    \item \href{#method-blockNodeSampling_fit-update_parameters}{\code{blockNodeSampling_fit$update_parameters()}}
+    \item \href{#method-blockNodeSampling_fit-clone}{\code{blockNodeSampling_fit$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>missSBM::networkSamplingNodes_fit$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-update_imputation'><code>missSBM::networkSamplingNodes_fit$update_imputation()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>networkSamplingNodes_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-update_imputation'><code>networkSamplingNodes_fit$update_imputation()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-blockNodeSampling_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-blockNodeSampling_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockNodeSampling_fit$new(partlyObservedNetwork, blockInit)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-blockNodeSampling_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-blockNodeSampling_fit-initialize}{}}}
+\subsection{\code{blockNodeSampling_fit$new()}}{
+  constructor
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockNodeSampling_fit$new(partlyObservedNetwork, blockInit)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
+      \item{\code{blockInit}}{n x Q matrix of initial block indicators}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
-
-\item{\code{blockInit}}{n x Q matrix of initial block indicators}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-blockNodeSampling_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-blockNodeSampling_fit-update_parameters}{}}}
-\subsection{Method \code{update_parameters()}}{
-a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockNodeSampling_fit$update_parameters(imputedNet, Z)}\if{html}{\out{</div>}}
+\subsection{\code{blockNodeSampling_fit$update_parameters()}}{
+  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockNodeSampling_fit$update_parameters(imputedNet, Z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
+      \item{\code{Z}}{indicator of blocks}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
-
-\item{\code{Z}}{indicator of blocks}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-blockNodeSampling_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-blockNodeSampling_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockNodeSampling_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{blockNodeSampling_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockNodeSampling_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

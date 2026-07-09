@@ -5,74 +5,70 @@
 \title{Class for defining a simple node sampler}
 \description{
 Class for defining a simple node sampler
-
-Class for defining a simple node sampler
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSampler]{missSBM::networkSampler}} -> \code{\link[missSBM:nodeSampler]{missSBM::nodeSampler}} -> \code{simpleNodeSampler}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampler]{networkSampler}} -> \code{\link[missSBM:nodeSampler]{nodeSampler}} -> \code{simpleNodeSampler}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-simpleNodeSampler-new}{\code{simpleNodeSampler$new()}}
-\item \href{#method-simpleNodeSampler-clone}{\code{simpleNodeSampler$clone()}}
+  \itemize{
+    \item \href{#method-simpleNodeSampler-initialize}{\code{simpleNodeSampler$new()}}
+    \item \href{#method-simpleNodeSampler-clone}{\code{simpleNodeSampler$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>networkSampling$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>networkSampler$rSamplingMatrix()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-simpleNodeSampler-new"></a>}}
-\if{latex}{\out{\hypertarget{method-simpleNodeSampler-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for networkSampling
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{simpleNodeSampler$new(
+\if{html}{\out{<a id="method-simpleNodeSampler-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-simpleNodeSampler-initialize}{}}}
+\subsection{\code{simpleNodeSampler$new()}}{
+  constructor for networkSampling
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{simpleNodeSampler$new(
   parameters = NA,
   nbNodes = NA,
   directed = FALSE,
   covarMatrix = NULL,
   intercept = 0
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{parameters}}{the vector of parameters associated to the sampling at play}
+      \item{\code{nbNodes}}{number of nodes in the network}
+      \item{\code{directed}}{logical, directed network of not}
+      \item{\code{covarMatrix}}{a matrix of covariates used}
+      \item{\code{intercept}}{double, intercept term used to compute the probability of sampling in the presence of covariates. Default 0.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{parameters}}{the vector of parameters associated to the sampling at play}
-
-\item{\code{nbNodes}}{number of nodes in the network}
-
-\item{\code{directed}}{logical, directed network of not}
-
-\item{\code{covarMatrix}}{a matrix of covariates used}
-
-\item{\code{intercept}}{double, intercept term used to compute the probability of sampling in the presence of covariates. Default 0.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-simpleNodeSampler-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-simpleNodeSampler-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{simpleNodeSampler$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{simpleNodeSampler$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{simpleNodeSampler$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

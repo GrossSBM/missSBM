@@ -4,126 +4,126 @@
 \alias{partlyObservedNetwork}
 \title{An R6 Class used for internal representation of a partially observed network}
 \description{
-An R6 Class used for internal representation of a partially observed network
-
-An R6 Class used for internal representation of a partially observed network
-}
-\details{
 This class is not exported to the user
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{samplingRate}}{The percentage of observed dyads}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{samplingRate}}{The percentage of observed dyads}
 
-\item{\code{nbNodes}}{The number of nodes}
+    \item{\code{nbNodes}}{The number of nodes}
 
-\item{\code{nbDyads}}{The number of dyads}
+    \item{\code{nbDyads}}{The number of dyads}
 
-\item{\code{is_directed}}{logical indicating if the network is directed or not}
+    \item{\code{is_directed}}{logical indicating if the network is directed or not}
 
-\item{\code{networkData}}{The adjacency matrix of the network}
+    \item{\code{networkData}}{The adjacency matrix of the network}
 
-\item{\code{covarArray}}{the array of covariates}
+    \item{\code{covarArray}}{the array of covariates}
 
-\item{\code{covarMatrix}}{the matrix of covariates}
+    \item{\code{covarMatrix}}{the matrix of covariates}
 
-\item{\code{samplingMatrix}}{matrix of observed and non-observed edges}
+    \item{\code{samplingMatrix}}{matrix of observed and non-observed edges}
 
-\item{\code{samplingMatrixBar}}{matrix of observed and non-observed edges}
+    \item{\code{samplingMatrixBar}}{matrix of observed and non-observed edges}
 
-\item{\code{observedNodes}}{a vector of observed and non-observed nodes (observed means at least one non NA value)}
-}
-\if{html}{\out{</div>}}
+    \item{\code{observedNodes}}{a vector of observed and non-observed nodes (observed means at least one non NA value)}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-partlyObservedNetwork-new}{\code{partlyObservedNetwork$new()}}
-\item \href{#method-partlyObservedNetwork-clustering}{\code{partlyObservedNetwork$clustering()}}
-\item \href{#method-partlyObservedNetwork-imputation}{\code{partlyObservedNetwork$imputation()}}
-\item \href{#method-partlyObservedNetwork-clone}{\code{partlyObservedNetwork$clone()}}
-}
+  \itemize{
+    \item \href{#method-partlyObservedNetwork-initialize}{\code{partlyObservedNetwork$new()}}
+    \item \href{#method-partlyObservedNetwork-clustering}{\code{partlyObservedNetwork$clustering()}}
+    \item \href{#method-partlyObservedNetwork-imputation}{\code{partlyObservedNetwork$imputation()}}
+    \item \href{#method-partlyObservedNetwork-clone}{\code{partlyObservedNetwork$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-partlyObservedNetwork-new"></a>}}
-\if{latex}{\out{\hypertarget{method-partlyObservedNetwork-new}{}}}
-\subsection{Method \code{new()}}{
-constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$new(
+\if{html}{\out{<a id="method-partlyObservedNetwork-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-partlyObservedNetwork-initialize}{}}}
+\subsection{\code{partlyObservedNetwork$new()}}{
+  constructor
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{partlyObservedNetwork$new(
   adjacencyMatrix,
   covariates = list(),
   similarity = l1_similarity
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{adjacencyMatrix}}{The adjacency matrix of the network}
+      \item{\code{covariates}}{A list with M entries (the M covariates), each of whom being either a size-N vector or N x N matrix.}
+      \item{\code{similarity}}{An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{adjacencyMatrix}}{The adjacency matrix of the network}
-
-\item{\code{covariates}}{A list with M entries (the M covariates), each of whom being either a size-N vector or N x N matrix.}
-
-\item{\code{similarity}}{An R x R -> R function to compute similarities between node covariates. Default is \code{l1_similarity}, that is, -abs(x-y).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-partlyObservedNetwork-clustering"></a>}}
 \if{latex}{\out{\hypertarget{method-partlyObservedNetwork-clustering}{}}}
-\subsection{Method \code{clustering()}}{
-method to cluster network data with missing value
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clustering(
+\subsection{\code{partlyObservedNetwork$clustering()}}{
+  method to cluster network data with missing value
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{partlyObservedNetwork$clustering(
   vBlocks,
   imputation = ifelse(is.null(private$phi), "median", "average")
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{vBlocks}}{The vector of number of blocks considered in the collection.}
+      \item{\code{imputation}}{character indicating the type of imputation among "median", "average"}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{vBlocks}}{The vector of number of blocks considered in the collection.}
-
-\item{\code{imputation}}{character indicating the type of imputation among "median", "average"}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-partlyObservedNetwork-imputation"></a>}}
 \if{latex}{\out{\hypertarget{method-partlyObservedNetwork-imputation}{}}}
-\subsection{Method \code{imputation()}}{
-basic imputation from existing clustering
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$imputation(type = c("median", "average", "zero"))}\if{html}{\out{</div>}}
+\subsection{\code{partlyObservedNetwork$imputation()}}{
+  basic imputation from existing clustering
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{partlyObservedNetwork$imputation(type = c("median", "average", "zero"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{type}}{a character, the type of imputation. Either "median" or "average"}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{type}}{a character, the type of imputation. Either "median" or "average"}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-partlyObservedNetwork-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-partlyObservedNetwork-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{partlyObservedNetwork$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{partlyObservedNetwork$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{partlyObservedNetwork$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

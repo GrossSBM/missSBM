@@ -5,78 +5,75 @@
 \title{Class for defining a block dyad sampler}
 \description{
 Class for defining a block dyad sampler
-
-Class for defining a block dyad sampler
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSampler]{missSBM::networkSampler}} -> \code{\link[missSBM:dyadSampler]{missSBM::dyadSampler}} -> \code{blockDyadSampler}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampler]{networkSampler}} -> \code{\link[missSBM:dyadSampler]{dyadSampler}} -> \code{blockDyadSampler}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{df}}{the number of parameters of this sampling}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{df}}{the number of parameters of this sampling}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-blockDyadSampler-new}{\code{blockDyadSampler$new()}}
-\item \href{#method-blockDyadSampler-clone}{\code{blockDyadSampler$clone()}}
+  \itemize{
+    \item \href{#method-blockDyadSampler-initialize}{\code{blockDyadSampler$new()}}
+    \item \href{#method-blockDyadSampler-clone}{\code{blockDyadSampler$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>networkSampling$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>networkSampler$rSamplingMatrix()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-blockDyadSampler-new"></a>}}
-\if{latex}{\out{\hypertarget{method-blockDyadSampler-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for networkSampling
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampler$new(
+\if{html}{\out{<a id="method-blockDyadSampler-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-blockDyadSampler-initialize}{}}}
+\subsection{\code{blockDyadSampler$new()}}{
+  constructor for networkSampling
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockDyadSampler$new(
   parameters = NA,
   nbNodes = NA,
   directed = FALSE,
   clusters = NA
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{parameters}}{the vector of parameters associated to the sampling at play}
+      \item{\code{nbNodes}}{number of nodes in the network}
+      \item{\code{directed}}{logical, directed network of not}
+      \item{\code{clusters}}{a vector of class memberships}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{parameters}}{the vector of parameters associated to the sampling at play}
-
-\item{\code{nbNodes}}{number of nodes in the network}
-
-\item{\code{directed}}{logical, directed network of not}
-
-\item{\code{clusters}}{a vector of class memberships}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-blockDyadSampler-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-blockDyadSampler-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampler$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{blockDyadSampler$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockDyadSampler$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

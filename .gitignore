@@ -52,3 +52,5 @@ inst/doc
 
 # Plot in testthat
 tests/testthat/Rplots.pdf
+
+snowflake.log

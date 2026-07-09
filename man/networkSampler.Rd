@@ -4,11 +4,6 @@
 \alias{networkSampler}
 \title{Definition of R6 Class 'networkSampling_sampler'}
 \description{
-Definition of R6 Class 'networkSampling_sampler'
-
-Definition of R6 Class 'networkSampling_sampler'
-}
-\details{
 This class is use to define a sampling model for a network. Inherits from 'networkSampling'.
 Owns a rSampling method which takes an adjacency matrix as an input and send back an object
 with class partlyObservedNetwork.
@@ -17,79 +12,80 @@ with class partlyObservedNetwork.
 \code{\link{partlyObservedNetwork}}
 }
 \section{Super class}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{networkSampler}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{networkSampler}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{samplingMatrix}}{a matrix of logical indicating observed entries}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{samplingMatrix}}{a matrix of logical indicating observed entries}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-networkSampler-new}{\code{networkSampler$new()}}
-\item \href{#method-networkSampler-rSamplingMatrix}{\code{networkSampler$rSamplingMatrix()}}
-\item \href{#method-networkSampler-clone}{\code{networkSampler$clone()}}
+  \itemize{
+    \item \href{#method-networkSampler-initialize}{\code{networkSampler$new()}}
+    \item \href{#method-networkSampler-rSamplingMatrix}{\code{networkSampler$rSamplingMatrix()}}
+    \item \href{#method-networkSampler-clone}{\code{networkSampler$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>networkSampling$show()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-networkSampler-new"></a>}}
-\if{latex}{\out{\hypertarget{method-networkSampler-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for networkSampling
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSampler$new(type = NA, parameters = NA, nbNodes = NA, directed = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-networkSampler-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSampler-initialize}{}}}
+\subsection{\code{networkSampler$new()}}{
+  constructor for networkSampling
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSampler$new(type = NA, parameters = NA, nbNodes = NA, directed = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{type}}{character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")}
+      \item{\code{parameters}}{the vector of parameters associated to the sampling at play}
+      \item{\code{nbNodes}}{number of nodes in the network}
+      \item{\code{directed}}{logical, directed network of not}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{type}}{character for the type of sampling. must be in ("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree")}
-
-\item{\code{parameters}}{the vector of parameters associated to the sampling at play}
-
-\item{\code{nbNodes}}{number of nodes in the network}
-
-\item{\code{directed}}{logical, directed network of not}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-networkSampler-rSamplingMatrix"></a>}}
 \if{latex}{\out{\hypertarget{method-networkSampler-rSamplingMatrix}{}}}
-\subsection{Method \code{rSamplingMatrix()}}{
-a method for drawing a sampling matrix according to the current sampling design
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSampler$rSamplingMatrix()}\if{html}{\out{</div>}}
+\subsection{\code{networkSampler$rSamplingMatrix()}}{
+  a method for drawing a sampling matrix according to the current sampling design
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSampler$rSamplingMatrix()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-networkSampler-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-networkSampler-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSampler$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{networkSampler$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSampler$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

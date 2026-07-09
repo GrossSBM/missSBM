@@ -5,91 +5,91 @@
 \title{Class for fitting a block-dyad sampling}
 \description{
 Class for fitting a block-dyad sampling
-
-Class for fitting a block-dyad sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSamplingDyads_fit]{missSBM::networkSamplingDyads_fit}} -> \code{blockDyadSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{blockDyadSampling_fit}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{vExpec}}{variational expectation of the sampling}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{vExpec}}{variational expectation of the sampling}
 
-\item{\code{log_lambda}}{matrix, term for adjusting the imputation step which depends on the type of sampling}
-}
-\if{html}{\out{</div>}}
+    \item{\code{log_lambda}}{matrix, term for adjusting the imputation step which depends on the type of sampling}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-blockDyadSampling_fit-new}{\code{blockDyadSampling_fit$new()}}
-\item \href{#method-blockDyadSampling_fit-update_parameters}{\code{blockDyadSampling_fit$update_parameters()}}
-\item \href{#method-blockDyadSampling_fit-clone}{\code{blockDyadSampling_fit$clone()}}
+  \itemize{
+    \item \href{#method-blockDyadSampling_fit-initialize}{\code{blockDyadSampling_fit$new()}}
+    \item \href{#method-blockDyadSampling_fit-update_parameters}{\code{blockDyadSampling_fit$update_parameters()}}
+    \item \href{#method-blockDyadSampling_fit-clone}{\code{blockDyadSampling_fit$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>missSBM::networkSamplingDyads_fit$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_imputation'><code>missSBM::networkSamplingDyads_fit$update_imputation()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>networkSamplingDyads_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_imputation'><code>networkSamplingDyads_fit$update_imputation()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-blockDyadSampling_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-blockDyadSampling_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampling_fit$new(partlyObservedNetwork, blockInit)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-blockDyadSampling_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-blockDyadSampling_fit-initialize}{}}}
+\subsection{\code{blockDyadSampling_fit$new()}}{
+  constructor
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockDyadSampling_fit$new(partlyObservedNetwork, blockInit)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
+      \item{\code{blockInit}}{n x Q matrix of initial block indicators}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
-
-\item{\code{blockInit}}{n x Q matrix of initial block indicators}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-blockDyadSampling_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-blockDyadSampling_fit-update_parameters}{}}}
-\subsection{Method \code{update_parameters()}}{
-a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampling_fit$update_parameters(nu, Z)}\if{html}{\out{</div>}}
+\subsection{\code{blockDyadSampling_fit$update_parameters()}}{
+  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockDyadSampling_fit$update_parameters(nu, Z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
+      \item{\code{Z}}{probabilities of block memberships}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
-
-\item{\code{Z}}{probabilities of block memberships}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-blockDyadSampling_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-blockDyadSampling_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockDyadSampling_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{blockDyadSampling_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockDyadSampling_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -5,71 +5,68 @@
 \title{Class for defining a block node sampler}
 \description{
 Class for defining a block node sampler
-
-Class for defining a block node sampler
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSampler]{missSBM::networkSampler}} -> \code{\link[missSBM:nodeSampler]{missSBM::nodeSampler}} -> \code{blockNodeSampler}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampler]{networkSampler}} -> \code{\link[missSBM:nodeSampler]{nodeSampler}} -> \code{blockNodeSampler}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-blockNodeSampler-new}{\code{blockNodeSampler$new()}}
-\item \href{#method-blockNodeSampler-clone}{\code{blockNodeSampler$clone()}}
+  \itemize{
+    \item \href{#method-blockNodeSampler-initialize}{\code{blockNodeSampler$new()}}
+    \item \href{#method-blockNodeSampler-clone}{\code{blockNodeSampler$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>missSBM::networkSampling$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>missSBM::networkSampler$rSamplingMatrix()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="show"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-show'><code>networkSampling$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampler" data-id="rSamplingMatrix"><a href='../../missSBM/html/networkSampler.html#method-networkSampler-rSamplingMatrix'><code>networkSampler$rSamplingMatrix()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-blockNodeSampler-new"></a>}}
-\if{latex}{\out{\hypertarget{method-blockNodeSampler-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for networkSampling
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockNodeSampler$new(
+\if{html}{\out{<a id="method-blockNodeSampler-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-blockNodeSampler-initialize}{}}}
+\subsection{\code{blockNodeSampler$new()}}{
+  constructor for networkSampling
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockNodeSampler$new(
   parameters = NA,
   nbNodes = NA,
   directed = FALSE,
   clusters = NA
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{parameters}}{the vector of parameters associated to the sampling at play}
+      \item{\code{nbNodes}}{number of nodes in the network}
+      \item{\code{directed}}{logical, directed network of not}
+      \item{\code{clusters}}{a vector of class memberships}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{parameters}}{the vector of parameters associated to the sampling at play}
-
-\item{\code{nbNodes}}{number of nodes in the network}
-
-\item{\code{directed}}{logical, directed network of not}
-
-\item{\code{clusters}}{a vector of class memberships}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-blockNodeSampler-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-blockNodeSampler-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{blockNodeSampler$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{blockNodeSampler$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockNodeSampler$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

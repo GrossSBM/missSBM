@@ -4,127 +4,123 @@
 \alias{SimpleSBM_fit}
 \title{This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.}
 \description{
-This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-
-This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-}
-\details{
 It is not designed not be call by the user
 }
 \section{Super classes}{
 \code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{SimpleSBM_fit}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{type}}{the type of SBM (distribution of edges values, network type, presence of covariates)}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{type}}{the type of SBM (distribution of edges values, network type, presence of covariates)}
 
-\item{\code{penalty}}{double, value of the penalty term in ICL}
+    \item{\code{penalty}}{double, value of the penalty term in ICL}
 
-\item{\code{entropy}}{double, value of the entropy due to the clustering distribution}
+    \item{\code{entropy}}{double, value of the entropy due to the clustering distribution}
 
-\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
+    \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-\item{\code{ICL}}{double: value of the integrated classification log-likelihood}
-}
-\if{html}{\out{</div>}}
+    \item{\code{ICL}}{double: value of the integrated classification log-likelihood}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-SimpleSBM_fit-new}{\code{SimpleSBM_fit$new()}}
-\item \href{#method-SimpleSBM_fit-doVEM}{\code{SimpleSBM_fit$doVEM()}}
-\item \href{#method-SimpleSBM_fit-reorder}{\code{SimpleSBM_fit$reorder()}}
-\item \href{#method-SimpleSBM_fit-clone}{\code{SimpleSBM_fit$clone()}}
+  \itemize{
+    \item \href{#method-SimpleSBM_fit-initialize}{\code{SimpleSBM_fit$new()}}
+    \item \href{#method-SimpleSBM_fit-doVEM}{\code{SimpleSBM_fit$doVEM()}}
+    \item \href{#method-SimpleSBM_fit-reorder}{\code{SimpleSBM_fit$reorder()}}
+    \item \href{#method-SimpleSBM_fit-clone}{\code{SimpleSBM_fit$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-SBM-print'><code>sbm::SBM$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-SBM-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-plot'><code>sbm::SimpleSBM$plot()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-predict'><code>sbm::SimpleSBM$predict()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-SBM-print'><code>sbm::SBM$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-SBM-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-plot'><code>sbm::SimpleSBM$plot()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-predict'><code>sbm::SimpleSBM$predict()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for simpleSBM_fit for missSBM purpose
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$new(networkData, clusterInit, covarList = list())}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-SimpleSBM_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit-initialize}{}}}
+\subsection{\code{SimpleSBM_fit$new()}}{
+  constructor for simpleSBM_fit for missSBM purpose
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit$new(networkData, clusterInit, covarList = list())}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{networkData}}{a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork}
+      \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
+      \item{\code{covarList}}{An optional list with M entries (the M covariates).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{networkData}}{a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork}
-
-\item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
-
-\item{\code{covarList}}{An optional list with M entries (the M covariates).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_fit-doVEM"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit-doVEM}{}}}
-\subsection{Method \code{doVEM()}}{
-method to perform estimation via variational EM
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$doVEM(
+\subsection{\code{SimpleSBM_fit$doVEM()}}{
+  method to perform estimation via variational EM
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit$doVEM(
   threshold = 0.01,
   maxIter = 100,
   fixPointIter = 3,
   trace = FALSE
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{threshold}}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
+      \item{\code{maxIter}}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10}
+      \item{\code{fixPointIter}}{number of fix-point iterations in the Variational E step. Default is 5.}
+      \item{\code{trace}}{logical for verbosity. Default is \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{threshold}}{stop when an optimization step changes the objective function by less than threshold. Default is 1e-4.}
-
-\item{\code{maxIter}}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 10}
-
-\item{\code{fixPointIter}}{number of fix-point iterations in the Variational E step. Default is 5.}
-
-\item{\code{trace}}{logical for verbosity. Default is \code{FALSE}.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_fit-reorder"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit-reorder}{}}}
-\subsection{Method \code{reorder()}}{
-permute group labels by order of decreasing probability
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$reorder()}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_fit$reorder()}}{
+  permute group labels by order of decreasing probability
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit$reorder()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

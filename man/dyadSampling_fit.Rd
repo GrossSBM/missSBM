@@ -5,70 +5,69 @@
 \title{Class for fitting a dyad sampling}
 \description{
 Class for fitting a dyad sampling
-
-Class for fitting a dyad sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{\link[missSBM:networkSamplingDyads_fit]{missSBM::networkSamplingDyads_fit}} -> \code{dyadSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{dyadSampling_fit}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{vExpec}}{variational expectation of the sampling}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{vExpec}}{variational expectation of the sampling}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-dyadSampling_fit-new}{\code{dyadSampling_fit$new()}}
-\item \href{#method-dyadSampling_fit-clone}{\code{dyadSampling_fit$clone()}}
+  \itemize{
+    \item \href{#method-dyadSampling_fit-initialize}{\code{dyadSampling_fit$new()}}
+    \item \href{#method-dyadSampling_fit-clone}{\code{dyadSampling_fit$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>missSBM::networkSamplingDyads_fit$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_imputation'><code>missSBM::networkSamplingDyads_fit$update_imputation()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_parameters'><code>missSBM::networkSamplingDyads_fit$update_parameters()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>networkSamplingDyads_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_imputation'><code>networkSamplingDyads_fit$update_imputation()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_parameters'><code>networkSamplingDyads_fit$update_parameters()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-dyadSampling_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-dyadSampling_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{dyadSampling_fit$new(partlyObservedNetwork, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-dyadSampling_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-dyadSampling_fit-initialize}{}}}
+\subsection{\code{dyadSampling_fit$new()}}{
+  constructor
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{dyadSampling_fit$new(partlyObservedNetwork, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
+      \item{\code{...}}{used for compatibility}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
-
-\item{\code{...}}{used for compatibility}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-dyadSampling_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-dyadSampling_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{dyadSampling_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{dyadSampling_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{dyadSampling_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
