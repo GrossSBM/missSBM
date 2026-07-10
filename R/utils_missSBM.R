@@ -1,6 +1,3 @@
-zero <- .Machine$double.eps
-
-
 available_samplings <- c("dyad", "covar-dyad", "node", "covar-node", "block-node", "block-dyad", "double-standard", "degree","snowball")
 
 available_samplings_covariates <- c("dyad", "covar-dyad", "node", "covar-node")
@@ -74,20 +71,6 @@ getCovarArray <- function(X, s) {
         phi[i,j,] <- s(X[i, ], X[j, ])
   }
   phi
-}
-
-#'
-#' @importFrom Matrix drop0
-dropNA <- function(x) {
-    if(!is(x, "matrix")) stop("x needs to be a matrix!")
-
-    zeros <- which(x==0, arr.ind=TRUE)
-    ## keep zeros
-    x[is.na(x)] <- 0
-    x[zeros] <- NA
-    x <- drop0(x)
-    x[zeros] <- 0
-    x
 }
 
 .logistic <- function(x) {1/(1 + exp(-x))}

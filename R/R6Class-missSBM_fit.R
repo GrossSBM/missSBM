@@ -35,8 +35,21 @@ missSBM_fit <-
 
     ## kept so split()/merge() can build a sibling fit with one more/fewer block
     partlyObservedNet = NULL,
-    netSampling        = NULL,
-    useCov             = NULL
+    netSampling       = NULL,
+    useCov            = NULL,
+
+    ## builds a new missSBM_fit from a candidate clustering, either replacing self's own fit
+    ## (in_place = TRUE) or returning it as a new object -- shared by split() and merge()
+    build_candidate = function(candidate_labels, in_place) {
+      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate_labels, private$useCov)
+      if (in_place) {
+        private$SBM      <- new_fit$fittedSBM
+        private$sampling <- new_fit$fittedSampling
+        private$nu       <- NULL
+        return(invisible(self))
+      }
+      new_fit
+    }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -114,7 +127,7 @@ missSBM_fit <-
         },
         get_loglik = function() self$loglik,
         get_theta  = function() private$SBM$connectParam$mean,
-        ## a lightweight snapshot of the missSBMfit(no cloning of the network data)
+        ## a lightweight snapshot of the fit (no cloning of the network data)
         snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
         restore    = function(state) {
           private$SBM$set_state(state$SBM)
@@ -168,14 +181,7 @@ missSBM_fit <-
       candidate[swap] <- absent
       candidate <- as.numeric(candidate) # relabeling to start from 1
 
-      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate, private$useCov)
-      if (in_place) {
-        private$SBM      <- new_fit$fittedSBM
-        private$sampling <- new_fit$fittedSampling
-        private$nu       <- NULL
-        return(invisible(self))
-      }
-      new_fit
+      private$build_candidate(candidate, in_place)
     },
     #' @description generate and cheaply trial-fit candidates obtained by splitting each
     #'   splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
@@ -225,14 +231,7 @@ missSBM_fit <-
       levels(cl_merged) <- as.character(1:(nlevels(cl0) - 1))
       candidate <- as.integer(cl_merged)
 
-      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate, private$useCov)
-      if (in_place) {
-        private$SBM      <- new_fit$fittedSBM
-        private$sampling <- new_fit$fittedSampling
-        private$nu       <- NULL
-        return(invisible(self))
-      }
-      new_fit
+      private$build_candidate(candidate, in_place)
     },
     #' @description generate and cheaply trial-fit candidates obtained by merging pairs of
     #'   clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
@@ -329,7 +328,7 @@ missSBM_fit <-
 ## PUBLIC S3 METHODS FOR missSBMfit
 ## =========================================================================================
 
-## Auxiliary functions to check the given class of an objet
+## Auxiliary function to check the given class of an object
 is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 
 #' Extract model fitted values from object  [`missSBM_fit`], return by [estimateMissSBM()]
