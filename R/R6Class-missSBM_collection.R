@@ -120,6 +120,8 @@ missSBM_collection <-
       if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going backward ")
       vBlocks <- self$vBlocks
+      max_candidates <- control$maxMergeCandidates
+      if (is.null(max_candidates)) max_candidates <- Inf
       for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {
         if (trace) cat("+")
         cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships, 1:vBlocks[k])
@@ -127,8 +129,22 @@ missSBM_collection <-
         swap <- base::sample(1:length(cl0), length(absent))
         cl0[swap] <- absent
 
+        ## merge candidates are quadratic in the number of blocks (choose(q, 2) pairs):
+        ## beyond max_candidates pairs, keep only the most promising ones -- the pairs
+        ## whose connectivity profile (row/column of the fitted theta) are the most
+        ## similar, since merging two blocks with very different connectivity patterns
+        ## is rarely competitive anyway
+        pairs <- combn(vBlocks[k], 2, simplify = FALSE)
+        if (length(pairs) > max_candidates) {
+          theta <- private$missSBM_fit[[k]]$fittedSBM$connectParam$mean
+          score <- sapply(pairs, function(ij) {
+            sqrt(sum((theta[ij[1], ] - theta[ij[2], ])^2) + sum((theta[, ij[1]] - theta[, ij[2]])^2))
+          })
+          pairs <- pairs[order(score)[1:max_candidates]]
+        }
+
         ## build list of candidate clustering after merge
-        cl_candidates <- lapply(combn(vBlocks[k], 2, simplify = FALSE), function(couple) {
+        cl_candidates <- lapply(pairs, function(couple) {
           cl_merged <- cl0
           levels(cl_merged)[couple] <- couple[1]
           levels(cl_merged) <- as.character(1:(nlevels(cl0) - 1))

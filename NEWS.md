@@ -1,5 +1,11 @@
 # missSBM 1.0.6
 
+- cap the number of merge candidates tried during backward exploration
+  (`control$maxMergeCandidates`, default 30) instead of always trying all
+  `choose(q, 2)` pairs: beyond the cap, only the pairs with the most similar
+  fitted connectivity profiles are tried (merging two very different blocks
+  is rarely competitive anyway). Ported from a similar idea validated in a
+  sibling project (normalblockr's `candidates_merge()`)
 - fix `partlyObservedNetwork$imputation()`: the "average"/"median" fill value for missing
   dyads was computed over the whole adjacency matrix, including the not-yet-imputed
   (still-zero) missing entries themselves, biasing it low; it is now computed from the

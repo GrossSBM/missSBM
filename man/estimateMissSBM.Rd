@@ -54,6 +54,11 @@ Default is 50.
 \item fixPointIter number of fix-point iterations in the V-E step. Default is 3.
 \item exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".
 \item iterates integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.
+\item maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
+backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
+only the pairs with the most similar fitted connectivity profiles are tried, since
+merging two blocks with very different connectivity is rarely competitive anyway.
+Default is 30.
 \item trace logical for verbosity. Default is TRUE.
 }
 
