@@ -312,9 +312,7 @@ missSBM_fit <-
     entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {
-      ## if(), not ifelse(): ifelse() evaluates both branches eagerly, which would compute
-      ## the unused one of vExpec/vExpec_corrected (the latter genuinely expensive) on every
-      ## call -- this field is read every VEM iteration via get_loglik()
+      ## if(), not ifelse(): ifelse() evaluates both branches eagerly
       private$sampling$vExpec +
         if (private$sampling$type %in% c("block-dyad", "block-node", "double-standard"))
           private$SBM$vExpec else private$SBM$vExpec_corrected
