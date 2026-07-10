@@ -12,6 +12,7 @@
 ^inst/tries
 ^inst/simus
 ^inst/tests_against_timCode
+^inst/JSS-analysis
 ^vignettes/*_cache$
 ^vignettes/cache$
 ^CRAN-RELEASE$
