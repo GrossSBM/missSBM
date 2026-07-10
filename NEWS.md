@@ -10,6 +10,17 @@
   sampling model nor the current imputation, leaving them out of sync; both `doVEM()`
   implementations (`SimpleSBM_fit`, `missSBM_fit`) now share a common driver and use a
   lightweight state snapshot instead of a full clone of the (possibly large) SBM object
+- speed up `getCovarArray()` (used to build the covariate similarity array) with a fully
+  vectorized fast path for the default `l1_similarity`, replacing an O(N^2) R-level loop
+- speed up `kmeans_missSBM()`'s farthest-point seeding: it now maintains a running
+  per-point distance to the nearest already-chosen centroid instead of recomputing it
+  from scratch at every iteration (O(k N) instead of O(k^2 N))
+- an exception thrown while optimizing the covariate connectivity parameters (nlopt
+  objective) could previously crash the R session instead of raising a normal, catchable
+  R error, since it had to unwind through nlopt's C call stack; it is now caught and
+  re-thrown safely
+- remove src/utils.h: none of its helpers were actually used anywhere
+- minor documentation and dead-code cleanup (see git history for details)
 
 # missSBM 1.0.5 (2025-03-12)
 

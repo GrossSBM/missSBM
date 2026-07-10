@@ -145,3 +145,33 @@ bool cpp_test_nlopt() {
 
     return success;
 }
+
+// Checks that a C++ exception thrown from inside the objective/gradient closure surfaces
+// as a normal, catchable R error instead of crashing the session (see the try/catch in
+// minimize_objective_on_parameters(), guarding against unwinding through nlopt's C stack).
+// [[Rcpp::export]]
+bool cpp_test_nlopt_exception_safety() {
+    auto config = Rcpp::List::create(
+        Rcpp::Named("algorithm", "LBFGS"),
+        Rcpp::Named("xtol_rel", 1e-8),
+        Rcpp::Named("maxeval", 100));
+    auto x = std::vector<double>{10.};
+    auto optimizer = new_nlopt_optimizer(config, x.size());
+
+    int call_count = 0;
+    auto f_and_grad = [&call_count](const double * x, double * grad) -> double {
+        call_count += 1;
+        if (call_count == 3) {
+            throw Rcpp::exception("simulated failure inside objective");
+        }
+        grad[0] = 2. * x[0];
+        return x[0] * x[0];
+    };
+
+    try {
+        minimize_objective_on_parameters(optimizer.get(), f_and_grad, x);
+    } catch (const Rcpp::exception & e) {
+        return std::string(e.what()) == "simulated failure inside objective";
+    }
+    return false; // the exception should have propagated
+}

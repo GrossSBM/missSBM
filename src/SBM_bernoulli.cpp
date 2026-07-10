@@ -37,6 +37,10 @@ double vLL_complete_sparse_bernoulli_covariates(
     const arma::vec& pi
 ) {
 
+  // NB: a version using outer products (Z.row(i).t() * Z.row(j)) instead of this scalar
+  // triple loop was benchmarked and found 2-4x *slower* in practice: Q (the number of
+  // blocks) is typically small, and the per-call overhead of allocating small Armadillo
+  // matrices dominates over the trivially-unrolled scalar loop below.
   uword Q = Z.n_cols ;
   double loglik = accu(Z * log(pi)) ;
 
@@ -208,6 +212,9 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_covariates(
     const bool symmetric = true,
     const bool rescale   = true) {
 
+  // NB: a version hoisting log(1+exp(Gamma+M(i,j))) into one Q x Q evaluation per dyad
+  // (instead of one per (dyad, q) pair) was benchmarked and found slower in practice for
+  // realistic (small) Q -- see the note in vLL_complete_sparse_bernoulli_covariates above.
   uword Q = Z.n_cols ;
   sp_mat::const_iterator Rij     = R.begin();
   sp_mat::const_iterator Rij_end = R.end();

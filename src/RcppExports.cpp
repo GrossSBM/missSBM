@@ -129,6 +129,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_test_nlopt_exception_safety
+bool cpp_test_nlopt_exception_safety();
+RcppExport SEXP _missSBM_cpp_test_nlopt_exception_safety() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(cpp_test_nlopt_exception_safety());
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_test_packing
 bool cpp_test_packing();
 RcppExport SEXP _missSBM_cpp_test_packing() {
@@ -161,6 +171,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
     {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
+    {"_missSBM_cpp_test_nlopt_exception_safety", (DL_FUNC) &_missSBM_cpp_test_nlopt_exception_safety, 0},
     {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {NULL, NULL, 0}

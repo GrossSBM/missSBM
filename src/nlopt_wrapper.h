@@ -8,6 +8,8 @@
 // It must be only included once in a project, or it will generate multiple definitions.
 #include <nloptrAPI.h>
 
+#include <exception>   // exception_ptr, current_exception, rethrow_exception
+#include <limits>      // numeric_limits
 #include <memory>      // unique_ptr
 #include <type_traits> // remove_pointer
 #include <vector>
@@ -57,13 +59,24 @@ template <typename ObjectiveAndGradFunc> OptimizerResult minimize_objective_on_p
     struct OptimData {
         int nb_iterations;
         const ObjectiveAndGradFunc & objective_and_grad;
+        std::exception_ptr pending_exception;
     };
-    OptimData optim_data = {0, objective_and_grad};
+    OptimData optim_data = {0, objective_and_grad, nullptr};
 
+    // nlopt_optimize() below is a plain C function: a C++ exception thrown from inside
+    // objective_and_grad() (e.g. an Rcpp::exception, or an Armadillo bounds/logic error)
+    // would have to unwind through its (non C++-aware) call stack, which the C++ standard
+    // does not guarantee to work. Catch it here, report a non-finite objective so nlopt
+    // winds down normally, and only rethrow once control is back in a C++ frame below.
     auto optim_fn = [](unsigned n, const double * p, double * grad, void * data) -> double {
         OptimData & optim_data = *static_cast<OptimData *>(data);
         optim_data.nb_iterations += 1;
-        return optim_data.objective_and_grad(p, grad);
+        try {
+            return optim_data.objective_and_grad(p, grad);
+        } catch (...) {
+            optim_data.pending_exception = std::current_exception();
+            return std::numeric_limits<double>::quiet_NaN();
+        }
     };
     if(nlopt_set_min_objective(optimizer, optim_fn, &optim_data) != NLOPT_SUCCESS) {
         throw Rcpp::exception("nlopt_set_min_objective");
@@ -71,5 +84,10 @@ template <typename ObjectiveAndGradFunc> OptimizerResult minimize_objective_on_p
 
     double objective = 0.;
     nlopt_result status = nlopt_optimize(optimizer, parameters.data(), &objective);
+
+    if (optim_data.pending_exception) {
+        std::rethrow_exception(optim_data.pending_exception);
+    }
+
     return {status, objective, optim_data.nb_iterations};
 }

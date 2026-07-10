@@ -33,6 +33,10 @@ cpp_test_nlopt <- function() {
     .Call(`_missSBM_cpp_test_nlopt`)
 }
 
+cpp_test_nlopt_exception_safety <- function() {
+    .Call(`_missSBM_cpp_test_nlopt_exception_safety`)
+}
+
 cpp_test_packing <- function() {
     .Call(`_missSBM_cpp_test_packing`)
 }
