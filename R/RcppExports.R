@@ -13,8 +13,8 @@ M_step_sparse_bernoulli_nocovariate <- function(Y, R, Z, sym = TRUE) {
     .Call(`_missSBM_M_step_sparse_bernoulli_nocovariate`, Y, R, Z, sym)
 }
 
-M_step_sparse_bernoulli_covariates <- function(init_param, Y, R, X, Z, sym, configuration) {
-    .Call(`_missSBM_M_step_sparse_bernoulli_covariates`, init_param, Y, R, X, Z, sym, configuration)
+M_step_sparse_bernoulli_covariates <- function(init_param, Y, R, X, Z, sym, maxIter = 50L, tol = 1e-10) {
+    .Call(`_missSBM_M_step_sparse_bernoulli_covariates`, init_param, Y, R, X, Z, sym, maxIter, tol)
 }
 
 E_step_sparse_bernoulli_nocovariate <- function(Y, R, Z, theta, pi, rescale = TRUE) {
@@ -27,14 +27,6 @@ E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, symmetric 
 
 kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
-}
-
-cpp_test_nlopt <- function() {
-    .Call(`_missSBM_cpp_test_nlopt`)
-}
-
-cpp_test_packing <- function() {
-    .Call(`_missSBM_cpp_test_packing`)
 }
 
 roundProduct <- function(covariates_list, beta) {

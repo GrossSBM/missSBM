@@ -131,7 +131,7 @@ covarDyadSampling_fit <-
       }
       X <- cbind(1, apply(partialNet$covarArray, 3, function(x) x[dyads]))
       y <- partialNet$samplingMatrix[dyads]
-      glm_out     <- glm.fit(X, y, family = binomial())
+      glm_out     <- suppressWarnings(glm.fit(X, y, family = binomial()))
       private$psi <- coefficients(glm_out)
       y_hat <- fitted(glm_out)
       private$rho <- list(obs = y_hat[y == 1], miss = y_hat[y == 0])
@@ -180,7 +180,7 @@ covarNodeSampling_fit <-
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "covar-node")
       y <- 1 * (partlyObservedNetwork$observedNodes)
-      glm_out     <- glm.fit(cbind(1, partlyObservedNetwork$covarMatrix), y, family = binomial())
+      glm_out     <- suppressWarnings(glm.fit(cbind(1, partlyObservedNetwork$covarMatrix), y, family = binomial()))
       private$psi <- coefficients(glm_out)
       private$rho <- fitted(glm_out)
     }
@@ -277,8 +277,11 @@ blockDyadSampling_fit <-
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
+      ## indexes rho (dense) at R/S's sparse pattern directly, log() applied only to the
+      ## extracted entries -- rather than `sparse * dense` (an elementwise Ops that probes
+      ## isSymmetric() on the dense operand) or log()/log1p() over the full dense matrix
       rho <- check_boundaries(private$Z %*% private$psi %*% t(private$Z))
-      sum(private$R * log(rho) + private$S *  log(1 - rho))
+      sum(.mask_dense_at_pattern(rho, private$R, log)@x) + sum(.mask_dense_at_pattern(rho, private$S, function(x) log(1 - x))@x)
     },
     #' @field log_lambda matrix, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {
@@ -346,7 +349,9 @@ degreeSampling_fit <-
     initialize = function(partlyObservedNetwork, blockInit, connectInit) {
       super$initialize(partlyObservedNetwork, "degree")
 
-      private$NAs <- as.matrix(partlyObservedNetwork$NAs)
+      NAs <- as.matrix(partlyObservedNetwork$samplingMatrixBar) != 0
+      if (!partlyObservedNetwork$is_directed) NAs <- NAs | t(NAs)
+      private$NAs <- NAs
       ## the node degrees - will remain the same
       private$D <- rowSums(partlyObservedNetwork$networkData, na.rm = TRUE)
 
@@ -366,12 +371,14 @@ degreeSampling_fit <-
       nu[!private$NAs] <- NA
       D2 <- rowSums(nu * (1 - nu), na.rm = TRUE) + private$D^2
       private$ksi <- check_boundaries(sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * private$D))
-      C <- .5 * nrow(imputedNet) - sum(!private$N_obs)
+      C  <- .5 * nrow(imputedNet) - sum(!private$N_obs)
+      s1 <- .5 * sum(private$D) - sum(private$D[!private$N_obs])
       s_hksi   <- sum(h(private$ksi))
       s_hksiD  <- sum(h(private$ksi) * private$D)
       s_hksiD2 <- sum(h(private$ksi) * D2)
-      b <- (2 * C * s_hksiD  - (.5 * sum(private$D) - sum(private$D[!private$N_obs])) * s_hksi) / (2 * s_hksiD2 * s_hksi - (2 * s_hksiD)^2)
-      a <- -(b * s_hksiD + C) / s_hksi
+      denom <- 2 * (s_hksi * s_hksiD2 - s_hksiD^2)
+      a <- (s1 * s_hksiD - C * s_hksiD2) / denom
+      b <- (C * s_hksiD - s1 * s_hksi) / denom
       private$psi <- c(a, b)
 
       ## update stat required to perform imputation

@@ -5,116 +5,121 @@
 \title{Virtual class used to define a family of networkSamplingNodes_fit}
 \description{
 Virtual class used to define a family of networkSamplingNodes_fit
-
-Virtual class used to define a family of networkSamplingNodes_fit
 }
 \section{Super class}{
-\code{\link[missSBM:networkSampling]{missSBM::networkSampling}} -> \code{networkSamplingNodes_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{networkSamplingNodes_fit}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{penalty}}{double, value of the penalty term in ICL}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{penalty}}{double, value of the penalty term in ICL}
 
-\item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
-}
-\if{html}{\out{</div>}}
+    \item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-networkSamplingNodes_fit-new}{\code{networkSamplingNodes_fit$new()}}
-\item \href{#method-networkSamplingNodes_fit-show}{\code{networkSamplingNodes_fit$show()}}
-\item \href{#method-networkSamplingNodes_fit-update_parameters}{\code{networkSamplingNodes_fit$update_parameters()}}
-\item \href{#method-networkSamplingNodes_fit-update_imputation}{\code{networkSamplingNodes_fit$update_imputation()}}
-\item \href{#method-networkSamplingNodes_fit-clone}{\code{networkSamplingNodes_fit$clone()}}
+  \itemize{
+    \item \href{#method-networkSamplingNodes_fit-initialize}{\code{networkSamplingNodes_fit$new()}}
+    \item \href{#method-networkSamplingNodes_fit-show}{\code{networkSamplingNodes_fit$show()}}
+    \item \href{#method-networkSamplingNodes_fit-update_parameters}{\code{networkSamplingNodes_fit$update_parameters()}}
+    \item \href{#method-networkSamplingNodes_fit-update_imputation}{\code{networkSamplingNodes_fit$update_imputation()}}
+    \item \href{#method-networkSamplingNodes_fit-clone}{\code{networkSamplingNodes_fit$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>missSBM::networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-networkSamplingNodes_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSamplingNodes_fit$new(partlyObservedNetwork, name)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-initialize}{}}}
+\subsection{\code{networkSamplingNodes_fit$new()}}{
+  constructor
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSamplingNodes_fit$new(partlyObservedNetwork, name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
+      \item{\code{name}}{a character for the name of sampling to fit on the partlyObservedNetwork}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
-
-\item{\code{name}}{a character for the name of sampling to fit on the partlyObservedNetwork}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-networkSamplingNodes_fit-show"></a>}}
 \if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-show}{}}}
-\subsection{Method \code{show()}}{
-show method
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSamplingNodes_fit$show()}\if{html}{\out{</div>}}
+\subsection{\code{networkSamplingNodes_fit$show()}}{
+  show method
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSamplingNodes_fit$show()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-networkSamplingNodes_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-update_parameters}{}}}
-\subsection{Method \code{update_parameters()}}{
-a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSamplingNodes_fit$update_parameters(...)}\if{html}{\out{</div>}}
+\subsection{\code{networkSamplingNodes_fit$update_parameters()}}{
+  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSamplingNodes_fit$update_parameters(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{use for compatibility}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{use for compatibility}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-networkSamplingNodes_fit-update_imputation"></a>}}
 \if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-update_imputation}{}}}
-\subsection{Method \code{update_imputation()}}{
-a method to update the imputation of the missing entries.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSamplingNodes_fit$update_imputation(nu)}\if{html}{\out{</div>}}
+\subsection{\code{networkSamplingNodes_fit$update_imputation()}}{
+  a method to update the imputation of the missing entries.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSamplingNodes_fit$update_imputation(nu)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-networkSamplingNodes_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{networkSamplingNodes_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{networkSamplingNodes_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSamplingNodes_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -2,104 +2,105 @@
 % Please edit documentation in R/R6Class-simpleSBM_fit.R
 \name{SimpleSBM_fit_withCov}
 \alias{SimpleSBM_fit_withCov}
-\title{This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.}
+\title{Internal class for a binary SBM fit under MAR sampling designs with covariates.}
 \description{
-This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-
-This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-}
-\details{
-It is not designed not be call by the user
+It is not designed to be called directly by the user.
 }
 \section{Super classes}{
-\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{missSBM::SimpleSBM_fit}} -> \code{SimpleSBM_fit_withCov}
+\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{SimpleSBM_fit}} -> \code{SimpleSBM_fit_withCov}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{imputation}}{the matrix of imputed values}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{imputation}}{the matrix of imputed values}
 
-\item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
+    \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
 
-\item{\code{vExpec_corrected}}{double: variational approximation of the expectation complete log-likelihood with correction to be comparable with MNAR criteria}
-}
-\if{html}{\out{</div>}}
+    \item{\code{vExpec_corrected}}{double: variational approximation of the expectation complete log-likelihood with correction to be comparable with MNAR criteria}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-SimpleSBM_fit_withCov-update_parameters}{\code{SimpleSBM_fit_withCov$update_parameters()}}
-\item \href{#method-SimpleSBM_fit_withCov-update_blocks}{\code{SimpleSBM_fit_withCov$update_blocks()}}
-\item \href{#method-SimpleSBM_fit_withCov-clone}{\code{SimpleSBM_fit_withCov$clone()}}
+  \itemize{
+    \item \href{#method-SimpleSBM_fit_withCov-update_parameters}{\code{SimpleSBM_fit_withCov$update_parameters()}}
+    \item \href{#method-SimpleSBM_fit_withCov-update_blocks}{\code{SimpleSBM_fit_withCov$update_blocks()}}
+    \item \href{#method-SimpleSBM_fit_withCov-clone}{\code{SimpleSBM_fit_withCov$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-SBM-print'><code>sbm::SBM$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-SBM-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-plot'><code>sbm::SimpleSBM$plot()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-predict'><code>sbm::SimpleSBM$predict()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>missSBM::SimpleSBM_fit$doVEM()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-initialize'><code>missSBM::SimpleSBM_fit$initialize()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>missSBM::SimpleSBM_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-SBM-print'><code>sbm::SBM$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-SBM-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-plot'><code>sbm::SimpleSBM$plot()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-predict'><code>sbm::SimpleSBM$predict()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>SimpleSBM_fit$doVEM()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-get_state'><code>SimpleSBM_fit$get_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-initialize'><code>SimpleSBM_fit$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_fit_withCov-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-update_parameters}{}}}
-\subsection{Method \code{update_parameters()}}{
-update parameters estimation (M-step)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_withCov$update_parameters(...)}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_fit_withCov$update_parameters()}}{
+  update parameters estimation (M-step) via Newton-Raphson: the M-step
+objective is a weighted logistic regression (concave), so Newton converges in a
+handful of iterations -- no external optimizer is required.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit_withCov$update_parameters(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{use for compatibility}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{use for compatibility}
-
-\item{\code{control}}{a list to tune nlopt for optimization, see documentation of nloptr}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_fit_withCov-update_blocks"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-update_blocks}{}}}
-\subsection{Method \code{update_blocks()}}{
-update variational estimation of blocks (VE-step)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_withCov$update_blocks(...)}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_fit_withCov$update_blocks()}}{
+  update variational estimation of blocks (VE-step)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit_withCov$update_blocks(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{use for compatibility}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{use for compatibility}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_fit_withCov-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_withCov$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_fit_withCov$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit_withCov$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

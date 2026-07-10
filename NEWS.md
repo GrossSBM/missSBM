@@ -1,3 +1,34 @@
+# missSBM 1.1.0
+
+## Major changes
+
+- `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and `candidates_merge()`
+  as instance methods, previously inlined in `missSBM_collection`'s exploration logic; same
+  search algorithm, now independently testable. RNG draws during exploration differ negligibly
+  from before as a result (verified: same or marginally better ICL)
+- replace the NLopt/CCSAQ optimizer for the covariate connectivity parameters with a builtin
+  Newton-Raphson solver (the M-step objective is concave, so it converges reliably in a handful
+  of iterations); `nloptr` is no longer a dependency
+- profiled `estimateMissSBM()` and fixed several hot-path inefficiencies: avoidable
+  `dense * sparse` promotion overhead, a redundant recomputation of the dense imputed-network
+  matrix, and an `ifelse()` evaluating both of its branches unconditionally. Roughly 3x faster
+  on our benchmark, bit-identical results
+- fix `partlyObservedNetwork$imputation()`: the fill value for missing dyads was biased low by
+  including not-yet-imputed entries in its own computation. Known side effect:
+  `doubleStandardSampling_fit`'s initial psi bootstrap can degenerate when the fill value exactly
+  matches the empirical observed edge rate (refined away by the VEM loop that follows)
+
+## Minor changes
+
+- cap the number of merge candidates tried during backward exploration
+  (`control$maxMergeCandidates`, default 30) instead of always trying every pair
+- fix a crash and a closed-form algebra bug in the "degree" sampling design; parameter recovery
+  for this design can still be biased under heavy missingness (known limitation)
+- fix a consistency bug in `missSBM_fit$doVEM()`'s step-back: only the SBM was restored, not the
+  sampling model or the current imputation
+- speed up `getCovarArray()` and `kmeans_missSBM()`'s seeding
+- remove unused `src/utils.h`
+
 # missSBM 1.0.5 (2025-03-12)
 
 - minor fix to comply with nlopt version 2.9.1 (NOCEDAL)

@@ -15,7 +15,7 @@ as S3 methods. See the documentation for  \code{\link[=show]{show()}}, \code{\li
 \examples{
 ## Sample 75\% of dyads in  French political Blogosphere's network data
 adjMatrix <- missSBM::frenchblog2007 \%>\%
-  igraph::as_adj (sparse = FALSE) \%>\%
+  igraph::as_adjacency_matrix(sparse = FALSE) \%>\%
   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 my_missSBM_fit <- collection$bestModel
@@ -24,118 +24,238 @@ plot(my_missSBM_fit, "imputed")
 
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}} or
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}} or
 \code{\link{SimpleSBM_fit_MNAR}} inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
 
-\item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
+    \item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
 
-\item{\code{imputedNetwork}}{The network data as a matrix with NAs values imputed with the current model}
+    \item{\code{imputedNetwork}}{The network data as a matrix with NAs values imputed with the current model}
 
-\item{\code{monitoring}}{a list carrying information about the optimization process}
+    \item{\code{monitoring}}{a list carrying information about the optimization process}
 
-\item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
+    \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
 
-\item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
+    \item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
 
-\item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
+    \item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
 
-\item{\code{penalty}}{double, value of the penalty term in ICL}
+    \item{\code{penalty}}{double, value of the penalty term in ICL}
 
-\item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
+    \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-\item{\code{ICL}}{double: value of the integrated classification log-likelihood}
-}
-\if{html}{\out{</div>}}
+    \item{\code{ICL}}{double: value of the integrated classification log-likelihood}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-missSBM_fit-new}{\code{missSBM_fit$new()}}
-\item \href{#method-missSBM_fit-doVEM}{\code{missSBM_fit$doVEM()}}
-\item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
-\item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
-\item \href{#method-missSBM_fit-clone}{\code{missSBM_fit$clone()}}
-}
+  \itemize{
+    \item \href{#method-missSBM_fit-initialize}{\code{missSBM_fit$new()}}
+    \item \href{#method-missSBM_fit-doVEM}{\code{missSBM_fit$doVEM()}}
+    \item \href{#method-missSBM_fit-split}{\code{missSBM_fit$split()}}
+    \item \href{#method-missSBM_fit-candidates_split}{\code{missSBM_fit$candidates_split()}}
+    \item \href{#method-missSBM_fit-merge}{\code{missSBM_fit$merge()}}
+    \item \href{#method-missSBM_fit-candidates_merge}{\code{missSBM_fit$candidates_merge()}}
+    \item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
+    \item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
+    \item \href{#method-missSBM_fit-clone}{\code{missSBM_fit$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-missSBM_fit-new"></a>}}
-\if{latex}{\out{\hypertarget{method-missSBM_fit-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for networkSampling
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-missSBM_fit-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-initialize}{}}}
+\subsection{\code{missSBM_fit$new()}}{
+  constructor for networkSampling
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
+      \item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
+      \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
+      \item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{partlyObservedNet}}{An object with class \code{\link{partlyObservedNetwork}}.}
-
-\item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
-
-\item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
-
-\item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-doVEM"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-doVEM}{}}}
-\subsection{Method \code{doVEM()}}{
-a method to perform inference of the current missSBM fit with variational EM
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$doVEM(
+\subsection{\code{missSBM_fit$doVEM()}}{
+  a method to perform inference of the current missSBM fit with variational EM
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$doVEM(
   control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE)
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-split"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-split}{}}}
+\subsection{\code{missSBM_fit$split()}}{
+  clone of the current fit after splitting cluster \code{index} in two, via a
+spectral bipartition of the sub-network it induces. Builds but does not fit the
+candidate (see \code{candidates_split()}).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$split(index, in_place = FALSE, base_net = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{index}}{index (integer) of the cluster to split}
+      \item{\code{in_place}}{replace \code{self}'s own fit (\code{TRUE}) or return a new object
+(\code{FALSE}, the default)?}
+      \item{\code{base_net}}{optional precomputed network to bipartition (as built internally at the
+top of this method); lets \code{candidates_split()} avoid recomputing it once per
+candidate.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a new \code{\link{missSBM_fit}} with one more block, or \code{NULL} if \code{index} cannot
+be split (its induced sub-network has zero variance)
+  }
 }
-\if{html}{\out{</div>}}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-candidates_split"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-candidates_split}{}}}
+\subsection{\code{missSBM_fit$candidates_split()}}{
+  generate and cheaply trial-fit candidates obtained by splitting each
+splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
+least 4 members and non-zero variance in its induced sub-network.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$candidates_split(control, trial_niter = 2)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
+is overridden by \code{trial_niter}}
+      \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a list of trial-fitted \code{\link{missSBM_fit}} candidates (one per splittable cluster)
+  }
 }
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-merge"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-merge}{}}}
+\subsection{\code{missSBM_fit$merge()}}{
+  clone of the current fit after merging clusters \code{indices[1]} and
+\code{indices[2]} into one. Builds but does not fit the candidate (see
+\code{candidates_merge()}).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$merge(indices, in_place = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indices}}{indices (couple of integers) of the clusters to merge}
+      \item{\code{in_place}}{replace \code{self}'s own fit (\code{TRUE}) or return a new object
+(\code{FALSE}, the default)?}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a new \code{\link{missSBM_fit}} with one fewer block
+  }
 }
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-candidates_merge"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-candidates_merge}{}}}
+\subsection{\code{missSBM_fit$candidates_merge()}}{
+  generate and cheaply trial-fit candidates obtained by merging pairs of
+clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
+number of blocks), only the most similar-connectivity pairs are tried.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$candidates_merge(control, max_candidates = 30, trial_niter = 2)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
+is overridden by \code{trial_niter}}
+      \item{\code{max_candidates}}{cap on the number of pairs tried. Default is 30.}
+      \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a list of trial-fitted \code{\link{missSBM_fit}} candidates
+  }
+}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-show"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-show}{}}}
-\subsection{Method \code{show()}}{
-show method for missSBM_fit
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$show()}\if{html}{\out{</div>}}
+\subsection{\code{missSBM_fit$show()}}{
+  show method for missSBM_fit
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$show()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-print"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-print}{}}}
-\subsection{Method \code{print()}}{
-User friendly print method
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$print()}\if{html}{\out{</div>}}
+\subsection{\code{missSBM_fit$print()}}{
+  User friendly print method
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$print()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-missSBM_fit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{missSBM_fit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{missSBM_fit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

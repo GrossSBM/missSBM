@@ -16,7 +16,7 @@
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
 #' adjacencyMatrix <- missSBM::frenchblog2007 %>%
 #'   igraph::delete.vertices(1:100) %>%
-#'   igraph::as_adj () %>%
+#'   igraph::as_adjacency_matrix() %>%
 #'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 #' collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
 #' class(collection)
@@ -35,15 +35,14 @@ missSBM_collection <-
     partlyObservedNet = NULL, # network data with convenient encoding (object of class 'partlyObservedNetwork')
     missSBM_fit       = NULL, # a list of models
 
-    # method for performing forward exploration of the ICL
-    # a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
+    # for each q, ask the model at q for trial-fitted split candidates
+    # (missSBM_fit$candidates_split()), fully refit the best one, and keep it in place of the
+    # q+1 model only if it strictly improves the ICL.
+    # control: a list of parameters controlling the variational EM algorithm. See details of
+    # function [estimateMissSBM()]
     explore_forward = function(control) {
 
       trace <- control$trace; control$trace <- FALSE
-      control_fast <- control
-      control_fast$maxIter <- 2
-      sampling <- private$missSBM_fit[[1]]$fittedSampling$type
-      useCov   <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
 
       if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going forward ")
@@ -51,103 +50,44 @@ missSBM_collection <-
       for (k in seq_along(vBlocks)) {
         if (trace) cat("+")
 
-        ## current  imputed network
-        base_net <- private$missSBM_fit[[k]]$imputedNetwork
-        if (private$missSBM_fit[[k]]$fittedSBM$directed) base_net <- base_net %*% t(base_net)
-        ## current clustering
-        cl0 <- private$missSBM_fit[[k]]$fittedSBM$memberships
-
-        cl_splitable <- (1:vBlocks[k])[tabulate(cl0, nbins = vBlocks[k]) >= 4]
-        sd <- sapply(cl_splitable, function(k_) sd(base_net[cl0 == k_, cl0 == k_]))
-        cl_splitable <- cl_splitable[sd > 0]
-
-        if (length(cl_splitable) > 0) {
-          cl_split <- vector("list", vBlocks[k])
-          cl_split[cl_splitable] <-
-            future_lapply(cl_splitable, function(k_) {
-              A <- base_net[cl0 == k_, cl0 == k_]
-              A <- 1/(1+exp(-A/sd(A)))
-              D <- 1/sqrt(rowSums(abs(A)))
-              L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
-              Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
-              Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
-              kmeans_missSBM(Un, 2)
-            }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
-
-          ## build list of candidate clustering after splits
-          cl_candidates <- lapply(cl_splitable, function(k_)  {
-            split <- cl_split[[k_]]
-            split[cl_split[[k_]] == 1] <- k_
-            split[cl_split[[k_]] == 2] <- vBlocks[k] + 1
-            candidate <- cl0
-            candidate[candidate == k_] <- split
-            ## in case of empty classes, add randomly one guy in thoses classes
-            candidate <- factor(candidate, levels = 1:(vBlocks[k] + 1))
-            absent <- which(tabulate(candidate) == 0)
-            swap <- base::sample(1:length(candidate), length(absent))
-            candidate[swap] <- absent
-            as.numeric(candidate) # relabeling to start from 1
-          })
-
-          icl_candidates <- future_lapply(cl_candidates, function(cl_) {
-            model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
-            model$doVEM(control_fast)
-            model$ICL
-          }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random")) %>% unlist()
-
-          best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.min(icl_candidates)]], useCov)
+        candidates <- private$missSBM_fit[[k]]$candidates_split(control)
+        if (length(candidates) > 0) {
+          best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
           best_one$doVEM(control)
 
           if (best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
             private$missSBM_fit[[k + 1]] <- best_one
           }
-
         }
       }
 
       if (trace) cat("\r                                                                                                    \r")
     },
-    # method for performing backward exploration of the ICL
-    # control a list of parameters controlling the variational EM algorithm. See details of function [`estimate`]
+    # same as explore_forward(), but asking each model for merge candidates
+    # (missSBM_fit$candidates_merge()) and propagating improvements to the q-1 neighbor.
+    # control: a list of parameters controlling the variational EM algorithm. See details of
+    # function [`estimate`]
     explore_backward = function(control) {
 
       trace <- control$trace; control$trace <- FALSE
-      control_fast <- control
-      control_fast$maxIter <- 2
-      sampling    <- private$missSBM_fit[[1]]$fittedSampling$type
-      useCov      <- private$missSBM_fit[[1]]$fittedSBM$nbCovariates > 0
+      max_candidates <- control$maxMergeCandidates
+      if (is.null(max_candidates)) max_candidates <- Inf
 
       if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going backward ")
       vBlocks <- self$vBlocks
       for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {
         if (trace) cat("+")
-        cl0 <- factor(private$missSBM_fit[[k]]$fittedSBM$memberships, 1:vBlocks[k])
-        absent <- which(tabulate(cl0) == 0)
-        swap <- base::sample(1:length(cl0), length(absent))
-        cl0[swap] <- absent
 
-        ## build list of candidate clustering after merge
-        cl_candidates <- lapply(combn(vBlocks[k], 2, simplify = FALSE), function(couple) {
-          cl_merged <- cl0
-          levels(cl_merged)[couple] <- couple[1]
-          levels(cl_merged) <- as.character(1:(nlevels(cl0) - 1))
-          as.integer(cl_merged)
-        })
+        candidates <- private$missSBM_fit[[k]]$candidates_merge(control, max_candidates = max_candidates)
+        if (length(candidates) > 0) {
+          best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
+          best_one$doVEM(control)
 
-        icl_candidates <- future_lapply(cl_candidates, function(cl_) {
-          model <- missSBM_fit$new(private$partlyObservedNet, sampling, as.integer(cl_), useCov)
-          model$doVEM(control_fast)
-          model$ICL
-        }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random")) %>% unlist()
-
-        best_one <-  missSBM_fit$new(private$partlyObservedNet, sampling, cl_candidates[[which.min(icl_candidates)]], useCov)
-        best_one$doVEM(control)
-
-        if (best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
-          private$missSBM_fit[[k - 1]] <- best_one
+          if (best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
+            private$missSBM_fit[[k - 1]] <- best_one
+          }
         }
-
       }
       if (trace) cat("\r                                                                                                    \r")
     },

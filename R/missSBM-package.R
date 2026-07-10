@@ -33,7 +33,7 @@
 # The following block is used by usethis to automatically manage
 # roxygen namespace tags. Modify with care!
 ## usethis namespace: start
-#' @import R6 methods igraph nloptr Matrix
+#' @import R6 methods igraph Matrix
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib missSBM, .registration = TRUE
 ## usethis namespace: end

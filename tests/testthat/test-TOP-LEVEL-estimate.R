@@ -11,8 +11,8 @@ l_psi <- list(
   "node" = c(.7),
   "double-standard" = c(0.4, 0.8),
   "block-node" = c(.3, .8, .5),
-  "block-dyad" = sampler_undirected_nocov$connectParam$mean#,
-  #    "degree" = c(.01, .01)
+  "block-dyad" = sampler_undirected_nocov$connectParam$mean,
+  "degree" = c(.01, .01)
 )
 
 test_that("missSBM and class missSBM-fit are coherent", {

@@ -2,119 +2,120 @@
 % Please edit documentation in R/R6Class-simpleSBM_fit.R
 \name{SimpleSBM_fit_MNAR}
 \alias{SimpleSBM_fit_MNAR}
-\title{This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.}
+\title{Internal class for a binary SBM fit under MNAR sampling designs
+(double-standard, block-node, block-dyad).}
 \description{
-This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-
-This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
-}
-\details{
-It is not designed not be call by the user
+It is not designed to be called directly by the user.
 }
 \section{Super classes}{
-\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{missSBM::SimpleSBM_fit}} -> \code{\link[missSBM:SimpleSBM_fit_noCov]{missSBM::SimpleSBM_fit_noCov}} -> \code{SimpleSBM_MNAR_noCov}
+\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{SimpleSBM_fit}} -> \code{\link[missSBM:SimpleSBM_fit_noCov]{SimpleSBM_fit_noCov}} -> \code{SimpleSBM_MNAR_noCov}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{imputation}}{the matrix of imputed values}
-
-\item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-SimpleSBM_MNAR_noCov-new}{\code{SimpleSBM_fit_MNAR$new()}}
-\item \href{#method-SimpleSBM_MNAR_noCov-update_parameters}{\code{SimpleSBM_fit_MNAR$update_parameters()}}
-\item \href{#method-SimpleSBM_MNAR_noCov-update_blocks}{\code{SimpleSBM_fit_MNAR$update_blocks()}}
-\item \href{#method-SimpleSBM_MNAR_noCov-clone}{\code{SimpleSBM_fit_MNAR$clone()}}
+  \itemize{
+    \item \href{#method-SimpleSBM_MNAR_noCov-initialize}{\code{SimpleSBM_MNAR_noCov$new()}}
+    \item \href{#method-SimpleSBM_MNAR_noCov-update_parameters}{\code{SimpleSBM_MNAR_noCov$update_parameters()}}
+    \item \href{#method-SimpleSBM_MNAR_noCov-update_blocks}{\code{SimpleSBM_MNAR_noCov$update_blocks()}}
+    \item \href{#method-SimpleSBM_MNAR_noCov-clone}{\code{SimpleSBM_MNAR_noCov$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-SBM-print'><code>sbm::SBM$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-SBM-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-plot'><code>sbm::SimpleSBM$plot()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-predict'><code>sbm::SimpleSBM$predict()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>missSBM::SimpleSBM_fit$doVEM()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>missSBM::SimpleSBM_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href='../../sbm/html/SBM.html#method-SBM-print'><code>sbm::SBM$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href='../../sbm/html/SBM.html#method-SBM-rNetwork'><code>sbm::SBM$rNetwork()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="plot"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-plot'><code>sbm::SimpleSBM$plot()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="predict"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-predict'><code>sbm::SimpleSBM$predict()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rEdges"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rEdges'><code>sbm::SimpleSBM$rEdges()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>SimpleSBM_fit$doVEM()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-get_state'><code>SimpleSBM_fit$get_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-new"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-new}{}}}
-\subsection{Method \code{new()}}{
-constructor for simpleSBM_fit for missSBM purpose
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MNAR$new(networkData, clusterInit)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-initialize}{}}}
+\subsection{\code{SimpleSBM_MNAR_noCov$new()}}{
+  constructor for simpleSBM_fit for missSBM purpose
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_MNAR_noCov$new(networkData, clusterInit)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{networkData}}{a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork}
+      \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{networkData}}{a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork}
-
-\item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-update_parameters}{}}}
-\subsection{Method \code{update_parameters()}}{
-update parameters estimation (M-step)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MNAR$update_parameters(nu = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_MNAR_noCov$update_parameters()}}{
+  update parameters estimation (M-step)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_MNAR_noCov$update_parameters(nu = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{nu}}{currently imputed values}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{nu}}{currently imputed values}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-update_blocks"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-update_blocks}{}}}
-\subsection{Method \code{update_blocks()}}{
-update variational estimation of blocks (VE-step)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MNAR$update_blocks(log_lambda = 0)}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_MNAR_noCov$update_blocks()}}{
+  update variational estimation of blocks (VE-step)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_MNAR_noCov$update_blocks(log_lambda = 0)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{log_lambda}}{additional term sampling dependent used to de-bias estimation of tau}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{log_lambda}}{additional term sampling dependent used to de-bias estimation of tau}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimpleSBM_fit_MNAR$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{SimpleSBM_MNAR_noCov$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_MNAR_noCov$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

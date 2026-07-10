@@ -1,6 +1,7 @@
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Base internal class for adjusting a binary Stochastic Block Model in the context of missSBM.
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user; see the concrete variants
+#' [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`] and [`SimpleSBM_fit_MNAR`].
 #'
 #' @import R6
 SimpleSBM_fit <-
@@ -12,7 +13,10 @@ R6::R6Class(classname = "SimpleSBM_fit",
     S       = NULL, # the "anti" sampling matrix (sparse encoding)
     M_step  = NULL, # pointing to the appropriate M_step function
     E_step  = NULL, # pointing to the appropriate E_step function
-    vLL_complete = NULL # pointing to the appropriate Expected complete LL function
+    vLL_complete = NULL, # pointing to the appropriate Expected complete LL function
+    ## memoized `imputation` (a function of Z/theta/beta only): invalidated by every method
+    ## that can change any of those, recomputed lazily on the next read
+    imputation_cache = NULL
   ),
   public = list(
     #' @description constructor for simpleSBM_fit for missSBM purpose
@@ -70,55 +74,42 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @param trace logical for verbosity. Default is \code{FALSE}.
     doVEM = function(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = FALSE) {
 
-      ## Initialization of quantities that monitor convergence
-      delta_par <- vector("numeric", maxIter)
-      delta_obj <- vector("numeric", maxIter)
-      objective <- vector("numeric", maxIter)
-      objective[1] <- self$loglik
-      iterate <- 1; stop <- ifelse(self$nbBlocks > 1, FALSE, TRUE)
-
-      ## Starting the variational EM algorithm
       if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-      while (!stop) {
-        iterate <- iterate + 1
-        if (trace) cat(" iteration #:", iterate, "\r")
 
-        theta_old <- private$theta # save old value of parameters to assess convergence
-        Z_old     <- private$Z
-        pi_old    <- private$pi
-
-        # Variational E-Step
-        for (i in seq.int(fixPointIter)) self$update_blocks()
-
-        # M-step
-        self$update_parameters()
-
-        # Assess convergence
-        objective[iterate] <- self$loglik
-        delta_par[iterate] <- sqrt(sum((private$theta$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
-        delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
-        stop <- (iterate > maxIter) |  ((delta_par[iterate] < threshold) & (delta_obj[iterate] < threshold))
-
-        # Step back of elbo decreases
-        if (objective[iterate] < objective[iterate-1]) {
-          private$theta <- theta_old
-          private$Z     <- Z_old
-          private$pi    <- pi_old
-          iterate <- iterate - 1
-          stop <- TRUE
-        }
-      }
-      self$reorder()
-      if (trace) cat("\n")
-      res <- data.frame(delta_pararameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate],  elbo = objective[1:iterate])
-      res
+      run_VEM(
+        control        = list(threshold = threshold, maxIter = maxIter, fixPointIter = fixPointIter, trace = trace),
+        init_stop      = self$nbBlocks <= 1,
+        e_step         = function(fixPointIter) for (i in seq.int(fixPointIter)) self$update_blocks(),
+        m_step         = function() self$update_parameters(),
+        get_loglik     = function() self$loglik,
+        get_theta      = function() private$theta$mean,
+        snapshot       = function() self$get_state(),
+        restore        = function(state) self$set_state(state),
+        reorder        = function() self$reorder()
+      )
     },
     #' @description permute group labels by order of decreasing probability
     reorder = function(){
+      private$imputation_cache <- NULL
       o <- order(private$theta$mean %*% private$pi, decreasing = TRUE)
       private$pi <- private$pi[o]
       private$theta$mean <- private$theta$mean[o, o, drop = FALSE]
       private$Z <- private$Z[, o, drop = FALSE]
+    },
+    #' @description a lightweight snapshot of the mutable VEM state (as opposed to \code{clone()},
+    #' which duplicates the whole object, including the -- possibly large -- network data)
+    get_state = function() {
+      list(theta = private$theta, Z = private$Z, pi = private$pi, beta = private$beta)
+    },
+    #' @description restore a state previously returned by \code{get_state()}
+    #' @param state a state, as returned by \code{get_state()}
+    set_state = function(state) {
+      private$imputation_cache <- NULL
+      private$theta <- state$theta
+      private$Z     <- state$Z
+      private$pi    <- state$pi
+      private$beta  <- state$beta
+      invisible(self)
     }
   ),
   active = list(
@@ -127,7 +118,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @field penalty double, value of the penalty term in ICL
     penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
     #' @field entropy double, value of the entropy due to the clustering distribution
-    entropy  = function(value) {-sum(.xlogx(private$Z))},
+    entropy  = function(value) {-sum(xlogx(private$Z))},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik = function(value) {self$vExpec + self$entropy},
     #' @field ICL double: value of the integrated classification log-likelihood
@@ -135,9 +126,9 @@ R6::R6Class(classname = "SimpleSBM_fit",
   )
 )
 
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Internal class for a binary SBM fit under MAR sampling designs without covariates.
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user.
 #'
 #' @import R6
 SimpleSBM_fit_noCov <-
@@ -147,6 +138,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @description update parameters estimation (M-step)
     #' @param ... additional arguments, only required for MNAR cases
     update_parameters = function(...) {
+      private$imputation_cache <- NULL
       res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
       private$theta <- res$theta
       private$theta$mean <- check_boundaries(private$theta$mean)
@@ -156,13 +148,16 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param ... additional arguments, only required for MNAR cases
     update_blocks =   function(...) {
+      private$imputation_cache <- NULL
       private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
     }
   ),
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+      if (is.null(private$imputation_cache))
+        private$imputation_cache <- .mask_dense_at_pattern(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z), private$S, .logistic)
+      private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -178,20 +173,21 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   )
 )
 
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Internal class for a binary SBM fit under MAR sampling designs with covariates.
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user.
 #'
 #' @import R6
 SimpleSBM_fit_withCov <-
 R6::R6Class(classname = "SimpleSBM_fit_withCov",
   inherit = SimpleSBM_fit,
   public = list(
-    #' @description update parameters estimation (M-step)
-    #' @param control a list to tune nlopt for optimization, see documentation of nloptr
+    #' @description update parameters estimation (M-step) via Newton-Raphson: the M-step
+    #'   objective is a weighted logistic regression (concave), so Newton converges in a
+    #'   handful of iterations -- no external optimizer is required.
     #' @param ... use for compatibility
     update_parameters = function(...) {
-      control <- list(maxeval = 50, xtol_rel = 1e-4, algorithm = "CCSAQ")
+      private$imputation_cache <- NULL
       res <- private$M_step(
         init_param = list(Gamma = .logit(private$theta$mean), beta = private$beta),
         Y = private$Y,
@@ -199,7 +195,8 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
         X = self$covarArray,
         Z = private$Z,
         !self$directed,
-        configuration = control
+        maxIter = 50,
+        tol = 1e-10
       )
       private$beta  <- as.numeric(res$beta)
       private$theta <- res$theta
@@ -209,13 +206,16 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param ... use for compatibility
     update_blocks =   function(...) {
-       private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
+      private$imputation_cache <- NULL
+      private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
     }
   ),
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect) * private$S, "dgCMatrix")
+      if (is.null(private$imputation_cache))
+        private$imputation_cache <- .mask_dense_at_pattern(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect, private$S, .logistic)
+      private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -231,9 +231,10 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   )
 )
 
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Internal class for a binary SBM fit under MNAR sampling designs
+#' (double-standard, block-node, block-dyad).
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user.
 #'
 #' @import R6
 SimpleSBM_fit_MNAR <-
@@ -253,6 +254,7 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
     #' @description update parameters estimation (M-step)
     #' @param nu currently imputed values
     update_parameters = function(nu = NULL) {
+      private$imputation_cache <- NULL
       if (is.null(nu)) { # fall back to the MAR case
         super$update_parameters()
       } else {
@@ -262,9 +264,9 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
         tZYZ <- t(private$Z) %*% private$Y %*% private$Z
         tZVZ <- t(private$Z) %*% private$V %*% private$Z
         if (self$directed) {
-          private$theta$mean <- missSBM:::check_boundaries(as.matrix ( (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar ) ))
+          private$theta$mean <- check_boundaries(as.matrix ( (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar ) ))
         } else {
-          private$theta$mean <-  missSBM:::check_boundaries(as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) ) )
+          private$theta$mean <-  check_boundaries(as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) ) )
         }
         private$pi <- check_boundaries(colMeans(private$Z))
       }
@@ -272,6 +274,7 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
     update_blocks =   function(log_lambda = 0) {
+      private$imputation_cache <- NULL
       if (self$nbBlocks > 1) {
         log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
         log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
@@ -280,10 +283,6 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
     }
   ),
   active = list(
-    #' @field imputation the matrix of imputed values
-    imputation = function(value) {
-      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
-    },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)

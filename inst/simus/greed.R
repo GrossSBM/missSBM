@@ -5,7 +5,7 @@ library(aricode)
 library(ggplot2)
 
 data("frenchblog2007", package = "missSBM")
-adjacencyMatrix <- igraph::as_adj(frenchblog2007)
+adjacencyMatrix <- igraph::as_adjacency_matrix(frenchblog2007)
 party <- igraph::vertex.attributes(frenchblog2007)$party
 vBlocks <- 1:20
 

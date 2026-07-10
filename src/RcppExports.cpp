@@ -57,8 +57,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // M_step_sparse_bernoulli_covariates
-Rcpp::List M_step_sparse_bernoulli_covariates(Rcpp::List init_param, const arma::sp_mat& Y, const arma::sp_mat& R, const arma::cube& X, const arma::mat& Z, const bool sym, Rcpp::List configuration);
-RcppExport SEXP _missSBM_M_step_sparse_bernoulli_covariates(SEXP init_paramSEXP, SEXP YSEXP, SEXP RSEXP, SEXP XSEXP, SEXP ZSEXP, SEXP symSEXP, SEXP configurationSEXP) {
+Rcpp::List M_step_sparse_bernoulli_covariates(Rcpp::List init_param, const arma::sp_mat& Y, const arma::sp_mat& R, const arma::cube& X, const arma::mat& Z, const bool sym, const int maxIter, const double tol);
+RcppExport SEXP _missSBM_M_step_sparse_bernoulli_covariates(SEXP init_paramSEXP, SEXP YSEXP, SEXP RSEXP, SEXP XSEXP, SEXP ZSEXP, SEXP symSEXP, SEXP maxIterSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -68,8 +68,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::cube& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const bool >::type sym(symSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type configuration(configurationSEXP);
-    rcpp_result_gen = Rcpp::wrap(M_step_sparse_bernoulli_covariates(init_param, Y, R, X, Z, sym, configuration));
+    Rcpp::traits::input_parameter< const int >::type maxIter(maxIterSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    rcpp_result_gen = Rcpp::wrap(M_step_sparse_bernoulli_covariates(init_param, Y, R, X, Z, sym, maxIter, tol));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -119,26 +120,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_test_nlopt
-bool cpp_test_nlopt();
-RcppExport SEXP _missSBM_cpp_test_nlopt() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(cpp_test_nlopt());
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_test_packing
-bool cpp_test_packing();
-RcppExport SEXP _missSBM_cpp_test_packing() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(cpp_test_packing());
-    return rcpp_result_gen;
-END_RCPP
-}
 // roundProduct
 Rcpp::NumericMatrix roundProduct(Rcpp::List covariates_list, arma::vec beta);
 RcppExport SEXP _missSBM_roundProduct(SEXP covariates_listSEXP, SEXP betaSEXP) {
@@ -156,12 +137,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_vLL_complete_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_vLL_complete_sparse_bernoulli_nocovariate, 5},
     {"_missSBM_vLL_complete_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_vLL_complete_sparse_bernoulli_covariates, 6},
     {"_missSBM_M_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_nocovariate, 4},
-    {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 7},
+    {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
-    {"_missSBM_cpp_test_nlopt", (DL_FUNC) &_missSBM_cpp_test_nlopt, 0},
-    {"_missSBM_cpp_test_packing", (DL_FUNC) &_missSBM_cpp_test_packing, 0},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {NULL, NULL, 0}
 };

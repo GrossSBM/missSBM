@@ -49,6 +49,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Julien Chiquet \email{julien.chiquet@inrae.fr} (\href{https://orcid.org/0000-0002-3629-3429}{ORCID})
   \item Pierre Barbillon \email{pierre.barbillon@agroparistech.fr} (\href{https://orcid.org/0000-0002-7766-7693}{ORCID})
   \item Timothée Tabouy \email{timothee.tabouy@agroparistech.fr}
 }

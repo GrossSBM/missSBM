@@ -2,7 +2,9 @@
 #'
 #' This function draws observations in an adjacency matrix according to a given network sampling design.
 #'
-#' @param adjacencyMatrix The N x N adjacency matrix of the network to sample.
+#' @param adjacencyMatrix The N x N adjacency matrix of the network to sample. The diagonal is expected
+#'     to be NA (no self-loops); any other pre-existing NA entry is treated as an absent edge (coded 0)
+#'     before sampling is applied on top of it, with a warning.
 #' @param sampling The sampling design used to observe the adjacency matrix, see details.
 #' @param parameters The sampling parameters (adapted to each sampling, see details).
 #' @param clusters An optional clustering membership vector of the nodes. Only necessary for block samplings.
@@ -48,13 +50,17 @@
 #'        adjacencyMatrix = sbm$networkData,
 #'        sampling        = sampling,
 #'        parameters      = sampling_parameters[[sampling]],
-#'        cluster         = sbm$memberships
+#'        clusters        = sbm$memberships
 #'      )
 #' }
 #' @export
 observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = list(), similarity = l1_similarity, intercept = 0) {
 
-### TEMPORARY FIX
+  ## pre-existing NAs (other than the diagonal, conventionally NA/unused) are treated as absent
+  ## edges before applying the requested sampling design
+  if (anyNA(adjacencyMatrix[row(adjacencyMatrix) != col(adjacencyMatrix)])) {
+    warning("adjacencyMatrix has off-diagonal NA entries: they are treated as absent edges (0) before sampling.")
+  }
   adjacencyMatrix[is.na(adjacencyMatrix)] <- 0
 
   ## Sanity check

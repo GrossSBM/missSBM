@@ -11,7 +11,7 @@
 #' @examples
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
 #' adjMatrix <- missSBM::frenchblog2007 %>%
-#'   igraph::as_adj (sparse = FALSE) %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
 #'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 #' collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 #' my_missSBM_fit <- collection$bestModel
@@ -31,7 +31,25 @@ missSBM_fit <-
     nu         = NULL, # imputed values (a sparse Matrix with entries only for imputed values, "dgCMatrix)
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
-    optStatus  = NULL  # status of the optimization process
+    optStatus  = NULL, # status of the optimization process
+
+    ## kept so split()/merge() can build a sibling fit with one more/fewer block
+    partlyObservedNet = NULL,
+    netSampling       = NULL,
+    useCov            = NULL,
+
+    ## builds a new missSBM_fit from a candidate clustering, either replacing self's own fit
+    ## (in_place = TRUE) or returning it as a new object -- shared by split() and merge()
+    build_candidate = function(candidate_labels, in_place) {
+      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate_labels, private$useCov)
+      if (in_place) {
+        private$SBM      <- new_fit$fittedSBM
+        private$sampling <- new_fit$fittedSampling
+        private$nu       <- NULL
+        return(invisible(self))
+      }
+      new_fit
+    }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -75,16 +93,14 @@ missSBM_fit <-
         "degree"          = degreeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit), private$SBM$connectParam$mean),
         "snowball"        = nodeSampling_fit$new(partlyObservedNet) # estimated sampling parameter not relevant
       )
+
+      private$partlyObservedNet <- partlyObservedNet
+      private$netSampling       <- netSampling
+      private$useCov            <- useCov
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     doVEM = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
-
-      ## Initialization of quantities that monitor convergence
-      delta_par <- vector("numeric", control$maxIter); delta_par[1] <- NA
-      delta_obj <- vector("numeric", control$maxIter); delta_obj[1] <- NA
-      objective <- vector("numeric", control$maxIter); objective[1] <- self$loglik
-      iterate <- 1; stop <- FALSE
 
       ## Starting the Variational EM algorithm
       if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
@@ -92,49 +108,161 @@ missSBM_fit <-
                              ifelse(private$SBM$directed, "directed", "undirected"),"' SBM.\n", sep = "")
       if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
 
-      while (!stop) {
-        iterate <- iterate + 1
-        if (control$trace) cat(" iteration #:", iterate, "\r")
+      private$optStatus <- run_VEM(
+        control    = control,
+        init_stop  = FALSE,
+        e_step     = function(fixPointIter) {
+          for (i in seq.int(fixPointIter)) {
+            # update the variational parameters for missing entries (a.k.a nu)
+            private$nu <- private$sampling$update_imputation(private$SBM$imputation)
+            # update the variational parameters for block memberships (a.k.a tau)
+            private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
+          }
+        },
+        m_step     = function() {
+          # update the parameters of the SBM (a.k.a pi and theta)
+          private$SBM$update_parameters(private$nu)
+          # update the parameters of network sampling process (a.k.a psi)
+          private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
+        },
+        get_loglik = function() self$loglik,
+        get_theta  = function() private$SBM$connectParam$mean,
+        ## a lightweight snapshot of the fit (no cloning of the network data)
+        snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
+        restore    = function(state) {
+          private$SBM$set_state(state$SBM)
+          private$sampling <- state$sampling
+          private$nu       <- state$nu
+        },
+        reorder    = function() private$SBM$reorder()
+      )
 
-        theta_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
-        SBM_old   <- private$SBM$clone()
-
-        ## ______________________________________________________
-        ## Variational E-Step
-        #
-        for (i in seq.int(control$fixPointIter)) {
-          # update the variational parameters for missing entries (a.k.a nu)
-          private$nu <- private$sampling$update_imputation(private$SBM$imputation)
-          # update the variational parameters for block memberships (a.k.a tau)
-          private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
-        }
-
-        ## ______________________________________________________
-        ## M-step
-        #
-        # update the parameters of the SBM (a.k.a pi and theta)
-        private$SBM$update_parameters(private$nu)
-        # update the parameters of network sampling process (a.k.a psi)
-        private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
-
-        # Assess convergence
-        objective[iterate] <- self$loglik
-        delta_par[iterate] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
-        delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
-        stop <- (iterate > control$maxIter) | ((delta_par[iterate] < control$threshold) & (delta_obj[iterate] < control$threshold))
-
-        # Step back if elbo decreases
-        if (objective[iterate] < objective[iterate-1] & iterate > 2) {
-          private$SBM <- SBM_old
-          iterate <- iterate - 1
-          stop <- TRUE
-        }
-      }
-      private$SBM$reorder()
-
-      if (control$trace) cat("\n")
-      private$optStatus <- data.frame(iteration = 1:iterate, delta_parameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate], elbo = objective[1:iterate])
       invisible(private$optStatus)
+    },
+    #' @description clone of the current fit after splitting cluster \code{index} in two, via a
+    #'   spectral bipartition of the sub-network it induces. Builds but does not fit the
+    #'   candidate (see \code{candidates_split()}).
+    #' @param index index (integer) of the cluster to split
+    #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
+    #'   (\code{FALSE}, the default)?
+    #' @param base_net optional precomputed network to bipartition (as built internally at the
+    #'   top of this method); lets \code{candidates_split()} avoid recomputing it once per
+    #'   candidate.
+    #' @return a new [`missSBM_fit`] with one more block, or \code{NULL} if \code{index} cannot
+    #'   be split (its induced sub-network has zero variance)
+    split = function(index, in_place = FALSE, base_net = NULL) {
+      if (is.null(base_net)) {
+        base_net <- self$imputedNetwork
+        if (private$SBM$directed) base_net <- base_net %*% t(base_net)
+      }
+      cl0 <- private$SBM$memberships
+      Q   <- private$SBM$nbBlocks
+
+      A <- base_net[cl0 == index, cl0 == index]
+      sdA <- sd(A)
+      if (sdA == 0) return(NULL)
+
+      A <- 1 / (1 + exp(-A / sdA))
+      D <- 1 / sqrt(rowSums(abs(A)))
+      L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
+      Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
+      Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+      bipartition <- kmeans_missSBM(Un, 2)
+
+      split_labels <- bipartition
+      split_labels[bipartition == 1] <- index
+      split_labels[bipartition == 2] <- Q + 1
+      candidate <- cl0
+      candidate[candidate == index] <- split_labels
+      ## in case of empty classes, add randomly one guy in those classes
+      candidate <- factor(candidate, levels = 1:(Q + 1))
+      absent <- which(tabulate(candidate) == 0)
+      swap <- base::sample(1:length(candidate), length(absent))
+      candidate[swap] <- absent
+      candidate <- as.numeric(candidate) # relabeling to start from 1
+
+      private$build_candidate(candidate, in_place)
+    },
+    #' @description generate and cheaply trial-fit candidates obtained by splitting each
+    #'   splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
+    #'   least 4 members and non-zero variance in its induced sub-network.
+    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
+    #'   is overridden by \code{trial_niter}
+    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
+    candidates_split = function(control, trial_niter = 2) {
+      base_net <- self$imputedNetwork
+      if (private$SBM$directed) base_net <- base_net %*% t(base_net)
+      cl0 <- private$SBM$memberships
+      Q   <- private$SBM$nbBlocks
+
+      cl_splitable <- (1:Q)[tabulate(cl0, nbins = Q) >= 4]
+      sds <- sapply(cl_splitable, function(k_) sd(base_net[cl0 == k_, cl0 == k_]))
+      cl_splitable <- cl_splitable[sds > 0]
+      if (length(cl_splitable) == 0) return(list())
+
+      control_fast <- control
+      control_fast$maxIter <- trial_niter
+      control_fast$trace   <- FALSE
+
+      future_lapply(cl_splitable, function(k_) {
+        candidate <- self$split(k_, base_net = base_net)
+        candidate$doVEM(control_fast)
+        candidate
+      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+    },
+    #' @description clone of the current fit after merging clusters \code{indices[1]} and
+    #'   \code{indices[2]} into one. Builds but does not fit the candidate (see
+    #'   \code{candidates_merge()}).
+    #' @param indices indices (couple of integers) of the clusters to merge
+    #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
+    #'   (\code{FALSE}, the default)?
+    #' @return a new [`missSBM_fit`] with one fewer block
+    merge = function(indices, in_place = FALSE) {
+      Q  <- private$SBM$nbBlocks
+      cl0 <- factor(private$SBM$memberships, 1:Q)
+      ## in case of empty classes, add randomly one guy in those classes
+      absent <- which(tabulate(cl0) == 0)
+      swap <- base::sample(1:length(cl0), length(absent))
+      cl0[swap] <- absent
+
+      cl_merged <- cl0
+      levels(cl_merged)[sort(indices)] <- indices[1]
+      levels(cl_merged) <- as.character(1:(nlevels(cl0) - 1))
+      candidate <- as.integer(cl_merged)
+
+      private$build_candidate(candidate, in_place)
+    },
+    #' @description generate and cheaply trial-fit candidates obtained by merging pairs of
+    #'   clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
+    #'   number of blocks), only the most similar-connectivity pairs are tried.
+    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
+    #'   is overridden by \code{trial_niter}
+    #' @param max_candidates cap on the number of pairs tried. Default is 30.
+    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @return a list of trial-fitted [`missSBM_fit`] candidates
+    candidates_merge = function(control, max_candidates = 30, trial_niter = 2) {
+      Q <- private$SBM$nbBlocks
+      if (Q <= 1) return(list())
+
+      pairs <- combn(Q, 2, simplify = FALSE)
+      if (length(pairs) > max_candidates) {
+        theta <- private$SBM$connectParam$mean
+        score <- sapply(pairs, function(ij) {
+          sqrt(sum((theta[ij[1], ] - theta[ij[2], ])^2) + sum((theta[, ij[1]] - theta[, ij[2]])^2))
+        })
+        pairs <- pairs[order(score)[1:max_candidates]]
+      }
+
+      control_fast <- control
+      control_fast$maxIter <- trial_niter
+      control_fast$trace   <- FALSE
+
+      future_lapply(pairs, function(couple) {
+        candidate <- self$merge(couple)
+        candidate$doVEM(control_fast)
+        candidate
+      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
     },
     #' @description show method for missSBM_fit
     show = function() {
@@ -171,14 +299,22 @@ missSBM_fit <-
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
-    entropyImputed = function(value) { - sum(xlogx(private$nu) + xlogx(1 - private$nu)) },
+    entropyImputed = function(value) {
+      ## operate on the stored values only (private$nu is sparse, nonzero only at missing
+      ## dyads): `xlogx(1 - private$nu)` would densify the whole N x N matrix and dispatch
+      ## ifelse() through costly S4 machinery for every VEM iteration
+      if (is.null(private$nu)) return(0)
+      nu_x <- private$nu@x
+      - sum(xlogx(nu_x) + xlogx(1 - nu_x))
+    },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
     entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {
+      ## if(), not ifelse(): ifelse() evaluates both branches eagerly
       private$sampling$vExpec +
-        ifelse(private$sampling$type %in% c("block-dyad", "block-node", "double-standard"),
-               private$SBM$vExpec, private$SBM$vExpec_corrected)
+        if (private$sampling$type %in% c("block-dyad", "block-node", "double-standard"))
+          private$SBM$vExpec else private$SBM$vExpec_corrected
     },
     #' @field penalty double, value of the penalty term in ICL
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
@@ -192,7 +328,7 @@ missSBM_fit <-
 ## PUBLIC S3 METHODS FOR missSBMfit
 ## =========================================================================================
 
-## Auxiliary functions to check the given class of an objet
+## Auxiliary function to check the given class of an object
 is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 
 #' Extract model fitted values from object  [`missSBM_fit`], return by [estimateMissSBM()]
