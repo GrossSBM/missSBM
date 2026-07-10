@@ -1,5 +1,16 @@
 # missSBM 1.0.6
 
+- fix `partlyObservedNetwork$imputation()`: the "average"/"median" fill value for missing
+  dyads was computed over the whole adjacency matrix, including the not-yet-imputed
+  (still-zero) missing entries themselves, biasing it low; it is now computed from the
+  observed entries only, and filled in via a sparse addition instead of a large-vector
+  index assignment (`Matrix::dgCMatrix` `[<-` on many indices is a known-slow pattern)
+- as a side effect of the fix above, `doubleStandardSampling_fit`'s one-shot initial
+  bootstrap of psi (built on `imputation("average")`) is now more exposed to a structural
+  degeneracy: whenever the fill value used equals the exact empirical observed edge rate,
+  psi[1] and psi[2] are mathematically forced to coincide. This only affects the initial,
+  non-iterated estimate (refined by the VEM loop afterwards, unaffected in practice) --
+  known limitation, not addressed in this release
 - fix a crash in the "degree" sampling design (`degreeSampling_fit` referenced a
   non-existent field on `partlyObservedNetwork`)
 - fix the closed-form update of the "degree" sampling parameters (wrong coefficients

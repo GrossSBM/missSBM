@@ -138,23 +138,31 @@ partlyObservedNetwork <-
     #' @description basic imputation from existing clustering
     #' @param type a character, the type of imputation. Either "median" or "average"
     imputation = function(type = c("median", "average", "zero")) {
-      adjMat <- private$Y
+      type   <- match.arg(type)
+      obs    <- which(private$R != 0)                # linear indices of observed dyads
+      obs_ij <- which(private$R != 0, arr.ind = TRUE) # same, as (row, col)
+
       if (!is.null(private$phi)) {
-        obs <- which(private$R != 0)
-        y <- as.vector(adjMat[obs])
+        y <- as.vector(private$Y[obs])
         X <- cbind(1, apply(private$phi, 3, function(x) x[obs]))
 ### TODO: make it work for other model than Bernoulli / family than binomial
-        adjMat[obs] <- .logistic(residuals(suppressWarnings(glm.fit(X, y, family = binomial()))))
+        obs_vals <- .logistic(residuals(suppressWarnings(glm.fit(X, y, family = binomial()))))
+        adjMat   <- Matrix::sparseMatrix(obs_ij[,1], obs_ij[,2], x = obs_vals, dims = dim(private$Y))
+      } else {
+        adjMat   <- private$Y
+        obs_vals <- private$Y[obs]
       }
-      miss <- which(private$R == 0)
-      suppressMessages(adjMat[miss] <-
-        switch(match.arg(type),
-               "average"  = mean(adjMat, na.rm = TRUE),
-               "median"   = median(adjMat, na.rm = TRUE),
-               "zero"     = 0
-        ))
-      if (!private$directed)
-        suppressMessages(adjMat[lower.tri(adjMat)] <- Matrix::t(adjMat)[lower.tri(adjMat)])
+
+      ## fill missing dyads with a sparse-preserving addition (efficient) instead of a
+      ## direct index assignment (Matrix's [<- on a large index vector is known to be slow),
+      ## using only the *observed* values -- not the not-yet-imputed (still-zero) entries
+      fill <- switch(type,
+        "average" = mean(obs_vals),
+        "median"  = median(obs_vals),
+        "zero"    = 0
+      )
+      if (fill != 0) adjMat <- adjMat + private$S * fill
+      if (!private$directed) adjMat <- adjMat + Matrix::t(adjMat)
 
       adjMat
     }
