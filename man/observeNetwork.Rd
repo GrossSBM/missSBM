@@ -15,7 +15,9 @@ observeNetwork(
 )
 }
 \arguments{
-\item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample.}
+\item{adjacencyMatrix}{The N x N adjacency matrix of the network to sample. The diagonal is expected
+to be NA (no self-loops); any other pre-existing NA entry is treated as an absent edge (coded 0)
+before sampling is applied on top of it, with a warning.}
 
 \item{sampling}{The sampling design used to observe the adjacency matrix, see details.}
 
@@ -49,7 +51,7 @@ for the SBM inference (or just for the sampling)? Default is TRUE.
 \item clusterInit Initial method for clustering: either a character ("spectral")
 or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
 providing a user-defined clustering. Default is "spectral".
-similarity An R x R -> R function to compute similarities between node covariates. Default is
+\item similarity An R x R -> R function to compute similarities between node covariates. Default is
 \code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. \code{covariates} is a list of size-N vectors).
 \item threshold V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
@@ -112,7 +114,7 @@ for (sampling in names(sampling_parameters)) {
        adjacencyMatrix = sbm$networkData,
        sampling        = sampling,
        parameters      = sampling_parameters[[sampling]],
-       cluster         = sbm$memberships
+       clusters        = sbm$memberships
      )
 }
 }

@@ -1,6 +1,7 @@
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Base internal class for adjusting a binary Stochastic Block Model in the context of missSBM.
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user; see the concrete variants
+#' [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`] and [`SimpleSBM_fit_MNAR`].
 #'
 #' @import R6
 SimpleSBM_fit <-
@@ -112,7 +113,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @field penalty double, value of the penalty term in ICL
     penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
     #' @field entropy double, value of the entropy due to the clustering distribution
-    entropy  = function(value) {-sum(.xlogx(private$Z))},
+    entropy  = function(value) {-sum(xlogx(private$Z))},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik = function(value) {self$vExpec + self$entropy},
     #' @field ICL double: value of the integrated classification log-likelihood
@@ -120,9 +121,9 @@ R6::R6Class(classname = "SimpleSBM_fit",
   )
 )
 
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Internal class for a binary SBM fit under MAR sampling designs without covariates.
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user.
 #'
 #' @import R6
 SimpleSBM_fit_noCov <-
@@ -163,9 +164,9 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   )
 )
 
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Internal class for a binary SBM fit under MAR sampling designs with covariates.
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user.
 #'
 #' @import R6
 SimpleSBM_fit_withCov <-
@@ -216,9 +217,10 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   )
 )
 
-#' This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.
+#' Internal class for a binary SBM fit under MNAR sampling designs
+#' (double-standard, block-node, block-dyad).
 #'
-#' It is not designed not be call by the user
+#' It is not designed to be called directly by the user.
 #'
 #' @import R6
 SimpleSBM_fit_MNAR <-
@@ -247,9 +249,9 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
         tZYZ <- t(private$Z) %*% private$Y %*% private$Z
         tZVZ <- t(private$Z) %*% private$V %*% private$Z
         if (self$directed) {
-          private$theta$mean <- missSBM:::check_boundaries(as.matrix ( (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar ) ))
+          private$theta$mean <- check_boundaries(as.matrix ( (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar ) ))
         } else {
-          private$theta$mean <-  missSBM:::check_boundaries(as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) ) )
+          private$theta$mean <-  check_boundaries(as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) ) )
         }
         private$pi <- check_boundaries(colMeans(private$Z))
       }

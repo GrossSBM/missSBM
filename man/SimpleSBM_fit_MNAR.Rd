@@ -2,9 +2,10 @@
 % Please edit documentation in R/R6Class-simpleSBM_fit.R
 \name{SimpleSBM_fit_MNAR}
 \alias{SimpleSBM_fit_MNAR}
-\title{This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.}
+\title{Internal class for a binary SBM fit under MNAR sampling designs
+(double-standard, block-node, block-dyad).}
 \description{
-It is not designed not be call by the user
+It is not designed to be called directly by the user.
 }
 \section{Super classes}{
 \code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{SimpleSBM_fit}} -> \code{\link[missSBM:SimpleSBM_fit_noCov]{SimpleSBM_fit_noCov}} -> \code{SimpleSBM_MNAR_noCov}

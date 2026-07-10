@@ -23,15 +23,6 @@ clustering_indicator <- function(clustering) {
   Z
 }
 
-bar <- function(X) {
-  X.bar <- 1 - X ; diag(X.bar) <- 0
-  X.bar
-}
-
-quad_form <- function(A,x) {t(x) %*% A %*% x}
-
-t_quad_form <- function(A,x) {x %*% A %*% t(x)}
-
 array2list <-function(X) {
   if (is.null(X)) {
     L <- list()
@@ -95,7 +86,7 @@ dropNA <- function(x) {
 
 .logistic <- function(x) {1/(1 + exp(-x))}
 .logit    <- function(x) {log(x/(1 - x))}
-.xlogx    <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
+xlogx     <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
 
 .softmax <- function(x) {
   b <- max(x)
@@ -103,8 +94,6 @@ dropNA <- function(x) {
 }
 
 h <- function(x) {-.5 * (.logistic(x) - 0.5) / x}
-
-xlogx <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
 
 #' Shared variational-EM driver
 #'

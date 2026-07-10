@@ -2,9 +2,9 @@
 % Please edit documentation in R/R6Class-simpleSBM_fit.R
 \name{SimpleSBM_fit_noCov}
 \alias{SimpleSBM_fit_noCov}
-\title{This internal class is designed to adjust a binary Stochastic Block Model in the context of missSBM.}
+\title{Internal class for a binary SBM fit under MAR sampling designs without covariates.}
 \description{
-It is not designed not be call by the user
+It is not designed to be called directly by the user.
 }
 \section{Super classes}{
 \code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{SimpleSBM_fit}} -> \code{SimpleSBM_fit_noCov}
