@@ -25,7 +25,6 @@ It is not designed to be called directly by the user.
     \item \href{#method-SimpleSBM_MNAR_noCov-initialize}{\code{SimpleSBM_MNAR_noCov$new()}}
     \item \href{#method-SimpleSBM_MNAR_noCov-update_parameters}{\code{SimpleSBM_MNAR_noCov$update_parameters()}}
     \item \href{#method-SimpleSBM_MNAR_noCov-update_blocks}{\code{SimpleSBM_MNAR_noCov$update_blocks()}}
-    \item \href{#method-SimpleSBM_MNAR_noCov-supports_acceleration}{\code{SimpleSBM_MNAR_noCov$supports_acceleration()}}
     \item \href{#method-SimpleSBM_MNAR_noCov-clone}{\code{SimpleSBM_MNAR_noCov$clone()}}
   }
 }
@@ -42,8 +41,6 @@ It is not designed to be called directly by the user.
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-get_state'><code>SimpleSBM_fit$get_state()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="get_flat_state"><a href='../../missSBM/html/SimpleSBM_fit_noCov.html#method-SimpleSBM_fit_noCov-get_flat_state'><code>SimpleSBM_fit_noCov$get_flat_state()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="set_flat_state"><a href='../../missSBM/html/SimpleSBM_fit_noCov.html#method-SimpleSBM_fit_noCov-set_flat_state'><code>SimpleSBM_fit_noCov$set_flat_state()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}
@@ -100,20 +97,6 @@ It is not designed to be called directly by the user.
     \describe{
       \item{\code{log_lambda}}{additional term sampling dependent used to de-bias estimation of tau}
     }
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-supports_acceleration"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-supports_acceleration}{}}}
-\subsection{\code{SimpleSBM_MNAR_noCov$supports_acceleration()}}{
-  this variant carries extra state (\code{private$V}) not tracked by the
-parent's \code{get_flat_state()}; explicitly opts out rather than silently inheriting
-\code{TRUE}.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_MNAR_noCov$supports_acceleration()}
     \if{html}{\out{</div>}}
   }
 }

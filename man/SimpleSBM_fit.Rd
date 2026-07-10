@@ -33,7 +33,6 @@ It is not designed to be called directly by the user; see the concrete variants
     \item \href{#method-SimpleSBM_fit-reorder}{\code{SimpleSBM_fit$reorder()}}
     \item \href{#method-SimpleSBM_fit-get_state}{\code{SimpleSBM_fit$get_state()}}
     \item \href{#method-SimpleSBM_fit-set_state}{\code{SimpleSBM_fit$set_state()}}
-    \item \href{#method-SimpleSBM_fit-supports_acceleration}{\code{SimpleSBM_fit$supports_acceleration()}}
     \item \href{#method-SimpleSBM_fit-clone}{\code{SimpleSBM_fit$clone()}}
   }
 }
@@ -136,20 +135,6 @@ which duplicates the whole object, including the -- possibly large -- network da
     \describe{
       \item{\code{state}}{a state, as returned by \code{get_state()}}
     }
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_fit-supports_acceleration"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_fit-supports_acceleration}{}}}
-\subsection{\code{SimpleSBM_fit$supports_acceleration()}}{
-  opt-in gate for the SQUAREM-style acceleration in \code{run_VEM()}
-(see \code{get_flat_state()}). Defaults to \code{FALSE}; overridden by
-variants that have been validated to support it.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit$supports_acceleration()}
     \if{html}{\out{</div>}}
   }
 }

@@ -85,9 +85,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
         get_theta      = function() private$theta$mean,
         snapshot       = function() self$get_state(),
         restore        = function(state) self$set_state(state),
-        reorder        = function() self$reorder(),
-        get_flat_state = if (self$supports_acceleration()) function() self$get_flat_state(),
-        set_flat_state = if (self$supports_acceleration()) function(p) self$set_flat_state(p)
+        reorder        = function() self$reorder()
       )
     },
     #' @description permute group labels by order of decreasing probability
@@ -112,11 +110,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
       private$pi    <- state$pi
       private$beta  <- state$beta
       invisible(self)
-    },
-    #' @description opt-in gate for the SQUAREM-style acceleration in \code{run_VEM()}
-    #'   (see \code{get_flat_state()}). Defaults to \code{FALSE}; overridden by
-    #'   variants that have been validated to support it.
-    supports_acceleration = function() FALSE
+    }
   ),
   active = list(
     #' @field type the type of SBM (distribution of edges values, network type, presence of covariates)
@@ -156,26 +150,6 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     update_blocks =   function(...) {
       private$imputation_cache <- NULL
       private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
-    },
-    #' @description opt-in gate for SQUAREM acceleration in \code{run_VEM()}: this variant's
-    #'   \code{vExpec} is a fresh function of \code{theta}/\code{pi}, so it can be evaluated
-    #'   meaningfully at an extrapolated point, not just at a real M-step's output.
-    supports_acceleration = function() TRUE,
-    #' @description flat, unconstrained parameter vector SQUAREM extrapolates over:
-    #'   \code{logit(theta)} concatenated with \code{log(pi)}. Extrapolating in this
-    #'   unconstrained space means any point maps back to a feasible theta/pi, with no separate
-    #'   feasibility guard needed.
-    get_flat_state = function() {
-      c(as.vector(.logit(private$theta$mean)), log(private$pi))
-    },
-    #' @description inverse of \code{get_flat_state()}
-    #' @param p a flat parameter vector, as returned by \code{get_flat_state()}
-    set_flat_state = function(p) {
-      private$imputation_cache <- NULL
-      Q <- length(private$pi)
-      private$theta$mean <- check_boundaries(.logistic(matrix(p[1:(Q * Q)], Q, Q)))
-      private$pi          <- check_boundaries(.softmax(p[(Q * Q + 1):(Q * Q + Q)]))
-      invisible(self)
     }
   ),
   active = list(
@@ -306,11 +280,7 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
         log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
         private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
       }
-    },
-    #' @description this variant carries extra state (\code{private$V}) not tracked by the
-    #'   parent's \code{get_flat_state()}; explicitly opts out rather than silently inheriting
-    #'   \code{TRUE}.
-    supports_acceleration = function() FALSE
+    }
   ),
   active = list(
     #' @field imputation the matrix of imputed values
