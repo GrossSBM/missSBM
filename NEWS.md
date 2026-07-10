@@ -5,6 +5,11 @@
 - fix the closed-form update of the "degree" sampling parameters (wrong coefficients
   in the Jaakkola-Jordan variational M-step); note that parameter recovery for this
   design can still be biased under heavy missingness, this is a known limitation
+- fix a consistency bug in `missSBM_fit$doVEM()`: when the variational EM stepped back
+  after a decrease of the objective, only the fitted SBM was restored, not the fitted
+  sampling model nor the current imputation, leaving them out of sync; both `doVEM()`
+  implementations (`SimpleSBM_fit`, `missSBM_fit`) now share a common driver and use a
+  lightweight state snapshot instead of a full clone of the (possibly large) SBM object
 
 # missSBM 1.0.5 (2025-03-12)
 

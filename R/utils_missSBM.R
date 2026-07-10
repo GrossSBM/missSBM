@@ -106,6 +106,64 @@ h <- function(x) {-.5 * (.logistic(x) - 0.5) / x}
 
 xlogx <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
 
+#' Shared variational-EM driver
+#'
+#' Runs the E-step/M-step loop common to [`SimpleSBM_fit`] and [`missSBM_fit`], monitoring
+#' convergence and stepping back to the previous state if the objective decreases. Behavior
+#' (fixed-point E-step, convergence criterion, step-back) is factorized here so both classes
+#' stay in sync; what differs between them (how a state is snapshotted/restored, how many models
+#' are involved) is passed in as closures.
+#'
+#' @param control a list with components \code{threshold}, \code{maxIter}, \code{fixPointIter}, \code{trace}
+#' @param init_stop logical, should the loop be skipped altogether (e.g. a single block, nothing to estimate)
+#' @param e_step a function(fixPointIter) performing the (repeated) variational E-step, called for its side effects
+#' @param m_step a function() performing the M-step, called for its side effects
+#' @param get_loglik a function() returning the current (variational) log-likelihood
+#' @param get_theta a function() returning the current connectivity parameter, used to assess convergence
+#' @param snapshot a function() capturing the current mutable state, to be passed to \code{restore()}
+#' @param restore a function(state) resetting the mutable state to a previous \code{snapshot()}
+#' @param reorder a function() called once convergence is reached, to permute group labels
+#' @return a data.frame with the convergence monitoring (iteration, delta_parameters, delta_objective, elbo)
+#' @noRd
+run_VEM <- function(control, init_stop, e_step, m_step, get_loglik, get_theta, snapshot, restore, reorder) {
+
+  delta_par <- vector("numeric", control$maxIter); delta_par[1] <- NA
+  delta_obj <- vector("numeric", control$maxIter); delta_obj[1] <- NA
+  objective <- vector("numeric", control$maxIter); objective[1] <- get_loglik()
+  iterate <- 1; stop <- init_stop
+
+  while (!stop) {
+    iterate <- iterate + 1
+    if (control$trace) cat(" iteration #:", iterate, "\r")
+
+    theta_old <- get_theta()
+    state_old <- snapshot()
+
+    ## Variational E-step
+    e_step(control$fixPointIter)
+
+    ## M-step
+    m_step()
+
+    ## Assess convergence
+    objective[iterate] <- get_loglik()
+    delta_par[iterate] <- sqrt(sum((get_theta() - theta_old)^2)) / sqrt(sum((theta_old)^2))
+    delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
+    stop <- (iterate > control$maxIter) | ((delta_par[iterate] < control$threshold) & (delta_obj[iterate] < control$threshold))
+
+    ## Step back if the objective decreases
+    if (objective[iterate] < objective[iterate-1] & iterate > 2) {
+      restore(state_old)
+      iterate <- iterate - 1
+      stop <- TRUE
+    }
+  }
+  reorder()
+  if (control$trace) cat("\n")
+
+  data.frame(iteration = 1:iterate, delta_parameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate], elbo = objective[1:iterate])
+}
+
 check_boundaries <- function(x, zero = .Machine$double.eps) {
   x[is.nan(x)] <- zero
   x[x > 1 - zero] <- 1 - zero

@@ -70,48 +70,19 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @param trace logical for verbosity. Default is \code{FALSE}.
     doVEM = function(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = FALSE) {
 
-      ## Initialization of quantities that monitor convergence
-      delta_par <- vector("numeric", maxIter)
-      delta_obj <- vector("numeric", maxIter)
-      objective <- vector("numeric", maxIter)
-      objective[1] <- self$loglik
-      iterate <- 1; stop <- ifelse(self$nbBlocks > 1, FALSE, TRUE)
-
-      ## Starting the variational EM algorithm
       if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
-      while (!stop) {
-        iterate <- iterate + 1
-        if (trace) cat(" iteration #:", iterate, "\r")
 
-        theta_old <- private$theta # save old value of parameters to assess convergence
-        Z_old     <- private$Z
-        pi_old    <- private$pi
-
-        # Variational E-Step
-        for (i in seq.int(fixPointIter)) self$update_blocks()
-
-        # M-step
-        self$update_parameters()
-
-        # Assess convergence
-        objective[iterate] <- self$loglik
-        delta_par[iterate] <- sqrt(sum((private$theta$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
-        delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
-        stop <- (iterate > maxIter) |  ((delta_par[iterate] < threshold) & (delta_obj[iterate] < threshold))
-
-        # Step back of elbo decreases
-        if (objective[iterate] < objective[iterate-1]) {
-          private$theta <- theta_old
-          private$Z     <- Z_old
-          private$pi    <- pi_old
-          iterate <- iterate - 1
-          stop <- TRUE
-        }
-      }
-      self$reorder()
-      if (trace) cat("\n")
-      res <- data.frame(delta_pararameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate],  elbo = objective[1:iterate])
-      res
+      run_VEM(
+        control    = list(threshold = threshold, maxIter = maxIter, fixPointIter = fixPointIter, trace = trace),
+        init_stop  = self$nbBlocks <= 1,
+        e_step     = function(fixPointIter) for (i in seq.int(fixPointIter)) self$update_blocks(),
+        m_step     = function() self$update_parameters(),
+        get_loglik = function() self$loglik,
+        get_theta  = function() private$theta$mean,
+        snapshot   = function() self$get_state(),
+        restore    = function(state) self$set_state(state),
+        reorder    = function() self$reorder()
+      )
     },
     #' @description permute group labels by order of decreasing probability
     reorder = function(){
@@ -119,6 +90,20 @@ R6::R6Class(classname = "SimpleSBM_fit",
       private$pi <- private$pi[o]
       private$theta$mean <- private$theta$mean[o, o, drop = FALSE]
       private$Z <- private$Z[, o, drop = FALSE]
+    },
+    #' @description a lightweight snapshot of the mutable VEM state (as opposed to \code{clone()},
+    #' which duplicates the whole object, including the -- possibly large -- network data)
+    get_state = function() {
+      list(theta = private$theta, Z = private$Z, pi = private$pi, beta = private$beta)
+    },
+    #' @description restore a state previously returned by \code{get_state()}
+    #' @param state a state, as returned by \code{get_state()}
+    set_state = function(state) {
+      private$theta <- state$theta
+      private$Z     <- state$Z
+      private$pi    <- state$pi
+      private$beta  <- state$beta
+      invisible(self)
     }
   ),
   active = list(

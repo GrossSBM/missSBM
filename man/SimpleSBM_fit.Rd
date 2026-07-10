@@ -30,6 +30,8 @@ It is not designed not be call by the user
     \item \href{#method-SimpleSBM_fit-initialize}{\code{SimpleSBM_fit$new()}}
     \item \href{#method-SimpleSBM_fit-doVEM}{\code{SimpleSBM_fit$doVEM()}}
     \item \href{#method-SimpleSBM_fit-reorder}{\code{SimpleSBM_fit$reorder()}}
+    \item \href{#method-SimpleSBM_fit-get_state}{\code{SimpleSBM_fit$get_state()}}
+    \item \href{#method-SimpleSBM_fit-set_state}{\code{SimpleSBM_fit$set_state()}}
     \item \href{#method-SimpleSBM_fit-clone}{\code{SimpleSBM_fit$clone()}}
   }
 }
@@ -100,6 +102,38 @@ It is not designed not be call by the user
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimpleSBM_fit$reorder()}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimpleSBM_fit-get_state"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit-get_state}{}}}
+\subsection{\code{SimpleSBM_fit$get_state()}}{
+  a lightweight snapshot of the mutable VEM state (as opposed to \code{clone()},
+which duplicates the whole object, including the -- possibly large -- network data)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit$get_state()}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimpleSBM_fit-set_state"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit-set_state}{}}}
+\subsection{\code{SimpleSBM_fit$set_state()}}{
+  restore a state previously returned by \code{get_state()}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit$set_state(state)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{state}}{a state, as returned by \code{get_state()}}
+    }
     \if{html}{\out{</div>}}
   }
 }

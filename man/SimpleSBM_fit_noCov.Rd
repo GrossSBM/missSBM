@@ -38,8 +38,10 @@ It is not designed not be call by the user
   <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="rMemberships"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-rMemberships'><code>sbm::SimpleSBM$rMemberships()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>SimpleSBM_fit$doVEM()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-get_state'><code>SimpleSBM_fit$get_state()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-initialize'><code>SimpleSBM_fit$initialize()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

@@ -80,60 +80,43 @@ missSBM_fit <-
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
     doVEM = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
 
-      ## Initialization of quantities that monitor convergence
-      delta_par <- vector("numeric", control$maxIter); delta_par[1] <- NA
-      delta_obj <- vector("numeric", control$maxIter); delta_obj[1] <- NA
-      objective <- vector("numeric", control$maxIter); objective[1] <- self$loglik
-      iterate <- 1; stop <- FALSE
-
       ## Starting the Variational EM algorithm
       if (control$trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
       if (control$trace) cat("\n\tDyads are distributed according to a '",
                              ifelse(private$SBM$directed, "directed", "undirected"),"' SBM.\n", sep = "")
       if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
 
-      while (!stop) {
-        iterate <- iterate + 1
-        if (control$trace) cat(" iteration #:", iterate, "\r")
+      private$optStatus <- run_VEM(
+        control    = control,
+        init_stop  = FALSE,
+        e_step     = function(fixPointIter) {
+          for (i in seq.int(fixPointIter)) {
+            # update the variational parameters for missing entries (a.k.a nu)
+            private$nu <- private$sampling$update_imputation(private$SBM$imputation)
+            # update the variational parameters for block memberships (a.k.a tau)
+            private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
+          }
+        },
+        m_step     = function() {
+          # update the parameters of the SBM (a.k.a pi and theta)
+          private$SBM$update_parameters(private$nu)
+          # update the parameters of network sampling process (a.k.a psi)
+          private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
+        },
+        get_loglik = function() self$loglik,
+        get_theta  = function() private$SBM$connectParam$mean,
+        ## a lightweight snapshot of the SBM (no cloning of the network data), plus the sampling
+        ## fit (cheap, no large network data) and the current imputation -- both are needed for a
+        ## consistent step-back, since the M-step updates the SBM and the sampling model jointly
+        snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
+        restore    = function(state) {
+          private$SBM$set_state(state$SBM)
+          private$sampling <- state$sampling
+          private$nu       <- state$nu
+        },
+        reorder    = function() private$SBM$reorder()
+      )
 
-        theta_old <- private$SBM$connectParam # save current value of the parameters to assess convergence
-        SBM_old   <- private$SBM$clone()
-
-        ## ______________________________________________________
-        ## Variational E-Step
-        #
-        for (i in seq.int(control$fixPointIter)) {
-          # update the variational parameters for missing entries (a.k.a nu)
-          private$nu <- private$sampling$update_imputation(private$SBM$imputation)
-          # update the variational parameters for block memberships (a.k.a tau)
-          private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
-        }
-
-        ## ______________________________________________________
-        ## M-step
-        #
-        # update the parameters of the SBM (a.k.a pi and theta)
-        private$SBM$update_parameters(private$nu)
-        # update the parameters of network sampling process (a.k.a psi)
-        private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
-
-        # Assess convergence
-        objective[iterate] <- self$loglik
-        delta_par[iterate] <- sqrt(sum((private$SBM$connectParam$mean - theta_old$mean)^2)) / sqrt(sum((theta_old$mean)^2))
-        delta_obj[iterate] <- abs(objective[iterate] - objective[iterate-1]) / abs(objective[iterate])
-        stop <- (iterate > control$maxIter) | ((delta_par[iterate] < control$threshold) & (delta_obj[iterate] < control$threshold))
-
-        # Step back if elbo decreases
-        if (objective[iterate] < objective[iterate-1] & iterate > 2) {
-          private$SBM <- SBM_old
-          iterate <- iterate - 1
-          stop <- TRUE
-        }
-      }
-      private$SBM$reorder()
-
-      if (control$trace) cat("\n")
-      private$optStatus <- data.frame(iteration = 1:iterate, delta_parameters = delta_par[1:iterate], delta_objective = delta_obj[1:iterate], elbo = objective[1:iterate])
       invisible(private$optStatus)
     },
     #' @description show method for missSBM_fit
