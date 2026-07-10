@@ -13,7 +13,10 @@ R6::R6Class(classname = "SimpleSBM_fit",
     S       = NULL, # the "anti" sampling matrix (sparse encoding)
     M_step  = NULL, # pointing to the appropriate M_step function
     E_step  = NULL, # pointing to the appropriate E_step function
-    vLL_complete = NULL # pointing to the appropriate Expected complete LL function
+    vLL_complete = NULL, # pointing to the appropriate Expected complete LL function
+    ## memoized `imputation` (a function of Z/theta/beta only): invalidated by every method
+    ## that can change any of those, recomputed lazily on the next read
+    imputation_cache = NULL
   ),
   public = list(
     #' @description constructor for simpleSBM_fit for missSBM purpose
@@ -89,6 +92,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
     },
     #' @description permute group labels by order of decreasing probability
     reorder = function(){
+      private$imputation_cache <- NULL
       o <- order(private$theta$mean %*% private$pi, decreasing = TRUE)
       private$pi <- private$pi[o]
       private$theta$mean <- private$theta$mean[o, o, drop = FALSE]
@@ -102,6 +106,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
     #' @description restore a state previously returned by \code{get_state()}
     #' @param state a state, as returned by \code{get_state()}
     set_state = function(state) {
+      private$imputation_cache <- NULL
       private$theta <- state$theta
       private$Z     <- state$Z
       private$pi    <- state$pi
@@ -139,6 +144,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @description update parameters estimation (M-step)
     #' @param ... additional arguments, only required for MNAR cases
     update_parameters = function(...) {
+      private$imputation_cache <- NULL
       res <- private$M_step(private$Y, private$R, private$Z, !self$directed)
       private$theta <- res$theta
       private$theta$mean <- check_boundaries(private$theta$mean)
@@ -148,6 +154,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param ... additional arguments, only required for MNAR cases
     update_blocks =   function(...) {
+      private$imputation_cache <- NULL
       private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
     },
     #' @description opt-in gate for SQUAREM acceleration in \code{run_VEM()}: this variant's
@@ -164,6 +171,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @description inverse of \code{get_flat_state()}
     #' @param p a flat parameter vector, as returned by \code{get_flat_state()}
     set_flat_state = function(p) {
+      private$imputation_cache <- NULL
       Q <- length(private$pi)
       private$theta$mean <- check_boundaries(.logistic(matrix(p[1:(Q * Q)], Q, Q)))
       private$pi          <- check_boundaries(.softmax(p[(Q * Q + 1):(Q * Q + Q)]))
@@ -173,7 +181,9 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
+      if (is.null(private$imputation_cache))
+        private$imputation_cache <- .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
+      private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -203,6 +213,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #'   handful of iterations -- no external optimizer is required.
     #' @param ... use for compatibility
     update_parameters = function(...) {
+      private$imputation_cache <- NULL
       res <- private$M_step(
         init_param = list(Gamma = .logit(private$theta$mean), beta = private$beta),
         Y = private$Y,
@@ -221,13 +232,16 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param ... use for compatibility
     update_blocks =   function(...) {
-       private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
+      private$imputation_cache <- NULL
+      private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
     }
   ),
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      .mask_dense_at_pattern(.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect), private$S)
+      if (is.null(private$imputation_cache))
+        private$imputation_cache <- .mask_dense_at_pattern(.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect), private$S)
+      private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -266,6 +280,7 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
     #' @description update parameters estimation (M-step)
     #' @param nu currently imputed values
     update_parameters = function(nu = NULL) {
+      private$imputation_cache <- NULL
       if (is.null(nu)) { # fall back to the MAR case
         super$update_parameters()
       } else {
@@ -285,6 +300,7 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
     #' @description update variational estimation of blocks (VE-step)
     #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
     update_blocks =   function(log_lambda = 0) {
+      private$imputation_cache <- NULL
       if (self$nbBlocks > 1) {
         log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
         log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
@@ -299,7 +315,9 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
+      if (is.null(private$imputation_cache))
+        private$imputation_cache <- .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
+      private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {

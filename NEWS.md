@@ -17,6 +17,14 @@
   - `missSBM_fit$candidates_split()` recomputed the (potentially O(N^3) for directed networks)
     base network once per splittable cluster inside `split()`, even though it had already built
     the same matrix for its own filtering step; now computed once and passed through
+- a follow-up to the profiling above: `SimpleSBM_fit*$imputation` (the dense N x N connectivity
+  probability matrix, `Z %*% theta %*% t(Z)`) was recomputed twice per VEM iteration -- once by
+  the E-step (to build `nu`) and once, unavoidably, by the ELBO evaluation used for the
+  convergence check (`vExpec_corrected`) after the M-step updates `theta`. Since nothing changes
+  `Z`/`theta`/`beta` between that ELBO evaluation and the next iteration's E-step, the latter was
+  recomputing an already-known value. Added a memoized cache on `SimpleSBM_fit*$imputation`,
+  invalidated by every method that can change `Z`, `theta` or `beta`; cuts about 20% off total
+  run time on the same benchmark, bit-identical results
 - `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and
   `candidates_merge()` as instance methods, mirroring the architecture of a
   sibling project (normalblockr's `NormalBlockBase`): the split/merge search
