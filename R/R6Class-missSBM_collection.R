@@ -35,12 +35,9 @@ missSBM_collection <-
     partlyObservedNet = NULL, # network data with convenient encoding (object of class 'partlyObservedNetwork')
     missSBM_fit       = NULL, # a list of models
 
-    # method for performing forward exploration of the ICL: for each q, ask the fitted model at
-    # q for a set of cheaply trial-fitted split candidates (missSBM_fit$candidates_split(), which
-    # holds the actual split algorithm -- a spectral bipartition of each splittable cluster's
-    # induced sub-network), fully refit the most promising one, and keep it in place of the
-    # existing q+1 model only if it strictly improves the ICL. Mirrors normalblockr's
-    # NormalBlockCollectionClusters$refine() (split direction).
+    # for each q, ask the model at q for trial-fitted split candidates
+    # (missSBM_fit$candidates_split()), fully refit the best one, and keep it in place of the
+    # q+1 model only if it strictly improves the ICL.
     # control: a list of parameters controlling the variational EM algorithm. See details of
     # function [estimateMissSBM()]
     explore_forward = function(control) {
@@ -66,10 +63,8 @@ missSBM_collection <-
 
       if (trace) cat("\r                                                                                                    \r")
     },
-    # method for performing backward exploration of the ICL: same as explore_forward(), but
-    # asking each model for merge candidates (missSBM_fit$candidates_merge()) and propagating
-    # improvements to the q-1 neighbor. Mirrors normalblockr's
-    # NormalBlockCollectionClusters$refine() (merge direction).
+    # same as explore_forward(), but asking each model for merge candidates
+    # (missSBM_fit$candidates_merge()) and propagating improvements to the q-1 neighbor.
     # control: a list of parameters controlling the variational EM algorithm. See details of
     # function [`estimate`]
     explore_backward = function(control) {

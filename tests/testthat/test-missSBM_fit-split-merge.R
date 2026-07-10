@@ -1,9 +1,4 @@
-context("test missSBM_fit's split/merge methods (mirrors normalblockr's NormalBlockBase)")
-
-## missSBM_fit$split()/merge()/candidates_split()/candidates_merge() implement, as instance
-## methods on the model, the same split/merge exploration algorithm that used to live inline in
-## missSBM_collection's explore_forward()/explore_backward() -- these tests exercise them
-## directly, which wasn't previously possible.
+context("test missSBM_fit's split/merge methods")
 
 set.seed(1)
 N <- 150; Q <- 4

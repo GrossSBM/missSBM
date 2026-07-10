@@ -111,11 +111,8 @@ plot(my_missSBM_fit, "imputed")
 \if{latex}{\out{\hypertarget{method-missSBM_fit-split}{}}}
 \subsection{\code{missSBM_fit$split()}}{
   clone of the current fit after splitting cluster \code{index} in two, via a
-spectral bipartition of the sub-network it induces (logistic-transformed, normalized
-weighted Laplacian, top-2 eigenvectors, 2-means). Mirrors \code{NormalBlockBase}'s
-\code{split()} in the sibling project normalblockr: builds (but does not fit) a
-candidate with one more block, meant to be cheaply trial-fitted by
-\code{candidates_split()} before a full refit of the most promising one.
+spectral bipartition of the sub-network it induces. Builds but does not fit the
+candidate (see \code{candidates_split()}).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{missSBM_fit$split(index, in_place = FALSE)}
@@ -125,14 +122,14 @@ candidate with one more block, meant to be cheaply trial-fitted by
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{index}}{index (integer) of the cluster to split}
-      \item{\code{in_place}}{should the split replace \code{self}'s own fit (\code{TRUE}) or be
-returned as a new object (\code{FALSE}, the default)?}
+      \item{\code{in_place}}{replace \code{self}'s own fit (\code{TRUE}) or return a new object
+(\code{FALSE}, the default)?}
     }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
     a new \code{\link{missSBM_fit}} with one more block, or \code{NULL} if \code{index} cannot
-be meaningfully split (its induced sub-network has zero variance)
+be split (its induced sub-network has zero variance)
   }
 }
 
@@ -140,11 +137,9 @@ be meaningfully split (its induced sub-network has zero variance)
 \if{html}{\out{<a id="method-missSBM_fit-candidates_split"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-candidates_split}{}}}
 \subsection{\code{missSBM_fit$candidates_split()}}{
-  generate and cheaply trial-fit a set of candidate models obtained by
-splitting each splittable cluster of the current fit in two (see \code{split()}). A
-cluster is considered splittable if it has at least 4 members and non-zero variance in
-its induced sub-network (otherwise the spectral bipartition it would need is
-degenerate). Mirrors \code{NormalBlockBase$candidates_split()}.
+  generate and cheaply trial-fit candidates obtained by splitting each
+splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
+least 4 members and non-zero variance in its induced sub-network.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{missSBM_fit$candidates_split(control, trial_niter = 2)}
@@ -154,7 +149,7 @@ degenerate). Mirrors \code{NormalBlockBase$candidates_split()}.
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
-is overridden by \code{trial_niter} for these cheap trial fits}
+is overridden by \code{trial_niter}}
       \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
     }
     \if{html}{\out{</div>}}
@@ -169,9 +164,8 @@ is overridden by \code{trial_niter} for these cheap trial fits}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-merge}{}}}
 \subsection{\code{missSBM_fit$merge()}}{
   clone of the current fit after merging clusters \code{indices[1]} and
-\code{indices[2]} into one. Mirrors \code{NormalBlockBase}'s \code{merge()}: builds (but
-does not fit) a candidate with one fewer block, meant to be cheaply trial-fitted by
-\code{candidates_merge()} before a full refit of the most promising one.
+\code{indices[2]} into one. Builds but does not fit the candidate (see
+\code{candidates_merge()}).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{missSBM_fit$merge(indices, in_place = FALSE)}
@@ -181,8 +175,8 @@ does not fit) a candidate with one fewer block, meant to be cheaply trial-fitted
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{indices}}{indices (couple of integers) of the clusters to merge}
-      \item{\code{in_place}}{should the merge replace \code{self}'s own fit (\code{TRUE}) or be
-returned as a new object (\code{FALSE}, the default)?}
+      \item{\code{in_place}}{replace \code{self}'s own fit (\code{TRUE}) or return a new object
+(\code{FALSE}, the default)?}
     }
     \if{html}{\out{</div>}}
   }
@@ -195,9 +189,9 @@ returned as a new object (\code{FALSE}, the default)?}
 \if{html}{\out{<a id="method-missSBM_fit-candidates_merge"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-candidates_merge}{}}}
 \subsection{\code{missSBM_fit$candidates_merge()}}{
-  generate and cheaply trial-fit a set of candidate models obtained by merging
-pairs of clusters of the current fit (see \code{merge()}). Mirrors
-\code{NormalBlockBase$candidates_merge()}.
+  generate and cheaply trial-fit candidates obtained by merging pairs of
+clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
+number of blocks), only the most similar-connectivity pairs are tried.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{missSBM_fit$candidates_merge(control, max_candidates = 30, trial_niter = 2)}
@@ -207,10 +201,8 @@ pairs of clusters of the current fit (see \code{merge()}). Mirrors
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
-is overridden by \code{trial_niter} for these cheap trial fits}
-      \item{\code{max_candidates}}{merge candidates are, unlike split's, quadratic in the number of
-blocks (\code{choose(q, 2)} pairs) -- beyond \code{max_candidates} pairs, only the most
-promising ones (most similar fitted connectivity profile) are tried. Default is 30.}
+is overridden by \code{trial_niter}}
+      \item{\code{max_candidates}}{cap on the number of pairs tried. Default is 30.}
       \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
     }
     \if{html}{\out{</div>}}

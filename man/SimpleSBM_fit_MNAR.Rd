@@ -108,12 +108,9 @@ It is not designed to be called directly by the user.
 \if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-supports_acceleration"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-supports_acceleration}{}}}
 \subsection{\code{SimpleSBM_MNAR_noCov$supports_acceleration()}}{
-  this variant carries extra state (\code{private$V}, the current MNAR
-imputation of the missing dyads) that \code{SimpleSBM_fit_noCov}'s \code{get_flat_state()}
-does not track and that isn't refreshed by a plain \code{update_blocks()}/
-\code{update_parameters()} pair the way \code{theta}/\code{pi} are -- the SQUAREM
-acceleration validated for the parent class has not been validated here, so this
-explicitly opts back out rather than silently inheriting \code{TRUE}.
+  this variant carries extra state (\code{private$V}) not tracked by the
+parent's \code{get_flat_state()}; explicitly opts out rather than silently inheriting
+\code{TRUE}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimpleSBM_MNAR_noCov$supports_acceleration()}

@@ -89,11 +89,9 @@ It is not designed to be called directly by the user.
 \if{html}{\out{<a id="method-SimpleSBM_fit_noCov-supports_acceleration"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit_noCov-supports_acceleration}{}}}
 \subsection{\code{SimpleSBM_fit_noCov$supports_acceleration()}}{
-  opt-in gate for the SQUAREM-style acceleration in \code{run_VEM()}: this
-variant's \code{vExpec} (hence \code{loglik}) is a fresh function of \code{theta}/\code{pi}
-(recomputed from them, never a cached value from a previous E-step), which is exactly
-what a SQUAREM acceptance test needs -- it can be evaluated meaningfully at an
-extrapolated (theta, pi), not just at values reached by a real M-step.
+  opt-in gate for SQUAREM acceleration in \code{run_VEM()}: this variant's
+\code{vExpec} is a fresh function of \code{theta}/\code{pi}, so it can be evaluated
+meaningfully at an extrapolated point, not just at a real M-step's output.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimpleSBM_fit_noCov$supports_acceleration()}
@@ -105,13 +103,10 @@ extrapolated (theta, pi), not just at values reached by a real M-step.
 \if{html}{\out{<a id="method-SimpleSBM_fit_noCov-get_flat_state"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit_noCov-get_flat_state}{}}}
 \subsection{\code{SimpleSBM_fit_noCov$get_flat_state()}}{
-  flat, unconstrained-space parameter vector SQUAREM extrapolates over:
-\code{logit(theta)} (always finite/well-defined since \code{theta} is kept away from
-the 0/1 boundary by \code{check_boundaries()}) concatenated with \code{log(pi)}.
-Reparametrizing this way (rather than extrapolating the constrained theta/pi directly)
-means \emph{any} point in the extrapolated space maps back to a feasible theta/pi via
-\code{set_flat_state()} -- no separate feasibility guard is needed for these two
-parameters, unlike e.g. a precision matrix that must stay positive-definite.
+  flat, unconstrained parameter vector SQUAREM extrapolates over:
+\code{logit(theta)} concatenated with \code{log(pi)}. Extrapolating in this
+unconstrained space means any point maps back to a feasible theta/pi, with no separate
+feasibility guard needed.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimpleSBM_fit_noCov$get_flat_state()}
@@ -123,8 +118,7 @@ parameters, unlike e.g. a precision matrix that must stay positive-definite.
 \if{html}{\out{<a id="method-SimpleSBM_fit_noCov-set_flat_state"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit_noCov-set_flat_state}{}}}
 \subsection{\code{SimpleSBM_fit_noCov$set_flat_state()}}{
-  inverse of \code{get_flat_state()}: rebuilds \code{theta}/\code{pi} from a
-flat vector (typically a SQUAREM-extrapolated point, not one reached by a real M-step).
+  inverse of \code{get_flat_state()}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimpleSBM_fit_noCov$set_flat_state(p)}

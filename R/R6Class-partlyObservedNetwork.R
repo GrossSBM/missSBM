@@ -153,9 +153,8 @@ partlyObservedNetwork <-
         obs_vals <- private$Y[obs]
       }
 
-      ## fill missing dyads with a sparse-preserving addition (efficient) instead of a
-      ## direct index assignment (Matrix's [<- on a large index vector is known to be slow),
-      ## using only the *observed* values -- not the not-yet-imputed (still-zero) entries
+      ## sparse-preserving addition (Matrix's [<- on a large index vector is slow); fill value
+      ## computed from observed values only, not the still-zero missing entries
       fill <- switch(type,
         "average" = mean(obs_vals),
         "median"  = median(obs_vals),

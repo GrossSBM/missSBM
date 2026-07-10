@@ -176,19 +176,10 @@ run_VEM_classic <- function(control, init_stop, e_step, m_step, get_loglik, get_
 
 #' SQUAREM-accelerated variant of run_VEM_classic()
 #'
-#' Every cycle runs up to two plain VEM steps (p0 -> p1 -> p2 in the model's flat,
-#' unconstrained-space parameterization -- see e.g. [`SimpleSBM_fit_noCov`]'s
-#' \code{get_flat_state()}), then attempts a SQUAREM extrapolation (Varadhan & Roland, 2008)
-#' on top: a point much further along the p0->p1->p2 direction than one more VEM step would
-#' reach, stabilized with one more E-step/M-step pass. This is the fix for the slow-linear-VEM
-#' regime that motivated this port (see the plan this was designed against): it reaches the
-#' same fixed point in far fewer recorded iterations once the number of blocks grows.
-#'
-#' Convergence/step-back bookkeeping is per *cycle* here (not per single VEM step, unlike
-#' run_VEM_classic()): a cycle is rolled back to its start (via `restore()`) only if it ends up
-#' making the objective *worse* than before the cycle started, which should be rare since plain
-#' VEM is non-decreasing by construction and try_squarem_step() only accepts an extrapolated
-#' point that is itself at least as good as the plain 2-step result.
+#' Every cycle runs up to two plain VEM steps (p0 -> p1 -> p2 in the model's flat, unconstrained
+#' parameterization), then attempts a SQUAREM extrapolation (Varadhan & Roland, 2008) beyond p2,
+#' stabilized by one more E-step/M-step pass. Step-back is per *cycle*: rolled back only if the
+#' whole cycle ends up worse than before it started.
 #' @noRd
 run_VEM_accelerated <- function(control, init_stop, e_step, m_step, get_loglik, get_theta, snapshot, restore, reorder,
                                  get_flat_state, set_flat_state) {
@@ -245,12 +236,10 @@ run_VEM_accelerated <- function(control, init_stop, e_step, m_step, get_loglik, 
 }
 
 #' One SQUAREM extrapolation attempt from three consecutive plain-VEM flat states p0 -> p1 -> p2
-#' (current model state == p2, get_loglik() == obj2). Varadhan & Roland's own backtracking rule:
-#' starting from the data-driven steplength "S3", repeatedly halve the *distance to no
-#' extrapolation* (alpha <- (alpha - 1) / 2) until the stabilized candidate's objective is at
-#' least as good as obj2, or until alpha reaches -1 (no extrapolation at all -- give up, leave
-#' the model exactly at p2/obj2, plain VEM will continue from there next cycle). Returns TRUE
-#' (model left at the accelerated+stabilized state) or FALSE (model restored to p2 exactly).
+#' (model currently at p2, get_loglik() == obj2). Uses Varadhan & Roland's steplength "S3" with
+#' backtracking (halving the distance to alpha = -1, i.e. no extrapolation) until the stabilized
+#' candidate is at least as good as obj2. Returns TRUE if the model was left at the
+#' accelerated+stabilized state, FALSE if restored to p2.
 #' @noRd
 try_squarem_step <- function(p0, p1, p2, obj2, get_flat_state, set_flat_state, e_step, m_step, get_loglik, fixPointIter) {
   r <- p1 - p0

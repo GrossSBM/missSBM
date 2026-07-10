@@ -33,9 +33,7 @@ missSBM_fit <-
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
     optStatus  = NULL, # status of the optimization process
 
-    ## kept around (unused at construction time otherwise) so that split()/merge() can build
-    ## a sibling missSBM_fit with one more/fewer block, the same way NormalBlockBase$split()/
-    ## merge() in the sibling project normalblockr do
+    ## kept so split()/merge() can build a sibling fit with one more/fewer block
     partlyObservedNet = NULL,
     netSampling        = NULL,
     useCov             = NULL
@@ -116,9 +114,7 @@ missSBM_fit <-
         },
         get_loglik = function() self$loglik,
         get_theta  = function() private$SBM$connectParam$mean,
-        ## a lightweight snapshot of the SBM (no cloning of the network data), plus the sampling
-        ## fit (cheap, no large network data) and the current imputation -- both are needed for a
-        ## consistent step-back, since the M-step updates the SBM and the sampling model jointly
+        ## a lightweight snapshot of the missSBMfit(no cloning of the network data)
         snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
         restore    = function(state) {
           private$SBM$set_state(state$SBM)
@@ -131,16 +127,13 @@ missSBM_fit <-
       invisible(private$optStatus)
     },
     #' @description clone of the current fit after splitting cluster \code{index} in two, via a
-    #'   spectral bipartition of the sub-network it induces (logistic-transformed, normalized
-    #'   weighted Laplacian, top-2 eigenvectors, 2-means). Mirrors \code{NormalBlockBase}'s
-    #'   \code{split()} in the sibling project normalblockr: builds (but does not fit) a
-    #'   candidate with one more block, meant to be cheaply trial-fitted by
-    #'   \code{candidates_split()} before a full refit of the most promising one.
+    #'   spectral bipartition of the sub-network it induces. Builds but does not fit the
+    #'   candidate (see \code{candidates_split()}).
     #' @param index index (integer) of the cluster to split
-    #' @param in_place should the split replace \code{self}'s own fit (\code{TRUE}) or be
-    #'   returned as a new object (\code{FALSE}, the default)?
+    #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
+    #'   (\code{FALSE}, the default)?
     #' @return a new [`missSBM_fit`] with one more block, or \code{NULL} if \code{index} cannot
-    #'   be meaningfully split (its induced sub-network has zero variance)
+    #'   be split (its induced sub-network has zero variance)
     split = function(index, in_place = FALSE) {
       base_net <- self$imputedNetwork
       if (private$SBM$directed) base_net <- base_net %*% t(base_net)
@@ -179,13 +172,11 @@ missSBM_fit <-
       }
       new_fit
     },
-    #' @description generate and cheaply trial-fit a set of candidate models obtained by
-    #'   splitting each splittable cluster of the current fit in two (see \code{split()}). A
-    #'   cluster is considered splittable if it has at least 4 members and non-zero variance in
-    #'   its induced sub-network (otherwise the spectral bipartition it would need is
-    #'   degenerate). Mirrors \code{NormalBlockBase$candidates_split()}.
+    #' @description generate and cheaply trial-fit candidates obtained by splitting each
+    #'   splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
+    #'   least 4 members and non-zero variance in its induced sub-network.
     #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
-    #'   is overridden by \code{trial_niter} for these cheap trial fits
+    #'   is overridden by \code{trial_niter}
     #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
     #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
     candidates_split = function(control, trial_niter = 2) {
@@ -210,12 +201,11 @@ missSBM_fit <-
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
     },
     #' @description clone of the current fit after merging clusters \code{indices[1]} and
-    #'   \code{indices[2]} into one. Mirrors \code{NormalBlockBase}'s \code{merge()}: builds (but
-    #'   does not fit) a candidate with one fewer block, meant to be cheaply trial-fitted by
-    #'   \code{candidates_merge()} before a full refit of the most promising one.
+    #'   \code{indices[2]} into one. Builds but does not fit the candidate (see
+    #'   \code{candidates_merge()}).
     #' @param indices indices (couple of integers) of the clusters to merge
-    #' @param in_place should the merge replace \code{self}'s own fit (\code{TRUE}) or be
-    #'   returned as a new object (\code{FALSE}, the default)?
+    #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
+    #'   (\code{FALSE}, the default)?
     #' @return a new [`missSBM_fit`] with one fewer block
     merge = function(indices, in_place = FALSE) {
       Q  <- private$SBM$nbBlocks
@@ -239,14 +229,12 @@ missSBM_fit <-
       }
       new_fit
     },
-    #' @description generate and cheaply trial-fit a set of candidate models obtained by merging
-    #'   pairs of clusters of the current fit (see \code{merge()}). Mirrors
-    #'   \code{NormalBlockBase$candidates_merge()}.
+    #' @description generate and cheaply trial-fit candidates obtained by merging pairs of
+    #'   clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
+    #'   number of blocks), only the most similar-connectivity pairs are tried.
     #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
-    #'   is overridden by \code{trial_niter} for these cheap trial fits
-    #' @param max_candidates merge candidates are, unlike split's, quadratic in the number of
-    #'   blocks (\code{choose(q, 2)} pairs) -- beyond \code{max_candidates} pairs, only the most
-    #'   promising ones (most similar fitted connectivity profile) are tried. Default is 30.
+    #'   is overridden by \code{trial_niter}
+    #' @param max_candidates cap on the number of pairs tried. Default is 30.
     #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
     #' @return a list of trial-fitted [`missSBM_fit`] candidates
     candidates_merge = function(control, max_candidates = 30, trial_niter = 2) {

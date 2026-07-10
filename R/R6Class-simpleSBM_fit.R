@@ -150,24 +150,18 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     update_blocks =   function(...) {
       private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
     },
-    #' @description opt-in gate for the SQUAREM-style acceleration in \code{run_VEM()}: this
-    #'   variant's \code{vExpec} (hence \code{loglik}) is a fresh function of \code{theta}/\code{pi}
-    #'   (recomputed from them, never a cached value from a previous E-step), which is exactly
-    #'   what a SQUAREM acceptance test needs -- it can be evaluated meaningfully at an
-    #'   extrapolated (theta, pi), not just at values reached by a real M-step.
+    #' @description opt-in gate for SQUAREM acceleration in \code{run_VEM()}: this variant's
+    #'   \code{vExpec} is a fresh function of \code{theta}/\code{pi}, so it can be evaluated
+    #'   meaningfully at an extrapolated point, not just at a real M-step's output.
     supports_acceleration = function() TRUE,
-    #' @description flat, unconstrained-space parameter vector SQUAREM extrapolates over:
-    #'   \code{logit(theta)} (always finite/well-defined since \code{theta} is kept away from
-    #'   the 0/1 boundary by \code{check_boundaries()}) concatenated with \code{log(pi)}.
-    #'   Reparametrizing this way (rather than extrapolating the constrained theta/pi directly)
-    #'   means *any* point in the extrapolated space maps back to a feasible theta/pi via
-    #'   \code{set_flat_state()} -- no separate feasibility guard is needed for these two
-    #'   parameters, unlike e.g. a precision matrix that must stay positive-definite.
+    #' @description flat, unconstrained parameter vector SQUAREM extrapolates over:
+    #'   \code{logit(theta)} concatenated with \code{log(pi)}. Extrapolating in this
+    #'   unconstrained space means any point maps back to a feasible theta/pi, with no separate
+    #'   feasibility guard needed.
     get_flat_state = function() {
       c(as.vector(.logit(private$theta$mean)), log(private$pi))
     },
-    #' @description inverse of \code{get_flat_state()}: rebuilds \code{theta}/\code{pi} from a
-    #'   flat vector (typically a SQUAREM-extrapolated point, not one reached by a real M-step).
+    #' @description inverse of \code{get_flat_state()}
     #' @param p a flat parameter vector, as returned by \code{get_flat_state()}
     set_flat_state = function(p) {
       Q <- length(private$pi)
@@ -297,12 +291,9 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
         private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
       }
     },
-    #' @description this variant carries extra state (\code{private$V}, the current MNAR
-    #'   imputation of the missing dyads) that \code{SimpleSBM_fit_noCov}'s \code{get_flat_state()}
-    #'   does not track and that isn't refreshed by a plain \code{update_blocks()}/
-    #'   \code{update_parameters()} pair the way \code{theta}/\code{pi} are -- the SQUAREM
-    #'   acceleration validated for the parent class has not been validated here, so this
-    #'   explicitly opts back out rather than silently inheriting \code{TRUE}.
+    #' @description this variant carries extra state (\code{private$V}) not tracked by the
+    #'   parent's \code{get_flat_state()}; explicitly opts out rather than silently inheriting
+    #'   \code{TRUE}.
     supports_acceleration = function() FALSE
   ),
   active = list(
