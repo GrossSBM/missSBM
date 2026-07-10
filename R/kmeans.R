@@ -12,11 +12,17 @@ kmeans_missSBM <- function(coordinates, k)
 
       dists <- as.matrix( dist( coordinates ))
 
-      choosen <- which(dists==max(dists),arr.ind = TRUE)[1,c('row','col')]
+      choosen <- as.integer(which(dists==max(dists),arr.ind = TRUE)[1,c('row','col')])
 
+      ## farthest-point seeding: incrementally track, for each point, its distance to the
+      ## nearest already-chosen centroid, instead of recomputing the min over all chosen
+      ## rows at every iteration (turns an O(k^2 N) loop into O(k N))
+      min_dist <- pmin(dists[choosen[1], ], dists[choosen[2], ])
       while(length(choosen)<k)
       {
-        choosen<-c(choosen,which.max(apply(dists[choosen,],2,min)))
+        next_point <- which.max(min_dist)
+        choosen <- c(choosen, next_point)
+        min_dist <- pmin(min_dist, dists[next_point, ])
       }
 
       centroids <- coordinates[choosen,]

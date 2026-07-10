@@ -20,3 +20,4 @@
 ^\.github$
 ^CRAN-SUBMISSION$
 ^\.claude$
+^snowflake\.log$

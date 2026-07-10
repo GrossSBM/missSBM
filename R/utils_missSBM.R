@@ -63,10 +63,16 @@ getCovarArray <- function(X, s) {
     return(NULL)
   N <- nrow(X)
   M <- ncol(X)
-  phi <- array(dim = c(N, N, M))
-  for (i in 1:N)
-    for (j in 1:N)
-      phi[i,j,] <- s(X[i, ], X[j, ])
+  if (identical(s, l1_similarity)) {
+    ## fast, fully vectorized path for the default similarity -abs(x - y):
+    ## avoids an O(N^2) R-level double loop
+    phi <- vapply(seq_len(M), function(m) -abs(outer(X[, m], X[, m], "-")), matrix(0, N, N))
+  } else {
+    phi <- array(dim = c(N, N, M))
+    for (i in 1:N)
+      for (j in 1:N)
+        phi[i,j,] <- s(X[i, ], X[j, ])
+  }
   phi
 }
 

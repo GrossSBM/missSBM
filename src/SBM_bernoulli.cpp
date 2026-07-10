@@ -5,7 +5,6 @@
 
 #include "nlopt_wrapper.h"
 #include "packing.h"
-#include "utils.h"
 
 using namespace Rcpp;
 using namespace arma;
