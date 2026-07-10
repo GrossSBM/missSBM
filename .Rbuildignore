@@ -17,7 +17,7 @@
 ^vignettes/cache$
 ^CRAN-RELEASE$
 ^cran-comments\.md$
-
+CITATION.cff
 ^\.github$
 ^CRAN-SUBMISSION$
 ^\.claude$

@@ -52,7 +52,13 @@ by less than threshold. Default is 1e-2.
 \item maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
 Default is 50.
 \item fixPointIter number of fix-point iterations in the V-E step. Default is 3.
-\item exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".
+\item polish logical, should each model be node-swap-polished (see \link{missSBM_fit}'s
+\code{polish()}) after the initial VEM fit, fixing individually misclassified nodes
+at that model's own number of blocks? Cheap relative to \code{exploration}, since it
+does not search across numbers of blocks. Default is TRUE.
+\item exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none",
+searching for a better number of blocks by splitting/merging clusters (unlike \code{polish}, which
+only refines each model at its own number of blocks). More expensive than \code{polish}. Default is "both".
 \item iterates integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.
 \item maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
 backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,

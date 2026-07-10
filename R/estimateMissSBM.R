@@ -31,7 +31,13 @@
 #'  * maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
 #'        Default is 50.
 #'  * fixPointIter number of fix-point iterations in the V-E step. Default is 3.
-#'  * exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".
+#'  * polish logical, should each model be node-swap-polished (see [missSBM_fit]'s
+#'         \code{polish()}) after the initial VEM fit, fixing individually misclassified nodes
+#'         at that model's own number of blocks? Cheap relative to \code{exploration}, since it
+#'         does not search across numbers of blocks. Default is TRUE.
+#'  * exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none",
+#'         searching for a better number of blocks by splitting/merging clusters (unlike \code{polish}, which
+#'         only refines each model at its own number of blocks). More expensive than \code{polish}. Default is "both".
 #'  * iterates integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.
 #'  * maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
 #'         backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
@@ -103,7 +109,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   ctrl <- list(
     threshold = 1e-2, trace = TRUE, imputation = "median", similarity = l1_similarity, useCov = TRUE,
     maxIter = 50, fixPointIter = 3, iterates = 1, exploration = "both", clusterInit = NULL,
-    maxMergeCandidates = 30
+    maxMergeCandidates = 30, polish = TRUE
     )
   ctrl[names(control)] <- control
   ## If no covariate is provided, you cannot ask for using them
@@ -124,10 +130,13 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   )
 
   ## Launch estimation of each missSBM_fit
-  myCollection$estimate(ctrl)
+  myCollection$estimate()
 
-  ## Looking for better models around
-  myCollection$explore(ctrl)
+  ## Fix individually misclassified nodes at each model's own number of blocks
+  if (ctrl$polish) myCollection$polish()
+
+  ## Looking for better models around (across numbers of blocks)
+  myCollection$explore()
 
   ## Return the collection of adjusted missSBM_fit
   myCollection

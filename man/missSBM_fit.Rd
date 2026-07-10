@@ -58,6 +58,7 @@ plot(my_missSBM_fit, "imputed")
     \item \href{#method-missSBM_fit-candidates_split}{\code{missSBM_fit$candidates_split()}}
     \item \href{#method-missSBM_fit-merge}{\code{missSBM_fit$merge()}}
     \item \href{#method-missSBM_fit-candidates_merge}{\code{missSBM_fit$candidates_merge()}}
+    \item \href{#method-missSBM_fit-polish}{\code{missSBM_fit$polish()}}
     \item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
     \item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
     \item \href{#method-missSBM_fit-clone}{\code{missSBM_fit$clone()}}
@@ -212,6 +213,36 @@ is overridden by \code{trial_niter}}
   }
   \subsection{Returns}{
     a list of trial-fitted \code{\link{missSBM_fit}} candidates
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-polish"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-polish}{}}}
+\subsection{\code{missSBM_fit$polish()}}{
+  discrete node-swap polishing (Kernighan-Lin / greedy-ICL style): after VEM
+convergence, tau is near-hard and its fixed point cannot relocate a single
+misclassified node (only \code{split()}/\code{merge()} fix group-level mistakes). Each
+sweep computes, for every node, the closed-form complete-data log-likelihood gain of
+moving it to its best alternative class (theta/pi held fixed), applies the improving,
+non-class-emptying moves, then runs a full VEM to resettle. Stops as soon as a sweep
+fails to improve the ICL, mutates \code{self} in place, and never leaves the ICL worse
+than before the call.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$polish(control, max_sweeps = 10)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
+      \item{\code{max_sweeps}}{maximum number of swap sweeps. Default is 10.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisibly, \code{self}
   }
 }
 

@@ -34,6 +34,8 @@ missSBM_collection <-
   private = list(
     partlyObservedNet = NULL, # network data with convenient encoding (object of class 'partlyObservedNetwork')
     missSBM_fit       = NULL, # a list of models
+    control           = NULL, # default control list (set at construction by estimateMissSBM()),
+                               # used by estimate()/polish()/explore() when not overridden per call
 
     # for each q, ask the model at q for trial-fitted split candidates
     # (missSBM_fit$candidates_split()), fully refit the best one, and keep it in place of the
@@ -125,6 +127,7 @@ missSBM_collection <-
 
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       private$partlyObservedNet <- partlyObservedNet
+      private$control           <- control
       if (control$trace) cat(" Initialization of", length(clusterInit), "model(s).", "\n")
       private$missSBM_fit <- lapply(clusterInit,
         function(cl0) {
@@ -133,8 +136,11 @@ missSBM_collection <-
       )
     },
     #' @description method to launch the estimation of the collection of models
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
-    estimate = function(control) {
+    #' @param control optional list of parameters overriding the collection's stored control
+    #'   (set at construction by [estimateMissSBM()], see its details for the full list).
+    #'   Default \code{NULL} uses the stored control as-is.
+    estimate = function(control = NULL) {
+      if (is.null(control)) control <- private$control
       if (control$trace) cat(" Performing VEM inference\n")
       private$missSBM_fit <- future_lapply(private$missSBM_fit, function(model) {
         if (control$trace) cat(" \tModel with", model$fittedSBM$nbBlocks,"blocks.\r")
@@ -144,10 +150,37 @@ missSBM_collection <-
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
       invisible(self)
     },
-    #' @description method for performing exploration of the ICL
-    #' @param control a list of parameters controlling the exploration, similar to those found in the regular function [estimateMissSBM()]
-    explore = function(control) {
-      if (control$iterates > 0) {
+    #' @description method to node-swap-polish every model in the collection (see
+    #'   [missSBM_fit]'s \code{polish()}); fixes individually misclassified nodes at each
+    #'   model's own number of blocks, unlike \code{explore()} which searches across blocks.
+    #' @param control optional list of parameters overriding the collection's stored control.
+    #'   Default \code{NULL} uses the stored control as-is.
+    polish = function(control = NULL) {
+      if (is.null(control)) control <- private$control
+      if (control$trace) cat(" Polishing (node-swap)\n")
+      private$missSBM_fit <- future_lapply(private$missSBM_fit, function(model) {
+        control$trace <- FALSE
+        model$polish(control)
+        model
+      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      invisible(self)
+    },
+    #' @description method for performing exploration of the ICL (split/merge search across
+    #'   numbers of blocks, see [missSBM_fit]'s \code{candidates_split()}/\code{candidates_merge()}).
+    #'   Uses the collection's stored control by default; \code{iterates} and \code{direction}
+    #'   let the caller override just those two aspects for this call, without altering the
+    #'   stored control -- handy to alternate \code{explore()}/\code{polish()} calls without
+    #'   having to reconstruct a full control list each time.
+    #' @param control optional list of parameters overriding the collection's stored control.
+    #'   Default \code{NULL} uses the stored control as-is.
+    #' @param iterates optional integer overriding \code{control$iterates} for this call only.
+    #' @param direction optional character ("forward", "backward", "both" or "none") overriding
+    #'   \code{control$exploration} for this call only.
+    explore = function(control = NULL, iterates = NULL, direction = NULL) {
+      if (is.null(control)) control <- private$control
+      if (!is.null(iterates))  control$iterates    <- iterates
+      if (!is.null(direction)) control$exploration <- direction
+      if (control$iterates > 0 && control$exploration != "none") {
         if (control$trace) cat("\n Looking for better solutions\n")
         for (i in 1:control$iterates) {
           if (control$exploration %in% c('forward' , 'both')) {
@@ -179,7 +212,7 @@ missSBM_collection <-
       cat(" - Number of blocks considered: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
       cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nbBlocks, "\n", sep = "")
       cat(" - Fields: $models, $ICL, $vBlocks, $bestModel, $optimizationStatus\n")
-      cat(" - Method: $estimate(), $explore(), $plot() \n")
+      cat(" - Method: $estimate(), $polish(), $explore(), $plot() \n")
     },
     #' @description User friendly print method
     print = function() { self$show() }
@@ -193,6 +226,9 @@ missSBM_collection <-
     bestModel = function(value) {self$models[[which.min(self$ICL)]]},
     #' @field vBlocks a vector with the number of blocks
     vBlocks = function(value) {sapply(self$models, function(model) model$fittedSBM$nbBlocks)},
+    #' @field optimizationSettings the control list used by estimate()/polish()/explore() when
+    #'   not overridden per call (set at construction by [estimateMissSBM()])
+    optimizationSettings = function(value) {private$control},
     #' @field optimizationStatus a data.frame summarizing the optimization process for all models
     optimizationStatus = function(value) {
       Reduce("rbind",

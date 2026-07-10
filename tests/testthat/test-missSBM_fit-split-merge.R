@@ -52,7 +52,7 @@ test_that("candidates_merge() returns one trial-fitted candidate per (capped) cl
   expect_equal(length(capped), 2)
 })
 
-test_that("estimateMissSBM()'s default exploration still finds a sensible number of blocks", {
+test_that("estimateMissSBM()'s forward/backward exploration still finds a sensible number of blocks", {
   adj <- missSBM::observeNetwork(sampler$networkData, "dyad", 0.85)
   collection <- estimateMissSBM(adj, vBlocks = 2:6, sampling = "dyad",
                                  control = list(trace = FALSE, iterates = 1, exploration = "both"))

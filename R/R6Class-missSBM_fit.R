@@ -264,6 +264,67 @@ missSBM_fit <-
         candidate
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
     },
+    #' @description discrete node-swap polishing (Kernighan-Lin / greedy-ICL style): after VEM
+    #'   convergence, tau is near-hard and its fixed point cannot relocate a single
+    #'   misclassified node (only \code{split()}/\code{merge()} fix group-level mistakes). Each
+    #'   sweep computes, for every node, the closed-form complete-data log-likelihood gain of
+    #'   moving it to its best alternative class (theta/pi held fixed), applies the improving,
+    #'   non-class-emptying moves, then runs a full VEM to resettle. Stops as soon as a sweep
+    #'   fails to improve the ICL, mutates \code{self} in place, and never leaves the ICL worse
+    #'   than before the call.
+    #' @param control a list of VEM control parameters (see [estimateMissSBM()])
+    #' @param max_sweeps maximum number of swap sweeps. Default is 10.
+    #' @return invisibly, \code{self}
+    polish = function(control, max_sweeps = 10) {
+      best_icl <- self$ICL
+      for (sweep in seq_len(max_sweeps)) {
+        Q <- private$SBM$nbBlocks
+        if (Q <= 1) break
+
+        cl <- private$SBM$memberships
+        N  <- length(cl)
+        ## a class with no node as its argmax (VEM component collapse -- can happen during the
+        ## VEM refit below, independently of the swap moves themselves, which are guarded
+        ## against emptying a class) breaks self$indMemberships (sbm::as_indicator() indexes
+        ## out of bounds); nothing meaningful to swap-improve on a degenerate fit, so stop
+        if (length(unique(cl)) < Q) break
+        log_tau <- private$SBM$polish_log_tau(private$sampling$log_lambda)
+
+        current_score <- log_tau[cbind(seq_len(N), cl)]
+        log_tau[cbind(seq_len(N), cl)] <- -Inf # exclude the current class from the search
+        best_alt   <- max.col(log_tau, ties.method = "first")
+        gain       <- log_tau[cbind(seq_len(N), best_alt)] - current_score
+
+        new_cl <- cl
+        class_size <- tabulate(cl, nbins = Q)
+        moved <- FALSE
+        for (i in order(gain, decreasing = TRUE)) {
+          if (gain[i] <= 0) break
+          from <- new_cl[i]
+          if (class_size[from] <= 1) next # would empty a class
+          new_cl[i] <- best_alt[i]
+          class_size[from]      <- class_size[from] - 1
+          class_size[best_alt[i]] <- class_size[best_alt[i]] + 1
+          moved <- TRUE
+        }
+        if (!moved) break
+
+        candidate <- private$build_candidate(new_cl, in_place = FALSE)
+        candidate$doVEM(control)
+        ## reject a candidate whose VEM refit collapsed a class, even if its ICL looks better:
+        ## it would leave self degenerate (see the guard above)
+        degenerate <- length(unique(candidate$fittedSBM$memberships)) < Q
+        if (!degenerate && candidate$ICL < best_icl) {
+          private$SBM      <- candidate$fittedSBM
+          private$sampling <- candidate$fittedSampling
+          ## re-derive nu from the just-accepted state (not NULL: unlike split()/merge(),
+          ## polish() must leave self immediately usable
+          private$nu       <- private$sampling$update_imputation(private$SBM$imputation)
+          best_icl         <- candidate$ICL
+        } else break
+      }
+      invisible(self)
+    },
     #' @description show method for missSBM_fit
     show = function() {
       cat("missSBM-fit\n")

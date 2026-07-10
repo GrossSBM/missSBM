@@ -1,3 +1,26 @@
+# missSBM 1.1.0.9000 (dev)
+
+**Work in progress, not finalized.** Adds a node-swap polishing step, complementary to the
+existing split/merge exploration -- the two are not yet well-integrated and how best to combine
+or alternate them still needs more thought.
+
+- `missSBM_fit` gains `polish(control, max_sweeps = 10)`: after VEM convergence, tau is
+  near-hard and its fixed point cannot relocate a single misclassified node (only
+  `split()`/`merge()` fix group-level mistakes). Each sweep computes, for every node, the
+  closed-form complete-data log-likelihood gain of moving it to its best alternative class,
+  applies the improving moves, then re-runs VEM to resettle; stops as soon as a sweep fails to
+  improve the ICL, so it never leaves a fit worse than before the call. Much cheaper than
+  split/merge exploration since it refines at a fixed number of blocks instead of searching
+  across them.
+- `missSBM_collection` gains a matching `polish(control = NULL)`, and `estimate()`/`explore()`
+  no longer require `control` to be re-passed on every call: it is now stored privately at
+  construction (from `estimateMissSBM()`'s control list) and reused by default. `explore()`
+  additionally accepts `iterates`/`direction` to override just those two aspects of the stored
+  control for one call -- meant to make it easy to alternate `polish()`/`explore()` calls
+  manually while this is being worked out, e.g. `collection$polish(); collection$explore()`.
+- `estimateMissSBM()`'s `control` gains a `polish` field (default `TRUE`), run once between
+  `estimate()` and `explore()`. `exploration` keeps its existing default (`"both"`) for now.
+
 # missSBM 1.1.0
 
 ## Major changes

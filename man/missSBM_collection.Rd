@@ -37,6 +37,9 @@ class(collection)
 
     \item{\code{vBlocks}}{a vector with the number of blocks}
 
+    \item{\code{optimizationSettings}}{the control list used by estimate()/polish()/explore() when
+not overridden per call (set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
+
     \item{\code{optimizationStatus}}{a data.frame summarizing the optimization process for all models}
   }
   \if{html}{\out{</div>}}
@@ -46,6 +49,7 @@ class(collection)
   \itemize{
     \item \href{#method-missSBM_collection-initialize}{\code{missSBM_collection$new()}}
     \item \href{#method-missSBM_collection-estimate}{\code{missSBM_collection$estimate()}}
+    \item \href{#method-missSBM_collection-polish}{\code{missSBM_collection$polish()}}
     \item \href{#method-missSBM_collection-explore}{\code{missSBM_collection$explore()}}
     \item \href{#method-missSBM_collection-plot}{\code{missSBM_collection$plot()}}
     \item \href{#method-missSBM_collection-show}{\code{missSBM_collection$show()}}
@@ -82,13 +86,37 @@ class(collection)
   method to launch the estimation of the collection of models
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_collection$estimate(control)}
+    \preformatted{missSBM_collection$estimate(control = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control
+(set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}}, see its details for the full list).
+Default \code{NULL} uses the stored control as-is.}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_collection-polish"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-polish}{}}}
+\subsection{\code{missSBM_collection$polish()}}{
+  method to node-swap-polish every model in the collection (see
+\link{missSBM_fit}'s \code{polish()}); fixes individually misclassified nodes at each
+model's own number of blocks, unlike \code{explore()} which searches across blocks.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_collection$polish(control = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control.
+Default \code{NULL} uses the stored control as-is.}
     }
     \if{html}{\out{</div>}}
   }
@@ -98,16 +126,25 @@ class(collection)
 \if{html}{\out{<a id="method-missSBM_collection-explore"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_collection-explore}{}}}
 \subsection{\code{missSBM_collection$explore()}}{
-  method for performing exploration of the ICL
+  method for performing exploration of the ICL (split/merge search across
+numbers of blocks, see \link{missSBM_fit}'s \code{candidates_split()}/\code{candidates_merge()}).
+Uses the collection's stored control by default; \code{iterates} and \code{direction}
+let the caller override just those two aspects for this call, without altering the
+stored control -- handy to alternate \code{explore()}/\code{polish()} calls without
+having to reconstruct a full control list each time.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_collection$explore(control)}
+    \preformatted{missSBM_collection$explore(control = NULL, iterates = NULL, direction = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of parameters controlling the exploration, similar to those found in the regular function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control.
+Default \code{NULL} uses the stored control as-is.}
+      \item{\code{iterates}}{optional integer overriding \code{control$iterates} for this call only.}
+      \item{\code{direction}}{optional character ("forward", "backward", "both" or "none") overriding
+\code{control$exploration} for this call only.}
     }
     \if{html}{\out{</div>}}
   }
