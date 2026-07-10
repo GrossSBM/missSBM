@@ -25,6 +25,12 @@
   recomputing an already-known value. Added a memoized cache on `SimpleSBM_fit*$imputation`,
   invalidated by every method that can change `Z`, `theta` or `beta`; cuts about 20% off total
   run time on the same benchmark, bit-identical results
+- `.mask_dense_at_pattern()` (introduced in the profiling fixes above) now applies its
+  elementwise transform (e.g. `.logistic()`, `log()`) *after* extracting the sparse pattern's
+  values, not before: when the pattern is a minority of the full matrix (e.g. a low missing-data
+  rate), this keeps that transform down to O(nnz) instead of O(N^2). Applied to
+  `SimpleSBM_fit*$imputation` and `blockDyadSampling_fit$vExpec`; a further ~14% off total run
+  time on the same benchmark, bit-identical results
 - `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and
   `candidates_merge()` as instance methods, mirroring the architecture of a
   sibling project (normalblockr's `NormalBlockBase`): the split/merge search

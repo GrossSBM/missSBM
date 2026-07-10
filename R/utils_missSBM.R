@@ -102,9 +102,12 @@ xlogx <- function(x) {
 ## dgCMatrix with that same pattern. Avoids `as(dense, "dgCMatrix") * pattern`: that Ops-based
 ## route goes through Matrix's generic sparse-arithmetic dispatch (intersection of nonzero
 ## indices, class promotion) even though the dense operand has no actual sparsity to exploit.
-.mask_dense_at_pattern <- function(dense, pattern) {
+## `fun` is applied *after* extraction, not to the whole dense matrix: when pattern is much
+## sparser than dense (e.g. a minority of dyads missing), this keeps the elementwise transform
+## (typically the costly part, e.g. exp()-based) down to O(nnz(pattern)) instead of O(N^2).
+.mask_dense_at_pattern <- function(dense, pattern, fun = identity) {
   cidx <- rep.int(seq_len(ncol(pattern)), diff(pattern@p))
-  pattern@x <- dense[cbind(pattern@i + 1L, cidx)]
+  pattern@x <- fun(dense[cbind(pattern@i + 1L, cidx)])
   pattern
 }
 

@@ -182,7 +182,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
       if (is.null(private$imputation_cache))
-        private$imputation_cache <- .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
+        private$imputation_cache <- .mask_dense_at_pattern(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z), private$S, .logistic)
       private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
@@ -240,7 +240,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
       if (is.null(private$imputation_cache))
-        private$imputation_cache <- .mask_dense_at_pattern(.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect), private$S)
+        private$imputation_cache <- .mask_dense_at_pattern(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect, private$S, .logistic)
       private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
@@ -316,7 +316,7 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
       if (is.null(private$imputation_cache))
-        private$imputation_cache <- .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
+        private$imputation_cache <- .mask_dense_at_pattern(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z), private$S, .logistic)
       private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
