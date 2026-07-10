@@ -277,8 +277,10 @@ blockDyadSampling_fit <-
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
+      ## indexes log(rho)/log(1-rho) (dense) at R/S's sparse pattern directly, rather than
+      ## `sparse * dense` (an elementwise Ops that probes isSymmetric() on the dense operand)
       rho <- check_boundaries(private$Z %*% private$psi %*% t(private$Z))
-      sum(private$R * log(rho) + private$S *  log(1 - rho))
+      sum(.mask_dense_at_pattern(log(rho), private$R)@x) + sum(.mask_dense_at_pattern(log(1 - rho), private$S)@x)
     },
     #' @field log_lambda matrix, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {

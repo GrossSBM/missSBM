@@ -115,7 +115,7 @@ spectral bipartition of the sub-network it induces. Builds but does not fit the
 candidate (see \code{candidates_split()}).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$split(index, in_place = FALSE)}
+    \preformatted{missSBM_fit$split(index, in_place = FALSE, base_net = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -124,6 +124,9 @@ candidate (see \code{candidates_split()}).
       \item{\code{index}}{index (integer) of the cluster to split}
       \item{\code{in_place}}{replace \code{self}'s own fit (\code{TRUE}) or return a new object
 (\code{FALSE}, the default)?}
+      \item{\code{base_net}}{optional precomputed network to bipartition (as built internally at the
+top of this method); lets \code{candidates_split()} avoid recomputing it once per
+candidate.}
     }
     \if{html}{\out{</div>}}
   }

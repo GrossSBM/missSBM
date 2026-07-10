@@ -173,7 +173,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+      .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -227,7 +227,7 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect) * private$S, "dgCMatrix")
+      .mask_dense_at_pattern(.logistic(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect), private$S)
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
@@ -299,7 +299,7 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
   active = list(
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
-      as(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)) * private$S, "dgCMatrix")
+      .mask_dense_at_pattern(.logistic(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z)), private$S)
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {

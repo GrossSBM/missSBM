@@ -132,11 +132,16 @@ missSBM_fit <-
     #' @param index index (integer) of the cluster to split
     #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
     #'   (\code{FALSE}, the default)?
+    #' @param base_net optional precomputed network to bipartition (as built internally at the
+    #'   top of this method); lets \code{candidates_split()} avoid recomputing it once per
+    #'   candidate.
     #' @return a new [`missSBM_fit`] with one more block, or \code{NULL} if \code{index} cannot
     #'   be split (its induced sub-network has zero variance)
-    split = function(index, in_place = FALSE) {
-      base_net <- self$imputedNetwork
-      if (private$SBM$directed) base_net <- base_net %*% t(base_net)
+    split = function(index, in_place = FALSE, base_net = NULL) {
+      if (is.null(base_net)) {
+        base_net <- self$imputedNetwork
+        if (private$SBM$directed) base_net <- base_net %*% t(base_net)
+      }
       cl0 <- private$SBM$memberships
       Q   <- private$SBM$nbBlocks
 
@@ -195,7 +200,7 @@ missSBM_fit <-
       control_fast$trace   <- FALSE
 
       future_lapply(cl_splitable, function(k_) {
-        candidate <- self$split(k_)
+        candidate <- self$split(k_, base_net = base_net)
         candidate$doVEM(control_fast)
         candidate
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
@@ -295,14 +300,24 @@ missSBM_fit <-
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
-    entropyImputed = function(value) { - sum(xlogx(private$nu) + xlogx(1 - private$nu)) },
+    entropyImputed = function(value) {
+      ## operate on the stored values only (private$nu is sparse, nonzero only at missing
+      ## dyads): `xlogx(1 - private$nu)` would densify the whole N x N matrix and dispatch
+      ## ifelse() through costly S4 machinery for every VEM iteration
+      if (is.null(private$nu)) return(0)
+      nu_x <- private$nu@x
+      - sum(xlogx(nu_x) + xlogx(1 - nu_x))
+    },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
     entropy = function(value) {private$SBM$entropy + self$entropyImputed},
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {
+      ## if(), not ifelse(): ifelse() evaluates both branches eagerly, which would compute
+      ## the unused one of vExpec/vExpec_corrected (the latter genuinely expensive) on every
+      ## call -- this field is read every VEM iteration via get_loglik()
       private$sampling$vExpec +
-        ifelse(private$sampling$type %in% c("block-dyad", "block-node", "double-standard"),
-               private$SBM$vExpec, private$SBM$vExpec_corrected)
+        if (private$sampling$type %in% c("block-dyad", "block-node", "double-standard"))
+          private$SBM$vExpec else private$SBM$vExpec_corrected
     },
     #' @field penalty double, value of the penalty term in ICL
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},

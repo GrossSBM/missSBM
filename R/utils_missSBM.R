@@ -92,7 +92,21 @@ dropNA <- function(x) {
 
 .logistic <- function(x) {1/(1 + exp(-x))}
 .logit    <- function(x) {log(x/(1 - x))}
-xlogx     <- function(x) ifelse(x < .Machine$double.eps, 0, x*log(x))
+xlogx <- function(x) {
+  out <- x * log(x)
+  out[x < .Machine$double.eps] <- 0
+  out
+}
+
+## values of a dense matrix at the structural nonzeros of a dgCMatrix pattern, packaged as a
+## dgCMatrix with that same pattern. Avoids `as(dense, "dgCMatrix") * pattern`: that Ops-based
+## route goes through Matrix's generic sparse-arithmetic dispatch (intersection of nonzero
+## indices, class promotion) even though the dense operand has no actual sparsity to exploit.
+.mask_dense_at_pattern <- function(dense, pattern) {
+  cidx <- rep.int(seq_len(ncol(pattern)), diff(pattern@p))
+  pattern@x <- dense[cbind(pattern@i + 1L, cidx)]
+  pattern
+}
 
 .softmax <- function(x) {
   b <- max(x)

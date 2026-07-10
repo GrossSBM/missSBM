@@ -1,5 +1,22 @@
 # missSBM 1.0.6
 
+- profiled `estimateMissSBM()` (French blogosphere data, forward/backward exploration) and fixed
+  several hot-path inefficiencies, cutting total run time by roughly half on that benchmark. All
+  give bit-identical results to before -- pure performance fixes, no behavior change:
+  - `SimpleSBM_fit*$imputation` and `blockDyadSampling_fit$vExpec` were multiplying a dense
+    matrix by a sparse pattern (`dense * sparse`); this silently promotes the dense operand
+    through `Matrix`'s generic class-detection, which probes `isSymmetric()` (an O(N^2)
+    row-by-row check) on every call. Replaced with direct indexing at the sparse pattern's
+    positions
+  - `missSBM_fit$entropyImputed` ran `ifelse()` over the full imputed-network matrix (including
+    a `1 - private$nu` that densifies an otherwise sparse matrix); now operates on the sparse
+    matrix's stored values only
+  - `missSBM_fit$vExpec` used `ifelse()` to pick between `SBM$vExpec` and `SBM$vExpec_corrected`
+    -- `ifelse()` evaluates both branches unconditionally, so the discarded, more expensive one
+    was computed on every VEM iteration regardless. Replaced with `if`/`else`
+  - `missSBM_fit$candidates_split()` recomputed the (potentially O(N^3) for directed networks)
+    base network once per splittable cluster inside `split()`, even though it had already built
+    the same matrix for its own filtering step; now computed once and passed through
 - `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and
   `candidates_merge()` as instance methods, mirroring the architecture of a
   sibling project (normalblockr's `NormalBlockBase`): the split/merge search
