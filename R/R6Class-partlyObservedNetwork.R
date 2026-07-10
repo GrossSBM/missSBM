@@ -144,7 +144,7 @@ partlyObservedNetwork <-
         y <- as.vector(adjMat[obs])
         X <- cbind(1, apply(private$phi, 3, function(x) x[obs]))
 ### TODO: make it work for other model than Bernoulli / family than binomial
-        adjMat[obs] <- .logistic(residuals(glm.fit(X, y, family = binomial())))
+        adjMat[obs] <- .logistic(residuals(suppressWarnings(glm.fit(X, y, family = binomial()))))
       }
       miss <- which(private$R == 0)
       suppressMessages(adjMat[miss] <-

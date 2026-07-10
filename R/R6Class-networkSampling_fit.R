@@ -131,7 +131,7 @@ covarDyadSampling_fit <-
       }
       X <- cbind(1, apply(partialNet$covarArray, 3, function(x) x[dyads]))
       y <- partialNet$samplingMatrix[dyads]
-      glm_out     <- glm.fit(X, y, family = binomial())
+      glm_out     <- suppressWarnings(glm.fit(X, y, family = binomial()))
       private$psi <- coefficients(glm_out)
       y_hat <- fitted(glm_out)
       private$rho <- list(obs = y_hat[y == 1], miss = y_hat[y == 0])
@@ -180,7 +180,7 @@ covarNodeSampling_fit <-
     initialize = function(partlyObservedNetwork, ...) {
       super$initialize(partlyObservedNetwork, "covar-node")
       y <- 1 * (partlyObservedNetwork$observedNodes)
-      glm_out     <- glm.fit(cbind(1, partlyObservedNetwork$covarMatrix), y, family = binomial())
+      glm_out     <- suppressWarnings(glm.fit(cbind(1, partlyObservedNetwork$covarMatrix), y, family = binomial()))
       private$psi <- coefficients(glm_out)
       private$rho <- fitted(glm_out)
     }
