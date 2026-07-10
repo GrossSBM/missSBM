@@ -1,4 +1,4 @@
-# missSBM 1.0.6
+# missSBM 1.1.0
 
 - profiled `estimateMissSBM()` (French blogosphere data, forward/backward exploration) and fixed
   several hot-path inefficiencies, cutting total run time by roughly half on that benchmark. All
