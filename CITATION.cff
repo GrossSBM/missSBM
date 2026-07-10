@@ -1,0 +1,75 @@
+# This CITATION.cff file was generated to credit missSBM's authors/contributors
+# and its reference publication in the Journal of Statistical Software.
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite the Journal of Statistical Software
+  article listed under "preferred-citation" below.
+title: missSBM
+type: software
+version: 1.1.0
+license: GPL-3.0-only
+repository-code: https://github.com/GrossSBM/missSBM
+url: https://grosssbm.github.io/missSBM/
+abstract: >-
+  When a network is partially observed (i.e., NAs in the adjacency matrix
+  rather than 1 or 0 due to missing information between node pairs), it is
+  possible to account for the underlying process that generates those NAs.
+  missSBM adjusts the popular stochastic block model from network data
+  sampled under various missing data conditions.
+authors:
+  - family-names: Chiquet
+    given-names: Julien
+    email: julien.chiquet@inrae.fr
+    orcid: https://orcid.org/0000-0002-3629-3429
+  - family-names: Barbillon
+    given-names: Pierre
+    email: pierre.barbillon@agroparistech.fr
+    orcid: https://orcid.org/0000-0002-7766-7693
+  - family-names: Tabouy
+    given-names: Timothée
+    email: timothee.tabouy@agroparistech.fr
+  - family-names: Léger
+    given-names: Jean-Benoist
+    email: jbleger@hds.utc.fr
+  - family-names: Gindraud
+    given-names: François
+    email: francois.gindraud@gmail.com
+preferred-citation:
+  type: article
+  title: "missSBM: An R Package for Handling Missing Values in the Stochastic Block Model"
+  authors:
+    - family-names: Barbillon
+      given-names: Pierre
+      orcid: https://orcid.org/0000-0002-7766-7693
+    - family-names: Chiquet
+      given-names: Julien
+      orcid: https://orcid.org/0000-0002-3629-3429
+    - family-names: Tabouy
+      given-names: Timothée
+  journal: Journal of Statistical Software
+  year: 2022
+  volume: 101
+  issue: 12
+  start: 1
+  end: 32
+  doi: 10.18637/jss.v101.i12
+  url: https://www.jstatsoft.org/v101/i12/
+references:
+  - type: article
+    title: "Variational Inference for Stochastic Block Models From Sampled Data"
+    authors:
+      - family-names: Tabouy
+        given-names: Timothée
+      - family-names: Barbillon
+        given-names: Pierre
+        orcid: https://orcid.org/0000-0002-7766-7693
+      - family-names: Chiquet
+        given-names: Julien
+        orcid: https://orcid.org/0000-0002-3629-3429
+    journal: Journal of the American Statistical Association
+    year: 2019
+    volume: 115
+    issue: 529
+    start: 455
+    end: 466
+    doi: 10.1080/01621459.2018.1562934
