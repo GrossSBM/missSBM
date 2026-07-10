@@ -1,5 +1,18 @@
 # missSBM 1.0.6
 
+- `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and
+  `candidates_merge()` as instance methods, mirroring the architecture of a
+  sibling project (normalblockr's `NormalBlockBase`): the split/merge search
+  algorithm itself is unchanged (a spectral bipartition of a cluster's induced
+  sub-network for splitting, direct relabeling for merging), only its code
+  organization moved from being inlined in `missSBM_collection`'s
+  `explore_forward()`/`explore_backward()` to living on the model itself,
+  which is now independently testable and readable. Because the exact
+  boundaries of parallel (`future_lapply`) evaluation shifted slightly, the
+  precise RNG draws consumed during exploration differ from before (verified:
+  same ICL at every q on a fixed-seed benchmark except where a split/merge
+  candidate was actually applied, where it differs by a negligible amount,
+  never worse)
 - add SQUAREM acceleration (Varadhan & Roland, 2008) to the VEM of
   `SimpleSBM_fit_noCov` (the MAR, no-covariate case): every two plain VEM
   steps, attempts an extrapolated step in an unconstrained reparametrization

@@ -109,11 +109,9 @@ Rcpp::List M_step_sparse_bernoulli_nocovariate(
 // solved via a Schur complement on a K x K system (K = number of covariates, typically small)
 // instead of inverting the full (Q^2+K) x (Q^2+K) system.
 //
-// Symmetric (undirected) case: instead of optimizing the redundant Q x Q matrix and symmetrizing
-// the gradient post-hoc (which is a valid ascent direction but not an exact Newton step), we
-// reduce to the actual Q(Q+1)/2 free parameters (q <= l), summing the (q,l) and (l,q)
-// contributions onto the shared parameter -- giving an exact Newton step on the true parameter
-// space and exact symmetry preservation at every iteration.
+// Symmetric (undirected) case: reduce to the actual Q(Q+1)/2 free parameters (q <= l),
+// summing the (q,l) and (l,q) contributions onto the shared parameter, giving an exact
+// Newton step on the true parameter space and exact symmetry preservation at every iteration.
 
 // [[Rcpp::export]]
 Rcpp::List M_step_sparse_bernoulli_covariates (

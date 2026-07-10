@@ -31,7 +31,14 @@ missSBM_fit <-
     nu         = NULL, # imputed values (a sparse Matrix with entries only for imputed values, "dgCMatrix)
     sampling   = NULL, # fit of the current sampling model (object of class 'networkSampling_fit')
     SBM        = NULL, # fit of the current stochastic block model (object of class 'SBM_fit')
-    optStatus  = NULL  # status of the optimization process
+    optStatus  = NULL, # status of the optimization process
+
+    ## kept around (unused at construction time otherwise) so that split()/merge() can build
+    ## a sibling missSBM_fit with one more/fewer block, the same way NormalBlockBase$split()/
+    ## merge() in the sibling project normalblockr do
+    partlyObservedNet = NULL,
+    netSampling        = NULL,
+    useCov             = NULL
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## PUBLIC MEMBERS
@@ -75,6 +82,10 @@ missSBM_fit <-
         "degree"          = degreeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit), private$SBM$connectParam$mean),
         "snowball"        = nodeSampling_fit$new(partlyObservedNet) # estimated sampling parameter not relevant
       )
+
+      private$partlyObservedNet <- partlyObservedNet
+      private$netSampling       <- netSampling
+      private$useCov            <- useCov
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
     #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
@@ -118,6 +129,148 @@ missSBM_fit <-
       )
 
       invisible(private$optStatus)
+    },
+    #' @description clone of the current fit after splitting cluster \code{index} in two, via a
+    #'   spectral bipartition of the sub-network it induces (logistic-transformed, normalized
+    #'   weighted Laplacian, top-2 eigenvectors, 2-means). Mirrors \code{NormalBlockBase}'s
+    #'   \code{split()} in the sibling project normalblockr: builds (but does not fit) a
+    #'   candidate with one more block, meant to be cheaply trial-fitted by
+    #'   \code{candidates_split()} before a full refit of the most promising one.
+    #' @param index index (integer) of the cluster to split
+    #' @param in_place should the split replace \code{self}'s own fit (\code{TRUE}) or be
+    #'   returned as a new object (\code{FALSE}, the default)?
+    #' @return a new [`missSBM_fit`] with one more block, or \code{NULL} if \code{index} cannot
+    #'   be meaningfully split (its induced sub-network has zero variance)
+    split = function(index, in_place = FALSE) {
+      base_net <- self$imputedNetwork
+      if (private$SBM$directed) base_net <- base_net %*% t(base_net)
+      cl0 <- private$SBM$memberships
+      Q   <- private$SBM$nbBlocks
+
+      A <- base_net[cl0 == index, cl0 == index]
+      sdA <- sd(A)
+      if (sdA == 0) return(NULL)
+
+      A <- 1 / (1 + exp(-A / sdA))
+      D <- 1 / sqrt(rowSums(abs(A)))
+      L <- sweep(sweep(A, 1, D, "*"), 2, D, "*")
+      Un <- eigen(L, symmetric = TRUE)$vectors[, 1:2]
+      Un <- sweep(Un, 1, sqrt(rowSums(Un^2)), "/")
+      bipartition <- kmeans_missSBM(Un, 2)
+
+      split_labels <- bipartition
+      split_labels[bipartition == 1] <- index
+      split_labels[bipartition == 2] <- Q + 1
+      candidate <- cl0
+      candidate[candidate == index] <- split_labels
+      ## in case of empty classes, add randomly one guy in those classes
+      candidate <- factor(candidate, levels = 1:(Q + 1))
+      absent <- which(tabulate(candidate) == 0)
+      swap <- base::sample(1:length(candidate), length(absent))
+      candidate[swap] <- absent
+      candidate <- as.numeric(candidate) # relabeling to start from 1
+
+      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate, private$useCov)
+      if (in_place) {
+        private$SBM      <- new_fit$fittedSBM
+        private$sampling <- new_fit$fittedSampling
+        private$nu       <- NULL
+        return(invisible(self))
+      }
+      new_fit
+    },
+    #' @description generate and cheaply trial-fit a set of candidate models obtained by
+    #'   splitting each splittable cluster of the current fit in two (see \code{split()}). A
+    #'   cluster is considered splittable if it has at least 4 members and non-zero variance in
+    #'   its induced sub-network (otherwise the spectral bipartition it would need is
+    #'   degenerate). Mirrors \code{NormalBlockBase$candidates_split()}.
+    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
+    #'   is overridden by \code{trial_niter} for these cheap trial fits
+    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
+    candidates_split = function(control, trial_niter = 2) {
+      base_net <- self$imputedNetwork
+      if (private$SBM$directed) base_net <- base_net %*% t(base_net)
+      cl0 <- private$SBM$memberships
+      Q   <- private$SBM$nbBlocks
+
+      cl_splitable <- (1:Q)[tabulate(cl0, nbins = Q) >= 4]
+      sds <- sapply(cl_splitable, function(k_) sd(base_net[cl0 == k_, cl0 == k_]))
+      cl_splitable <- cl_splitable[sds > 0]
+      if (length(cl_splitable) == 0) return(list())
+
+      control_fast <- control
+      control_fast$maxIter <- trial_niter
+      control_fast$trace   <- FALSE
+
+      future_lapply(cl_splitable, function(k_) {
+        candidate <- self$split(k_)
+        candidate$doVEM(control_fast)
+        candidate
+      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+    },
+    #' @description clone of the current fit after merging clusters \code{indices[1]} and
+    #'   \code{indices[2]} into one. Mirrors \code{NormalBlockBase}'s \code{merge()}: builds (but
+    #'   does not fit) a candidate with one fewer block, meant to be cheaply trial-fitted by
+    #'   \code{candidates_merge()} before a full refit of the most promising one.
+    #' @param indices indices (couple of integers) of the clusters to merge
+    #' @param in_place should the merge replace \code{self}'s own fit (\code{TRUE}) or be
+    #'   returned as a new object (\code{FALSE}, the default)?
+    #' @return a new [`missSBM_fit`] with one fewer block
+    merge = function(indices, in_place = FALSE) {
+      Q  <- private$SBM$nbBlocks
+      cl0 <- factor(private$SBM$memberships, 1:Q)
+      ## in case of empty classes, add randomly one guy in those classes
+      absent <- which(tabulate(cl0) == 0)
+      swap <- base::sample(1:length(cl0), length(absent))
+      cl0[swap] <- absent
+
+      cl_merged <- cl0
+      levels(cl_merged)[sort(indices)] <- indices[1]
+      levels(cl_merged) <- as.character(1:(nlevels(cl0) - 1))
+      candidate <- as.integer(cl_merged)
+
+      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate, private$useCov)
+      if (in_place) {
+        private$SBM      <- new_fit$fittedSBM
+        private$sampling <- new_fit$fittedSampling
+        private$nu       <- NULL
+        return(invisible(self))
+      }
+      new_fit
+    },
+    #' @description generate and cheaply trial-fit a set of candidate models obtained by merging
+    #'   pairs of clusters of the current fit (see \code{merge()}). Mirrors
+    #'   \code{NormalBlockBase$candidates_merge()}.
+    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
+    #'   is overridden by \code{trial_niter} for these cheap trial fits
+    #' @param max_candidates merge candidates are, unlike split's, quadratic in the number of
+    #'   blocks (\code{choose(q, 2)} pairs) -- beyond \code{max_candidates} pairs, only the most
+    #'   promising ones (most similar fitted connectivity profile) are tried. Default is 30.
+    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @return a list of trial-fitted [`missSBM_fit`] candidates
+    candidates_merge = function(control, max_candidates = 30, trial_niter = 2) {
+      Q <- private$SBM$nbBlocks
+      if (Q <= 1) return(list())
+
+      pairs <- combn(Q, 2, simplify = FALSE)
+      if (length(pairs) > max_candidates) {
+        theta <- private$SBM$connectParam$mean
+        score <- sapply(pairs, function(ij) {
+          sqrt(sum((theta[ij[1], ] - theta[ij[2], ])^2) + sum((theta[, ij[1]] - theta[, ij[2]])^2))
+        })
+        pairs <- pairs[order(score)[1:max_candidates]]
+      }
+
+      control_fast <- control
+      control_fast$maxIter <- trial_niter
+      control_fast$trace   <- FALSE
+
+      future_lapply(pairs, function(couple) {
+        candidate <- self$merge(couple)
+        candidate$doVEM(control_fast)
+        candidate
+      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
     },
     #' @description show method for missSBM_fit
     show = function() {
