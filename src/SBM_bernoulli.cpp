@@ -1,10 +1,6 @@
 #include "RcppArmadillo.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-// [[Rcpp::depends(nloptr)]]
-
-#include "nlopt_wrapper.h"
-#include "packing.h"
 
 using namespace Rcpp;
 using namespace arma;
@@ -37,10 +33,6 @@ double vLL_complete_sparse_bernoulli_covariates(
     const arma::vec& pi
 ) {
 
-  // NB: a version using outer products (Z.row(i).t() * Z.row(j)) instead of this scalar
-  // triple loop was benchmarked and found 2-4x *slower* in practice: Q (the number of
-  // blocks) is typically small, and the per-call overhead of allocating small Armadillo
-  // matrices dominates over the trivially-unrolled scalar loop below.
   uword Q = Z.n_cols ;
   double loglik = accu(Z * log(pi)) ;
 
@@ -103,6 +95,26 @@ Rcpp::List M_step_sparse_bernoulli_nocovariate(
   );
 }
 
+// M-step for the covariate Bernoulli model: maximizes, over (Gamma, beta), the weighted
+// logistic log-likelihood:
+//   J(Gamma, beta) = sum_{(i,j) observed} sum_{q,l} w_ijql * (Y_ij*eta_ijql - log(1+exp(eta_ijql)))
+// with eta_ijql = Gamma_ql + beta'X_ij and w_ijql = Z_iq * Z_jl.
+//
+// The logit link being canonical for the Bernoulli family, J is globally concave in
+// (Gamma, beta) jointly, so Newton-Raphson (eq. IRLS) converges reliably and quadratically.
+//
+// The Hessian has an "arrowhead" structure: d2J/dGamma_ql^2 is diagonal (no coupling between
+// different (q,l) pairs), bordered by a Q^2 x K (or reduced x K for the symmetric case) coupling
+// block and a dense K x K block for beta. The diagonal Gamma block lets each Newton step be
+// solved via a Schur complement on a K x K system (K = number of covariates, typically small)
+// instead of inverting the full (Q^2+K) x (Q^2+K) system.
+//
+// Symmetric (undirected) case: instead of optimizing the redundant Q x Q matrix and symmetrizing
+// the gradient post-hoc (which is a valid ascent direction but not an exact Newton step), we
+// reduce to the actual Q(Q+1)/2 free parameters (q <= l), summing the (q,l) and (l,q)
+// contributions onto the shared parameter -- giving an exact Newton step on the true parameter
+// space and exact symmetry preservation at every iteration.
+
 // [[Rcpp::export]]
 Rcpp::List M_step_sparse_bernoulli_covariates (
     Rcpp::List init_param,
@@ -111,63 +123,148 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
     const arma::cube&   X,
     const arma::mat&    Z,
     const bool sym,
-    Rcpp::List configuration) {
+    const int    maxIter = 50,
+    const double tol     = 1e-10) {
 
-     // Conversion from R, prepare optimization
-    const auto init_Gamma = Rcpp::as<arma::mat>(init_param["Gamma"]); // (Q,Q)
-    const auto init_beta  = Rcpp::as<arma::vec>(init_param["beta"]);  // (M,1)
+    arma::mat Gamma = Rcpp::as<arma::mat>(init_param["Gamma"]); // (Q,Q)
+    arma::vec beta  = Rcpp::as<arma::vec>(init_param["beta"]);  // (K,1)
 
-    const auto metadata = tuple_metadata(init_Gamma, init_beta);
-    enum { GAMMA_ID, BETA_ID }; // Names for metadata indexes
+    uword Q = Z.n_cols;
+    uword K = X.n_slices;
 
-    auto parameters = std::vector<double>(metadata.packed_size);
-    metadata.map<GAMMA_ID>(parameters.data()) = init_Gamma;
-    metadata.map<BETA_ID>(parameters.data())  = init_beta;
+    // index map for the (reduced, if sym) set of free Gamma parameters
+    uword P = sym ? (Q * (Q + 1)) / 2 : Q * Q;
+    arma::umat pair_ql(P, 2);
+    {
+      uword p = 0;
+      for (uword q = 0; q < Q; q++) {
+        for (uword l = (sym ? q : 0); l < Q; l++) {
+          pair_ql(p, 0) = q; pair_ql(p, 1) = l; p++;
+        }
+      }
+    }
 
-    auto optimizer = new_nlopt_optimizer(configuration, parameters.size());
-
-    // Optimize
-    auto objective_and_grad = [&metadata, &Y, &R, &X, &Z, &sym](const double * params, double * grad) -> double {
-
-      const arma::mat gamma = metadata.map<GAMMA_ID>(params);
-      const arma::vec beta = metadata.map<BETA_ID>(params);
-
-      uword Q = Z.n_cols;
-      uword K = X.n_slices;
+    auto eval_loglik = [&](const arma::mat & Gm, const arma::vec & bt) -> double {
       double loglik = 0;
-
-      arma::mat gr_gamma = zeros<mat>(Q,Q);
-      arma::vec gr_beta  = zeros<vec>(K);
-
-      sp_mat::const_iterator Rij     = R.begin();
-      sp_mat::const_iterator Rij_end = R.end();
-
-        for(; Rij != Rij_end; ++Rij) {
-          arma::vec phi = X.tube(Rij.row(),Rij.col());
-          double mu = as_scalar(beta.t() * phi) ;
-          arma::mat ZiqZjl = Z.row(Rij.row()).t() * Z.row(Rij.col()) ;
-          loglik += accu(ZiqZjl % ( Y(Rij.row(), Rij.col()) * (gamma + mu) - log(1 + exp(gamma + mu ))) ) ;
-          arma::mat delta = ZiqZjl % (Y(Rij.row(), Rij.col()) - 1 / (1 + exp(-(gamma + mu)))) ;
-          if (sym) {
-            delta = .5 * (delta + delta.t()) ;
+      sp_mat::const_iterator Rij = R.begin(), Rij_end = R.end();
+      for (; Rij != Rij_end; ++Rij) {
+        uword i = Rij.row(), j = Rij.col();
+        arma::vec phi = X.tube(i, j);
+        double mu  = as_scalar(bt.t() * phi);
+        double yij = Y(i, j);
+        for (uword q = 0; q < Q; q++) {
+          for (uword l = 0; l < Q; l++) {
+            double zz = Z(i, q) * Z(j, l);
+            if (zz == 0.0) continue;
+            double eta = Gm(q, l) + mu;
+            loglik += zz * (yij * eta - std::log1p(std::exp(eta)));
           }
-          gr_gamma += delta ;
-          gr_beta  += accu(delta) * phi ;
+        }
+      }
+      return loglik;
+    };
+
+    // Levenberg-Marquardt-style damping: ridge grows across (rare) failed attempts within an
+    // iteration -- e.g. when some block pair (q,l) has near-zero curvature, which routinely
+    // happens once the VEM has nearly converged to hard clusters -- and cools back down once a
+    // damped step succeeds, so the common case stays a cheap, undamped, quadratically
+    // convergent Newton step.
+    double ridge = 1e-10;
+    double J_old = eval_loglik(Gamma, beta);
+    int iterate = 0;
+    bool converged = false;
+
+    for (; iterate < maxIter; iterate++) {
+
+      arma::vec g_shared(P, fill::zeros); // dJ/dGamma_shared(p)
+      arma::vec d_shared(P, fill::zeros); // d2J/dGamma_shared(p)^2  (<= 0, undamped)
+      arma::mat C(P, K, fill::zeros);     // d2J/dGamma_shared(p) dbeta
+      arma::vec g_beta(K, fill::zeros);
+      arma::mat H_beta(K, K, fill::zeros); // undamped
+
+      sp_mat::const_iterator Rij = R.begin(), Rij_end = R.end();
+      for (; Rij != Rij_end; ++Rij) {
+        uword i = Rij.row(), j = Rij.col();
+        arma::vec phi = X.tube(i, j);
+        double mu  = as_scalar(beta.t() * phi);
+        double yij = Y(i, j);
+
+        for (uword p = 0; p < P; p++) {
+          uword q = pair_ql(p, 0), l = pair_ql(p, 1);
+          double zz = (sym && q != l) ? (Z(i,q)*Z(j,l) + Z(i,l)*Z(j,q)) : Z(i,q)*Z(j,l);
+          if (zz == 0.0) continue;
+          double eta  = Gamma(q, l) + mu;
+          double prob = 1.0 / (1.0 + std::exp(-eta));
+          double d = zz * (yij - prob);
+          double v = zz * prob * (1.0 - prob);
+
+          g_shared(p) += d;
+          d_shared(p) -= v;
+          for (uword k = 0; k < K; k++) C(p, k) -= v * phi(k);
+          g_beta += d * phi;
+          H_beta -= v * (phi * phi.t());
+        }
+      }
+
+      bool accepted = false;
+      arma::mat Gamma_new; arma::vec beta_new; double J_new = J_old;
+      for (int damp_try = 0; damp_try < 30 && !accepted; damp_try++) {
+
+        arma::vec d_damped = d_shared - ridge;
+        arma::mat H_beta_damped = H_beta;
+        H_beta_damped.diag() -= ridge;
+
+        // Newton step solves H*delta = -g ; via Schur complement on the (diagonal) Gamma block:
+        arma::vec Dinv = 1.0 / d_damped;
+        arma::mat CD = C.each_col() % Dinv;
+        arma::mat Sc = H_beta_damped - C.t() * CD;
+        arma::vec rhs = C.t() * (Dinv % g_shared) - g_beta;
+
+        arma::vec delta_beta;
+        if (!arma::solve(delta_beta, Sc, rhs)) {
+          ridge *= 10;
+          continue;
+        }
+        arma::vec delta_shared = -Dinv % (g_shared + C * delta_beta);
+
+        arma::mat delta_Gamma(Q, Q, fill::zeros);
+        for (uword p = 0; p < P; p++) {
+          uword q = pair_ql(p, 0), l = pair_ql(p, 1);
+          delta_Gamma(q, l) = delta_shared(p);
+          if (sym) delta_Gamma(l, q) = delta_shared(p);
         }
 
-        metadata.map<GAMMA_ID>(grad) = -gr_gamma;
-        metadata.map<BETA_ID>(grad)  = -gr_beta;
+        // backtracking line search: guarantees monotonic ascent for a given (damped) direction
+        double alpha = 1.0;
+        for (int ls_iter = 0; ls_iter < 20; ls_iter++) {
+          Gamma_new = Gamma + alpha * delta_Gamma;
+          beta_new  = beta  + alpha * delta_beta;
+          J_new = eval_loglik(Gamma_new, beta_new);
+          if (J_new > J_old - 1e-12) { accepted = true; break; }
+          alpha *= 0.5;
+        }
+        if (!accepted) ridge *= 10; else ridge = std::max(ridge / 10, 1e-10);
+      }
+      if (!accepted) {
+        throw Rcpp::exception("M_step_sparse_bernoulli_covariates: Newton solver failed "
+                               "to find an ascent direction (degenerate Hessian).");
+      }
 
-        return (-loglik);
-    };
-    OptimizerResult result = minimize_objective_on_parameters(optimizer.get(), objective_and_grad, parameters);
+      Gamma = Gamma_new;
+      beta  = beta_new;
 
-    arma::mat Gamma = metadata.copy<GAMMA_ID>(parameters.data());
-    arma::vec beta  = metadata.copy<BETA_ID>(parameters.data());
+      if (std::abs(J_new - J_old) < tol * (std::abs(J_new) + 1e-8)) {
+        J_old = J_new;
+        iterate++;
+        converged = true;
+        break;
+      }
+      J_old = J_new;
+    }
 
     return Rcpp::List::create(
-        Rcpp::Named("status", static_cast<int>(result.status)),
-        Rcpp::Named("iterations", result.nb_iterations),
+        Rcpp::Named("status", converged ? 1 : 0),
+        Rcpp::Named("iterations", iterate),
         Rcpp::Named("theta", Rcpp::List::create(Rcpp::Named("mean", 1/(1 + exp(-Gamma))))),
         Rcpp::Named("pi"   , as<NumericVector>(wrap(mean(Z,0)))),
         Rcpp::Named("beta" , as<NumericVector>(wrap(beta)))
@@ -242,4 +339,3 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_covariates(
 
   return Rcpp::wrap(log_tau) ;
 }
-

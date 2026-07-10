@@ -15,10 +15,22 @@
 - speed up `kmeans_missSBM()`'s farthest-point seeding: it now maintains a running
   per-point distance to the nearest already-chosen centroid instead of recomputing it
   from scratch at every iteration (O(k N) instead of O(k^2 N))
-- an exception thrown while optimizing the covariate connectivity parameters (nlopt
-  objective) could previously crash the R session instead of raising a normal, catchable
-  R error, since it had to unwind through nlopt's C call stack; it is now caught and
-  re-thrown safely
+- replace the NLopt/CCSAQ optimizer used to fit the covariate connectivity parameters
+  (`M_step_sparse_bernoulli_covariates`) with a builtin Newton-Raphson solver: the M-step
+  objective is a weighted logistic regression, globally concave in `(Gamma, beta)`, so
+  Newton converges reliably in a handful of iterations (typically 4-6, against 20-60 for
+  CCSAQ at comparable precision) instead of relying on a generic black-box optimizer.
+  The symmetric (undirected) case now optimizes the actual `Q(Q+1)/2` free parameters
+  directly (instead of a redundant `Q x Q` matrix with a post-hoc symmetrized gradient),
+  guaranteeing exact symmetry at every iteration. A Levenberg-Marquardt-style damping with
+  backtracking line search keeps the solver robust when the Hessian is near-singular,
+  which routinely happens once block memberships are nearly hard late in a VEM run.
+  As a consequence, `nloptr` is no longer a dependency of the package
+  (`src/nlopt_wrapper.*`, `src/packing.*` are removed). This is a wash on raw wall-clock
+  time in our benchmarks (Newton's per-iteration cost grows with the number of
+  covariates, offsetting the much lower iteration count for models with many
+  covariates), but removes an external dependency and gives more predictable, reliable
+  convergence.
 - remove src/utils.h: none of its helpers were actually used anywhere
 - minor documentation and dead-code cleanup (see git history for details)
 

@@ -173,11 +173,11 @@ SimpleSBM_fit_withCov <-
 R6::R6Class(classname = "SimpleSBM_fit_withCov",
   inherit = SimpleSBM_fit,
   public = list(
-    #' @description update parameters estimation (M-step)
-    #' @param control a list to tune nlopt for optimization, see documentation of nloptr
+    #' @description update parameters estimation (M-step) via Newton-Raphson: the M-step
+    #'   objective is a weighted logistic regression (concave), so Newton converges in a
+    #'   handful of iterations -- no external optimizer is required.
     #' @param ... use for compatibility
     update_parameters = function(...) {
-      control <- list(maxeval = 50, xtol_rel = 1e-4, algorithm = "CCSAQ")
       res <- private$M_step(
         init_param = list(Gamma = .logit(private$theta$mean), beta = private$beta),
         Y = private$Y,
@@ -185,7 +185,8 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
         X = self$covarArray,
         Z = private$Z,
         !self$directed,
-        configuration = control
+        maxIter = 50,
+        tol = 1e-10
       )
       private$beta  <- as.numeric(res$beta)
       private$theta <- res$theta

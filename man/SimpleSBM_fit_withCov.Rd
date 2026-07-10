@@ -48,7 +48,9 @@ It is not designed to be called directly by the user.
 \if{html}{\out{<a id="method-SimpleSBM_fit_withCov-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-update_parameters}{}}}
 \subsection{\code{SimpleSBM_fit_withCov$update_parameters()}}{
-  update parameters estimation (M-step)
+  update parameters estimation (M-step) via Newton-Raphson: the M-step
+objective is a weighted logistic regression (concave), so Newton converges in a
+handful of iterations -- no external optimizer is required.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimpleSBM_fit_withCov$update_parameters(...)}
@@ -58,7 +60,6 @@ It is not designed to be called directly by the user.
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{...}}{use for compatibility}
-      \item{\code{control}}{a list to tune nlopt for optimization, see documentation of nloptr}
     }
     \if{html}{\out{</div>}}
   }
