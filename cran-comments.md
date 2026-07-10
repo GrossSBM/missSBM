@@ -28,6 +28,11 @@ See NEWS.md for the full changelog.
 
 * tested locally on Ubuntu Linux 24.04.2 LTS, R-release, GCC
 
+* tested remotely with win-builder
+  - Windows Server 2022, R-oldrelease, 64 bit
+  - Windows Server 2022, R-release, 64 bit
+  - Windows Server 2022, R-devel, 64 bit
+
 * tested remotely via GitHub Actions (R-CMD-check.yaml)
   - Ubuntu 24.04, R-devel
   - Ubuntu 24.04, R-release
