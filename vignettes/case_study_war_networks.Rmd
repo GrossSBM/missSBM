@@ -67,7 +67,7 @@ plot(war$belligerent,
 To pursue our analysis, we extract the adjacency matrix of the network, a covariate on the vertices describing the military power of each country, and a covariate on the dyads describing the intensity of trade between two countries.
 
 ```{r belligerent network}
-belligerent_adjacency <- as_adj(war$belligerent, sparse = FALSE)
+belligerent_adjacency <- as_adjacency_matrix(war$belligerent, sparse = FALSE)
 belligerent_power     <- war$belligerent$power
 belligerent_trade     <- war$belligerent$trade
 ```

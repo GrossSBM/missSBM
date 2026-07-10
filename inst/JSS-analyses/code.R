@@ -46,7 +46,7 @@ load("main_analysis.RData")
 data("frenchblog2007", package = "missSBM")
 frenchblog2007 <- delete_vertices(frenchblog2007, 
   which(degree(frenchblog2007) ==  0))
-blog  <- as_adj(frenchblog2007)
+blog  <- as_adjacency_matrix(frenchblog2007)
 party <- vertex.attributes(frenchblog2007)$party
 
 
@@ -200,8 +200,8 @@ par(par_old)
 
 
 ## ----subgraph-sampling, eval = TRUE, message = FALSE, warning = FALSE-------------
-blog_subgraph_obs <- blog_subgraph %>% as_adj() %>% 
-  observeNetwork(sampling = "covar-node", parameters = 10, 
+blog_subgraph_obs <- blog_subgraph %>% as_adjacency_matrix() %>%
+  observeNetwork(sampling = "covar-node", parameters = 10,
   covariates = list(dummy_party))
 blocks <- 2:8
 future::plan("multicore", workers = 10)
@@ -258,7 +258,7 @@ rbind(tibble(Q = blocks, ICL = sbm_covar1$ICL, sampling = "covar-node", useCov =
 
 
 ## ----covar-full, eval = FALSE-------------------------------------------------
-## sbm_covar_full <- as_adj(blog_subgraph) %>%
+## sbm_covar_full <- as_adjacency_matrix(blog_subgraph) %>%
 ##    estimateMissSBM(blocks, "node", covariates =  list(dummy_party))
 
 

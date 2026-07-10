@@ -106,13 +106,13 @@ blog_subgraph <- delete_vertices(blog_subgraph,
 dummy_party <- (V(blog_subgraph)$party == "left") * 1
 
 ## observe this graph according to this covariate
-blog_subgraph_obs <- blog_subgraph %>% as_adj() %>%
+blog_subgraph_obs <- blog_subgraph %>% as_adjacency_matrix() %>%
   missSBM::observeNetwork(sampling="covar-node", parameters = 3,
     covariates = list(dummy_party))
 
 ## fit SBM on the fully observed, taking the covariate into account in the SBM
 blocks <- 2:8
-sbm_covar_full <- blog_subgraph %>% as_adj() %>%
+sbm_covar_full <- blog_subgraph %>% as_adjacency_matrix() %>%
   estimateMissSBM(blocks, "node", covariates =  list(dummy_party),
     control = list(useCov = TRUE, iterates = 2))
 # plot(sbm_covar_full, "icl")
@@ -142,7 +142,7 @@ sbm_covar4 <- estimateMissSBM(blog_subgraph_obs, blocks, "node",
 # plot(sbm_covar4, "icl")
 # plot(sbm_covar4, "monitoring")
 
-sbm_covar_full <- as_adj(blog_subgraph) %>%
+sbm_covar_full <- as_adjacency_matrix(blog_subgraph) %>%
    estimateMissSBM(blocks, "node", covariates =  list(dummy_party))
 
 

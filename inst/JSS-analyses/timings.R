@@ -3,7 +3,7 @@ library("parallel")
 library("tidyverse")
 
 data("frenchblog2007", package = "missSBM")
-adjacencyMatrix <- igraph::as_adj(frenchblog2007, sparse = FALSE)
+adjacencyMatrix <- igraph::as_adjacency_matrix(frenchblog2007, sparse = FALSE)
 sbm_full <- estimateMissSBM(adjacencyMatrix, 10, "node", control = list(core = 10,
   iterates = 0))
 samplingParameters <- base::sample(x = c(0.2, 0.8), size = sbm_full$bestModel$fittedSBM$nbBlocks,
