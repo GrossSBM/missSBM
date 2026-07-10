@@ -74,15 +74,17 @@ R6::R6Class(classname = "SimpleSBM_fit",
       if (trace) cat("\n Adjusting Variational EM for Stochastic Block Model\n")
 
       run_VEM(
-        control    = list(threshold = threshold, maxIter = maxIter, fixPointIter = fixPointIter, trace = trace),
-        init_stop  = self$nbBlocks <= 1,
-        e_step     = function(fixPointIter) for (i in seq.int(fixPointIter)) self$update_blocks(),
-        m_step     = function() self$update_parameters(),
-        get_loglik = function() self$loglik,
-        get_theta  = function() private$theta$mean,
-        snapshot   = function() self$get_state(),
-        restore    = function(state) self$set_state(state),
-        reorder    = function() self$reorder()
+        control        = list(threshold = threshold, maxIter = maxIter, fixPointIter = fixPointIter, trace = trace),
+        init_stop      = self$nbBlocks <= 1,
+        e_step         = function(fixPointIter) for (i in seq.int(fixPointIter)) self$update_blocks(),
+        m_step         = function() self$update_parameters(),
+        get_loglik     = function() self$loglik,
+        get_theta      = function() private$theta$mean,
+        snapshot       = function() self$get_state(),
+        restore        = function(state) self$set_state(state),
+        reorder        = function() self$reorder(),
+        get_flat_state = if (self$supports_acceleration()) function() self$get_flat_state(),
+        set_flat_state = if (self$supports_acceleration()) function(p) self$set_flat_state(p)
       )
     },
     #' @description permute group labels by order of decreasing probability
@@ -105,7 +107,11 @@ R6::R6Class(classname = "SimpleSBM_fit",
       private$pi    <- state$pi
       private$beta  <- state$beta
       invisible(self)
-    }
+    },
+    #' @description opt-in gate for the SQUAREM-style acceleration in \code{run_VEM()}
+    #'   (see \code{get_flat_state()}). Defaults to \code{FALSE}; overridden by
+    #'   variants that have been validated to support it.
+    supports_acceleration = function() FALSE
   ),
   active = list(
     #' @field type the type of SBM (distribution of edges values, network type, presence of covariates)
@@ -143,6 +149,31 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @param ... additional arguments, only required for MNAR cases
     update_blocks =   function(...) {
       private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+    },
+    #' @description opt-in gate for the SQUAREM-style acceleration in \code{run_VEM()}: this
+    #'   variant's \code{vExpec} (hence \code{loglik}) is a fresh function of \code{theta}/\code{pi}
+    #'   (recomputed from them, never a cached value from a previous E-step), which is exactly
+    #'   what a SQUAREM acceptance test needs -- it can be evaluated meaningfully at an
+    #'   extrapolated (theta, pi), not just at values reached by a real M-step.
+    supports_acceleration = function() TRUE,
+    #' @description flat, unconstrained-space parameter vector SQUAREM extrapolates over:
+    #'   \code{logit(theta)} (always finite/well-defined since \code{theta} is kept away from
+    #'   the 0/1 boundary by \code{check_boundaries()}) concatenated with \code{log(pi)}.
+    #'   Reparametrizing this way (rather than extrapolating the constrained theta/pi directly)
+    #'   means *any* point in the extrapolated space maps back to a feasible theta/pi via
+    #'   \code{set_flat_state()} -- no separate feasibility guard is needed for these two
+    #'   parameters, unlike e.g. a precision matrix that must stay positive-definite.
+    get_flat_state = function() {
+      c(as.vector(.logit(private$theta$mean)), log(private$pi))
+    },
+    #' @description inverse of \code{get_flat_state()}: rebuilds \code{theta}/\code{pi} from a
+    #'   flat vector (typically a SQUAREM-extrapolated point, not one reached by a real M-step).
+    #' @param p a flat parameter vector, as returned by \code{get_flat_state()}
+    set_flat_state = function(p) {
+      Q <- length(private$pi)
+      private$theta$mean <- check_boundaries(.logistic(matrix(p[1:(Q * Q)], Q, Q)))
+      private$pi          <- check_boundaries(.softmax(p[(Q * Q + 1):(Q * Q + Q)]))
+      invisible(self)
     }
   ),
   active = list(
@@ -265,7 +296,14 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
         log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
         private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
       }
-    }
+    },
+    #' @description this variant carries extra state (\code{private$V}, the current MNAR
+    #'   imputation of the missing dyads) that \code{SimpleSBM_fit_noCov}'s \code{get_flat_state()}
+    #'   does not track and that isn't refreshed by a plain \code{update_blocks()}/
+    #'   \code{update_parameters()} pair the way \code{theta}/\code{pi} are -- the SQUAREM
+    #'   acceleration validated for the parent class has not been validated here, so this
+    #'   explicitly opts back out rather than silently inheriting \code{TRUE}.
+    supports_acceleration = function() FALSE
   ),
   active = list(
     #' @field imputation the matrix of imputed values

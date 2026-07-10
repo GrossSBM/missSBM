@@ -1,5 +1,22 @@
 # missSBM 1.0.6
 
+- add SQUAREM acceleration (Varadhan & Roland, 2008) to the VEM of
+  `SimpleSBM_fit_noCov` (the MAR, no-covariate case): every two plain VEM
+  steps, attempts an extrapolated step in an unconstrained reparametrization
+  of `(theta, pi)` (`logit`/`log`, so any extrapolated point maps back to a
+  feasible probability -- no separate feasibility guard needed), stabilized
+  by one more E-step/M-step, accepted only if it does at least as well as
+  plain VEM. Measured 1.6x-2.7x fewer iterations on harder (larger Q, noisy
+  initial clustering) synthetic fits, matching the same fixed point in most
+  cases; being a genuinely different optimization trajectory on a non-convex
+  objective, it can occasionally converge to a different (and occasionally
+  slightly worse) local optimum than plain VEM would have -- an inherent,
+  known characteristic of extrapolation-based EM acceleration on multimodal
+  likelihoods, observed in about 1 run out of 8 in that same experiment.
+  Ported from and validated the same way as a similar acceleration in a
+  sibling project (normalblockr); other model variants (with covariates,
+  MNAR sampling designs, `missSBM_fit`'s composite SBM+sampling model) are
+  deliberately not accelerated yet, pending the same per-class validation
 - cap the number of merge candidates tried during backward exploration
   (`control$maxMergeCandidates`, default 30) instead of always trying all
   `choose(q, 2)` pairs: beyond the cap, only the pairs with the most similar
