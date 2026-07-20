@@ -26,6 +26,9 @@
   for this design can still be biased under heavy missingness (known limitation)
 - fix a consistency bug in `missSBM_fit$doVEM()`'s step-back: only the SBM was restored, not the
   sampling model or the current imputation
+- fix silent block-count corruption during split/merge exploration: a VEM component collapse
+  could produce a degenerate candidate that got accepted into the wrong `vBlocks` slot, causing
+  duplicated/missing entries and a non-smooth ICL/ELBO in `plot()`
 - speed up `getCovarArray()` and `kmeans_missSBM()`'s seeding
 - remove unused `src/utils.h`
 

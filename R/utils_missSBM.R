@@ -20,6 +20,26 @@ clustering_indicator <- function(clustering) {
   Z
 }
 
+## fills empty classes in `labels` (values in 1:K) by moving a node from the currently-largest
+## class into each one, so no already-valid class is emptied in the process
+repair_empty_classes <- function(labels, K) {
+  stopifnot(length(labels) >= K)
+  counts <- tabulate(labels, nbins = K)
+  for (lab in which(counts == 0)) {
+    donor  <- which.max(counts)
+    victim <- sample(which(labels == donor), 1)
+    labels[victim] <- lab
+    counts[donor]  <- counts[donor] - 1
+    counts[lab]    <- 1
+  }
+  labels
+}
+
+## TRUE if a missSBM_fit's clustering has fewer occupied classes than its structural nbBlocks
+is_degenerate <- function(fit) {
+  length(unique(fit$fittedSBM$memberships)) < fit$fittedSBM$nbBlocks
+}
+
 array2list <-function(X) {
   if (is.null(X)) {
     L <- list()

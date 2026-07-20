@@ -35,12 +35,12 @@ blog_obs <- observeNetwork(adjacencyMatrix = blog, sampling = "block-node",
   clusters = sbm_full$bestModel$fittedSBM$memberships)
 
 ## try MAR
-sbm_node <- estimateMissSBM(blog_obs, blocks, "node", control = list(iterates = 3))
+sbm_node <- estimateMissSBM(blog_obs, blocks, "node", control = list(iterates = 2))
 plot(sbm_node)
 plot(sbm_node, type = "monitoring")
 
 ## try MNAR with block-dyad sampling
-sbm_block <- estimateMissSBM(blog_obs, blocks, "block-node", control = list(iterates = 5))
+sbm_block <- estimateMissSBM(blog_obs, blocks, "block-node", control = list(iterates = 3))
 plot(sbm_block)
 plot(sbm_block, type = "monitoring")
 
