@@ -306,8 +306,9 @@ missSBM_collection <-
       cat("========================================================\n")
       cat(" - Number of blocks considered: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
       cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nbBlocks, "\n", sep = "")
-      if (any(self$degenerate)) {
-        cat(" - Warning:", sum(self$degenerate), "model(s) have collapsed classes",
+      degenerate <- self$degenerate
+      if (any(degenerate)) {
+        cat(" - Warning:", sum(degenerate), "model(s) have collapsed classes",
             "(see $occupiedBlocks/$degenerate)\n")
       }
       cat(" - Fields: $models, $ICL, $vBlocks, $occupiedBlocks, $degenerate, $bestModel, $optimizationStatus\n")

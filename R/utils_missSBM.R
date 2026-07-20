@@ -37,7 +37,7 @@ repair_empty_classes <- function(labels, K) {
 
 ## TRUE if a missSBM_fit's clustering has fewer occupied classes than its structural nbBlocks
 is_degenerate <- function(fit) {
-  length(unique(fit$fittedSBM$memberships)) < fit$fittedSBM$nbBlocks
+  fit$occupiedBlocks < fit$fittedSBM$nbBlocks
 }
 
 array2list <-function(X) {

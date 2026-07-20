@@ -324,8 +324,7 @@ missSBM_fit <-
         candidate$doVEM(control)
         ## reject a candidate whose VEM refit collapsed a class, even if its ICL looks better:
         ## it would leave self degenerate (see the guard above)
-        degenerate <- length(unique(candidate$fittedSBM$memberships)) < Q
-        if (!degenerate && candidate$ICL < best_icl) {
+        if (!is_degenerate(candidate) && candidate$ICL < best_icl) {
           private$SBM      <- candidate$fittedSBM
           private$sampling <- candidate$fittedSampling
           ## re-derive nu from the just-accepted state (not NULL: unlike split()/merge(),
