@@ -72,6 +72,24 @@ backward exploration (quadratic in the number of blocks otherwise). Beyond this 
 only the pairs with the most similar fitted connectivity profiles are tried, since
 merging two blocks with very different connectivity is rarely competitive anyway.
 Default is 30.
+\item stopOnDegenerate logical. A requested number of blocks can be higher than what the network
+actually supports: VEM then collapses one or more classes (see \link{missSBM_fit}'s
+\code{repair()}), and even a fair recovery attempt (\code{repair()}, then a full
+exploration pass letting \code{explore_forward()} try to split a healthy neighbor into
+that range) can still collapse right back down. When this persists over
+\code{maxConsecutiveDegenerate} consecutive (increasing) values of \code{vBlocks} after
+a pass, forward (split) exploration stops growing further into that range on
+subsequent passes (only relevant when \code{iterates > 1}); the affected models stay as
+fitted, flagged via \code{$degenerate}, and a warning is issued. Default is TRUE.
+\item maxConsecutiveDegenerate integer, the run length that triggers \code{stopOnDegenerate}.
+Default is 2.
+\item warmChain logical (\strong{work in progress}). If \code{TRUE}, each model is initialized
+by splitting (see \link{missSBM_fit}'s \code{split()}) the already-converged, smaller
+neighbor in \code{vBlocks} instead of an independent cold spectral clustering (see
+\link{missSBM_collection}'s \code{estimate_chain()}) -- meant to reduce VEM component
+collapse at higher numbers of blocks. Sequential in the number of blocks, unlike the
+default (\code{FALSE}), which fits every model in parallel: can be slower in
+wall-clock time when several workers are available. Default is FALSE.
 \item trace logical for verbosity. Default is TRUE.
 }
 

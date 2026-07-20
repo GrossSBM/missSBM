@@ -35,6 +35,12 @@ plot(my_missSBM_fit, "imputed")
 
     \item{\code{monitoring}}{a list carrying information about the optimization process}
 
+    \item{\code{occupiedBlocks}}{the number of classes actually occupied by at least one node; can be
+less than \code{fittedSBM$nbBlocks} for an over-specified fit whose VEM has collapsed one
+or more classes (see \code{repair()})}
+
+    \item{\code{degenerate}}{\code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}}
+
     \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
 
     \item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
@@ -58,6 +64,7 @@ plot(my_missSBM_fit, "imputed")
     \item \href{#method-missSBM_fit-candidates_split}{\code{missSBM_fit$candidates_split()}}
     \item \href{#method-missSBM_fit-merge}{\code{missSBM_fit$merge()}}
     \item \href{#method-missSBM_fit-candidates_merge}{\code{missSBM_fit$candidates_merge()}}
+    \item \href{#method-missSBM_fit-repair}{\code{missSBM_fit$repair()}}
     \item \href{#method-missSBM_fit-polish}{\code{missSBM_fit$polish()}}
     \item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
     \item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
@@ -213,6 +220,31 @@ is overridden by \code{trial_niter}}
   }
   \subsection{Returns}{
     a list of trial-fitted \code{\link{missSBM_fit}} candidates
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-repair"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-repair}{}}}
+\subsection{\code{missSBM_fit$repair()}}{
+  recovers a degenerate fit (fewer occupied classes than its structural
+\code{nbBlocks}, e.g. after a VEM component collapse) by filling the empty classes (see
+\code{repair_empty_classes()}) and refitting the full VEM. Mutates \code{self} in place;
+a no-op if the fit is not degenerate.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$repair(control)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisibly, \code{self}
   }
 }
 

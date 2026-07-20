@@ -18,7 +18,7 @@ party <- vertex.attributes(frenchblog2007)$party
 party_num <- as.numeric(as.factor(party))
 
 ## SBM with no missing edge or node
-blocks <- 1:18
+blocks <- 1:15
 sbm_full <- estimateMissSBM(blog, blocks, "node")
 plot(sbm_full)
 plot(sbm_full, "monitoring")

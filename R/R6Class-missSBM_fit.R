@@ -258,6 +258,22 @@ missSBM_fit <-
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
       Filter(function(m) !is_degenerate(m), candidates)
     },
+    #' @description recovers a degenerate fit (fewer occupied classes than its structural
+    #'   \code{nbBlocks}, e.g. after a VEM component collapse) by filling the empty classes (see
+    #'   \code{repair_empty_classes()}) and refitting the full VEM. Mutates \code{self} in place;
+    #'   a no-op if the fit is not degenerate.
+    #' @param control a list of VEM control parameters (see [estimateMissSBM()])
+    #' @return invisibly, \code{self}
+    repair = function(control) {
+      if (!is_degenerate(self)) return(invisible(self))
+      candidate_labels <- repair_empty_classes(private$SBM$memberships, private$SBM$nbBlocks)
+      candidate <- private$build_candidate(candidate_labels, in_place = FALSE)
+      candidate$doVEM(control)
+      private$SBM      <- candidate$fittedSBM
+      private$sampling <- candidate$fittedSampling
+      private$nu       <- private$sampling$update_imputation(private$SBM$imputation)
+      invisible(self)
+    },
     #' @description discrete node-swap polishing (Kernighan-Lin / greedy-ICL style): after VEM
     #'   convergence, tau is near-hard and its fixed point cannot relocate a single
     #'   misclassified node (only \code{split()}/\code{merge()} fix group-level mistakes). Each
@@ -275,13 +291,14 @@ missSBM_fit <-
         Q <- private$SBM$nbBlocks
         if (Q <= 1) break
 
+        ## a degenerate fit breaks self$indMemberships downstream; try to recover it first
+        if (is_degenerate(self)) {
+          self$repair(control)
+          best_icl <- self$ICL
+          if (is_degenerate(self)) break
+        }
         cl <- private$SBM$memberships
         N  <- length(cl)
-        ## a class with no node as its argmax (VEM component collapse -- can happen during the
-        ## VEM refit below, independently of the swap moves themselves, which are guarded
-        ## against emptying a class) breaks self$indMemberships (sbm::as_indicator() indexes
-        ## out of bounds); nothing meaningful to swap-improve on a degenerate fit, so stop
-        if (length(unique(cl)) < Q) break
         log_tau <- private$SBM$polish_log_tau(private$sampling$log_lambda)
 
         current_score <- log_tau[cbind(seq_len(N), cl)]
@@ -353,6 +370,12 @@ missSBM_fit <-
     },
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
+    #' @field occupiedBlocks the number of classes actually occupied by at least one node; can be
+    #'   less than \code{fittedSBM$nbBlocks} for an over-specified fit whose VEM has collapsed one
+    #'   or more classes (see \code{repair()})
+    occupiedBlocks = function(value) {length(unique(private$SBM$memberships))},
+    #' @field degenerate \code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}
+    degenerate     = function(value) {is_degenerate(self)},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
     entropyImputed = function(value) {
       ## operate on the stored values only (private$nu is sparse, nonzero only at missing

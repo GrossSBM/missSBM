@@ -36,6 +36,33 @@ missSBM_collection <-
     missSBM_fit       = NULL, # a list of models
     control           = NULL, # default control list (set at construction by estimateMissSBM()),
                                # used by estimate()/polish()/explore() when not overridden per call
+    forwardLimit      = NULL, # index into vBlocks explore_forward() won't grow past; NULL = no limit
+
+    ## caps forwardLimit just before a persistent run of >= min_run degenerate models; adaptive,
+    ## lifts the cap again once a later pass cures it
+    flag_degenerate_tail = function(min_run) {
+      degenerate <- self$degenerate
+      run <- 0
+      for (i in seq_along(degenerate)) {
+        run <- if (degenerate[i]) run + 1 else 0
+        if (run >= min_run) {
+          new_limit <- i - min_run
+          if (!identical(private$forwardLimit, new_limit)) {
+            private$forwardLimit <- new_limit
+            warning(
+              "VEM keeps collapsing classes from nbBlocks = ", self$vBlocks[i - min_run + 1],
+              " onward, even after repair() and exploration: the network does not appear to ",
+              "support that many blocks. Forward (split) exploration will not grow past ",
+              if (i > min_run) self$vBlocks[i - min_run] else "0",
+              " blocks on further passes. See $occupiedBlocks/$degenerate.", call. = FALSE
+            )
+          }
+          return(invisible(NULL))
+        }
+      }
+      private$forwardLimit <- NULL # no persistent run (any more): lift a previous cap, if any
+      invisible(NULL)
+    },
 
     # for each q, ask the model at q for trial-fitted split candidates
     # (missSBM_fit$candidates_split()), fully refit the best one, and keep it in place of the
@@ -48,7 +75,9 @@ missSBM_collection <-
 
       if (length(self$models) == 1) return(NULL)
       if (trace) cat("   Going forward ")
-      vBlocks <- self$vBlocks[-length(self$vBlocks)]
+      last_k <- length(self$vBlocks) - 1
+      if (!is.null(private$forwardLimit)) last_k <- min(last_k, private$forwardLimit)
+      vBlocks <- self$vBlocks[seq_len(last_k)]
       for (k in seq_along(vBlocks)) {
         if (trace) cat("+")
 
@@ -100,15 +129,22 @@ missSBM_collection <-
       if (trace) cat("\r                                                                                                    \r")
     },
     plot_icl = function() {
-      ggplot(data.frame(nBlock = self$vBlocks, ICL = self$ICL), aes(x = nBlock, y = ICL)) +
-        geom_line() + geom_point() + theme_bw() +
-        labs(x = "#blocks", y = "Integrated Classification likelihood") + ggtitle("Model Selection")
+      df <- data.frame(nBlock = self$vBlocks, ICL = self$ICL, collapsed = self$degenerate)
+      ggplot(df, aes(x = nBlock, y = ICL)) +
+        geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
+        scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
+        labs(x = "#blocks", y = "Integrated Classification likelihood",
+             shape = "collapsed classes") + ggtitle("Model Selection")
     },
     plot_elbo = function() {
-      elbo <- sapply(self$models, function(model) model$loglik)
-      ggplot(data.frame(nBlock = self$vBlocks, elbo = elbo), aes(x = nBlock, y = elbo)) +
-        geom_line() + geom_point() + theme_bw() +
-        labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound") + ggtitle("Model Selection")
+      df <- data.frame(nBlock = self$vBlocks,
+                        elbo = sapply(self$models, function(model) model$loglik),
+                        collapsed = self$degenerate)
+      ggplot(df, aes(x = nBlock, y = elbo)) +
+        geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
+        scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
+        labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound",
+             shape = "collapsed classes") + ggtitle("Model Selection")
     },
     plot_monitoring = function() {
       monitoring <- self$optimizationStatus
@@ -154,8 +190,58 @@ missSBM_collection <-
         if (control$trace) cat(" \tModel with", model$fittedSBM$nbBlocks,"blocks.\r")
         control$trace <- FALSE
         model$doVEM(control)
+        model$repair(control)
         model
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      invisible(self)
+    },
+    #' @description alternative to \code{estimate()}: fits each model in increasing order of
+    #'   number of blocks, initializing \code{vBlocks[k]} by splitting (see [missSBM_fit]'s
+    #'   \code{split()}/\code{candidates_split()}) the already-converged model at
+    #'   \code{vBlocks[k-1]} instead of an independent, cold spectral clustering. Meant to reduce
+    #'   VEM component collapse at higher numbers of blocks (see \code{$degenerate}), at the cost
+    #'   of being sequential in the number of blocks (unlike \code{estimate()}, which fits every
+    #'   model in parallel) -- can be slower in wall-clock time with many workers available.
+    #'   Falls back to this slot's own cold-started clustering (built at construction, same as
+    #'   \code{estimate()} would use) whenever nothing is splittable along the chain.
+    #' @param control optional list of parameters overriding the collection's stored control.
+    #'   Default \code{NULL} uses the stored control as-is.
+    estimate_chain = function(control = NULL) {
+      if (is.null(control)) control <- private$control
+      if (control$trace) cat(" Performing chained VEM inference\n")
+      ctrl <- control; ctrl$trace <- FALSE
+      n <- length(private$missSBM_fit)
+
+      ## smallest requested Q: fit its cold-started clustering directly
+      if (control$trace) cat(" \tModel with", self$vBlocks[1], "blocks.\r")
+      chained <- private$missSBM_fit[[1]]
+      chained$doVEM(ctrl)
+      chained$repair(ctrl)
+      private$missSBM_fit[[1]] <- chained
+
+      if (n > 1) for (k in 2:n) {
+        if (control$trace) cat(" \tChaining to", self$vBlocks[k], "blocks.\r")
+        gap <- self$vBlocks[k] - self$vBlocks[k - 1]
+        stopifnot(gap >= 1) # vBlocks assumed strictly increasing, see estimateMissSBM()
+
+        next_fit <- chained
+        for (step in seq_len(gap)) {
+          candidates <- next_fit$candidates_split(ctrl)
+          if (length(candidates) == 0) {
+            next_fit <- NULL # nothing (more) splittable along the chain: fall back below
+            break
+          }
+          next_fit <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
+        }
+        if (is.null(next_fit)) next_fit <- private$missSBM_fit[[k]] # this slot's cold start
+
+        next_fit$doVEM(ctrl)
+        next_fit$repair(ctrl)
+        private$missSBM_fit[[k]] <- next_fit
+        chained <- next_fit
+      }
+
+      if (control$trace) cat("\r                                                                                                    \r")
       invisible(self)
     },
     #' @description method to node-swap-polish every model in the collection (see
@@ -199,6 +285,7 @@ missSBM_collection <-
             if (control$trace) cat(" Pass",i)
             private$explore_backward(control)
           }
+          if (isTRUE(control$stopOnDegenerate)) private$flag_degenerate_tail(control$maxConsecutiveDegenerate)
         }
       }
     },
@@ -219,7 +306,11 @@ missSBM_collection <-
       cat("========================================================\n")
       cat(" - Number of blocks considered: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
       cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nbBlocks, "\n", sep = "")
-      cat(" - Fields: $models, $ICL, $vBlocks, $bestModel, $optimizationStatus\n")
+      if (any(self$degenerate)) {
+        cat(" - Warning:", sum(self$degenerate), "model(s) have collapsed classes",
+            "(see $occupiedBlocks/$degenerate)\n")
+      }
+      cat(" - Fields: $models, $ICL, $vBlocks, $occupiedBlocks, $degenerate, $bestModel, $optimizationStatus\n")
       cat(" - Method: $estimate(), $polish(), $explore(), $plot() \n")
     },
     #' @description User friendly print method
@@ -230,10 +321,22 @@ missSBM_collection <-
     models = function(value) (private$missSBM_fit),
     #' @field ICL the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)
     ICL = function(value) {setNames(sapply(self$models, function(model) model$ICL), names(self$vBlocks))},
-    #' @field bestModel the best model according to the ICL
-    bestModel = function(value) {self$models[[which.min(self$ICL)]]},
+    #' @field bestModel the best model according to the ICL, restricted to models without
+    #'   collapsed classes when at least one such model is available (see \code{$degenerate})
+    bestModel = function(value) {
+      icl <- self$ICL
+      candidates <- which(!self$degenerate)
+      if (length(candidates) == 0) candidates <- seq_along(icl)
+      self$models[[candidates[which.min(icl[candidates])]]]
+    },
     #' @field vBlocks a vector with the number of blocks
     vBlocks = function(value) {sapply(self$models, function(model) model$fittedSBM$nbBlocks)},
+    #' @field occupiedBlocks a vector with the number of classes actually occupied in each model
+    #'   (see [missSBM_fit]'s \code{occupiedBlocks})
+    occupiedBlocks = function(value) {sapply(self$models, function(model) model$occupiedBlocks)},
+    #' @field degenerate logical vector, \code{TRUE} for models with collapsed classes
+    #'   (\code{occupiedBlocks < vBlocks}, see [missSBM_fit]'s \code{repair()})
+    degenerate = function(value) {self$occupiedBlocks < self$vBlocks},
     #' @field optimizationSettings the control list used by estimate()/polish()/explore() when
     #'   not overridden per call (set at construction by [estimateMissSBM()])
     optimizationSettings = function(value) {private$control},

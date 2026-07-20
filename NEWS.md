@@ -1,34 +1,31 @@
-# missSBM 1.1.0.9000 (dev)
-
-**Work in progress, not finalized.** Adds a node-swap polishing step, complementary to the
-existing split/merge exploration -- the two are not yet well-integrated and how best to combine
-or alternate them still needs more thought.
-
-- `missSBM_fit` gains `polish(control, max_sweeps = 10)`: after VEM convergence, tau is
-  near-hard and its fixed point cannot relocate a single misclassified node (only
-  `split()`/`merge()` fix group-level mistakes). Each sweep computes, for every node, the
-  closed-form complete-data log-likelihood gain of moving it to its best alternative class,
-  applies the improving moves, then re-runs VEM to resettle; stops as soon as a sweep fails to
-  improve the ICL, so it never leaves a fit worse than before the call. Much cheaper than
-  split/merge exploration since it refines at a fixed number of blocks instead of searching
-  across them.
-- `missSBM_collection` gains a matching `polish(control = NULL)`, and `estimate()`/`explore()`
-  no longer require `control` to be re-passed on every call: it is now stored privately at
-  construction (from `estimateMissSBM()`'s control list) and reused by default. `explore()`
-  additionally accepts `iterates`/`direction` to override just those two aspects of the stored
-  control for one call -- meant to make it easy to alternate `polish()`/`explore()` calls
-  manually while this is being worked out, e.g. `collection$polish(); collection$explore()`.
-- `estimateMissSBM()`'s `control` gains a `polish` field (default `TRUE`), run once between
-  `estimate()` and `explore()`. `exploration` keeps its existing default (`"both"`) for now.
-
 # missSBM 1.1.0
 
 ## Major changes
 
 - `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and `candidates_merge()`
   as instance methods, previously inlined in `missSBM_collection`'s exploration logic; same
-  search algorithm, now independently testable. RNG draws during exploration differ negligibly
-  from before as a result (verified: same or marginally better ICL)
+  search algorithm, now independently testable.
+- new `polish(control)` (`missSBM_fit` and `missSBM_collection`): node-swap refinement after VEM
+  convergence, fixing individually misclassified nodes that `split()`/`merge()` cannot reach.
+  Cheaper than split/merge exploration since it stays at a fixed number of blocks. Run
+  automatically by `estimateMissSBM()` via its new `polish` control (default `TRUE`).
+  `missSBM_collection`'s `estimate()`/`polish()`/`explore()` now share a control list stored at
+  construction, no longer requiring `control` on every call.
+- requesting more blocks than a network actually supports can make VEM collapse one or more
+  classes; this used to be silent, and split/merge exploration's own repair of it could
+  silently corrupt `vBlocks`'s bookkeeping (duplicated/missing entries, non-smooth ICL/ELBO in
+  `plot()`). Now fixed and made visible: `missSBM_fit$repair(control)` recovers a collapsed fit
+  (called automatically after every VEM fit and inside `polish()`); new `occupiedBlocks`/
+  `degenerate` fields expose any remaining collapse; `bestModel` skips degenerate models when
+  possible and `plot()` marks them with a distinct point shape; `estimateMissSBM()`'s new
+  `stopOnDegenerate`/`maxConsecutiveDegenerate` controls (default `TRUE`/2) stop forward
+  exploration from growing further into a persistently unsupported range.
+- new `estimate_chain()` (`missSBM_collection`) / `warmChain` control (default `FALSE`, opt-in):
+  initializes each model by splitting the already-converged, smaller neighbor instead of an
+  independent cold clustering, substantially reducing collapse in practice, at the cost of
+  fitting `vBlocks` sequentially rather than in parallel.
+- `estimateMissSBM()` now sorts/de-duplicates `vBlocks` if needed (with a warning), since
+  exploration and chaining both assume it is strictly increasing.
 - replace the NLopt/CCSAQ optimizer for the covariate connectivity parameters with a builtin
   Newton-Raphson solver (the M-step objective is concave, so it converges reliably in a handful
   of iterations); `nloptr` is no longer a dependency
@@ -49,9 +46,6 @@ or alternate them still needs more thought.
   for this design can still be biased under heavy missingness (known limitation)
 - fix a consistency bug in `missSBM_fit$doVEM()`'s step-back: only the SBM was restored, not the
   sampling model or the current imputation
-- fix silent block-count corruption during split/merge exploration: a VEM component collapse
-  could produce a degenerate candidate that got accepted into the wrong `vBlocks` slot, causing
-  duplicated/missing entries and a non-smooth ICL/ELBO in `plot()`
 - speed up `getCovarArray()` and `kmeans_missSBM()`'s seeding
 - remove unused `src/utils.h`
 

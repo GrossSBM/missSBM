@@ -33,9 +33,16 @@ class(collection)
 
     \item{\code{ICL}}{the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)}
 
-    \item{\code{bestModel}}{the best model according to the ICL}
+    \item{\code{bestModel}}{the best model according to the ICL, restricted to models without
+collapsed classes when at least one such model is available (see \code{$degenerate})}
 
     \item{\code{vBlocks}}{a vector with the number of blocks}
+
+    \item{\code{occupiedBlocks}}{a vector with the number of classes actually occupied in each model
+(see \link{missSBM_fit}'s \code{occupiedBlocks})}
+
+    \item{\code{degenerate}}{logical vector, \code{TRUE} for models with collapsed classes
+(\code{occupiedBlocks < vBlocks}, see \link{missSBM_fit}'s \code{repair()})}
 
     \item{\code{optimizationSettings}}{the control list used by estimate()/polish()/explore() when
 not overridden per call (set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
@@ -49,6 +56,7 @@ not overridden per call (set at construction by \code{\link[=estimateMissSBM]{es
   \itemize{
     \item \href{#method-missSBM_collection-initialize}{\code{missSBM_collection$new()}}
     \item \href{#method-missSBM_collection-estimate}{\code{missSBM_collection$estimate()}}
+    \item \href{#method-missSBM_collection-estimate_chain}{\code{missSBM_collection$estimate_chain()}}
     \item \href{#method-missSBM_collection-polish}{\code{missSBM_collection$polish()}}
     \item \href{#method-missSBM_collection-explore}{\code{missSBM_collection$explore()}}
     \item \href{#method-missSBM_collection-plot}{\code{missSBM_collection$plot()}}
@@ -94,6 +102,34 @@ not overridden per call (set at construction by \code{\link[=estimateMissSBM]{es
     \describe{
       \item{\code{control}}{optional list of parameters overriding the collection's stored control
 (set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}}, see its details for the full list).
+Default \code{NULL} uses the stored control as-is.}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_collection-estimate_chain"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_collection-estimate_chain}{}}}
+\subsection{\code{missSBM_collection$estimate_chain()}}{
+  alternative to \code{estimate()}: fits each model in increasing order of
+number of blocks, initializing \code{vBlocks[k]} by splitting (see \link{missSBM_fit}'s
+\code{split()}/\code{candidates_split()}) the already-converged model at
+\code{vBlocks[k-1]} instead of an independent, cold spectral clustering. Meant to reduce
+VEM component collapse at higher numbers of blocks (see \code{$degenerate}), at the cost
+of being sequential in the number of blocks (unlike \code{estimate()}, which fits every
+model in parallel) -- can be slower in wall-clock time with many workers available.
+Falls back to this slot's own cold-started clustering (built at construction, same as
+\code{estimate()} would use) whenever nothing is splittable along the chain.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_collection$estimate_chain(control = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control.
 Default \code{NULL} uses the stored control as-is.}
     }
     \if{html}{\out{</div>}}

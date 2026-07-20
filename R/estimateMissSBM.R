@@ -44,6 +44,24 @@
 #'         only the pairs with the most similar fitted connectivity profiles are tried, since
 #'         merging two blocks with very different connectivity is rarely competitive anyway.
 #'         Default is 30.
+#'  * stopOnDegenerate logical. A requested number of blocks can be higher than what the network
+#'         actually supports: VEM then collapses one or more classes (see [missSBM_fit]'s
+#'         \code{repair()}), and even a fair recovery attempt (\code{repair()}, then a full
+#'         exploration pass letting \code{explore_forward()} try to split a healthy neighbor into
+#'         that range) can still collapse right back down. When this persists over
+#'         \code{maxConsecutiveDegenerate} consecutive (increasing) values of \code{vBlocks} after
+#'         a pass, forward (split) exploration stops growing further into that range on
+#'         subsequent passes (only relevant when \code{iterates > 1}); the affected models stay as
+#'         fitted, flagged via \code{$degenerate}, and a warning is issued. Default is TRUE.
+#'  * maxConsecutiveDegenerate integer, the run length that triggers \code{stopOnDegenerate}.
+#'         Default is 2.
+#'  * warmChain logical (\strong{work in progress}). If \code{TRUE}, each model is initialized
+#'         by splitting (see [missSBM_fit]'s \code{split()}) the already-converged, smaller
+#'         neighbor in \code{vBlocks} instead of an independent cold spectral clustering (see
+#'         [missSBM_collection]'s \code{estimate_chain()}) -- meant to reduce VEM component
+#'         collapse at higher numbers of blocks. Sequential in the number of blocks, unlike the
+#'         default (\code{FALSE}), which fits every model in parallel: can be slower in
+#'         wall-clock time when several workers are available. Default is FALSE.
 #'  * trace logical for verbosity. Default is TRUE.
 #'
 #' @details The different sampling designs are split into two families in which we find dyad-centered and
@@ -105,11 +123,20 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   stopifnot(is.character(sampling))
   stopifnot(is.list(covariates))
 
+  ## explore_forward()/explore_backward()/estimate_chain() all assume vBlocks is strictly
+  ## increasing (indices k, k +/- 1 refer to smaller/larger numbers of blocks)
+  vBlocks_sorted <- sort(unique(vBlocks))
+  if (length(vBlocks_sorted) != length(vBlocks) || any(vBlocks_sorted != vBlocks)) {
+    warning("vBlocks was not strictly increasing: sorted and de-duplicated.", call. = FALSE)
+  }
+  vBlocks <- vBlocks_sorted
+
   ## Default control parameters overwritten by user specification
   ctrl <- list(
     threshold = 1e-2, trace = TRUE, imputation = "median", similarity = l1_similarity, useCov = TRUE,
     maxIter = 50, fixPointIter = 3, iterates = 1, exploration = "both", clusterInit = NULL,
-    maxMergeCandidates = 30, polish = TRUE
+    maxMergeCandidates = 30, polish = TRUE, stopOnDegenerate = TRUE, maxConsecutiveDegenerate = 2,
+    warmChain = FALSE
     )
   ctrl[names(control)] <- control
   ## If no covariate is provided, you cannot ask for using them
@@ -130,7 +157,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   )
 
   ## Launch estimation of each missSBM_fit
-  myCollection$estimate()
+  if (isTRUE(ctrl$warmChain)) myCollection$estimate_chain() else myCollection$estimate()
 
   ## Fix individually misclassified nodes at each model's own number of blocks
   if (ctrl$polish) myCollection$polish()

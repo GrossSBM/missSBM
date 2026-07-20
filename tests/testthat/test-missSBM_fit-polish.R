@@ -161,6 +161,35 @@ test_that("estimateMissSBM()'s default control polishes (polish = TRUE)", {
   expect_true(all(collection_default$ICL <= collection_vem_only$ICL + 1e-6))
 })
 
+test_that("repair() is a no-op on a non-degenerate fit", {
+  net <- missSBM:::partlyObservedNetwork$new(sampler$networkData)
+  fit <- missSBM:::missSBM_fit$new(net, "dyad", sampler$memberships, TRUE)
+  fit$doVEM(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
+  icl_before <- fit$ICL
+
+  out <- fit$repair(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
+  expect_identical(out, fit)
+  expect_equal(fit$ICL, icl_before)
+})
+
+test_that("repair() recovers a fit forced into a degenerate state", {
+  net <- missSBM:::partlyObservedNetwork$new(sampler$networkData)
+  fit <- missSBM:::missSBM_fit$new(net, "dyad", sampler$memberships, TRUE)
+  fit$doVEM(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
+
+  ## force class Q out of the running by zeroing its variational probability everywhere
+  state <- fit$fittedSBM$get_state()
+  state$Z[, Q] <- 0
+  state$Z <- state$Z / rowSums(state$Z)
+  fit$fittedSBM$set_state(state)
+  expect_true(missSBM:::is_degenerate(fit))
+
+  fit$repair(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
+  expect_false(missSBM:::is_degenerate(fit))
+  expect_equal(fit$fittedSBM$nbBlocks, Q) # structural block count untouched
+  expect_true(is.finite(fit$ICL))
+})
+
 test_that("missSBM_collection's estimate()/polish()/explore() reuse the stored control by default", {
   adj <- missSBM::observeNetwork(sampler$networkData, "dyad", 0.85)
   control <- list(trace = FALSE, threshold = 1e-3, maxIter = 50, fixPointIter = 3,
