@@ -15,7 +15,8 @@
   classes; this used to be silent, and split/merge exploration's own repair of it could
   silently corrupt `vBlocks`'s bookkeeping (duplicated/missing entries, non-smooth ICL/ELBO in
   `plot()`). Now fixed and made visible: `missSBM_fit$repair(control)` recovers a collapsed fit
-  (called automatically after every VEM fit and inside `polish()`); new `occupiedBlocks`/
+  (called automatically after every VEM fit, inside `polish()`, and after the full refit in
+  `missSBM_collection`'s split/merge exploration); new `occupiedBlocks`/
   `degenerate` fields expose any remaining collapse; `bestModel` skips degenerate models when
   possible and `plot()` marks them with a distinct point shape; `estimateMissSBM()`'s new
   `stopOnDegenerate`/`maxConsecutiveDegenerate` controls (default `TRUE`/2) stop forward

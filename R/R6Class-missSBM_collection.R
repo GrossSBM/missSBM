@@ -85,8 +85,10 @@ missSBM_collection <-
         if (length(candidates) > 0) {
           best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
           best_one$doVEM(control)
+          best_one$repair(control) # the full refit can itself collapse a component; try to recover it
 
-          ## the full refit can itself collapse a component independently of the trial fit
+          ## a gap in vBlocks (e.g. c(2, 3, 5)) means a split candidate's block count need not
+          ## match its target slot -- reject it in that case rather than corrupt the slot
           expected_nbBlocks <- private$missSBM_fit[[k + 1]]$fittedSBM$nbBlocks
           if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
               best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
@@ -117,8 +119,10 @@ missSBM_collection <-
         if (length(candidates) > 0) {
           best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
           best_one$doVEM(control)
+          best_one$repair(control) # the full refit can itself collapse a component; try to recover it
 
-          ## the full refit can itself collapse a component independently of the trial fit
+          ## a gap in vBlocks (e.g. c(2, 3, 5)) means a merge candidate's block count need not
+          ## match its target slot -- reject it in that case rather than corrupt the slot
           expected_nbBlocks <- private$missSBM_fit[[k - 1]]$fittedSBM$nbBlocks
           if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
               best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
