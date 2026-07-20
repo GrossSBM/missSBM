@@ -1,17 +1,3 @@
-# missSBM 1.1.0.9000 (dev)
-
-## Bug fixes
-
-- fix silent block-count corruption during split/merge exploration
-  (`missSBM_collection$explore_forward()`/`explore_backward()`): a VEM component collapse
-  (a class winning the argmax for no node) could go through `split()`/`merge()`'s empty-class
-  repair, which picked replacement nodes uniformly at random and could itself empty an
-  already-valid class; `clustering_indicator()` would then silently under-count blocks, and the
-  corrupted candidate could be accepted into the wrong `vBlocks` slot, producing duplicated/
-  missing entries (visible as a non-monotonic, non-smooth ICL/ELBO in `plot()`). Fixed with two
-  independent safeguards: a repair heuristic (`repair_empty_classes()`) that never empties a
-  valid class, and a degeneracy/block-count check before accepting an exploration candidate
-
 # missSBM 1.1.0
 
 ## Major changes
@@ -40,6 +26,9 @@
   for this design can still be biased under heavy missingness (known limitation)
 - fix a consistency bug in `missSBM_fit$doVEM()`'s step-back: only the SBM was restored, not the
   sampling model or the current imputation
+- fix silent block-count corruption during split/merge exploration: a VEM component collapse
+  could produce a degenerate candidate that got accepted into the wrong `vBlocks` slot, causing
+  duplicated/missing entries and a non-smooth ICL/ELBO in `plot()`
 - speed up `getCovarArray()` and `kmeans_missSBM()`'s seeding
 - remove unused `src/utils.h`
 
