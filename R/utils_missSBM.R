@@ -20,12 +20,8 @@ clustering_indicator <- function(clustering) {
   Z
 }
 
-## repairs a clustering label vector (values in 1:K, possibly with some label unused after a
-## split()/merge() relabeling) so every one of the K intended classes has >= 1 member, by moving
-## one node from the currently-largest class into each empty one. Unlike picking the node to
-## move uniformly at random from the whole population, this never empties an already-valid class
-## in the process (which used to let `clustering_indicator()` silently infer fewer than K
-## classes downstream, corrupting the block count of split/merge candidates)
+## fills empty classes in `labels` (values in 1:K) by moving a node from the currently-largest
+## class into each one, so no already-valid class is emptied in the process
 repair_empty_classes <- function(labels, K) {
   stopifnot(length(labels) >= K)
   counts <- tabulate(labels, nbins = K)
@@ -39,11 +35,7 @@ repair_empty_classes <- function(labels, K) {
   labels
 }
 
-## TRUE if a missSBM_fit's clustering has fewer occupied classes than its structural
-## nbBlocks -- the generic VEM-component-collapse failure mode (a class wins the argmax for no
-## node). Used to discard candidates that split()/merge() exploration should not keep, since a
-## degenerate candidate silently reports a wrong (too small) block count downstream (see
-## clustering_indicator()/repair_empty_classes())
+## TRUE if a missSBM_fit's clustering has fewer occupied classes than its structural nbBlocks
 is_degenerate <- function(fit) {
   length(unique(fit$fittedSBM$memberships)) < fit$fittedSBM$nbBlocks
 }

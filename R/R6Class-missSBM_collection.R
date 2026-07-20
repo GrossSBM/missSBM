@@ -55,8 +55,7 @@ missSBM_collection <-
           best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
           best_one$doVEM(control)
 
-          ## the full refit above can itself trigger a VEM component collapse, independently of
-          ## the (already-guarded) trial fit -- re-check before accepting into the target slot
+          ## the full refit can itself collapse a component independently of the trial fit
           expected_nbBlocks <- private$missSBM_fit[[k + 1]]$fittedSBM$nbBlocks
           if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
               best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
@@ -88,8 +87,7 @@ missSBM_collection <-
           best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
           best_one$doVEM(control)
 
-          ## the full refit above can itself trigger a VEM component collapse, independently of
-          ## the (already-guarded) trial fit -- re-check before accepting into the target slot
+          ## the full refit can itself collapse a component independently of the trial fit
           expected_nbBlocks <- private$missSBM_fit[[k - 1]]$fittedSBM$nbBlocks
           if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
               best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
