@@ -174,12 +174,7 @@ missSBM_fit <-
       split_labels[bipartition == 2] <- Q + 1
       candidate <- cl0
       candidate[candidate == index] <- split_labels
-      ## in case of empty classes, add randomly one guy in those classes
-      candidate <- factor(candidate, levels = 1:(Q + 1))
-      absent <- which(tabulate(candidate) == 0)
-      swap <- base::sample(1:length(candidate), length(absent))
-      candidate[swap] <- absent
-      candidate <- as.numeric(candidate) # relabeling to start from 1
+      candidate <- repair_empty_classes(candidate, Q + 1)
 
       private$build_candidate(candidate, in_place)
     },
@@ -205,11 +200,12 @@ missSBM_fit <-
       control_fast$maxIter <- trial_niter
       control_fast$trace   <- FALSE
 
-      future_lapply(cl_splitable, function(k_) {
+      candidates <- future_lapply(cl_splitable, function(k_) {
         candidate <- self$split(k_, base_net = base_net)
         candidate$doVEM(control_fast)
         candidate
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      Filter(function(m) !is_degenerate(m), candidates)
     },
     #' @description clone of the current fit after merging clusters \code{indices[1]} and
     #'   \code{indices[2]} into one. Builds but does not fit the candidate (see
@@ -220,11 +216,8 @@ missSBM_fit <-
     #' @return a new [`missSBM_fit`] with one fewer block
     merge = function(indices, in_place = FALSE) {
       Q  <- private$SBM$nbBlocks
-      cl0 <- factor(private$SBM$memberships, 1:Q)
-      ## in case of empty classes, add randomly one guy in those classes
-      absent <- which(tabulate(cl0) == 0)
-      swap <- base::sample(1:length(cl0), length(absent))
-      cl0[swap] <- absent
+      cl0 <- repair_empty_classes(private$SBM$memberships, Q)
+      cl0 <- factor(cl0, 1:Q)
 
       cl_merged <- cl0
       levels(cl_merged)[sort(indices)] <- indices[1]
@@ -258,11 +251,12 @@ missSBM_fit <-
       control_fast$maxIter <- trial_niter
       control_fast$trace   <- FALSE
 
-      future_lapply(pairs, function(couple) {
+      candidates <- future_lapply(pairs, function(couple) {
         candidate <- self$merge(couple)
         candidate$doVEM(control_fast)
         candidate
       }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      Filter(function(m) !is_degenerate(m), candidates)
     },
     #' @description discrete node-swap polishing (Kernighan-Lin / greedy-ICL style): after VEM
     #'   convergence, tau is near-hard and its fixed point cannot relocate a single
