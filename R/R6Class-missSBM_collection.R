@@ -55,7 +55,11 @@ missSBM_collection <-
           best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
           best_one$doVEM(control)
 
-          if (best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
+          ## the full refit above can itself trigger a VEM component collapse, independently of
+          ## the (already-guarded) trial fit -- re-check before accepting into the target slot
+          expected_nbBlocks <- private$missSBM_fit[[k + 1]]$fittedSBM$nbBlocks
+          if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
+              best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
             private$missSBM_fit[[k + 1]] <- best_one
           }
         }
@@ -84,7 +88,11 @@ missSBM_collection <-
           best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
           best_one$doVEM(control)
 
-          if (best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
+          ## the full refit above can itself trigger a VEM component collapse, independently of
+          ## the (already-guarded) trial fit -- re-check before accepting into the target slot
+          expected_nbBlocks <- private$missSBM_fit[[k - 1]]$fittedSBM$nbBlocks
+          if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
+              best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
             private$missSBM_fit[[k - 1]] <- best_one
           }
         }
@@ -92,12 +100,14 @@ missSBM_collection <-
       if (trace) cat("\r                                                                                                    \r")
     },
     plot_icl = function() {
-      qplot(self$vBlocks, self$ICL, geom = "line") + theme_bw() + geom_point() +
+      ggplot(data.frame(nBlock = self$vBlocks, ICL = self$ICL), aes(x = nBlock, y = ICL)) +
+        geom_line() + geom_point() + theme_bw() +
         labs(x = "#blocks", y = "Integrated Classification likelihood") + ggtitle("Model Selection")
     },
     plot_elbo = function() {
       elbo <- sapply(self$models, function(model) model$loglik)
-      qplot(self$vBlocks, elbo, geom = "line") + theme_bw() + geom_point() +
+      ggplot(data.frame(nBlock = self$vBlocks, elbo = elbo), aes(x = nBlock, y = elbo)) +
+        geom_line() + geom_point() + theme_bw() +
         labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound") + ggtitle("Model Selection")
     },
     plot_monitoring = function() {

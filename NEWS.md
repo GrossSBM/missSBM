@@ -1,3 +1,17 @@
+# missSBM 1.1.0.9000 (dev)
+
+## Bug fixes
+
+- fix silent block-count corruption during split/merge exploration
+  (`missSBM_collection$explore_forward()`/`explore_backward()`): a VEM component collapse
+  (a class winning the argmax for no node) could go through `split()`/`merge()`'s empty-class
+  repair, which picked replacement nodes uniformly at random and could itself empty an
+  already-valid class; `clustering_indicator()` would then silently under-count blocks, and the
+  corrupted candidate could be accepted into the wrong `vBlocks` slot, producing duplicated/
+  missing entries (visible as a non-monotonic, non-smooth ICL/ELBO in `plot()`). Fixed with two
+  independent safeguards: a repair heuristic (`repair_empty_classes()`) that never empties a
+  valid class, and a degeneracy/block-count check before accepting an exploration candidate
+
 # missSBM 1.1.0
 
 ## Major changes
