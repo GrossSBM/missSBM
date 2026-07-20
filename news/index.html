@@ -84,6 +84,8 @@
 <ul><li>cap the number of merge candidates tried during backward exploration (<code>control$maxMergeCandidates</code>, default 30) instead of always trying every pair</li>
 <li>fix a crash and a closed-form algebra bug in the “degree” sampling design; parameter recovery for this design can still be biased under heavy missingness (known limitation)</li>
 <li>fix a consistency bug in <code>missSBM_fit$doVEM()</code>’s step-back: only the SBM was restored, not the sampling model or the current imputation</li>
+<li>fix silent block-count corruption during split/merge exploration: a VEM component collapse could produce a degenerate candidate that got accepted into the wrong <code>vBlocks</code> slot, causing duplicated/missing entries and a non-smooth ICL/ELBO in <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>
+</li>
 <li>speed up <code>getCovarArray()</code> and <code>kmeans_missSBM()</code>’s seeding</li>
 <li>remove unused <code>src/utils.h</code>
 </li>
