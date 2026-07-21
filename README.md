@@ -6,7 +6,7 @@
 [![website](https://github.com/GrossSBM/missSBM/workflows/pkgdown/badge.svg)](https://grosssbm.github.io/missSBM/)
 [![R-CMD-check](https://github.com/grosssbm/missSBM/workflows/R-CMD-check/badge.svg)](https://github.com/grosssbm/missSBM/actions)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/missSBM)](https://cran.r-project.org/package=missSBM)
-[![](https://img.shields.io/github/last-commit/grossSBM/missSBM.svg)](https://github.com/GrossSBM/missSBM/commits/master)
+[![last commit](https://img.shields.io/github/last-commit/grossSBM/missSBM.svg)](https://github.com/GrossSBM/missSBM/commits/master)
 [![Codecov test
 coverage](https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg)](https://app.codecov.io/gh/GrossSBM/missSBM?branch=master)
 

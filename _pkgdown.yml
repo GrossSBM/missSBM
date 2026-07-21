@@ -1,27 +1,7 @@
-url: http://grosssbm.github.io/missSBM
+url: https://grosssbm.github.io/missSBM/
 
 template:
   bootstrap: 5
-
-navbar:
-  title: "missSBM"
-  type: inverse
-  left:
-    - icon: fa-home
-    - text: "Home"
-      href: index.html
-    - text: "Reference"
-      href: "reference/index.html"
-    - text: "Articles"
-      menu:
-      - text: "A case study on the war networks"
-        href: articles/case_study_war_networks.html
-    - text: "Changelog"
-      href: news/index.html
-  right:
-    - icon: fa-github
-    - text: github
-      href: https://github.com/jchiquet/missSBM
 
 reference:
 - title: 'Top-level fitting functions'
