@@ -164,13 +164,13 @@ Default \code{NULL} uses the stored control as-is.}
 \subsection{\code{missSBM_collection$explore()}}{
   method for performing exploration of the ICL (split/merge search across
 numbers of blocks, see \link{missSBM_fit}'s \code{candidates_split()}/\code{candidates_merge()}).
-Uses the collection's stored control by default; \code{iterates} and \code{direction}
-let the caller override just those two aspects for this call, without altering the
-stored control -- handy to alternate \code{explore()}/\code{polish()} calls without
-having to reconstruct a full control list each time.
+Uses the collection's stored control by default; \code{iterates} lets the caller override
+it for this call only, without altering the stored control -- handy to alternate
+\code{explore()}/\code{polish()} calls without having to reconstruct a full control list
+each time. \code{iterates <= 0} is a no-op.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_collection$explore(control = NULL, iterates = NULL, direction = NULL)}
+    \preformatted{missSBM_collection$explore(control = NULL, iterates = NULL, direction = "both")}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -179,8 +179,8 @@ having to reconstruct a full control list each time.
       \item{\code{control}}{optional list of parameters overriding the collection's stored control.
 Default \code{NULL} uses the stored control as-is.}
       \item{\code{iterates}}{optional integer overriding \code{control$iterates} for this call only.}
-      \item{\code{direction}}{optional character ("forward", "backward", "both" or "none") overriding
-\code{control$exploration} for this call only.}
+      \item{\code{direction}}{character ("forward", "backward", "both" or "none") controlling which
+directions are searched. Default "both".}
     }
     \if{html}{\out{</div>}}
   }

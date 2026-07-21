@@ -17,7 +17,7 @@ test_that("missSBMcollection works", {
     control = list(useCov = FALSE, trace = TRUE))
 
   ## control parameter for the VEM
-  control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, trace = 0, iterates = 0, exploration = "both")
+  control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, trace = 0, iterates = 0)
 
   ## VEM Estimation on each element of the collection
   collection$estimate(control)
@@ -25,16 +25,13 @@ test_that("missSBMcollection works", {
 
   control$iterates  <- 1
 
-  control$exploration <- "forward"
-  collection$explore(control)
+  collection$explore(control, direction = "forward")
   expect_is(collection, "missSBM_collection")
 
-  control$exploration <- "backward"
-  collection$explore(control)
+  collection$explore(control, direction = "backward")
   expect_is(collection, "missSBM_collection")
 
-  control$exploration <- "both"
-  collection$explore(control)
+  collection$explore(control, direction = "both")
   expect_is(collection, "missSBM_collection")
 })
 

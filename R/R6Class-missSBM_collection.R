@@ -265,27 +265,26 @@ missSBM_collection <-
     },
     #' @description method for performing exploration of the ICL (split/merge search across
     #'   numbers of blocks, see [missSBM_fit]'s \code{candidates_split()}/\code{candidates_merge()}).
-    #'   Uses the collection's stored control by default; \code{iterates} and \code{direction}
-    #'   let the caller override just those two aspects for this call, without altering the
-    #'   stored control -- handy to alternate \code{explore()}/\code{polish()} calls without
-    #'   having to reconstruct a full control list each time.
+    #'   Uses the collection's stored control by default; \code{iterates} lets the caller override
+    #'   it for this call only, without altering the stored control -- handy to alternate
+    #'   \code{explore()}/\code{polish()} calls without having to reconstruct a full control list
+    #'   each time. \code{iterates <= 0} is a no-op.
     #' @param control optional list of parameters overriding the collection's stored control.
     #'   Default \code{NULL} uses the stored control as-is.
     #' @param iterates optional integer overriding \code{control$iterates} for this call only.
-    #' @param direction optional character ("forward", "backward", "both" or "none") overriding
-    #'   \code{control$exploration} for this call only.
-    explore = function(control = NULL, iterates = NULL, direction = NULL) {
+    #' @param direction character ("forward", "backward", "both" or "none") controlling which
+    #'   directions are searched. Default "both".
+    explore = function(control = NULL, iterates = NULL, direction = "both") {
       if (is.null(control)) control <- private$control
-      if (!is.null(iterates))  control$iterates    <- iterates
-      if (!is.null(direction)) control$exploration <- direction
-      if (control$iterates > 0 && control$exploration != "none") {
+      if (!is.null(iterates)) control$iterates <- iterates
+      if (control$iterates > 0 && direction != "none") {
         if (control$trace) cat("\n Looking for better solutions\n")
         for (i in 1:control$iterates) {
-          if (control$exploration %in% c('forward' , 'both')) {
+          if (direction %in% c('forward' , 'both')) {
             if (control$trace) cat(" Pass",i)
             private$explore_forward(control)
           }
-          if (control$exploration %in% c('backward', 'both')) {
+          if (direction %in% c('backward', 'both')) {
             if (control$trace) cat(" Pass",i)
             private$explore_backward(control)
           }

@@ -29,8 +29,9 @@
   exploration and chaining both assume it is strictly increasing.
 - `estimateMissSBM()`'s `control` drops the `exploration` field: nobody used `"forward"`/
   `"backward"` alone at that level, only `"both"`/`"none"`, so `iterates` now doubles as the
-  on/off switch (`0` disables exploration entirely). `missSBM_collection$explore(direction =
-  ...)` is unaffected and still exposes per-direction control for advanced use.
+  on/off switch (`0` disables exploration entirely). `missSBM_collection$explore()` no longer
+  reads a stored `exploration` control field either; its `direction` argument (default `"both"`)
+  is now a plain per-call parameter, still available for advanced/internal use.
 - replace the NLopt/CCSAQ optimizer for the covariate connectivity parameters with a builtin
   Newton-Raphson solver (the M-step objective is concave, so it converges reliably in a handful
   of iterations); `nloptr` is no longer a dependency

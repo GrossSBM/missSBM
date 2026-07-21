@@ -139,9 +139,6 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
     warmChain = FALSE
     )
   ctrl[names(control)] <- control
-  ## exploration always searches both directions when enabled; iterates == 0 is the only way to
-  ## disable it (see missSBM_collection's explore(), which still exposes direction for advanced use)
-  ctrl$exploration <- if (ctrl$iterates > 0) "both" else "none"
   ## If no covariate is provided, you cannot ask for using them
   if (length(covariates) == 0) ctrl$useCov <- FALSE
   if (ctrl$useCov) stopifnot(sampling %in% available_samplings_covariates)
