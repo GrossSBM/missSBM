@@ -35,13 +35,10 @@ benchmark, bit-identical results). See NEWS.md for the full changelog.
 
 ## Tested environments
 
-* tested locally on Ubuntu Linux 24.04.2 LTS, R-release, GCC
+* tested locally on Ubuntu Linux 24.04.4 LTS, R-release, GCC
 
-* re-tested on win-builder / GitHub Actions since the changes above
-  landed -- the environments below were verified for a previous, smaller
-  version of this changelog and need to be re-run before actual submission:
-  - win-builder: Windows Server 2022, R-oldrelease/R-release/R-devel, 64 bit
-  - GitHub Actions (R-CMD-check.yaml): Ubuntu 24.04 (R-devel/R-release/R-oldrel-1),
+* win-builder: Windows Server 2022, R-oldrelease/R-release/R-devel, 64 bit
+* GitHub Actions (R-CMD-check.yaml): Ubuntu 24.04 (R-devel/R-release/R-oldrel-1),
     Windows Server 2022 (R-release), macOS (R-release)
 
 ## R CMD check results
