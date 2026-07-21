@@ -169,7 +169,20 @@ sampleNet_power_miss <- observeNetwork(
    parameters = parameters_sample, covariates = list(belligerent_power), intercept = -2
   )
 observedNodes <- !is.na(rowSums(sampleNet_power_miss))
-boxplot(1/(1 + exp(-cbind(1,belligerent_power) %*% c(-2, parameters_sample))) ~ observedNodes, ylab = "military power", xlab = "observed node")
+data.frame(observedNodes = observedNodes,
+  belligerent_power = belligerent_power
+) |> 
+ggplot(aes(x = factor(observedNodes), y = belligerent_power)) +
+  geom_boxplot(fill = "skyblue", alpha = 0.6) +
+  scale_y_log10() +
+  labs(
+    x = "observed node",
+    y = "military power (log-scale)",
+    title = "Military power distribution according to node status"
+  ) +
+  theme_minimal()
+
+
 corrplot(sampleNet_power_miss,
   is.corr      = FALSE,
   tl.pos       = "n",
