@@ -246,7 +246,7 @@ ggplot(aes(x = factor(observedNodes), y = belligerent_power)) +
   labs(
     x = "observed node",
     y = "military power (log-scale)",
-    title = "Military power distribution according to node status"
+    title = "Military power according to node status"
   ) +
   theme_minimal()
 ```
