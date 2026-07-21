@@ -49,12 +49,12 @@ R6::R6Class(classname = "SimpleSBM_fit",
       private$Y <- networkData$networkData
 
       ## point to the functions that performs E/M steps and compute the likelihood
-      private$variant <-
-        paste(model, ifelse(self$directed, "directed", "undirected"),
-          ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep="_")
-      private$M_step       <- get(paste("M_step_sparse"      , model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
-      private$E_step       <- get(paste("E_step_sparse"      , model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
-      private$vLL_complete <- get(paste("vLL_complete_sparse", model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
+      directedSuffix <- ifelse(self$directed, "directed", "undirected")
+      covarSuffix    <- ifelse(self$nbCovariates > 0, "covariates", "nocovariate")
+      private$variant       <- paste(model, directedSuffix, covarSuffix, sep = "_")
+      private$M_step        <- get(paste("M_step_sparse",       model, covarSuffix, sep = "_"))
+      private$E_step        <- get(paste("E_step_sparse",       model, covarSuffix, sep = "_"))
+      private$vLL_complete  <- get(paste("vLL_complete_sparse", model, covarSuffix, sep = "_"))
 
 ### TODO:
 ###  - check if parameters are not already initialize

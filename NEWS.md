@@ -67,7 +67,9 @@
   two commented-out C++ blocks), factored out the repeated
   `future_lapply(..., future.seed = TRUE, future.scheduling = ...)` and
   "pick the candidate with the smallest ICL" patterns, and filled a couple of missing
-  `@examples`
+  `@examples`; also factored out the repeated directed/undirected dyad-mask logic (now
+  `valid_dyads()`) and rewrote `cran-comments.md` for this release, including a reverse-
+  dependency check (`gsbm`, unaffected by the `missSBM_param()` breaking change)
 
 # missSBM 1.0.5 (2025-03-12)
 

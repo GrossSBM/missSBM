@@ -79,11 +79,7 @@ partlyObservedNetwork <-
       private$phi <- covar$Array
 
       ## sets of observed / unobserved dyads
-      if (private$directed) {
-        dyads <- .row(dim(adjacencyMatrix)) != .col(dim(adjacencyMatrix))
-      } else {
-        dyads <- .row(dim(adjacencyMatrix)) < .col(dim(adjacencyMatrix))
-      }
+      dyads <- valid_dyads(dim(adjacencyMatrix), private$directed)
       ## where are my observations?
       NAs   <- is.na(adjacencyMatrix)
       obs   <- which(!NAs & dyads, arr.ind = TRUE )
@@ -127,7 +123,9 @@ partlyObservedNetwork <-
           cl_ <- as.integer(
             kmeans_missSBM(Un, k)
           )
-         ## handling lonely souls
+         ## handling lonely souls: nothing connects them to the rest of the graph, so there is
+         ## no basis to pick a class for them individually -- put them all in whichever class
+         ## carries the most spectral weight, i.e. the most "typical" one
          cl[connected] <- cl_
          cl[unconnected] <- which.max(rowsum(d, cl_))
         }

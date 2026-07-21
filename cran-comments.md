@@ -11,41 +11,47 @@ covariate connectivity parameters with a builtin Newton-Raphson solver;
 `src/packing.cpp` and `src/nlopt_wrapper.cpp` are removed and `nloptr` is no
 longer a dependency, so the warning has nothing left to be raised from.
 
-Also in this release:
+## Breaking change
 
-* `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and
-  `candidates_merge()` as instance methods (previously inlined in
-  `missSBM_collection`)
-* several profiling-driven performance fixes to `estimateMissSBM()`'s hot
-  paths (roughly 3x faster on our benchmark, bit-identical results)
-* bug fixes: a biased fill value in `partlyObservedNetwork$imputation()`, a
-  crash and a closed-form algebra bug in the "degree" sampling design, and a
-  step-back consistency bug in `missSBM_fit$doVEM()`
+`estimateMissSBM()`'s `control` argument must now be built with the new
+`missSBM_param()` helper (one named, documented, defaulted argument per
+option) instead of a raw `list(...)`; passing a plain list now errors with a
+message pointing at the replacement. This also means unknown/typo'd option
+names now fail immediately instead of being silently ignored.
 
-See NEWS.md for the full changelog.
+We checked the single reverse dependency, `gsbm` (which has missSBM in
+`Suggests`, used only in a vignette): it calls
+`missSBM::estimateMissSBM(A, vBlocks, "node")` with no `control` argument, so
+it is unaffected by this change.
+
+Also in this release: several new opt-in/on-by-default features to make
+model selection across numbers of blocks more robust when the requested
+number of blocks exceeds what the network actually supports (VEM class
+collapse recovery, a node-swap polishing step, an alternative warm-start
+initialization scheme), a refactor exposing `missSBM_fit`'s split/merge
+exploration as instance methods, and several profiling-driven performance
+fixes to `estimateMissSBM()`'s hot paths (roughly 3x faster on our
+benchmark, bit-identical results). See NEWS.md for the full changelog.
 
 ## Tested environments
 
 * tested locally on Ubuntu Linux 24.04.2 LTS, R-release, GCC
 
-* tested remotely with win-builder
-  - Windows Server 2022, R-oldrelease, 64 bit
-  - Windows Server 2022, R-release, 64 bit
-  - Windows Server 2022, R-devel, 64 bit
-
-* tested remotely via GitHub Actions (R-CMD-check.yaml)
-  - Ubuntu 24.04, R-devel
-  - Ubuntu 24.04, R-release
-  - Ubuntu 24.04, R-oldrel-1
-  - Windows Server 2022, R-release, 64 bit
-  - macOS, R-release
+* NOT YET re-tested on win-builder / GitHub Actions since the changes above
+  landed -- the environments below were verified for a previous, smaller
+  version of this changelog and need to be re-run before actual submission:
+  - win-builder: Windows Server 2022, R-oldrelease/R-release/R-devel, 64 bit
+  - GitHub Actions (R-CMD-check.yaml): Ubuntu 24.04 (R-devel/R-release/R-oldrel-1),
+    Windows Server 2022 (R-release), macOS (R-release)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 2 NOTEs
+0 errors | 0 warnings | 4 NOTEs
 
 * compilation used a non-portable compiler flag (`-mno-omit-leaf-frame-pointer`);
   this comes from the local R/toolchain configuration, not from the package's
   own build flags
 * two examples (`estimateMissSBM`, `missSBM_fit`) take marginally more than
   5s to run
+* HTML manual validation skipped locally (no `tidy` binary on this machine);
+  not expected to reproduce on CRAN's own check machines

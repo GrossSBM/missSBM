@@ -55,6 +55,12 @@ future_lapply_shuffled <- function(X, FUN, ...) {
   future_lapply(X, FUN, ..., future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
 }
 
+## logical N x N mask selecting each dyad exactly once: all off-diagonal pairs if directed, only
+## the upper triangle (i < j) if undirected
+valid_dyads <- function(dim, directed) {
+  if (directed) .row(dim) != .col(dim) else .row(dim) < .col(dim)
+}
+
 array2list <-function(X) {
   if (is.null(X)) {
     L <- list()
