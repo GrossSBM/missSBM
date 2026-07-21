@@ -43,55 +43,6 @@ This function draws observations in an adjacency matrix according to a given net
 \details{
 Internal functions use \code{future_lapply}, so set your plan to \code{'multisession'} or
 \code{'multicore'} to use several cores/workers.
-The list of parameters \code{control} tunes more advanced features, such as the
-initialization, how covariates are handled in the model, and the variational EM algorithm:
-\itemize{
-\item useCov logical. If \code{covariates} is not null, should they be used for the
-for the SBM inference (or just for the sampling)? Default is TRUE.
-\item clusterInit Initial method for clustering: either a character ("spectral")
-or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
-providing a user-defined clustering. Default is "spectral".
-\item similarity An R x R -> R function to compute similarities between node covariates. Default is
-\code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
-(i.e. \code{covariates} is a list of size-N vectors).
-\item threshold V-EM algorithm stops stop when an optimization step changes the objective function
-or the parameters by less than threshold. Default is 1e-2.
-\item maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.
-\item fixPointIter number of fix-point iterations in the V-E step. Default is 3.
-\item polish logical, should each model be node-swap-polished (see \link{missSBM_fit}'s \code{polish()})
-after the initial VEM fit, fixing individually misclassified nodes
-at that model's own number of blocks? Cheap relative to exploration (\code{iterates}),
-since it does not search across numbers of blocks. Default is TRUE.
-\item iterates integer, the number of forward/backward exploration passes searching for a better
-number of blocks by splitting/merging clusters (unlike \code{polish}, which only
-refines each model at its own number of blocks): more expensive than \code{polish}.
-\code{0} disables exploration entirely (only the initial VEM fit, plus \code{polish}
-if enabled, is returned). Default is 1.
-\item maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
-backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
-only the pairs with the most similar fitted connectivity profiles are tried, since
-merging two blocks with very different connectivity is rarely competitive anyway.
-Default is 30.
-\item stopOnDegenerate logical. A requested number of blocks can be higher than what the network
-actually supports: VEM then collapses one or more classes (see \link{missSBM_fit}'s
-\code{repair()}), and even a fair recovery attempt (\code{repair()}, then a full
-exploration pass letting \code{explore_forward()} try to split a healthy neighbor into
-that range) can still collapse right back down. When this persists over
-\code{maxConsecutiveDegenerate} consecutive (increasing) values of \code{vBlocks} after
-a pass, forward (split) exploration stops growing further into that range on
-subsequent passes (only relevant when \code{iterates > 1}); the affected models stay as
-fitted, flagged via \code{$degenerate}, and a warning is issued. Default is TRUE.
-\item maxConsecutiveDegenerate integer, the run length that triggers \code{stopOnDegenerate}.
-Default is 2.
-\item warmChain logical (\strong{work in progress}). If \code{TRUE}, each model is initialized
-by splitting (see \link{missSBM_fit}'s \code{split()}) the already-converged, smaller
-neighbor in \code{vBlocks} instead of an independent cold spectral clustering (see
-\link{missSBM_collection}'s \code{estimate_chain()}) -- meant to reduce VEM component
-collapse at higher numbers of blocks. Sequential in the number of blocks, unlike the
-default (\code{FALSE}), which fits every model in parallel: can be slower in
-wall-clock time when several workers are available. Default is FALSE.
-\item trace logical for verbosity. Default is TRUE.
-}
 
 The different sampling designs are split into two families in which we find dyad-centered and
 node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete description.

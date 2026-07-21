@@ -53,8 +53,8 @@ test_that("estimateMissSBM()'s warmChain control routes through estimate_chain()
   adj <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, "dyad", .9,
                                   clusters = sampler_undirected_nocov$memberships)
   collection <- estimateMissSBM(adj, vBlocks = 1:5, sampling = "dyad",
-                                 control = list(trace = FALSE, iterates = 0,
-                                                polish = FALSE, warmChain = TRUE))
+                                 control = missSBM_param(trace = FALSE, iterates = 0,
+                                                                  polish = FALSE, warmChain = TRUE))
   expect_s3_class(collection, "missSBM_collection")
   expect_equal(collection$vBlocks, 1:5)
   expect_true(all(is.finite(collection$ICL)))
@@ -69,13 +69,14 @@ test_that("warmChain keeps VEM collapse rare on a network where cold-started exp
   ## (including this test file), so set.seed() before each call does not reproducibly control
   ## the comparison once some earlier test has already triggered the switch. Manually, on a
   ## fresh session, warmChain = TRUE brought collapsed-class models down from 12/14 to 3/14 on
-  ## this same scenario (control = list(iterates = 0), isolating initialization quality)
+  ## this same scenario (control = missSBM_param(iterates = 0), isolating initialization
+  ## quality)
   frenchblog <- igraph::delete_vertices(missSBM::frenchblog2007, which(igraph::degree(missSBM::frenchblog2007) == 0))
   frenchblog <- igraph::delete_vertices(frenchblog, 61:igraph::vcount(frenchblog))
   blog <- igraph::as_adjacency_matrix(frenchblog, sparse = FALSE)
 
   set.seed(3052008)
-  sbm_full <- estimateMissSBM(blog, 1:6, "node", control = list(trace = FALSE, iterates = 1, polish = FALSE))
+  sbm_full <- estimateMissSBM(blog, 1:6, "node", control = missSBM_param(trace = FALSE, iterates = 1, polish = FALSE))
   samplingParameters <- ifelse(sbm_full$bestModel$fittedSBM$blockProp < 0.1, 0.2, 0.8)
   blog_obs <- observeNetwork(blog, sampling = "block-node", parameters = samplingParameters,
                               clusters = sbm_full$bestModel$fittedSBM$memberships)
@@ -83,7 +84,7 @@ test_that("warmChain keeps VEM collapse rare on a network where cold-started exp
   blocks <- 1:14
   set.seed(42)
   res_chain <- suppressWarnings(estimateMissSBM(blog_obs, blocks, "block-node",
-    control = list(trace = FALSE, iterates = 0, polish = FALSE, warmChain = TRUE)))
+    control = missSBM_param(trace = FALSE, iterates = 0, polish = FALSE, warmChain = TRUE)))
 
   expect_true(all(is.finite(res_chain$ICL)))
   expect_lte(sum(res_chain$degenerate), 8) # well below cold-started's ~12/14 on this scenario
@@ -94,7 +95,7 @@ test_that("estimateMissSBM() sorts and de-duplicates a misordered vBlocks", {
                                   clusters = sampler_undirected_nocov$memberships)
   expect_warning(
     collection <- estimateMissSBM(adj, vBlocks = c(3, 1, 2, 2), sampling = "dyad",
-                                   control = list(trace = FALSE, iterates = 0)),
+                                   control = missSBM_param(trace = FALSE, iterates = 0)),
     "not strictly increasing"
   )
   expect_equal(collection$vBlocks, 1:3)

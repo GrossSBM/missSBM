@@ -1,3 +1,96 @@
+#' Control of a missSBM fit
+#'
+#' Helper to define the list of parameters that controls [estimateMissSBM()]. All arguments have defaults.
+#'
+#' @param threshold V-EM algorithm stops when an optimization step changes the objective function
+#'   or the parameters by less than threshold. Default is 1e-2.
+#' @param maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.
+#' @param fixPointIter number of fix-point iterations in the V-E step. Default is 3.
+#' @param imputation character, the imputation strategy used to build the initial clustering (see
+#'   \code{\link{partlyObservedNetwork}}'s \code{imputation()}). Either "median" (default),
+#'   "average" or "zero".
+#' @param similarity an R x R -> R function to compute similarities between node covariates.
+#'   Default is \code{\link{l1_similarity}}, that is, -abs(x - y). Only relevant when the
+#'   covariates are node-centered (i.e. \code{covariates} is a list of size-N vectors).
+#' @param useCov logical. If \code{covariates} is not empty, should they be used for the SBM
+#'   inference (or just for the sampling)? Default is TRUE.
+#' @param clusterInit initial clustering: \code{NULL} (default) for a cold spectral clustering, or
+#'   a list with \code{length(vBlocks)} vectors, each with size \code{ncol(adjacencyMatrix)},
+#'   providing a user-defined clustering.
+#' @param polish logical, should each model be node-swap-polished (see [missSBM_fit]'s
+#'   \code{polish()}) after the initial VEM fit, fixing individually misclassified nodes at that
+#'   model's own number of blocks? Cheap relative to exploration (\code{iterates}), since it does
+#'   not search across numbers of blocks. Default is TRUE.
+#' @param iterates integer, the number of forward/backward exploration passes searching for a
+#'   better number of blocks by splitting/merging clusters (unlike \code{polish}, which only
+#'   refines each model at its own number of blocks): more expensive than \code{polish}.
+#'   \code{0} disables exploration entirely (only the initial VEM fit, plus \code{polish} if
+#'   enabled, is returned). Default is 1.
+#' @param maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried
+#'   during backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
+#'   only the pairs with the most similar fitted connectivity profiles are tried, since merging
+#'   two blocks with very different connectivity is rarely competitive anyway. Default is 30.
+#' @param stopOnDegenerate logical. A requested number of blocks can be higher than what the
+#'   network actually supports: VEM then collapses one or more classes (see [missSBM_fit]'s
+#'   \code{repair()}), and even a fair recovery attempt (\code{repair()}, then a full exploration
+#'   pass letting \code{explore_forward()} try to split a healthy neighbor into that range) can
+#'   still collapse right back down. When this persists over \code{maxConsecutiveDegenerate}
+#'   consecutive (increasing) values of \code{vBlocks} after a pass, forward (split) exploration
+#'   stops growing further into that range on subsequent passes (only relevant when
+#'   \code{iterates > 1}); the affected models stay as fitted, flagged via \code{$degenerate},
+#'   and a warning is issued. Default is TRUE.
+#' @param maxConsecutiveDegenerate integer, the run length that triggers \code{stopOnDegenerate}.
+#'   Default is 2.
+#' @param warmChain logical (\strong{work in progress}). If \code{TRUE}, each model is initialized
+#'   by splitting (see [missSBM_fit]'s \code{split()}) the already-converged, smaller neighbor in
+#'   \code{vBlocks} instead of an independent cold spectral clustering (see
+#'   [missSBM_collection]'s \code{estimate_chain()}) -- meant to reduce VEM component collapse at
+#'   higher numbers of blocks. Sequential in the number of blocks, unlike the default
+#'   (\code{FALSE}), which fits every model in parallel: can be slower in wall-clock time when
+#'   several workers are available. Default is FALSE.
+#' @param trace logical for verbosity. Default is TRUE.
+#'
+#' @return a list of parameters configuring the fit, with class \code{missSBM_param}.
+#'
+#' @seealso [estimateMissSBM()]
+#' @export
+missSBM_param <- function(
+    threshold                = 1e-2,
+    maxIter                  = 50,
+    fixPointIter             = 3,
+    imputation                = c("median", "average", "zero"),
+    similarity                = l1_similarity,
+    useCov                    = TRUE,
+    clusterInit               = NULL,
+    polish                    = TRUE,
+    iterates                  = 1,
+    maxMergeCandidates        = 30,
+    stopOnDegenerate          = TRUE,
+    maxConsecutiveDegenerate  = 2,
+    warmChain                 = FALSE,
+    trace                     = TRUE
+) {
+  imputation <- match.arg(imputation)
+
+  structure(list(
+    threshold                = threshold,
+    maxIter                  = maxIter,
+    fixPointIter             = fixPointIter,
+    imputation                = imputation,
+    similarity                = similarity,
+    useCov                    = useCov,
+    clusterInit               = clusterInit,
+    polish                    = polish,
+    iterates                  = iterates,
+    maxMergeCandidates        = maxMergeCandidates,
+    stopOnDegenerate          = stopOnDegenerate,
+    maxConsecutiveDegenerate  = maxConsecutiveDegenerate,
+    warmChain                 = warmChain,
+    trace                     = trace
+  ), class = "missSBM_param")
+}
+
+
 #' Estimation of simple SBMs with missing data
 #'
 #' Variational EM inference of Stochastic Block Models indexed by block number from a partially observed network.
@@ -10,59 +103,13 @@
 #' ("double-standard", "block-dyad", "block-node" , "degree") are available. See details.
 #' @param covariates An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.
-#' @param control a list of parameters controlling advanced features. See details.
+#' @param control a list-like structure for controlling advanced features, with default generated
+#' by \code{\link{missSBM_param}}. See the associated documentation for details.
 #'
 #' @return Returns an R6 object with class \code{\link{missSBM_collection}}.
 #'
 #' @details Internal functions use \code{future_lapply}, so set your plan to \code{'multisession'} or
 #' \code{'multicore'} to use several cores/workers.
-#' The list of parameters \code{control} tunes more advanced features, such as the
-#' initialization, how covariates are handled in the model, and the variational EM algorithm:
-#'  * useCov logical. If \code{covariates} is not null, should they be used for the
-#'         for the SBM inference (or just for the sampling)? Default is TRUE.
-#'  * clusterInit Initial method for clustering: either a character ("spectral")
-#'         or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
-#'         providing a user-defined clustering. Default is "spectral".
-#'  * similarity An R x R -> R function to compute similarities between node covariates. Default is
-#'         \code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
-#'         (i.e. \code{covariates} is a list of size-N vectors).
-#'  * threshold V-EM algorithm stops stop when an optimization step changes the objective function
-#'         or the parameters by less than threshold. Default is 1e-2.
-#'  * maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.
-#'  * fixPointIter number of fix-point iterations in the V-E step. Default is 3.
-#'  * polish logical, should each model be node-swap-polished (see [missSBM_fit]'s \code{polish()})
-#'         after the initial VEM fit, fixing individually misclassified nodes
-#'         at that model's own number of blocks? Cheap relative to exploration (\code{iterates}),
-#'         since it does not search across numbers of blocks. Default is TRUE.
-#'  * iterates integer, the number of forward/backward exploration passes searching for a better
-#'         number of blocks by splitting/merging clusters (unlike \code{polish}, which only
-#'         refines each model at its own number of blocks): more expensive than \code{polish}.
-#'         \code{0} disables exploration entirely (only the initial VEM fit, plus \code{polish}
-#'         if enabled, is returned). Default is 1.
-#'  * maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
-#'         backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
-#'         only the pairs with the most similar fitted connectivity profiles are tried, since
-#'         merging two blocks with very different connectivity is rarely competitive anyway.
-#'         Default is 30.
-#'  * stopOnDegenerate logical. A requested number of blocks can be higher than what the network
-#'         actually supports: VEM then collapses one or more classes (see [missSBM_fit]'s
-#'         \code{repair()}), and even a fair recovery attempt (\code{repair()}, then a full
-#'         exploration pass letting \code{explore_forward()} try to split a healthy neighbor into
-#'         that range) can still collapse right back down. When this persists over
-#'         \code{maxConsecutiveDegenerate} consecutive (increasing) values of \code{vBlocks} after
-#'         a pass, forward (split) exploration stops growing further into that range on
-#'         subsequent passes (only relevant when \code{iterates > 1}); the affected models stay as
-#'         fitted, flagged via \code{$degenerate}, and a warning is issued. Default is TRUE.
-#'  * maxConsecutiveDegenerate integer, the run length that triggers \code{stopOnDegenerate}.
-#'         Default is 2.
-#'  * warmChain logical (\strong{work in progress}). If \code{TRUE}, each model is initialized
-#'         by splitting (see [missSBM_fit]'s \code{split()}) the already-converged, smaller
-#'         neighbor in \code{vBlocks} instead of an independent cold spectral clustering (see
-#'         [missSBM_collection]'s \code{estimate_chain()}) -- meant to reduce VEM component
-#'         collapse at higher numbers of blocks. Sequential in the number of blocks, unlike the
-#'         default (\code{FALSE}), which fits every model in parallel: can be slower in
-#'         wall-clock time when several workers are available. Default is FALSE.
-#'  * trace logical for verbosity. Default is TRUE.
 #'
 #' @details The different sampling designs are split into two families in which we find dyad-centered and
 #' node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete description.
@@ -78,7 +125,7 @@
 #'    * block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)
 #     * degree parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))
 #'
-#' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
+#' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}}, \code{\link{missSBM_fit}} and \code{\link{missSBM_param}}.
 #' @examples
 #' ## SBM parameters
 #' N <- 100 # number of nodes
@@ -115,7 +162,13 @@
 #' predict(myModel)[1:5, 1:5]
 #'
 #' @export
-estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = list(), control = list()) {
+estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = list(), control = missSBM_param()) {
+
+  ## Temporary check for deprecated use of list()
+  if (!inherits(control, "missSBM_param"))
+    stop("We now use the function missSBM_param() to generate the list of parameters ",
+         "that controls the fit: replace 'list(my_arg = xx)' by missSBM_param(my_arg = xx) ",
+         "and see the documentation of missSBM_param().")
 
   ## Sanity checks
   stopifnot(sampling %in% available_samplings)
@@ -131,14 +184,7 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   }
   vBlocks <- vBlocks_sorted
 
-  ## Default control parameters overwritten by user specification
-  ctrl <- list(
-    threshold = 1e-2, trace = TRUE, imputation = "median", similarity = l1_similarity, useCov = TRUE,
-    maxIter = 50, fixPointIter = 3, iterates = 1, clusterInit = NULL,
-    maxMergeCandidates = 30, polish = TRUE, stopOnDegenerate = TRUE, maxConsecutiveDegenerate = 2,
-    warmChain = FALSE
-    )
-  ctrl[names(control)] <- control
+  ctrl <- control
   ## If no covariate is provided, you cannot ask for using them
   if (length(covariates) == 0) ctrl$useCov <- FALSE
   if (ctrl$useCov) stopifnot(sampling %in% available_samplings_covariates)

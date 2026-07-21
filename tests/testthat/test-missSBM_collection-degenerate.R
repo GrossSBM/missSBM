@@ -84,13 +84,13 @@ test_that("estimateMissSBM()'s exploration stops growing forward into a persiste
   blog <- igraph::as_adjacency_matrix(frenchblog, sparse = FALSE)
 
   set.seed(3052008)
-  sbm_full <- estimateMissSBM(blog, 1:6, "node", control = list(trace = FALSE, iterates = 1, polish = FALSE))
+  sbm_full <- estimateMissSBM(blog, 1:6, "node", control = missSBM_param(trace = FALSE, iterates = 1, polish = FALSE))
   samplingParameters <- ifelse(sbm_full$bestModel$fittedSBM$blockProp < 0.1, 0.2, 0.8)
   blog_obs <- observeNetwork(blog, sampling = "block-node", parameters = samplingParameters,
                               clusters = sbm_full$bestModel$fittedSBM$memberships)
 
   expect_warning(
-    res <- estimateMissSBM(blog_obs, 1:16, "block-node", control = list(trace = FALSE, iterates = 1)),
+    res <- estimateMissSBM(blog_obs, 1:16, "block-node", control = missSBM_param(trace = FALSE, iterates = 1)),
     "does not appear to support"
   )
 

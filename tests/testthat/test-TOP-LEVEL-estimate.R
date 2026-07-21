@@ -36,7 +36,7 @@ test_that("missSBM and class missSBM-fit are coherent", {
       adjacencyMatrix = adjMatrix,
       vBlocks     = 1:3,
       sampling    = sampling,
-      control     = control
+      control     = missSBM_param(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 0, iterates = 0)
     )
 
     expect_is(collection, "missSBM_collection")

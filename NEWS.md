@@ -2,6 +2,10 @@
 
 ## Major changes
 
+- **Breaking**: `estimateMissSBM()`'s `control` must now be built with the new `missSBM_param()`
+  (one named, defaulted argument per option, PLNmodels-style) instead of a raw `list(...)`, which
+  now errors with a message pointing at the replacement -- also catches typo'd option names
+  immediately instead of silently ignoring them.
 - `missSBM_fit` now exposes `split()`, `merge()`, `candidates_split()` and `candidates_merge()`
   as instance methods, previously inlined in `missSBM_collection`'s exploration logic; same
   search algorithm, now independently testable.
