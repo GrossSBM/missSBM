@@ -1,3 +1,9 @@
+## roxygen2 doc fragments reused via inline `r` expressions across this class's methods, avoiding
+## many near-duplicate @param lines (@template is superseded, see
+## https://roxygen2.r-lib.org/articles/reuse.html)
+.rd_control_vem <- "a list of VEM control parameters (see [estimateMissSBM()])"
+.rd_trial_niter <- "number of VEM iterations used for the trial fits. Default is 2."
+
 #' An R6 class to represent an SBM fit with missing data
 #'
 #' @description The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
@@ -99,7 +105,7 @@ missSBM_fit <-
       private$useCov            <- useCov
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
+    #' @param control `r .rd_control_vem`
     doVEM = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
 
       ## Starting the Variational EM algorithm
@@ -181,9 +187,8 @@ missSBM_fit <-
     #' @description generate and cheaply trial-fit candidates obtained by splitting each
     #'   splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
     #'   least 4 members and non-zero variance in its induced sub-network.
-    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
-    #'   is overridden by \code{trial_niter}
-    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
+    #' @param trial_niter `r .rd_trial_niter`
     #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
     candidates_split = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), trial_niter = 2) {
       base_net <- self$imputedNetwork
@@ -229,10 +234,9 @@ missSBM_fit <-
     #' @description generate and cheaply trial-fit candidates obtained by merging pairs of
     #'   clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
     #'   number of blocks), only the most similar-connectivity pairs are tried.
-    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
-    #'   is overridden by \code{trial_niter}
+    #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
     #' @param max_candidates cap on the number of pairs tried. Default is 30.
-    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @param trial_niter `r .rd_trial_niter`
     #' @return a list of trial-fitted [`missSBM_fit`] candidates
     candidates_merge = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), max_candidates = 30, trial_niter = 2) {
       Q <- private$SBM$nbBlocks
@@ -262,7 +266,7 @@ missSBM_fit <-
     #'   \code{nbBlocks}, e.g. after a VEM component collapse) by filling the empty classes (see
     #'   \code{repair_empty_classes()}) and refitting the full VEM. Mutates \code{self} in place;
     #'   a no-op if the fit is not degenerate.
-    #' @param control a list of VEM control parameters (see [estimateMissSBM()])
+    #' @param control `r .rd_control_vem`
     #' @return invisibly, \code{self}
     repair = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
       if (!is_degenerate(self)) return(invisible(self))
@@ -282,7 +286,7 @@ missSBM_fit <-
     #'   non-class-emptying moves, then runs a full VEM to resettle. Stops as soon as a sweep
     #'   fails to improve the ICL, mutates \code{self} in place, and never leaves the ICL worse
     #'   than before the call.
-    #' @param control a list of VEM control parameters (see [estimateMissSBM()])
+    #' @param control `r .rd_control_vem`
     #' @param max_sweeps maximum number of swap sweeps. Default is 10.
     #' @return invisibly, \code{self}
     polish = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), max_sweeps = 10) {

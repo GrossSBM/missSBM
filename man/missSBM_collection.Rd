@@ -100,9 +100,7 @@ not overridden per call (set at construction by \code{\link[=estimateMissSBM]{es
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{optional list of parameters overriding the collection's stored control
-(set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}}, see its details for the full list).
-Default \code{NULL} uses the stored control as-is.}
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control (set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}}, see its details for the full list). Default \code{NULL} uses the stored control as-is.}
     }
     \if{html}{\out{</div>}}
   }
@@ -129,8 +127,7 @@ Falls back to this slot's own cold-started clustering (built at construction, sa
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{optional list of parameters overriding the collection's stored control.
-Default \code{NULL} uses the stored control as-is.}
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control (set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}}, see its details for the full list). Default \code{NULL} uses the stored control as-is.}
     }
     \if{html}{\out{</div>}}
   }
@@ -151,8 +148,7 @@ model's own number of blocks, unlike \code{explore()} which searches across bloc
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{optional list of parameters overriding the collection's stored control.
-Default \code{NULL} uses the stored control as-is.}
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control (set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}}, see its details for the full list). Default \code{NULL} uses the stored control as-is.}
     }
     \if{html}{\out{</div>}}
   }
@@ -176,8 +172,7 @@ each time. \code{iterates <= 0} is a no-op.
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{optional list of parameters overriding the collection's stored control.
-Default \code{NULL} uses the stored control as-is.}
+      \item{\code{control}}{optional list of parameters overriding the collection's stored control (set at construction by \code{\link[=estimateMissSBM]{estimateMissSBM()}}, see its details for the full list). Default \code{NULL} uses the stored control as-is.}
       \item{\code{iterates}}{optional integer overriding \code{control$iterates} for this call only.}
       \item{\code{direction}}{character ("forward", "backward", "both" or "none") controlling which
 directions are searched. Default "both".}

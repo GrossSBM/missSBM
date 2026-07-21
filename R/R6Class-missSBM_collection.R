@@ -1,3 +1,11 @@
+## roxygen2 doc fragment reused via inline `r` expressions across this class's methods, avoiding
+## many near-duplicate @param control lines (see https://roxygen2.r-lib.org/articles/reuse.html)
+.rd_control_collection <- paste(
+  "optional list of parameters overriding the collection's stored control (set at construction",
+  "by [estimateMissSBM()], see its details for the full list). Default `NULL` uses the stored",
+  "control as-is."
+)
+
 #' An R6 class to represent a collection of SBM fits with missing data
 #'
 #' @description The function [estimateMissSBM()] fits a collection of SBM with missing data for
@@ -184,9 +192,7 @@ missSBM_collection <-
       )
     },
     #' @description method to launch the estimation of the collection of models
-    #' @param control optional list of parameters overriding the collection's stored control
-    #'   (set at construction by [estimateMissSBM()], see its details for the full list).
-    #'   Default \code{NULL} uses the stored control as-is.
+    #' @param control `r .rd_control_collection`
     estimate = function(control = NULL) {
       if (is.null(control)) control <- private$control
       if (control$trace) cat(" Performing VEM inference\n")
@@ -208,8 +214,7 @@ missSBM_collection <-
     #'   model in parallel) -- can be slower in wall-clock time with many workers available.
     #'   Falls back to this slot's own cold-started clustering (built at construction, same as
     #'   \code{estimate()} would use) whenever nothing is splittable along the chain.
-    #' @param control optional list of parameters overriding the collection's stored control.
-    #'   Default \code{NULL} uses the stored control as-is.
+    #' @param control `r .rd_control_collection`
     estimate_chain = function(control = NULL) {
       if (is.null(control)) control <- private$control
       if (control$trace) cat(" Performing chained VEM inference\n")
@@ -251,8 +256,7 @@ missSBM_collection <-
     #' @description method to node-swap-polish every model in the collection (see
     #'   [missSBM_fit]'s \code{polish()}); fixes individually misclassified nodes at each
     #'   model's own number of blocks, unlike \code{explore()} which searches across blocks.
-    #' @param control optional list of parameters overriding the collection's stored control.
-    #'   Default \code{NULL} uses the stored control as-is.
+    #' @param control `r .rd_control_collection`
     polish = function(control = NULL) {
       if (is.null(control)) control <- private$control
       if (control$trace) cat(" Polishing (node-swap)\n")
@@ -269,8 +273,7 @@ missSBM_collection <-
     #'   it for this call only, without altering the stored control -- handy to alternate
     #'   \code{explore()}/\code{polish()} calls without having to reconstruct a full control list
     #'   each time. \code{iterates <= 0} is a no-op.
-    #' @param control optional list of parameters overriding the collection's stored control.
-    #'   Default \code{NULL} uses the stored control as-is.
+    #' @param control `r .rd_control_collection`
     #' @param iterates optional integer overriding \code{control$iterates} for this call only.
     #' @param direction character ("forward", "backward", "both" or "none") controlling which
     #'   directions are searched. Default "both".

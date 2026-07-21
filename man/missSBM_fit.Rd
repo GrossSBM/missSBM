@@ -108,7 +108,7 @@ or more classes (see \code{repair()})}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
     }
     \if{html}{\out{</div>}}
   }
@@ -162,8 +162,7 @@ least 4 members and non-zero variance in its induced sub-network.
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
-is overridden by \code{trial_niter}}
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter} is overridden by \code{trial_niter}}
       \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
     }
     \if{html}{\out{</div>}}
@@ -218,8 +217,7 @@ number of blocks), only the most similar-connectivity pairs are tried.
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
-is overridden by \code{trial_niter}}
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter} is overridden by \code{trial_niter}}
       \item{\code{max_candidates}}{cap on the number of pairs tried. Default is 30.}
       \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
     }
