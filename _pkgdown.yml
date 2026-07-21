@@ -1,6 +1,7 @@
-templates:
-  params:
-    bootswatch: readable
+url: http://grosssbm.github.io/missSBM
+
+template:
+  bootstrap: 5
 
 navbar:
   title: "missSBM"
@@ -29,6 +30,7 @@ reference:
   contents:
     - '`estimateMissSBM`'
     - '`observeNetwork`'
+    - '`missSBM_param`'
 - title: 'Main classes of objects'
   desc: >
     Description of objects missSBM_fit and missSBM_collection. The class missSBM_fit
