@@ -1,17 +1,19 @@
-
 # missSBM: Handling missing data in Stochastic Block Models
+
 
 <!-- badges: start -->
 
-[![website](https://github.com/GrossSBM/missSBM/workflows/pkgdown/badge.svg)](https://grosssbm.github.io/missSBM/)
-[![R-CMD-check](https://github.com/grosssbm/missSBM/workflows/R-CMD-check/badge.svg)](https://github.com/grosssbm/missSBM/actions)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/missSBM)](https://cran.r-project.org/package=missSBM)
-[![last commit](https://img.shields.io/github/last-commit/grossSBM/missSBM.svg)](https://github.com/GrossSBM/missSBM/commits/master)
+[![pkgdown](https://github.com/GrossSBM/missSBM/actions/workflows/pkgdown.yaml/badge.svg)](https://grosssbm.github.io/missSBM/)
+[![R-CMD-check](https://github.com/GrossSBM/missSBM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/GrossSBM/missSBM/actions/workflows/R-CMD-check.yaml)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/missSBM)](https://cran.r-project.org/package=missSBM)
+[![last
+commit](https://img.shields.io/github/last-commit/GrossSBM/missSBM.svg)](https://github.com/GrossSBM/missSBM/commits/master)
 [![Codecov test
 coverage](https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg)](https://app.codecov.io/gh/GrossSBM/missSBM?branch=master)
 
-[![R-CMD-check](https://github.com/GrossSBM/missSBM/workflows/R-CMD-check/badge.svg)](https://github.com/GrossSBM/missSBM/actions)
 <!-- badges: end -->
+
+## Description
 
 > When a network is partially observed (here, NAs in the adjacency
 > matrix rather than 1 or 0 due to missing information between node
@@ -19,14 +21,27 @@ coverage](https://codecov.io/gh/GrossSBM/missSBM/branch/master/graph/badge.svg)]
 > generates those NAs. ‘missSBM’, presented in ‘Barbillon, Chiquet and
 > Tabouy’ (2022)
 > [10.18637/jss.v101.i12](https://doi.org/10.18637/jss.v101.i12),
-> adjusts the popular stochastic block model from network data observed
+> adjusts the popular stochastic block model from network data sampled
 > under various missing data conditions, as described in ‘Tabouy,
 > Barbillon and Chiquet’ (2019)
 > [10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934).
 
+**missSBM** covers a variety of sampling designs for the missing
+dyads/nodes, split into two families depending on whether the sampling
+mechanism can be ignored:
+
+- **Missing At Random (MAR)**: `"dyad"`, `"node"`, `"covar-dyad"`,
+  `"covar-node"`, `"snowball"` — whether a dyad/node is observed does
+  not depend on the network itself, so a naive fit on the observed part
+  alone is already consistent.
+- **Missing Not At Random (MNAR)**: `"double-standard"`, `"block-node"`,
+  `"block-dyad"`, `"degree"` — the sampling depends on the underlying
+  block structure, the edge value, or the node degree, and must be
+  modeled jointly with the network to avoid biased inference.
+
 ## Installation
 
-The Last CRAN version is available via
+The last CRAN version is available via
 
 ``` r
 install.packages("missSBM")
@@ -35,8 +50,120 @@ install.packages("missSBM")
 The development version is available via
 
 ``` r
-devtools::install_github("grossSBM/missSBM")
+devtools::install_github("GrossSBM/missSBM")
 ```
+
+## Illustration
+
+We illustrate **missSBM** on the French political blogosphere network
+(`frenchblog2007`, bundled with the package): about 190 blogs, edges
+standing for hyperlinks, each blog labeled by political party.
+
+### Fit a SBM on the fully observed network
+
+``` r
+library(missSBM)
+library(igraph)
+```
+
+
+    Attaching package: 'igraph'
+
+    The following objects are masked from 'package:stats':
+
+        decompose, spectrum
+
+    The following object is masked from 'package:base':
+
+        union
+
+``` r
+data(frenchblog2007)
+frenchblog2007 <- delete_vertices(frenchblog2007, which(degree(frenchblog2007) == 0))
+adjacency <- as_adjacency_matrix(frenchblog2007, sparse = FALSE)
+```
+
+``` r
+full_fit <- estimateMissSBM(adjacency, vBlocks = 1:10, sampling = "node",
+                             control = missSBM_param(trace = FALSE))
+```
+
+``` r
+plot(full_fit, "icl")
+```
+
+![](man/figures/README-plot-full-1.png)
+
+### Simulate a Missing Not At Random sampling and account for it
+
+Real-world network data collection is rarely complete. We simulate a
+**block-node** sampling design (MNAR): blogs belonging to smaller
+political parties are less likely to have been surveyed than blogs in
+bigger ones, a mechanism tied to the very block structure we are trying
+to recover – exactly the kind of design a naive analysis of the observed
+part alone would get wrong.
+
+``` r
+set.seed(1234)
+block_prop <- full_fit$bestModel$fittedSBM$blockProp
+sampling_rate <- ifelse(block_prop < 0.1, 0.2, 0.8)
+partial_network <- observeNetwork(adjacency, sampling = "block-node",
+                                   parameters = sampling_rate,
+                                   clusters = full_fit$bestModel$fittedSBM$memberships)
+mean(is.na(partial_network)) # fraction of missing dyads
+```
+
+    [1] 0.07891381
+
+``` r
+partial_fit <- estimateMissSBM(partial_network, vBlocks = 1:10, sampling = "block-node",
+                                control = missSBM_param(trace = FALSE, iterates = 2))
+```
+
+``` r
+plot(partial_fit, "icl")
+```
+
+![](man/figures/README-plot-partial-1.png)
+
+Despite about 8% of the dyads missing under this informative design,
+**missSBM** recovers a block structure close to the one found on the
+fully observed network (Adjusted Rand Index, the closer to 1 the
+better):
+
+``` r
+aricode::ARI(full_fit$bestModel$fittedSBM$memberships, partial_fit$bestModel$fittedSBM$memberships)
+```
+
+    [1] 0.8208973
+
+``` r
+par(mfrow = c(1, 2))
+plot(full_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
+```
+
+    Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+    ℹ Please use tidy evaluation idioms with `aes()`.
+    ℹ See also `vignette("ggplot2-in-packages")` for more information.
+    ℹ The deprecated feature was likely used in the sbm package.
+      Please report the issue at <https://github.com/GrossSBM/sbm/issues>.
+
+    Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ℹ Please use `linewidth` instead.
+    ℹ The deprecated feature was likely used in the sbm package.
+      Please report the issue at <https://github.com/GrossSBM/sbm/issues>.
+
+![](man/figures/README-plot-expected-1.png)
+
+``` r
+plot(partial_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
+```
+
+![](man/figures/README-plot-expected-2.png)
+
+See `vignette("case_study_war_networks")` and [the other
+articles](https://grosssbm.github.io/missSBM/articles/) for a more
+comprehensive tour, including covariates and further sampling designs.
 
 ## References
 

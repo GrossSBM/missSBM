@@ -7,8 +7,11 @@
 ^src/Makevars$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^README.Rmd
-^README.md
+^README\.md$
+^README\.html$
+^README\.qmd$
+^README_cache$
+^README_files$
 ^inst/tries
 ^inst/simus
 ^inst/tests_against_timCode
