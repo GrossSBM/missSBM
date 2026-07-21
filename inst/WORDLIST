@@ -6,14 +6,17 @@ CQ
 Chiquet’
 Codecov
 Dyad
+ELBO
 Gibler
 ICL
 JSS
+Kernighan
 MNAR
 NLopt
 NOCEDAL
 ORCID
 Observatoire
+PLNmodels
 PPI
 Présidentielle
 Raphson
@@ -28,7 +31,8 @@ Variational
 Wayman
 bipartition
 blockDyad
-clusterInit
+blogosphere
+changelog
 covar
 covarArray
 covarMatrix
@@ -38,7 +42,6 @@ dyad
 dyads
 elbo
 estimateMissSBM
-fixPointIter
 ggplot
 großBM
 icl
@@ -51,8 +54,8 @@ kmeans
 lapply
 magrittr
 maxIter
-maxMergeCandidates
 meso
+misclassified
 missSBM’
 modelling
 netMatrix
@@ -65,6 +68,7 @@ nloptR
 observedNetwork
 partlyObservedNet
 partlyObservedNetwork
+pkgdown
 pre
 rSampling
 recomputation
@@ -75,6 +79,7 @@ sbm
 simpleSBM
 splittable
 subtypes
+typo'd
 unexporting
 useCov
 variational

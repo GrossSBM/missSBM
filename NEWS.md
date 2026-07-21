@@ -13,8 +13,6 @@
   convergence, fixing individually misclassified nodes that `split()`/`merge()` cannot reach.
   Cheaper than split/merge exploration since it stays at a fixed number of blocks. Run
   automatically by `estimateMissSBM()` via its new `polish` control (default `TRUE`).
-  `missSBM_collection`'s `estimate()`/`polish()`/`explore()` now share a control list stored at
-  construction, no longer requiring `control` on every call.
 - requesting more blocks than a network actually supports can make VEM collapse one or more
   classes; this used to be silent, and split/merge exploration's own repair of it could
   silently corrupt `vBlocks`'s bookkeeping (duplicated/missing entries, non-smooth ICL/ELBO in
@@ -29,13 +27,6 @@
   initializes each model by splitting the already-converged, smaller neighbor instead of an
   independent cold clustering, substantially reducing collapse in practice, at the cost of
   fitting `vBlocks` sequentially rather than in parallel.
-- `estimateMissSBM()` now sorts/de-duplicates `vBlocks` if needed (with a warning), since
-  exploration and chaining both assume it is strictly increasing.
-- `estimateMissSBM()`'s `control` drops the `exploration` field: nobody used `"forward"`/
-  `"backward"` alone at that level, only `"both"`/`"none"`, so `iterates` now doubles as the
-  on/off switch (`0` disables exploration entirely). `missSBM_collection$explore()` no longer
-  reads a stored `exploration` control field either; its `direction` argument (default `"both"`)
-  is now a plain per-call parameter, still available for advanced/internal use.
 - replace the NLopt/CCSAQ optimizer for the covariate connectivity parameters with a builtin
   Newton-Raphson solver (the M-step objective is concave, so it converges reliably in a handful
   of iterations); `nloptr` is no longer a dependency
@@ -50,6 +41,13 @@
 
 ## Minor changes
 
+- `estimateMissSBM()` now sorts/de-duplicates `vBlocks` if needed (with a warning), since
+  exploration and chaining both assume it is strictly increasing.
+- `estimateMissSBM()`'s `control` drops the `exploration` field: nobody used `"forward"`/
+  `"backward"` alone at that level, only `"both"`/`"none"`, so `iterates` now doubles as the
+  on/off switch (`0` disables exploration entirely). `missSBM_collection$explore()` no longer
+  reads a stored `exploration` control field either; its `direction` argument (default `"both"`)
+  is now a plain per-call parameter, still available for advanced/internal use.
 - cap the number of merge candidates tried during backward exploration
   (`control$maxMergeCandidates`, default 30) instead of always trying every pair
 - fix a crash and a closed-form algebra bug in the "degree" sampling design; parameter recovery
@@ -61,19 +59,14 @@
 - `missSBM_fit`'s `polish()`, `repair()`, `candidates_split()` and `candidates_merge()` gain the
   same default `control` as `doVEM()`, so they can be called standalone without building a full
   control list first; `missSBM_collection`'s calls (which always pass an explicit control list)
-  are unaffected
-- pre-CRAN cleanup: fixed `.Rbuildignore` (a typo'd rule was letting `inst/JSS-analyses/` leak
-  into the built tarball), removed dead code (an unused initialization in `kmeans_missSBM()`,
-  two commented-out C++ blocks), factored out the repeated
-  `future_lapply(..., future.seed = TRUE, future.scheduling = ...)` and
-  "pick the candidate with the smallest ICL" patterns, and filled a couple of missing
-  `@examples`; also factored out the repeated directed/undirected dyad-mask logic (now
-  `valid_dyads()`) and rewrote `cran-comments.md` for this release, including a reverse-
-  dependency check (`gsbm`, unaffected by the `missSBM_param()` breaking change). Further
-  factored `missSBM_collection`'s `explore_forward()`/`explore_backward()` into a shared private
+  are unaffected ; `missSBM_collection`'s `estimate()`/`polish()`/`explore()` now share a control 
+  list stored at construction, no longer requiring `control` on every call.
+- Factored `missSBM_collection`'s `explore_forward()`/`explore_backward()` into a shared private
   `explore_direction()`, and `missSBM_fit`'s `candidates_split()`/`candidates_merge()`'s trial-fit
   loop into a shared private `trial_fit_candidates()`; verified bit-identical output on the same
   fixed-seed scenario used throughout this changelog to diagnose VEM collapse
+- pre-CRAN cleanup: fixed `.Rbuildignore`, removed dead code, factored out the repeated
+  `future_lapply(..., future.seed = TRUE, future.scheduling = ...)`.
 
 # missSBM 1.0.5 (2025-03-12)
 

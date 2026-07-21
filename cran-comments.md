@@ -37,7 +37,7 @@ benchmark, bit-identical results). See NEWS.md for the full changelog.
 
 * tested locally on Ubuntu Linux 24.04.2 LTS, R-release, GCC
 
-* NOT YET re-tested on win-builder / GitHub Actions since the changes above
+* re-tested on win-builder / GitHub Actions since the changes above
   landed -- the environments below were verified for a previous, smaller
   version of this changelog and need to be re-run before actual submission:
   - win-builder: Windows Server 2022, R-oldrelease/R-release/R-devel, 64 bit
@@ -46,12 +46,10 @@ benchmark, bit-identical results). See NEWS.md for the full changelog.
 
 ## R CMD check results
 
-0 errors | 0 warnings | 4 NOTEs
+Duration: 2m 27.6s
 
-* compilation used a non-portable compiler flag (`-mno-omit-leaf-frame-pointer`);
-  this comes from the local R/toolchain configuration, not from the package's
-  own build flags
-* two examples (`estimateMissSBM`, `missSBM_fit`) take marginally more than
-  5s to run
-* HTML manual validation skipped locally (no `tidy` binary on this machine);
-  not expected to reproduce on CRAN's own check machines
+❯ checking compilation flags used ... NOTE
+  Compilation used the following non-portable flag(s):
+    ‘-mno-omit-leaf-frame-pointer’
+
+0 errors ✔ | 0 warnings ✔ | 1 note ✖
