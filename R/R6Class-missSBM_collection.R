@@ -72,73 +72,59 @@ missSBM_collection <-
       invisible(NULL)
     },
 
-    # for each q, ask the model at q for trial-fitted split candidates
-    # (missSBM_fit$candidates_split()), fully refit the best one, and keep it in place of the
-    # q+1 model only if it strictly improves the ICL.
+    # shared by explore_forward()/explore_backward(): walks the models at positions `ks` in
+    # order, asks each for trial-fitted candidates via get_candidates(model, control), fully
+    # refits+repairs the best one, and installs it in place of the model at position (k + step)
+    # only if it's a valid (matching block count), non-degenerate, ICL-improving replacement.
     # control: a list of parameters controlling the variational EM algorithm. See details of
     # function [estimateMissSBM()]
-    explore_forward = function(control) {
+    # step: +1 for forward (split, growing Q) or -1 for backward (merge, shrinking Q)
+    # get_candidates: function(model, control) -> list of trial-fitted missSBM_fit candidates
+    # trace_label: verbosity prefix, e.g. "   Going forward "
+    explore_direction = function(control, step, get_candidates, trace_label) {
 
       trace <- control$trace; control$trace <- FALSE
 
       if (length(self$models) == 1) return(NULL)
-      if (trace) cat("   Going forward ")
-      last_k <- length(self$vBlocks) - 1
-      if (!is.null(private$forwardLimit)) last_k <- min(last_k, private$forwardLimit)
-      vBlocks <- self$vBlocks[seq_len(last_k)]
-      for (k in seq_along(vBlocks)) {
+      if (trace) cat(trace_label)
+
+      n <- length(self$vBlocks)
+      ks <- if (step > 0) seq_len(n - 1) else seq(from = n, to = 2, by = -1)
+      if (step > 0 && !is.null(private$forwardLimit)) ks <- ks[ks <= private$forwardLimit]
+
+      for (k in ks) {
         if (trace) cat("+")
 
-        candidates <- private$missSBM_fit[[k]]$candidates_split(control)
+        candidates <- get_candidates(private$missSBM_fit[[k]], control)
         if (length(candidates) > 0) {
           best_one <- best_by_icl(candidates)
           best_one$doVEM(control)
           best_one$repair(control) # the full refit can itself collapse a component; try to recover it
 
-          ## a gap in vBlocks (e.g. c(2, 3, 5)) means a split candidate's block count need not
-          ## match its target slot -- reject it in that case rather than corrupt the slot
-          expected_nbBlocks <- private$missSBM_fit[[k + 1]]$fittedSBM$nbBlocks
+          ## a gap in vBlocks (e.g. c(2, 3, 5)) means a candidate's block count need not match
+          ## its target slot -- reject it in that case rather than corrupt the slot
+          target <- k + step
+          expected_nbBlocks <- private$missSBM_fit[[target]]$fittedSBM$nbBlocks
           if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
-              best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
-            private$missSBM_fit[[k + 1]] <- best_one
+              best_one$ICL < private$missSBM_fit[[target]]$ICL) {
+            private$missSBM_fit[[target]] <- best_one
           }
         }
       }
 
       if (trace) cat("\r                                                                                                    \r")
     },
-    # same as explore_forward(), but asking each model for merge candidates
-    # (missSBM_fit$candidates_merge()) and propagating improvements to the q-1 neighbor.
-    # control: a list of parameters controlling the variational EM algorithm. See details of
-    # function [`estimate`]
+    explore_forward = function(control) {
+      private$explore_direction(control, step = 1,
+        get_candidates = function(model, control) model$candidates_split(control),
+        trace_label = "   Going forward ")
+    },
     explore_backward = function(control) {
-
-      trace <- control$trace; control$trace <- FALSE
       max_candidates <- control$maxMergeCandidates
       if (is.null(max_candidates)) max_candidates <- Inf
-
-      if (length(self$models) == 1) return(NULL)
-      if (trace) cat("   Going backward ")
-      vBlocks <- self$vBlocks
-      for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {
-        if (trace) cat("+")
-
-        candidates <- private$missSBM_fit[[k]]$candidates_merge(control, max_candidates = max_candidates)
-        if (length(candidates) > 0) {
-          best_one <- best_by_icl(candidates)
-          best_one$doVEM(control)
-          best_one$repair(control) # the full refit can itself collapse a component; try to recover it
-
-          ## a gap in vBlocks (e.g. c(2, 3, 5)) means a merge candidate's block count need not
-          ## match its target slot -- reject it in that case rather than corrupt the slot
-          expected_nbBlocks <- private$missSBM_fit[[k - 1]]$fittedSBM$nbBlocks
-          if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
-              best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
-            private$missSBM_fit[[k - 1]] <- best_one
-          }
-        }
-      }
-      if (trace) cat("\r                                                                                                    \r")
+      private$explore_direction(control, step = -1,
+        get_candidates = function(model, control) model$candidates_merge(control, max_candidates = max_candidates),
+        trace_label = "   Going backward ")
     },
     plot_icl = function() {
       df <- data.frame(nBlock = self$vBlocks, ICL = self$ICL, collapsed = self$degenerate)

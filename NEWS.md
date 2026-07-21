@@ -69,7 +69,11 @@
   "pick the candidate with the smallest ICL" patterns, and filled a couple of missing
   `@examples`; also factored out the repeated directed/undirected dyad-mask logic (now
   `valid_dyads()`) and rewrote `cran-comments.md` for this release, including a reverse-
-  dependency check (`gsbm`, unaffected by the `missSBM_param()` breaking change)
+  dependency check (`gsbm`, unaffected by the `missSBM_param()` breaking change). Further
+  factored `missSBM_collection`'s `explore_forward()`/`explore_backward()` into a shared private
+  `explore_direction()`, and `missSBM_fit`'s `candidates_split()`/`candidates_merge()`'s trial-fit
+  loop into a shared private `trial_fit_candidates()`; verified bit-identical output on the same
+  fixed-seed scenario used throughout this changelog to diagnose VEM collapse
 
 # missSBM 1.0.5 (2025-03-12)
 

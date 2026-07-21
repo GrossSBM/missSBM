@@ -55,6 +55,22 @@ missSBM_fit <-
         return(invisible(self))
       }
       new_fit
+    },
+
+    ## shared by candidates_split()/candidates_merge(): builds make_candidate(item) for each
+    ## item in items, trial-fits it (maxIter capped to trial_niter, tracing off), in parallel,
+    ## then discards any candidate that came out degenerate
+    trial_fit_candidates = function(items, make_candidate, control, trial_niter) {
+      control_fast <- control
+      control_fast$maxIter <- trial_niter
+      control_fast$trace   <- FALSE
+
+      candidates <- future_lapply_shuffled(items, function(item) {
+        candidate <- make_candidate(item)
+        candidate$doVEM(control_fast)
+        candidate
+      })
+      Filter(function(m) !is_degenerate(m), candidates)
     }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -201,16 +217,8 @@ missSBM_fit <-
       cl_splitable <- cl_splitable[sds > 0]
       if (length(cl_splitable) == 0) return(list())
 
-      control_fast <- control
-      control_fast$maxIter <- trial_niter
-      control_fast$trace   <- FALSE
-
-      candidates <- future_lapply_shuffled(cl_splitable, function(k_) {
-        candidate <- self$split(k_, base_net = base_net)
-        candidate$doVEM(control_fast)
-        candidate
-      })
-      Filter(function(m) !is_degenerate(m), candidates)
+      private$trial_fit_candidates(cl_splitable, function(k_) self$split(k_, base_net = base_net),
+                                    control, trial_niter)
     },
     #' @description clone of the current fit after merging clusters \code{indices[1]} and
     #'   \code{indices[2]} into one. Builds but does not fit the candidate (see
@@ -251,16 +259,7 @@ missSBM_fit <-
         pairs <- pairs[order(score)[1:max_candidates]]
       }
 
-      control_fast <- control
-      control_fast$maxIter <- trial_niter
-      control_fast$trace   <- FALSE
-
-      candidates <- future_lapply_shuffled(pairs, function(couple) {
-        candidate <- self$merge(couple)
-        candidate$doVEM(control_fast)
-        candidate
-      })
-      Filter(function(m) !is_degenerate(m), candidates)
+      private$trial_fit_candidates(pairs, function(couple) self$merge(couple), control, trial_niter)
     },
     #' @description recovers a degenerate fit (fewer occupied classes than its structural
     #'   \code{nbBlocks}, e.g. after a VEM component collapse) by filling the empty classes (see
