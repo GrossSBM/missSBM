@@ -317,9 +317,6 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_covariates(
   arma::mat log_tau = Y * Z * Gamma.t() + Y.t() * Z * Gamma ;
   log_tau.each_row() += log(pi) ;
 
-  // constant in Tau(i_.) so useless
-  //  log_tau.each_col() += sum( (Y % M) * Z, 1)  + sum( (Y % M).t() * Z, 1) ;
-
   for(; Rij != Rij_end; ++Rij) {
     for(arma::uword q=0; q < Q; q++){
        log_tau(Rij.row(), q) -= accu(Z.row(Rij.col()) % log (1 + exp(Gamma.row(q) + M(Rij.row(),Rij.col())))) ;

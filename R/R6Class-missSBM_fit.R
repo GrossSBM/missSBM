@@ -205,11 +205,11 @@ missSBM_fit <-
       control_fast$maxIter <- trial_niter
       control_fast$trace   <- FALSE
 
-      candidates <- future_lapply(cl_splitable, function(k_) {
+      candidates <- future_lapply_shuffled(cl_splitable, function(k_) {
         candidate <- self$split(k_, base_net = base_net)
         candidate$doVEM(control_fast)
         candidate
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      })
       Filter(function(m) !is_degenerate(m), candidates)
     },
     #' @description clone of the current fit after merging clusters \code{indices[1]} and
@@ -255,11 +255,11 @@ missSBM_fit <-
       control_fast$maxIter <- trial_niter
       control_fast$trace   <- FALSE
 
-      candidates <- future_lapply(pairs, function(couple) {
+      candidates <- future_lapply_shuffled(pairs, function(couple) {
         candidate <- self$merge(couple)
         candidate$doVEM(control_fast)
         candidate
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      })
       Filter(function(m) !is_degenerate(m), candidates)
     },
     #' @description recovers a degenerate fit (fewer occupied classes than its structural

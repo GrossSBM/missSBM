@@ -53,6 +53,9 @@
 #' @return a list of parameters configuring the fit, with class \code{missSBM_param}.
 #'
 #' @seealso [estimateMissSBM()]
+#' @examples
+#' my_control <- missSBM_param(iterates = 2, polish = FALSE)
+#' my_control$iterates
 #' @export
 missSBM_param <- function(
     threshold                = 1e-2,
@@ -184,29 +187,28 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   }
   vBlocks <- vBlocks_sorted
 
-  ctrl <- control
   ## If no covariate is provided, you cannot ask for using them
-  if (length(covariates) == 0) ctrl$useCov <- FALSE
-  if (ctrl$useCov) stopifnot(sampling %in% available_samplings_covariates)
+  if (length(covariates) == 0) control$useCov <- FALSE
+  if (control$useCov) stopifnot(sampling %in% available_samplings_covariates)
 
   ## Prepare network data for estimation with missing data
-  partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, ctrl$similarity)
-  clusterInit <- ctrl$clusterInit
-  if (is.null(clusterInit)) clusterInit <- partlyObservedNet$clustering(vBlocks, ctrl$imputation)
+  partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, control$similarity)
+  clusterInit <- control$clusterInit
+  if (is.null(clusterInit)) clusterInit <- partlyObservedNet$clustering(vBlocks, control$imputation)
 
   ## Instantiate the collection of missSBM_fit
   myCollection <- missSBM_collection$new(
       partlyObservedNet  = partlyObservedNet,
       sampling           = sampling,
       clusterInit        = clusterInit,
-      control            = ctrl
+      control            = control
   )
 
   ## Launch estimation of each missSBM_fit
-  if (isTRUE(ctrl$warmChain)) myCollection$estimate_chain() else myCollection$estimate()
+  if (isTRUE(control$warmChain)) myCollection$estimate_chain() else myCollection$estimate()
 
   ## Fix individually misclassified nodes at each model's own number of blocks
-  if (ctrl$polish) myCollection$polish()
+  if (control$polish) myCollection$polish()
 
   ## Looking for better models around (across numbers of blocks)
   myCollection$explore()

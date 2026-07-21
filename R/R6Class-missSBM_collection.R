@@ -91,7 +91,7 @@ missSBM_collection <-
 
         candidates <- private$missSBM_fit[[k]]$candidates_split(control)
         if (length(candidates) > 0) {
-          best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
+          best_one <- best_by_icl(candidates)
           best_one$doVEM(control)
           best_one$repair(control) # the full refit can itself collapse a component; try to recover it
 
@@ -125,7 +125,7 @@ missSBM_collection <-
 
         candidates <- private$missSBM_fit[[k]]$candidates_merge(control, max_candidates = max_candidates)
         if (length(candidates) > 0) {
-          best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
+          best_one <- best_by_icl(candidates)
           best_one$doVEM(control)
           best_one$repair(control) # the full refit can itself collapse a component; try to recover it
 
@@ -196,13 +196,13 @@ missSBM_collection <-
     estimate = function(control = NULL) {
       if (is.null(control)) control <- private$control
       if (control$trace) cat(" Performing VEM inference\n")
-      private$missSBM_fit <- future_lapply(private$missSBM_fit, function(model) {
+      private$missSBM_fit <- future_lapply_shuffled(private$missSBM_fit, function(model) {
         if (control$trace) cat(" \tModel with", model$fittedSBM$nbBlocks,"blocks.\r")
         control$trace <- FALSE
         model$doVEM(control)
         model$repair(control)
         model
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      })
       invisible(self)
     },
     #' @description alternative to \code{estimate()}: fits each model in increasing order of
@@ -240,7 +240,7 @@ missSBM_collection <-
             next_fit <- NULL # nothing (more) splittable along the chain: fall back below
             break
           }
-          next_fit <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
+          next_fit <- best_by_icl(candidates)
         }
         if (is.null(next_fit)) next_fit <- private$missSBM_fit[[k]] # this slot's cold start
 
@@ -260,11 +260,11 @@ missSBM_collection <-
     polish = function(control = NULL) {
       if (is.null(control)) control <- private$control
       if (control$trace) cat(" Polishing (node-swap)\n")
-      private$missSBM_fit <- future_lapply(private$missSBM_fit, function(model) {
+      private$missSBM_fit <- future_lapply_shuffled(private$missSBM_fit, function(model) {
         control$trace <- FALSE
         model$polish(control)
         model
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      })
       invisible(self)
     },
     #' @description method for performing exploration of the ICL (split/merge search across

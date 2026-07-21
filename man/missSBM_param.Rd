@@ -89,6 +89,10 @@ a list of parameters configuring the fit, with class \code{missSBM_param}.
 \description{
 Helper to define the list of parameters that controls \code{\link[=estimateMissSBM]{estimateMissSBM()}}. All arguments have defaults.
 }
+\examples{
+my_control <- missSBM_param(iterates = 2, polish = FALSE)
+my_control$iterates
+}
 \seealso{
 \code{\link[=estimateMissSBM]{estimateMissSBM()}}
 }

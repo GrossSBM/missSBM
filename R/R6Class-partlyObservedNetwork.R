@@ -118,7 +118,7 @@ partlyObservedNetwork <-
       d <- 1/sqrt(rowSums(abs(A)))
       D <- Diagonal(x = d)
       U <- eigs_sym(D %*% A %*% D, max(vBlocks))$vectors
-      res <- future_lapply(vBlocks, function(k) {
+      res <- future_lapply_shuffled(vBlocks, function(k) {
         cl <- rep(1L, n)
         if (k != 1) {
           Un <- U[, 1:k, drop = FALSE]
@@ -127,12 +127,12 @@ partlyObservedNetwork <-
           cl_ <- as.integer(
             kmeans_missSBM(Un, k)
           )
-         ## handing lonely souls
+         ## handling lonely souls
          cl[connected] <- cl_
          cl[unconnected] <- which.max(rowsum(d, cl_))
         }
         cl
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      })
       res
     },
     #' @description basic imputation from existing clustering

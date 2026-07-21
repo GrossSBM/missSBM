@@ -8,12 +8,13 @@
 \description{
 When a network is partially observed (here, NAs in the adjacency matrix rather than 1 or 0 due to missing information between node pairs), it is possible to account for the underlying process that generates those NAs. 'missSBM', presented in 'Barbillon, Chiquet and Tabouy' (2022) \doi{10.18637/jss.v101.i12}, adjusts the popular stochastic block model from network data sampled under various missing data conditions, as described in 'Tabouy, Barbillon and Chiquet' (2019) \doi{10.1080/01621459.2018.1562934}.
 
-The missSBM package provides the following top-level functions functions:
+The missSBM package provides the following top-level functions:
 }
 \details{
 \itemize{
 \item \code{\link{observeNetwork}} a function to draw a partially observe network from an existing, fully observed network according to a variety of sampling designs
 \item \code{\link{estimateMissSBM}} a function to perform inference of SBM from a partially observed under various sampling designs.
+\item \code{\link{missSBM_param}} a function to define the list of parameters controlling \code{\link{estimateMissSBM}}
 }
 
 These function leads to the manipulation of a variety of R objects instantiated from some R6 classes, with their respective fields and methods.

@@ -62,6 +62,12 @@
   same default `control` as `doVEM()`, so they can be called standalone without building a full
   control list first; `missSBM_collection`'s calls (which always pass an explicit control list)
   are unaffected
+- pre-CRAN cleanup: fixed `.Rbuildignore` (a typo'd rule was letting `inst/JSS-analyses/` leak
+  into the built tarball), removed dead code (an unused initialization in `kmeans_missSBM()`,
+  two commented-out C++ blocks), factored out the repeated
+  `future_lapply(..., future.seed = TRUE, future.scheduling = ...)` and
+  "pick the candidate with the smallest ICL" patterns, and filled a couple of missing
+  `@examples`
 
 # missSBM 1.0.5 (2025-03-12)
 

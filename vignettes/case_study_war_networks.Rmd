@@ -91,7 +91,7 @@ corrplot(partlyObservedNet_war,
 
 ### Estimation with missing data
 
-We can now adjust a Stochastic Block Model with the function `estimateMissSBM` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to avoid local minima and get a robust Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of groups/blocks more robust. The exploration type (forward, backward, both or none) and the number of iterations can be tuned via the `control` argument.
+We can now adjust a Stochastic Block Model with the function `estimateMissSBM` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to avoid local minima and get a robust Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of groups/blocks more robust. The number of exploration passes can be tuned via the `iterates` argument of `missSBM_param()`, passed as the `control` argument (`iterates = 0` disables exploration entirely).
 
 ```{r inference node, results='hide'}
 vBlocks <- 1:5

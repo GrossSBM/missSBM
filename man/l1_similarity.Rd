@@ -17,3 +17,6 @@ a vector equal to -abs(x-y)
 \description{
 Compute l1-similarity between two vectors
 }
+\examples{
+l1_similarity(1:5, 5:1)
+}
