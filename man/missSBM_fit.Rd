@@ -35,6 +35,12 @@ plot(my_missSBM_fit, "imputed")
 
     \item{\code{monitoring}}{a list carrying information about the optimization process}
 
+    \item{\code{occupiedBlocks}}{the number of classes actually occupied by at least one node; can be
+less than \code{fittedSBM$nbBlocks} for an over-specified fit whose VEM has collapsed one
+or more classes (see \code{repair()})}
+
+    \item{\code{degenerate}}{\code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}}
+
     \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
 
     \item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
@@ -58,6 +64,8 @@ plot(my_missSBM_fit, "imputed")
     \item \href{#method-missSBM_fit-candidates_split}{\code{missSBM_fit$candidates_split()}}
     \item \href{#method-missSBM_fit-merge}{\code{missSBM_fit$merge()}}
     \item \href{#method-missSBM_fit-candidates_merge}{\code{missSBM_fit$candidates_merge()}}
+    \item \href{#method-missSBM_fit-repair}{\code{missSBM_fit$repair()}}
+    \item \href{#method-missSBM_fit-polish}{\code{missSBM_fit$polish()}}
     \item \href{#method-missSBM_fit-show}{\code{missSBM_fit$show()}}
     \item \href{#method-missSBM_fit-print}{\code{missSBM_fit$print()}}
     \item \href{#method-missSBM_fit-clone}{\code{missSBM_fit$clone()}}
@@ -100,7 +108,7 @@ plot(my_missSBM_fit, "imputed")
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of parameters controlling the variational EM algorithm. See details of function \code{\link[=estimateMissSBM]{estimateMissSBM()}}}
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
     }
     \if{html}{\out{</div>}}
   }
@@ -145,14 +153,16 @@ splittable cluster in two (see \code{split()}). A cluster is splittable if it ha
 least 4 members and non-zero variance in its induced sub-network.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$candidates_split(control, trial_niter = 2)}
+    \preformatted{missSBM_fit$candidates_split(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE),
+  trial_niter = 2
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
-is overridden by \code{trial_niter}}
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter} is overridden by \code{trial_niter}}
       \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
     }
     \if{html}{\out{</div>}}
@@ -197,14 +207,17 @@ clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in 
 number of blocks), only the most similar-connectivity pairs are tried.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$candidates_merge(control, max_candidates = 30, trial_niter = 2)}
+    \preformatted{missSBM_fit$candidates_merge(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE),
+  max_candidates = 30,
+  trial_niter = 2
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter}
-is overridden by \code{trial_niter}}
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}}); \code{maxIter} is overridden by \code{trial_niter}}
       \item{\code{max_candidates}}{cap on the number of pairs tried. Default is 30.}
       \item{\code{trial_niter}}{number of VEM iterations used for the trial fits. Default is 2.}
     }
@@ -212,6 +225,66 @@ is overridden by \code{trial_niter}}
   }
   \subsection{Returns}{
     a list of trial-fitted \code{\link{missSBM_fit}} candidates
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-repair"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-repair}{}}}
+\subsection{\code{missSBM_fit$repair()}}{
+  recovers a degenerate fit (fewer occupied classes than its structural
+\code{nbBlocks}, e.g. after a VEM component collapse) by filling the empty classes (see
+\code{repair_empty_classes()}) and refitting the full VEM. Mutates \code{self} in place;
+a no-op if the fit is not degenerate.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$repair(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE)
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisibly, \code{self}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-missSBM_fit-polish"></a>}}
+\if{latex}{\out{\hypertarget{method-missSBM_fit-polish}{}}}
+\subsection{\code{missSBM_fit$polish()}}{
+  discrete node-swap polishing (Kernighan-Lin / greedy-ICL style): after VEM
+convergence, tau is near-hard and its fixed point cannot relocate a single
+misclassified node (only \code{split()}/\code{merge()} fix group-level mistakes). Each
+sweep computes, for every node, the closed-form complete-data log-likelihood gain of
+moving it to its best alternative class (theta/pi held fixed), applies the improving,
+non-class-emptying moves, then runs a full VEM to resettle. Stops as soon as a sweep
+fails to improve the ICL, mutates \code{self} in place, and never leaves the ICL worse
+than before the call.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{missSBM_fit$polish(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE),
+  max_sweeps = 10
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{control}}{a list of VEM control parameters (see \code{\link[=estimateMissSBM]{estimateMissSBM()}})}
+      \item{\code{max_sweeps}}{maximum number of swap sweeps. Default is 10.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisibly, \code{self}
   }
 }
 

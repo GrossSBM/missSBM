@@ -23,6 +23,7 @@ It is not designed to be called directly by the user.
     \item \href{#method-SimpleSBM_MNAR_noCov-initialize}{\code{SimpleSBM_MNAR_noCov$new()}}
     \item \href{#method-SimpleSBM_MNAR_noCov-update_parameters}{\code{SimpleSBM_MNAR_noCov$update_parameters()}}
     \item \href{#method-SimpleSBM_MNAR_noCov-update_blocks}{\code{SimpleSBM_MNAR_noCov$update_blocks()}}
+    \item \href{#method-SimpleSBM_MNAR_noCov-polish_log_tau}{\code{SimpleSBM_MNAR_noCov$polish_log_tau()}}
     \item \href{#method-SimpleSBM_MNAR_noCov-clone}{\code{SimpleSBM_MNAR_noCov$clone()}}
   }
 }
@@ -96,6 +97,33 @@ It is not designed to be called directly by the user.
       \item{\code{log_lambda}}{additional term sampling dependent used to de-bias estimation of tau}
     }
     \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-polish_log_tau"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-polish_log_tau}{}}}
+\subsection{\code{SimpleSBM_MNAR_noCov$polish_log_tau()}}{
+  for each node, the complete-data log-likelihood it would contribute to
+each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
+moves in \code{missSBM_fit$polish()}. Unlike \code{update_blocks()}'s tau update (which
+combines the observed- and imputed-part E-steps as-is), this subtracts one copy of
+\code{log(pi)}: both E-step calls add it, so summing them double-counts it relative to
+\code{vExpec}'s convention -- verified numerically to matter (see git history).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_MNAR_noCov$polish_log_tau(log_lambda = 0)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{log_lambda}}{additional sampling-design-dependent term, added as-is}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    an N x Q matrix
   }
 }
 

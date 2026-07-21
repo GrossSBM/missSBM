@@ -124,11 +124,7 @@ covarDyadSampling_fit <-
     #' @param ... used for compatibility
     initialize = function(partialNet, ...) {
       super$initialize(partialNet, "covar-dyad")
-      if (partialNet$is_directed) {
-        dyads <- which(.row(dim(partialNet$networkData)) != .col(dim(partialNet$networkData)), arr.ind = TRUE)
-      } else {
-        dyads <- which(.row(dim(partialNet$networkData)) < .col(dim(partialNet$networkData)), arr.ind = TRUE)
-      }
+      dyads <- which(valid_dyads(dim(partialNet$networkData), partialNet$is_directed), arr.ind = TRUE)
       X <- cbind(1, apply(partialNet$covarArray, 3, function(x) x[dyads]))
       y <- partialNet$samplingMatrix[dyads]
       glm_out     <- suppressWarnings(glm.fit(X, y, family = binomial()))
@@ -365,6 +361,10 @@ degreeSampling_fit <-
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
     #' @param imputedNet an adjacency matrix where missing values have been imputed
     #' @param ... used for compatibility
+    ## Jaakkola-Jordan variational bound on the logit(psi[1] + psi[2]*degree) sampling model:
+    ## ksi is the per-node bound parameter, h(ksi) its associated quadratic-bound coefficient
+    ## (see utils_missSBM.R), (a,b) solve the resulting 2x2 weighted least-squares system for
+    ## psi -- see Tabouy, Barbillon & Chiquet (2019), \doi{10.1080/01621459.2018.1562934}
     update_parameters = function(imputedNet, ...) {
       private$D  <- rowSums(imputedNet)
       nu <- imputedNet

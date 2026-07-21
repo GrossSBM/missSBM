@@ -1,3 +1,9 @@
+## roxygen2 doc fragments reused via inline `r` expressions across this class's methods, avoiding
+## many near-duplicate @param lines (@template is superseded, see
+## https://roxygen2.r-lib.org/articles/reuse.html)
+.rd_control_vem <- "a list of VEM control parameters (see [estimateMissSBM()])"
+.rd_trial_niter <- "number of VEM iterations used for the trial fits. Default is 2."
+
 #' An R6 class to represent an SBM fit with missing data
 #'
 #' @description The function [estimateMissSBM()] fits a collection of SBM for varying number of block.
@@ -49,6 +55,22 @@ missSBM_fit <-
         return(invisible(self))
       }
       new_fit
+    },
+
+    ## shared by candidates_split()/candidates_merge(): builds make_candidate(item) for each
+    ## item in items, trial-fits it (maxIter capped to trial_niter, tracing off), in parallel,
+    ## then discards any candidate that came out degenerate
+    trial_fit_candidates = function(items, make_candidate, control, trial_niter) {
+      control_fast <- control
+      control_fast$maxIter <- trial_niter
+      control_fast$trace   <- FALSE
+
+      candidates <- future_lapply_shuffled(items, function(item) {
+        candidate <- make_candidate(item)
+        candidate$doVEM(control_fast)
+        candidate
+      })
+      Filter(function(m) !is_degenerate(m), candidates)
     }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,7 +121,7 @@ missSBM_fit <-
       private$useCov            <- useCov
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
+    #' @param control `r .rd_control_vem`
     doVEM = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
 
       ## Starting the Variational EM algorithm
@@ -181,11 +203,10 @@ missSBM_fit <-
     #' @description generate and cheaply trial-fit candidates obtained by splitting each
     #'   splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
     #'   least 4 members and non-zero variance in its induced sub-network.
-    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
-    #'   is overridden by \code{trial_niter}
-    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
+    #' @param trial_niter `r .rd_trial_niter`
     #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
-    candidates_split = function(control, trial_niter = 2) {
+    candidates_split = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), trial_niter = 2) {
       base_net <- self$imputedNetwork
       if (private$SBM$directed) base_net <- base_net %*% t(base_net)
       cl0 <- private$SBM$memberships
@@ -196,16 +217,8 @@ missSBM_fit <-
       cl_splitable <- cl_splitable[sds > 0]
       if (length(cl_splitable) == 0) return(list())
 
-      control_fast <- control
-      control_fast$maxIter <- trial_niter
-      control_fast$trace   <- FALSE
-
-      candidates <- future_lapply(cl_splitable, function(k_) {
-        candidate <- self$split(k_, base_net = base_net)
-        candidate$doVEM(control_fast)
-        candidate
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
-      Filter(function(m) !is_degenerate(m), candidates)
+      private$trial_fit_candidates(cl_splitable, function(k_) self$split(k_, base_net = base_net),
+                                    control, trial_niter)
     },
     #' @description clone of the current fit after merging clusters \code{indices[1]} and
     #'   \code{indices[2]} into one. Builds but does not fit the candidate (see
@@ -229,12 +242,11 @@ missSBM_fit <-
     #' @description generate and cheaply trial-fit candidates obtained by merging pairs of
     #'   clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
     #'   number of blocks), only the most similar-connectivity pairs are tried.
-    #' @param control a list of VEM control parameters (see [estimateMissSBM()]); \code{maxIter}
-    #'   is overridden by \code{trial_niter}
+    #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
     #' @param max_candidates cap on the number of pairs tried. Default is 30.
-    #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
+    #' @param trial_niter `r .rd_trial_niter`
     #' @return a list of trial-fitted [`missSBM_fit`] candidates
-    candidates_merge = function(control, max_candidates = 30, trial_niter = 2) {
+    candidates_merge = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), max_candidates = 30, trial_niter = 2) {
       Q <- private$SBM$nbBlocks
       if (Q <= 1) return(list())
 
@@ -247,16 +259,84 @@ missSBM_fit <-
         pairs <- pairs[order(score)[1:max_candidates]]
       }
 
-      control_fast <- control
-      control_fast$maxIter <- trial_niter
-      control_fast$trace   <- FALSE
+      private$trial_fit_candidates(pairs, function(couple) self$merge(couple), control, trial_niter)
+    },
+    #' @description recovers a degenerate fit (fewer occupied classes than its structural
+    #'   \code{nbBlocks}, e.g. after a VEM component collapse) by filling the empty classes (see
+    #'   \code{repair_empty_classes()}) and refitting the full VEM. Mutates \code{self} in place;
+    #'   a no-op if the fit is not degenerate.
+    #' @param control `r .rd_control_vem`
+    #' @return invisibly, \code{self}
+    repair = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
+      if (!is_degenerate(self)) return(invisible(self))
+      candidate_labels <- repair_empty_classes(private$SBM$memberships, private$SBM$nbBlocks)
+      candidate <- private$build_candidate(candidate_labels, in_place = FALSE)
+      candidate$doVEM(control)
+      private$SBM      <- candidate$fittedSBM
+      private$sampling <- candidate$fittedSampling
+      private$nu       <- private$sampling$update_imputation(private$SBM$imputation)
+      invisible(self)
+    },
+    #' @description discrete node-swap polishing (Kernighan-Lin / greedy-ICL style): after VEM
+    #'   convergence, tau is near-hard and its fixed point cannot relocate a single
+    #'   misclassified node (only \code{split()}/\code{merge()} fix group-level mistakes). Each
+    #'   sweep computes, for every node, the closed-form complete-data log-likelihood gain of
+    #'   moving it to its best alternative class (theta/pi held fixed), applies the improving,
+    #'   non-class-emptying moves, then runs a full VEM to resettle. Stops as soon as a sweep
+    #'   fails to improve the ICL, mutates \code{self} in place, and never leaves the ICL worse
+    #'   than before the call.
+    #' @param control `r .rd_control_vem`
+    #' @param max_sweeps maximum number of swap sweeps. Default is 10.
+    #' @return invisibly, \code{self}
+    polish = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), max_sweeps = 10) {
+      best_icl <- self$ICL
+      for (sweep in seq_len(max_sweeps)) {
+        Q <- private$SBM$nbBlocks
+        if (Q <= 1) break
 
-      candidates <- future_lapply(pairs, function(couple) {
-        candidate <- self$merge(couple)
-        candidate$doVEM(control_fast)
-        candidate
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
-      Filter(function(m) !is_degenerate(m), candidates)
+        ## a degenerate fit breaks self$indMemberships downstream; try to recover it first
+        if (is_degenerate(self)) {
+          self$repair(control)
+          best_icl <- self$ICL
+          if (is_degenerate(self)) break
+        }
+        cl <- private$SBM$memberships
+        N  <- length(cl)
+        log_tau <- private$SBM$polish_log_tau(private$sampling$log_lambda)
+
+        current_score <- log_tau[cbind(seq_len(N), cl)]
+        log_tau[cbind(seq_len(N), cl)] <- -Inf # exclude the current class from the search
+        best_alt   <- max.col(log_tau, ties.method = "first")
+        gain       <- log_tau[cbind(seq_len(N), best_alt)] - current_score
+
+        new_cl <- cl
+        class_size <- tabulate(cl, nbins = Q)
+        moved <- FALSE
+        for (i in order(gain, decreasing = TRUE)) {
+          if (gain[i] <= 0) break
+          from <- new_cl[i]
+          if (class_size[from] <= 1) next # would empty a class
+          new_cl[i] <- best_alt[i]
+          class_size[from]      <- class_size[from] - 1
+          class_size[best_alt[i]] <- class_size[best_alt[i]] + 1
+          moved <- TRUE
+        }
+        if (!moved) break
+
+        candidate <- private$build_candidate(new_cl, in_place = FALSE)
+        candidate$doVEM(control)
+        ## reject a candidate whose VEM refit collapsed a class, even if its ICL looks better:
+        ## it would leave self degenerate (see the guard above)
+        if (!is_degenerate(candidate) && candidate$ICL < best_icl) {
+          private$SBM      <- candidate$fittedSBM
+          private$sampling <- candidate$fittedSampling
+          ## re-derive nu from the just-accepted state (not NULL: unlike split()/merge(),
+          ## polish() must leave self immediately usable
+          private$nu       <- private$sampling$update_imputation(private$SBM$imputation)
+          best_icl         <- candidate$ICL
+        } else break
+      }
+      invisible(self)
     },
     #' @description show method for missSBM_fit
     show = function() {
@@ -292,6 +372,12 @@ missSBM_fit <-
     },
     #' @field monitoring a list carrying information about the optimization process
     monitoring     = function(value) {private$optStatus},
+    #' @field occupiedBlocks the number of classes actually occupied by at least one node; can be
+    #'   less than \code{fittedSBM$nbBlocks} for an over-specified fit whose VEM has collapsed one
+    #'   or more classes (see \code{repair()})
+    occupiedBlocks = function(value) {length(unique(private$SBM$memberships))},
+    #' @field degenerate \code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}
+    degenerate     = function(value) {is_degenerate(self)},
     #' @field entropyImputed the entropy of the distribution of the imputed dyads
     entropyImputed = function(value) {
       ## operate on the stored values only (private$nu is sparse, nonzero only at missing

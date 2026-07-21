@@ -9,6 +9,8 @@ available_samplings_covariates <- c("dyad", "covar-dyad", "node", "covar-node")
 #' @param y a vector
 #'
 #' @return a vector equal to -abs(x-y)
+#' @examples
+#' l1_similarity(1:5, 5:1)
 #' @export
 l1_similarity <- function(x, y) {-abs(x - y)}
 
@@ -37,7 +39,26 @@ repair_empty_classes <- function(labels, K) {
 
 ## TRUE if a missSBM_fit's clustering has fewer occupied classes than its structural nbBlocks
 is_degenerate <- function(fit) {
-  length(unique(fit$fittedSBM$memberships)) < fit$fittedSBM$nbBlocks
+  fit$occupiedBlocks < fit$fittedSBM$nbBlocks
+}
+
+## the missSBM_fit with the smallest ICL among a list of candidates (the criterion used
+## throughout to rank models)
+best_by_icl <- function(candidates) {
+  candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
+}
+
+## future_lapply() with this package's policy for parallel candidate generation: draws are
+## reproducible (future.seed) but workers are assigned candidates in random order, so that a
+## worker that draws a slow candidate doesn't systematically hold up the same downstream slot
+future_lapply_shuffled <- function(X, FUN, ...) {
+  future_lapply(X, FUN, ..., future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+}
+
+## logical N x N mask selecting each dyad exactly once: all off-diagonal pairs if directed, only
+## the upper triangle (i < j) if undirected
+valid_dyads <- function(dim, directed) {
+  if (directed) .row(dim) != .col(dim) else .row(dim) < .col(dim)
 }
 
 array2list <-function(X) {

@@ -9,7 +9,7 @@ estimateMissSBM(
   vBlocks,
   sampling,
   covariates = list(),
-  control = list()
+  control = missSBM_param()
 )
 }
 \arguments{
@@ -25,7 +25,8 @@ MAR designs ("dyad", "node","covar-dyad","covar-node","snowball") and MNAR desig
 \item{covariates}{An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
 must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.}
 
-\item{control}{a list of parameters controlling advanced features. See details.}
+\item{control}{a list-like structure for controlling advanced features, with default generated
+by \code{\link{missSBM_param}}. See the associated documentation for details.}
 }
 \value{
 Returns an R6 object with class \code{\link{missSBM_collection}}.
@@ -36,31 +37,6 @@ Variational EM inference of Stochastic Block Models indexed by block number from
 \details{
 Internal functions use \code{future_lapply}, so set your plan to \code{'multisession'} or
 \code{'multicore'} to use several cores/workers.
-The list of parameters \code{control} tunes more advanced features, such as the
-initialization, how covariates are handled in the model, and the variational EM algorithm:
-\itemize{
-\item useCov logical. If \code{covariates} is not null, should they be used for the
-for the SBM inference (or just for the sampling)? Default is TRUE.
-\item clusterInit Initial method for clustering: either a character ("spectral")
-or a list with \code{length(vBlocks)} vectors, each with size  \code{ncol(adjacencyMatrix)},
-providing a user-defined clustering. Default is "spectral".
-\item similarity An R x R -> R function to compute similarities between node covariates. Default is
-\code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
-(i.e. \code{covariates} is a list of size-N vectors).
-\item threshold V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
-by less than threshold. Default is 1e-2.
-\item maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
-Default is 50.
-\item fixPointIter number of fix-point iterations in the V-E step. Default is 3.
-\item exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none". Default is "both".
-\item iterates integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.
-\item maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
-backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
-only the pairs with the most similar fitted connectivity profiles are tried, since
-merging two blocks with very different connectivity is rarely competitive anyway.
-Default is 30.
-\item trace logical for verbosity. Default is TRUE.
-}
 
 The different sampling designs are split into two families in which we find dyad-centered and
 node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete description.
@@ -118,5 +94,5 @@ predict(myModel)[1:5, 1:5]
 
 }
 \seealso{
-\code{\link{observeNetwork}}, \code{\link{missSBM_collection}} and \code{\link{missSBM_fit}}.
+\code{\link{observeNetwork}}, \code{\link{missSBM_collection}}, \code{\link{missSBM_fit}} and \code{\link{missSBM_param}}.
 }

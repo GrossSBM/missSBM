@@ -49,12 +49,12 @@ R6::R6Class(classname = "SimpleSBM_fit",
       private$Y <- networkData$networkData
 
       ## point to the functions that performs E/M steps and compute the likelihood
-      private$variant <-
-        paste(model, ifelse(self$directed, "directed", "undirected"),
-          ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep="_")
-      private$M_step       <- get(paste("M_step_sparse"      , model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
-      private$E_step       <- get(paste("E_step_sparse"      , model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
-      private$vLL_complete <- get(paste("vLL_complete_sparse", model, ifelse(self$nbCovariates>0, "covariates", "nocovariate"), sep = "_"))
+      directedSuffix <- ifelse(self$directed, "directed", "undirected")
+      covarSuffix    <- ifelse(self$nbCovariates > 0, "covariates", "nocovariate")
+      private$variant       <- paste(model, directedSuffix, covarSuffix, sep = "_")
+      private$M_step        <- get(paste("M_step_sparse",       model, covarSuffix, sep = "_"))
+      private$E_step        <- get(paste("E_step_sparse",       model, covarSuffix, sep = "_"))
+      private$vLL_complete  <- get(paste("vLL_complete_sparse", model, covarSuffix, sep = "_"))
 
 ### TODO:
 ###  - check if parameters are not already initialize
@@ -150,6 +150,14 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     update_blocks =   function(...) {
       private$imputation_cache <- NULL
       private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+    },
+    #' @description for each node, the complete-data log-likelihood it would contribute to
+    #'   each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
+    #'   moves in \code{missSBM_fit$polish()}.
+    #' @param log_lambda additional sampling-design-dependent term, added as-is
+    #' @return an N x Q matrix
+    polish_log_tau = function(log_lambda = 0) {
+      private$E_step(private$Y, private$R, self$indMemberships, private$theta$mean, private$pi, rescale = FALSE) + log_lambda
     }
   ),
   active = list(
@@ -208,6 +216,14 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     update_blocks =   function(...) {
       private$imputation_cache <- NULL
       private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
+    },
+    #' @description for each node, the complete-data log-likelihood it would contribute to
+    #'   each class if hard-assigned there (theta/beta/pi held fixed), used to decide node-swap
+    #'   moves in \code{missSBM_fit$polish()}.
+    #' @param log_lambda additional sampling-design-dependent term, added as-is
+    #' @return an N x Q matrix
+    polish_log_tau = function(log_lambda = 0) {
+      private$E_step(private$Y, private$R, self$covarEffect, self$indMemberships, .logit(private$theta$mean), private$pi, !self$directed, FALSE) + log_lambda
     }
   ),
   active = list(
@@ -280,6 +296,20 @@ R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
         log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
         private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
       }
+    },
+    #' @description for each node, the complete-data log-likelihood it would contribute to
+    #'   each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
+    #'   moves in \code{missSBM_fit$polish()}. Unlike \code{update_blocks()}'s tau update (which
+    #'   combines the observed- and imputed-part E-steps as-is), this subtracts one copy of
+    #'   \code{log(pi)}: both E-step calls add it, so summing them double-counts it relative to
+    #'   \code{vExpec}'s convention -- verified numerically to matter (see git history).
+    #' @param log_lambda additional sampling-design-dependent term, added as-is
+    #' @return an N x Q matrix
+    polish_log_tau = function(log_lambda = 0) {
+      Zhard <- self$indMemberships
+      log_tau_obs  <- private$E_step(private$Y, private$R, Zhard, private$theta$mean, private$pi, rescale = FALSE)
+      log_tau_miss <- private$E_step(private$V, private$S, Zhard, private$theta$mean, private$pi, rescale = FALSE)
+      log_tau_obs + log_tau_miss - matrix(log(private$pi), nrow(Zhard), self$nbBlocks, byrow = TRUE) + log_lambda
     }
   ),
   active = list(

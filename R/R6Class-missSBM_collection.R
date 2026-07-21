@@ -1,3 +1,11 @@
+## roxygen2 doc fragment reused via inline `r` expressions across this class's methods, avoiding
+## many near-duplicate @param control lines (see https://roxygen2.r-lib.org/articles/reuse.html)
+.rd_control_collection <- paste(
+  "optional list of parameters overriding the collection's stored control (set at construction",
+  "by [estimateMissSBM()], see its details for the full list). Default `NULL` uses the stored",
+  "control as-is."
+)
+
 #' An R6 class to represent a collection of SBM fits with missing data
 #'
 #' @description The function [estimateMissSBM()] fits a collection of SBM with missing data for
@@ -34,79 +42,107 @@ missSBM_collection <-
   private = list(
     partlyObservedNet = NULL, # network data with convenient encoding (object of class 'partlyObservedNetwork')
     missSBM_fit       = NULL, # a list of models
+    control           = NULL, # default control list (set at construction by estimateMissSBM()),
+                               # used by estimate()/polish()/explore() when not overridden per call
+    forwardLimit      = NULL, # index into vBlocks explore_forward() won't grow past; NULL = no limit
 
-    # for each q, ask the model at q for trial-fitted split candidates
-    # (missSBM_fit$candidates_split()), fully refit the best one, and keep it in place of the
-    # q+1 model only if it strictly improves the ICL.
+    ## caps forwardLimit just before a persistent run of >= min_run degenerate models; adaptive,
+    ## lifts the cap again once a later pass cures it
+    flag_degenerate_tail = function(min_run) {
+      degenerate <- self$degenerate
+      run <- 0
+      for (i in seq_along(degenerate)) {
+        run <- if (degenerate[i]) run + 1 else 0
+        if (run >= min_run) {
+          new_limit <- i - min_run
+          if (!identical(private$forwardLimit, new_limit)) {
+            private$forwardLimit <- new_limit
+            warning(
+              "VEM keeps collapsing classes from nbBlocks = ", self$vBlocks[i - min_run + 1],
+              " onward, even after repair() and exploration: the network does not appear to ",
+              "support that many blocks. Forward (split) exploration will not grow past ",
+              if (i > min_run) self$vBlocks[i - min_run] else "0",
+              " blocks on further passes. See $occupiedBlocks/$degenerate.", call. = FALSE
+            )
+          }
+          return(invisible(NULL))
+        }
+      }
+      private$forwardLimit <- NULL # no persistent run (any more): lift a previous cap, if any
+      invisible(NULL)
+    },
+
+    # shared by explore_forward()/explore_backward(): walks the models at positions `ks` in
+    # order, asks each for trial-fitted candidates via get_candidates(model, control), fully
+    # refits+repairs the best one, and installs it in place of the model at position (k + step)
+    # only if it's a valid (matching block count), non-degenerate, ICL-improving replacement.
     # control: a list of parameters controlling the variational EM algorithm. See details of
     # function [estimateMissSBM()]
-    explore_forward = function(control) {
+    # step: +1 for forward (split, growing Q) or -1 for backward (merge, shrinking Q)
+    # get_candidates: function(model, control) -> list of trial-fitted missSBM_fit candidates
+    # trace_label: verbosity prefix, e.g. "   Going forward "
+    explore_direction = function(control, step, get_candidates, trace_label) {
 
       trace <- control$trace; control$trace <- FALSE
 
       if (length(self$models) == 1) return(NULL)
-      if (trace) cat("   Going forward ")
-      vBlocks <- self$vBlocks[-length(self$vBlocks)]
-      for (k in seq_along(vBlocks)) {
+      if (trace) cat(trace_label)
+
+      n <- length(self$vBlocks)
+      ks <- if (step > 0) seq_len(n - 1) else seq(from = n, to = 2, by = -1)
+      if (step > 0 && !is.null(private$forwardLimit)) ks <- ks[ks <= private$forwardLimit]
+
+      for (k in ks) {
         if (trace) cat("+")
 
-        candidates <- private$missSBM_fit[[k]]$candidates_split(control)
+        candidates <- get_candidates(private$missSBM_fit[[k]], control)
         if (length(candidates) > 0) {
-          best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
+          best_one <- best_by_icl(candidates)
           best_one$doVEM(control)
+          best_one$repair(control) # the full refit can itself collapse a component; try to recover it
 
-          ## the full refit can itself collapse a component independently of the trial fit
-          expected_nbBlocks <- private$missSBM_fit[[k + 1]]$fittedSBM$nbBlocks
+          ## a gap in vBlocks (e.g. c(2, 3, 5)) means a candidate's block count need not match
+          ## its target slot -- reject it in that case rather than corrupt the slot
+          target <- k + step
+          expected_nbBlocks <- private$missSBM_fit[[target]]$fittedSBM$nbBlocks
           if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
-              best_one$ICL < private$missSBM_fit[[k + 1]]$ICL) {
-            private$missSBM_fit[[k + 1]] <- best_one
+              best_one$ICL < private$missSBM_fit[[target]]$ICL) {
+            private$missSBM_fit[[target]] <- best_one
           }
         }
       }
 
       if (trace) cat("\r                                                                                                    \r")
     },
-    # same as explore_forward(), but asking each model for merge candidates
-    # (missSBM_fit$candidates_merge()) and propagating improvements to the q-1 neighbor.
-    # control: a list of parameters controlling the variational EM algorithm. See details of
-    # function [`estimate`]
+    explore_forward = function(control) {
+      private$explore_direction(control, step = 1,
+        get_candidates = function(model, control) model$candidates_split(control),
+        trace_label = "   Going forward ")
+    },
     explore_backward = function(control) {
-
-      trace <- control$trace; control$trace <- FALSE
       max_candidates <- control$maxMergeCandidates
       if (is.null(max_candidates)) max_candidates <- Inf
-
-      if (length(self$models) == 1) return(NULL)
-      if (trace) cat("   Going backward ")
-      vBlocks <- self$vBlocks
-      for (k in seq(from = length(vBlocks), to = 2, by = -1) ) {
-        if (trace) cat("+")
-
-        candidates <- private$missSBM_fit[[k]]$candidates_merge(control, max_candidates = max_candidates)
-        if (length(candidates) > 0) {
-          best_one <- candidates[[which.min(sapply(candidates, function(m) m$ICL))]]
-          best_one$doVEM(control)
-
-          ## the full refit can itself collapse a component independently of the trial fit
-          expected_nbBlocks <- private$missSBM_fit[[k - 1]]$fittedSBM$nbBlocks
-          if (!is_degenerate(best_one) && best_one$fittedSBM$nbBlocks == expected_nbBlocks &&
-              best_one$ICL < private$missSBM_fit[[k - 1]]$ICL) {
-            private$missSBM_fit[[k - 1]] <- best_one
-          }
-        }
-      }
-      if (trace) cat("\r                                                                                                    \r")
+      private$explore_direction(control, step = -1,
+        get_candidates = function(model, control) model$candidates_merge(control, max_candidates = max_candidates),
+        trace_label = "   Going backward ")
     },
     plot_icl = function() {
-      ggplot(data.frame(nBlock = self$vBlocks, ICL = self$ICL), aes(x = nBlock, y = ICL)) +
-        geom_line() + geom_point() + theme_bw() +
-        labs(x = "#blocks", y = "Integrated Classification likelihood") + ggtitle("Model Selection")
+      df <- data.frame(nBlock = self$vBlocks, ICL = self$ICL, collapsed = self$degenerate)
+      ggplot(df, aes(x = nBlock, y = ICL)) +
+        geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
+        scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
+        labs(x = "#blocks", y = "Integrated Classification likelihood",
+             shape = "collapsed classes") + ggtitle("Model Selection")
     },
     plot_elbo = function() {
-      elbo <- sapply(self$models, function(model) model$loglik)
-      ggplot(data.frame(nBlock = self$vBlocks, elbo = elbo), aes(x = nBlock, y = elbo)) +
-        geom_line() + geom_point() + theme_bw() +
-        labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound") + ggtitle("Model Selection")
+      df <- data.frame(nBlock = self$vBlocks,
+                        elbo = sapply(self$models, function(model) model$loglik),
+                        collapsed = self$degenerate)
+      ggplot(df, aes(x = nBlock, y = elbo)) +
+        geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
+        scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
+        labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound",
+             shape = "collapsed classes") + ggtitle("Model Selection")
     },
     plot_monitoring = function() {
       monitoring <- self$optimizationStatus
@@ -133,6 +169,7 @@ missSBM_collection <-
 
       stopifnot(inherits(partlyObservedNet, "partlyObservedNetwork"))
       private$partlyObservedNet <- partlyObservedNet
+      private$control           <- control
       if (control$trace) cat(" Initialization of", length(clusterInit), "model(s).", "\n")
       private$missSBM_fit <- lapply(clusterInit,
         function(cl0) {
@@ -141,31 +178,106 @@ missSBM_collection <-
       )
     },
     #' @description method to launch the estimation of the collection of models
-    #' @param control a list of parameters controlling the variational EM algorithm. See details of function [estimateMissSBM()]
-    estimate = function(control) {
+    #' @param control `r .rd_control_collection`
+    estimate = function(control = NULL) {
+      if (is.null(control)) control <- private$control
       if (control$trace) cat(" Performing VEM inference\n")
-      private$missSBM_fit <- future_lapply(private$missSBM_fit, function(model) {
+      private$missSBM_fit <- future_lapply_shuffled(private$missSBM_fit, function(model) {
         if (control$trace) cat(" \tModel with", model$fittedSBM$nbBlocks,"blocks.\r")
         control$trace <- FALSE
         model$doVEM(control)
+        model$repair(control)
         model
-      }, future.seed = TRUE, future.scheduling = structure(TRUE, ordering = "random"))
+      })
       invisible(self)
     },
-    #' @description method for performing exploration of the ICL
-    #' @param control a list of parameters controlling the exploration, similar to those found in the regular function [estimateMissSBM()]
-    explore = function(control) {
-      if (control$iterates > 0) {
+    #' @description alternative to \code{estimate()}: fits each model in increasing order of
+    #'   number of blocks, initializing \code{vBlocks[k]} by splitting (see [missSBM_fit]'s
+    #'   \code{split()}/\code{candidates_split()}) the already-converged model at
+    #'   \code{vBlocks[k-1]} instead of an independent, cold spectral clustering. Meant to reduce
+    #'   VEM component collapse at higher numbers of blocks (see \code{$degenerate}), at the cost
+    #'   of being sequential in the number of blocks (unlike \code{estimate()}, which fits every
+    #'   model in parallel) -- can be slower in wall-clock time with many workers available.
+    #'   Falls back to this slot's own cold-started clustering (built at construction, same as
+    #'   \code{estimate()} would use) whenever nothing is splittable along the chain.
+    #' @param control `r .rd_control_collection`
+    estimate_chain = function(control = NULL) {
+      if (is.null(control)) control <- private$control
+      if (control$trace) cat(" Performing chained VEM inference\n")
+      ctrl <- control; ctrl$trace <- FALSE
+      n <- length(private$missSBM_fit)
+
+      ## smallest requested Q: fit its cold-started clustering directly
+      if (control$trace) cat(" \tModel with", self$vBlocks[1], "blocks.\r")
+      chained <- private$missSBM_fit[[1]]
+      chained$doVEM(ctrl)
+      chained$repair(ctrl)
+      private$missSBM_fit[[1]] <- chained
+
+      if (n > 1) for (k in 2:n) {
+        if (control$trace) cat(" \tChaining to", self$vBlocks[k], "blocks.\r")
+        gap <- self$vBlocks[k] - self$vBlocks[k - 1]
+        stopifnot(gap >= 1) # vBlocks assumed strictly increasing, see estimateMissSBM()
+
+        next_fit <- chained
+        for (step in seq_len(gap)) {
+          candidates <- next_fit$candidates_split(ctrl)
+          if (length(candidates) == 0) {
+            next_fit <- NULL # nothing (more) splittable along the chain: fall back below
+            break
+          }
+          next_fit <- best_by_icl(candidates)
+        }
+        if (is.null(next_fit)) next_fit <- private$missSBM_fit[[k]] # this slot's cold start
+
+        next_fit$doVEM(ctrl)
+        next_fit$repair(ctrl)
+        private$missSBM_fit[[k]] <- next_fit
+        chained <- next_fit
+      }
+
+      if (control$trace) cat("\r                                                                                                    \r")
+      invisible(self)
+    },
+    #' @description method to node-swap-polish every model in the collection (see
+    #'   [missSBM_fit]'s \code{polish()}); fixes individually misclassified nodes at each
+    #'   model's own number of blocks, unlike \code{explore()} which searches across blocks.
+    #' @param control `r .rd_control_collection`
+    polish = function(control = NULL) {
+      if (is.null(control)) control <- private$control
+      if (control$trace) cat(" Polishing (node-swap)\n")
+      private$missSBM_fit <- future_lapply_shuffled(private$missSBM_fit, function(model) {
+        control$trace <- FALSE
+        model$polish(control)
+        model
+      })
+      invisible(self)
+    },
+    #' @description method for performing exploration of the ICL (split/merge search across
+    #'   numbers of blocks, see [missSBM_fit]'s \code{candidates_split()}/\code{candidates_merge()}).
+    #'   Uses the collection's stored control by default; \code{iterates} lets the caller override
+    #'   it for this call only, without altering the stored control -- handy to alternate
+    #'   \code{explore()}/\code{polish()} calls without having to reconstruct a full control list
+    #'   each time. \code{iterates <= 0} is a no-op.
+    #' @param control `r .rd_control_collection`
+    #' @param iterates optional integer overriding \code{control$iterates} for this call only.
+    #' @param direction character ("forward", "backward", "both" or "none") controlling which
+    #'   directions are searched. Default "both".
+    explore = function(control = NULL, iterates = NULL, direction = "both") {
+      if (is.null(control)) control <- private$control
+      if (!is.null(iterates)) control$iterates <- iterates
+      if (control$iterates > 0 && direction != "none") {
         if (control$trace) cat("\n Looking for better solutions\n")
         for (i in 1:control$iterates) {
-          if (control$exploration %in% c('forward' , 'both')) {
+          if (direction %in% c('forward' , 'both')) {
             if (control$trace) cat(" Pass",i)
             private$explore_forward(control)
           }
-          if (control$exploration %in% c('backward', 'both')) {
+          if (direction %in% c('backward', 'both')) {
             if (control$trace) cat(" Pass",i)
             private$explore_backward(control)
           }
+          if (isTRUE(control$stopOnDegenerate)) private$flag_degenerate_tail(control$maxConsecutiveDegenerate)
         }
       }
     },
@@ -186,8 +298,13 @@ missSBM_collection <-
       cat("========================================================\n")
       cat(" - Number of blocks considered: from ", min(self$vBlocks), " to ", max(self$vBlocks),"\n", sep = "")
       cat(" - Best model (smaller ICL): ", self$bestModel$fittedSBM$nbBlocks, "\n", sep = "")
-      cat(" - Fields: $models, $ICL, $vBlocks, $bestModel, $optimizationStatus\n")
-      cat(" - Method: $estimate(), $explore(), $plot() \n")
+      degenerate <- self$degenerate
+      if (any(degenerate)) {
+        cat(" - Warning:", sum(degenerate), "model(s) have collapsed classes",
+            "(see $occupiedBlocks/$degenerate)\n")
+      }
+      cat(" - Fields: $models, $ICL, $vBlocks, $occupiedBlocks, $degenerate, $bestModel, $optimizationStatus\n")
+      cat(" - Method: $estimate(), $polish(), $explore(), $plot() \n")
     },
     #' @description User friendly print method
     print = function() { self$show() }
@@ -197,10 +314,25 @@ missSBM_collection <-
     models = function(value) (private$missSBM_fit),
     #' @field ICL the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)
     ICL = function(value) {setNames(sapply(self$models, function(model) model$ICL), names(self$vBlocks))},
-    #' @field bestModel the best model according to the ICL
-    bestModel = function(value) {self$models[[which.min(self$ICL)]]},
+    #' @field bestModel the best model according to the ICL, restricted to models without
+    #'   collapsed classes when at least one such model is available (see \code{$degenerate})
+    bestModel = function(value) {
+      icl <- self$ICL
+      candidates <- which(!self$degenerate)
+      if (length(candidates) == 0) candidates <- seq_along(icl)
+      self$models[[candidates[which.min(icl[candidates])]]]
+    },
     #' @field vBlocks a vector with the number of blocks
     vBlocks = function(value) {sapply(self$models, function(model) model$fittedSBM$nbBlocks)},
+    #' @field occupiedBlocks a vector with the number of classes actually occupied in each model
+    #'   (see [missSBM_fit]'s \code{occupiedBlocks})
+    occupiedBlocks = function(value) {sapply(self$models, function(model) model$occupiedBlocks)},
+    #' @field degenerate logical vector, \code{TRUE} for models with collapsed classes
+    #'   (\code{occupiedBlocks < vBlocks}, see [missSBM_fit]'s \code{repair()})
+    degenerate = function(value) {self$occupiedBlocks < self$vBlocks},
+    #' @field optimizationSettings the control list used by estimate()/polish()/explore() when
+    #'   not overridden per call (set at construction by [estimateMissSBM()])
+    optimizationSettings = function(value) {private$control},
     #' @field optimizationStatus a data.frame summarizing the optimization process for all models
     optimizationStatus = function(value) {
       Reduce("rbind",

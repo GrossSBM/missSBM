@@ -8,8 +8,6 @@ kmeans_missSBM <- function(coordinates, k)
     if (k == 1) {
       classif <- rep(1,n)
     } else {
-      centroids <- matrix(0,k,dim)
-
       dists <- as.matrix( dist( coordinates ))
 
       choosen <- as.integer(which(dists==max(dists),arr.ind = TRUE)[1,c('row','col')])
