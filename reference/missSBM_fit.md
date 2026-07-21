@@ -407,7 +407,7 @@ collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 #> 
 #>  Initialization of 3 model(s). 
 #>  Performing VEM inference
-#>      Model with 3 blocks.    Model with 5 blocks.    Model with 4 blocks. Polishing (node-swap)
+#>      Model with 4 blocks.    Model with 5 blocks.    Model with 3 blocks. Polishing (node-swap)
 #> 
 #>  Looking for better solutions
 #>  Pass 1   Going forward ++                                                                                                     Pass 1   Going backward ++                                                                                                    

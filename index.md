@@ -141,9 +141,8 @@ plot(partial_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "b
 
 See
 [`vignette("case_study_war_networks")`](https://grosssbm.github.io/missSBM/articles/case_study_war_networks.md)
-and [the other articles](https://grosssbm.github.io/missSBM/articles/)
-for a more comprehensive tour, including covariates and further sampling
-designs.
+and [the JSS article](https://doi.org/10.18637/jss.v101.i12) for a more
+comprehensive tour, including covariates and further sampling designs.
 
 ## References
 
