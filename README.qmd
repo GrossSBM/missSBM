@@ -48,7 +48,7 @@ We illustrate **missSBM** on the French political blogosphere network (`frenchbl
 
 ### Fit a SBM on the fully observed network
 
-```{r load}
+```{r load, warning=FALSE, message=FALSE}
 library(missSBM)
 library(igraph)
 
@@ -95,7 +95,7 @@ Despite about 8% of the dyads missing under this informative design, **missSBM**
 aricode::ARI(full_fit$bestModel$fittedSBM$memberships, partial_fit$bestModel$fittedSBM$memberships)
 ```
 
-```{r plot-expected, fig.width = 10}
+```{r plot-expected, fig.width = 10, warning=FALSE}
 par(mfrow = c(1, 2))
 plot(full_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 plot(partial_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))

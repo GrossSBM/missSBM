@@ -64,20 +64,7 @@ standing for hyperlinks, each blog labeled by political party.
 ``` r
 library(missSBM)
 library(igraph)
-```
 
-
-    Attaching package: 'igraph'
-
-    The following objects are masked from 'package:stats':
-
-        decompose, spectrum
-
-    The following object is masked from 'package:base':
-
-        union
-
-``` r
 data(frenchblog2007)
 frenchblog2007 <- delete_vertices(frenchblog2007, which(degree(frenchblog2007) == 0))
 adjacency <- as_adjacency_matrix(frenchblog2007, sparse = FALSE)
@@ -141,17 +128,6 @@ aricode::ARI(full_fit$bestModel$fittedSBM$memberships, partial_fit$bestModel$fit
 par(mfrow = c(1, 2))
 plot(full_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 ```
-
-    Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-    ℹ Please use tidy evaluation idioms with `aes()`.
-    ℹ See also `vignette("ggplot2-in-packages")` for more information.
-    ℹ The deprecated feature was likely used in the sbm package.
-      Please report the issue at <https://github.com/GrossSBM/sbm/issues>.
-
-    Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-    ℹ Please use `linewidth` instead.
-    ℹ The deprecated feature was likely used in the sbm package.
-      Please report the issue at <https://github.com/GrossSBM/sbm/issues>.
 
 ![](man/figures/README-plot-expected-1.png)
 
