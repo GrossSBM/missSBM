@@ -54,6 +54,10 @@
   sampling model or the current imputation
 - speed up `getCovarArray()` and `kmeans_missSBM()`'s seeding
 - remove unused `src/utils.h`
+- `missSBM_fit`'s `polish()`, `repair()`, `candidates_split()` and `candidates_merge()` gain the
+  same default `control` as `doVEM()`, so they can be called standalone without building a full
+  control list first; `missSBM_collection`'s calls (which always pass an explicit control list)
+  are unaffected
 
 # missSBM 1.0.5 (2025-03-12)
 

@@ -185,7 +185,7 @@ missSBM_fit <-
     #'   is overridden by \code{trial_niter}
     #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
     #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
-    candidates_split = function(control, trial_niter = 2) {
+    candidates_split = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), trial_niter = 2) {
       base_net <- self$imputedNetwork
       if (private$SBM$directed) base_net <- base_net %*% t(base_net)
       cl0 <- private$SBM$memberships
@@ -234,7 +234,7 @@ missSBM_fit <-
     #' @param max_candidates cap on the number of pairs tried. Default is 30.
     #' @param trial_niter number of VEM iterations used for the trial fits. Default is 2.
     #' @return a list of trial-fitted [`missSBM_fit`] candidates
-    candidates_merge = function(control, max_candidates = 30, trial_niter = 2) {
+    candidates_merge = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), max_candidates = 30, trial_niter = 2) {
       Q <- private$SBM$nbBlocks
       if (Q <= 1) return(list())
 
@@ -264,7 +264,7 @@ missSBM_fit <-
     #'   a no-op if the fit is not degenerate.
     #' @param control a list of VEM control parameters (see [estimateMissSBM()])
     #' @return invisibly, \code{self}
-    repair = function(control) {
+    repair = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE)) {
       if (!is_degenerate(self)) return(invisible(self))
       candidate_labels <- repair_empty_classes(private$SBM$memberships, private$SBM$nbBlocks)
       candidate <- private$build_candidate(candidate_labels, in_place = FALSE)
@@ -285,7 +285,7 @@ missSBM_fit <-
     #' @param control a list of VEM control parameters (see [estimateMissSBM()])
     #' @param max_sweeps maximum number of swap sweeps. Default is 10.
     #' @return invisibly, \code{self}
-    polish = function(control, max_sweeps = 10) {
+    polish = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), max_sweeps = 10) {
       best_icl <- self$ICL
       for (sweep in seq_len(max_sweeps)) {
         Q <- private$SBM$nbBlocks

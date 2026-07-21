@@ -153,7 +153,10 @@ splittable cluster in two (see \code{split()}). A cluster is splittable if it ha
 least 4 members and non-zero variance in its induced sub-network.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$candidates_split(control, trial_niter = 2)}
+    \preformatted{missSBM_fit$candidates_split(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE),
+  trial_niter = 2
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -205,7 +208,11 @@ clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in 
 number of blocks), only the most similar-connectivity pairs are tried.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$candidates_merge(control, max_candidates = 30, trial_niter = 2)}
+    \preformatted{missSBM_fit$candidates_merge(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE),
+  max_candidates = 30,
+  trial_niter = 2
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -233,7 +240,9 @@ is overridden by \code{trial_niter}}
 a no-op if the fit is not degenerate.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$repair(control)}
+    \preformatted{missSBM_fit$repair(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE)
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -262,7 +271,10 @@ fails to improve the ICL, mutates \code{self} in place, and never leaves the ICL
 than before the call.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$polish(control, max_sweeps = 10)}
+    \preformatted{missSBM_fit$polish(
+  control = list(threshold = 0.01, maxIter = 100, fixPointIter = 3, trace = TRUE),
+  max_sweeps = 10
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
