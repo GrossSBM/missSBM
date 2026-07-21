@@ -3,6 +3,20 @@ url: https://grosssbm.github.io/missSBM/
 template:
   bootstrap: 5
 
+external-articles:
+  - name: jss-paper
+    title: "missSBM: An R Package for Handling Missing Values in the Stochastic Block Model (JSS)"
+    href: https://doi.org/10.18637/jss.v101.i12
+    description: >
+      The companion paper (Barbillon, Chiquet & Tabouy, 2022), published in the Journal of
+      Statistical Software, describing the models and the missSBM package in detail.
+
+articles:
+- title: Articles
+  contents:
+  - case_study_war_networks
+  - jss-paper
+
 reference:
 - title: 'Top-level fitting functions'
   desc: >
