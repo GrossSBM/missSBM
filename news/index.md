@@ -1,6 +1,6 @@
 # Changelog
 
-## missSBM 1.1.0
+## missSBM 1.1.0 (2026-07-21)
 
 ### Major changes
 
@@ -8,10 +8,9 @@
   [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)’s
   `control` must now be built with the new
   [`missSBM_param()`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md)
-  (one named, defaulted argument per option, PLNmodels-style) instead of
-  a raw `list(...)`, which now errors with a message pointing at the
-  replacement – also catches typo’d option names immediately instead of
-  silently ignoring them.
+  (one named, defaulted argument per option) instead of a raw
+  `list(...)`, which now errors with a message pointing at the
+  replacement.
 - `missSBM_fit` now exposes
   [`split()`](https://rdrr.io/r/base/split.html),
   [`merge()`](https://rdrr.io/r/base/merge.html), `candidates_split()`
@@ -22,22 +21,17 @@
   node-swap refinement after VEM convergence, fixing individually
   misclassified nodes that
   [`split()`](https://rdrr.io/r/base/split.html)/[`merge()`](https://rdrr.io/r/base/merge.html)
-  cannot reach. Cheaper than split/merge exploration since it stays at a
-  fixed number of blocks. Run automatically by
-  [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)
-  via its new `polish` control (default `TRUE`).
+  cannot reach.
 - requesting more blocks than a network actually supports can make VEM
   collapse one or more classes; this used to be silent, and split/merge
   exploration’s own repair of it could silently corrupt `vBlocks`’s
   bookkeeping (duplicated/missing entries, non-smooth ICL/ELBO in
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html)). Now fixed
   and made visible: `missSBM_fit$repair(control)` recovers a collapsed
-  fit (called automatically after every VEM fit, inside `polish()`, and
-  after the full refit in `missSBM_collection`’s split/merge
-  exploration); new `occupiedBlocks`/ `degenerate` fields expose any
-  remaining collapse; `bestModel` skips degenerate models when possible
-  and [`plot()`](https://rdrr.io/r/graphics/plot.default.html) marks
-  them with a distinct point shape;
+  fit ; new `occupiedBlocks`/ `degenerate` fields expose any remaining
+  collapse; `bestModel` skips degenerate models when possible and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) marks them
+  with a distinct point shape;
   [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)’s
   new `stopOnDegenerate`/`maxConsecutiveDegenerate` controls (default
   `TRUE`/2) stop forward exploration from growing further into a
@@ -51,14 +45,6 @@
   parameters with a builtin Newton-Raphson solver (the M-step objective
   is concave, so it converges reliably in a handful of iterations);
   `nloptr` is no longer a dependency
-- profiled
-  [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)
-  and fixed several hot-path inefficiencies: avoidable `dense * sparse`
-  promotion overhead, a redundant recomputation of the dense
-  imputed-network matrix, and an
-  [`ifelse()`](https://rdrr.io/r/base/ifelse.html) evaluating both of
-  its branches unconditionally. Roughly 3x faster on our benchmark,
-  bit-identical results
 - fix `partlyObservedNetwork$imputation()`: the fill value for missing
   dyads was biased low by including not-yet-imputed entries in its own
   computation. Known side effect: `doubleStandardSampling_fit`’s initial
@@ -68,6 +54,14 @@
 
 ### Minor changes
 
+- profiled
+  [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)
+  and fixed several hot-path inefficiencies: avoidable `dense * sparse`
+  promotion overhead, a redundant recomputation of the dense
+  imputed-network matrix, and an
+  [`ifelse()`](https://rdrr.io/r/base/ifelse.html) evaluating both of
+  its branches unconditionally. Roughly 3x faster on our benchmark,
+  bit-identical results
 - [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)
   now sorts/de-duplicates `vBlocks` if needed (with a warning), since
   exploration and chaining both assume it is strictly increasing.
@@ -103,9 +97,6 @@
   shared private `trial_fit_candidates()`; verified bit-identical output
   on the same fixed-seed scenario used throughout this changelog to
   diagnose VEM collapse
-- pre-CRAN cleanup: fixed `.Rbuildignore`, removed dead code, factored
-  out the repeated
-  `future_lapply(..., future.seed = TRUE, future.scheduling = ...)`.
 
 ## missSBM 1.0.5 (2025-03-12)
 
