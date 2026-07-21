@@ -141,7 +141,7 @@ test_that("polish() runs without error on withCov and stays finite", {
 test_that("missSBM_collection$polish() polishes every model in the collection", {
   adj <- missSBM::observeNetwork(sampler$networkData, "dyad", 0.85)
   collection <- estimateMissSBM(adj, vBlocks = 2:6, sampling = "dyad",
-                                 control = list(trace = FALSE, exploration = "none", polish = FALSE))
+                                 control = list(trace = FALSE, iterates = 0, polish = FALSE))
   icl_before <- collection$ICL
 
   collection$polish(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
@@ -155,7 +155,7 @@ test_that("estimateMissSBM()'s default control polishes (polish = TRUE)", {
   collection_default <- estimateMissSBM(adj, vBlocks = 2:6, sampling = "dyad", control = list(trace = FALSE))
   set.seed(1)
   collection_vem_only <- estimateMissSBM(adj, vBlocks = 2:6, sampling = "dyad",
-                                          control = list(trace = FALSE, exploration = "none", polish = FALSE))
+                                          control = list(trace = FALSE, iterates = 0, polish = FALSE))
 
   ## same starting point (same seed => same clusterInit/VEM trajectory), polish() can only help
   expect_true(all(collection_default$ICL <= collection_vem_only$ICL + 1e-6))
@@ -193,11 +193,11 @@ test_that("repair() recovers a fit forced into a degenerate state", {
 test_that("missSBM_collection's estimate()/polish()/explore() reuse the stored control by default", {
   adj <- missSBM::observeNetwork(sampler$networkData, "dyad", 0.85)
   control <- list(trace = FALSE, threshold = 1e-3, maxIter = 50, fixPointIter = 3,
-                   exploration = "none", polish = FALSE)
+                   iterates = 0, polish = FALSE)
   collection <- estimateMissSBM(adj, vBlocks = 2:6, sampling = "dyad", control = control)
   icl_after_estimate <- min(collection$ICL)
 
-  ## no-arg calls must not error and must reuse the stored (exploration = "none") control
+  ## no-arg calls must not error and must reuse the stored (iterates = 0) control
   expect_no_error(collection$polish())
   icl_after_polish <- min(collection$ICL)
   expect_lte(icl_after_polish, icl_after_estimate + 1e-6)

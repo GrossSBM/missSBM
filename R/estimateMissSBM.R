@@ -26,19 +26,19 @@
 #'  * similarity An R x R -> R function to compute similarities between node covariates. Default is
 #'         \code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
 #'         (i.e. \code{covariates} is a list of size-N vectors).
-#'  * threshold V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
-#'         by less than threshold. Default is 1e-2.
-#'  * maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
-#'        Default is 50.
+#'  * threshold V-EM algorithm stops stop when an optimization step changes the objective function
+#'         or the parameters by less than threshold. Default is 1e-2.
+#'  * maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.
 #'  * fixPointIter number of fix-point iterations in the V-E step. Default is 3.
-#'  * polish logical, should each model be node-swap-polished (see [missSBM_fit]'s
-#'         \code{polish()}) after the initial VEM fit, fixing individually misclassified nodes
-#'         at that model's own number of blocks? Cheap relative to \code{exploration}, since it
-#'         does not search across numbers of blocks. Default is TRUE.
-#'  * exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none",
-#'         searching for a better number of blocks by splitting/merging clusters (unlike \code{polish}, which
-#'         only refines each model at its own number of blocks). More expensive than \code{polish}. Default is "both".
-#'  * iterates integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.
+#'  * polish logical, should each model be node-swap-polished (see [missSBM_fit]'s \code{polish()})
+#'         after the initial VEM fit, fixing individually misclassified nodes
+#'         at that model's own number of blocks? Cheap relative to exploration (\code{iterates}),
+#'         since it does not search across numbers of blocks. Default is TRUE.
+#'  * iterates integer, the number of forward/backward exploration passes searching for a better
+#'         number of blocks by splitting/merging clusters (unlike \code{polish}, which only
+#'         refines each model at its own number of blocks): more expensive than \code{polish}.
+#'         \code{0} disables exploration entirely (only the initial VEM fit, plus \code{polish}
+#'         if enabled, is returned). Default is 1.
 #'  * maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
 #'         backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
 #'         only the pairs with the most similar fitted connectivity profiles are tried, since
@@ -134,11 +134,14 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   ## Default control parameters overwritten by user specification
   ctrl <- list(
     threshold = 1e-2, trace = TRUE, imputation = "median", similarity = l1_similarity, useCov = TRUE,
-    maxIter = 50, fixPointIter = 3, iterates = 1, exploration = "both", clusterInit = NULL,
+    maxIter = 50, fixPointIter = 3, iterates = 1, clusterInit = NULL,
     maxMergeCandidates = 30, polish = TRUE, stopOnDegenerate = TRUE, maxConsecutiveDegenerate = 2,
     warmChain = FALSE
     )
   ctrl[names(control)] <- control
+  ## exploration always searches both directions when enabled; iterates == 0 is the only way to
+  ## disable it (see missSBM_collection's explore(), which still exposes direction for advanced use)
+  ctrl$exploration <- if (ctrl$iterates > 0) "both" else "none"
   ## If no covariate is provided, you cannot ask for using them
   if (length(covariates) == 0) ctrl$useCov <- FALSE
   if (ctrl$useCov) stopifnot(sampling %in% available_samplings_covariates)
@@ -168,4 +171,3 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   ## Return the collection of adjusted missSBM_fit
   myCollection
 }
-

@@ -47,19 +47,19 @@ providing a user-defined clustering. Default is "spectral".
 \item similarity An R x R -> R function to compute similarities between node covariates. Default is
 \code{l1_similarity}, that is, -abs(x-y). Only relevant when the covariates are node-centered
 (i.e. \code{covariates} is a list of size-N vectors).
-\item threshold V-EM algorithm stops stop when an optimization step changes the objective function or the parameters
-by less than threshold. Default is 1e-2.
-\item maxIter V-EM algorithm stops when the number of iteration exceeds maxIter.
-Default is 50.
+\item threshold V-EM algorithm stops stop when an optimization step changes the objective function
+or the parameters by less than threshold. Default is 1e-2.
+\item maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.
 \item fixPointIter number of fix-point iterations in the V-E step. Default is 3.
-\item polish logical, should each model be node-swap-polished (see \link{missSBM_fit}'s
-\code{polish()}) after the initial VEM fit, fixing individually misclassified nodes
-at that model's own number of blocks? Cheap relative to \code{exploration}, since it
-does not search across numbers of blocks. Default is TRUE.
-\item exploration character indicating the kind of exploration used among "forward", "backward", "both" or "none",
-searching for a better number of blocks by splitting/merging clusters (unlike \code{polish}, which
-only refines each model at its own number of blocks). More expensive than \code{polish}. Default is "both".
-\item iterates integer for the number of iterations during exploration. Only relevant when \code{exploration} is different from "none". Default is 1.
+\item polish logical, should each model be node-swap-polished (see \link{missSBM_fit}'s \code{polish()})
+after the initial VEM fit, fixing individually misclassified nodes
+at that model's own number of blocks? Cheap relative to exploration (\code{iterates}),
+since it does not search across numbers of blocks. Default is TRUE.
+\item iterates integer, the number of forward/backward exploration passes searching for a better
+number of blocks by splitting/merging clusters (unlike \code{polish}, which only
+refines each model at its own number of blocks): more expensive than \code{polish}.
+\code{0} disables exploration entirely (only the initial VEM fit, plus \code{polish}
+if enabled, is returned). Default is 1.
 \item maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried during
 backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
 only the pairs with the most similar fitted connectivity profiles are tried, since

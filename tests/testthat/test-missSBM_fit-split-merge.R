@@ -55,7 +55,7 @@ test_that("candidates_merge() returns one trial-fitted candidate per (capped) cl
 test_that("estimateMissSBM()'s forward/backward exploration still finds a sensible number of blocks", {
   adj <- missSBM::observeNetwork(sampler$networkData, "dyad", 0.85)
   collection <- estimateMissSBM(adj, vBlocks = 2:6, sampling = "dyad",
-                                 control = list(trace = FALSE, iterates = 1, exploration = "both"))
+                                 control = list(trace = FALSE, iterates = 1))
   expect_s3_class(collection, "missSBM_collection")
   expect_true(all(is.finite(collection$ICL)))
 })
