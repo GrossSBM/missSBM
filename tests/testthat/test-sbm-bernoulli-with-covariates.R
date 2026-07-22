@@ -13,7 +13,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, one covariate", {
 
   ## blockmodels
   mySBM_sbm <- sbm::SimpleSBM_fit$new(sampler_undirected_cov$networkData, 'bernoulli', FALSE, covarList = covarList_undirected)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE, nbCores = 1))
   mySBM_sbm$setModel(Q)
 
   ## missSBM
@@ -43,7 +43,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
 
   ## Construction----------------------------------------------------------------
   mySBM_sbm <- sbm::SimpleSBM_fit$new(sampler_directed_cov$networkData, 'bernoulli', TRUE, covarList = covarList_directed)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE, nbCores = 1))
   mySBM_sbm$setModel(Q)
 
   ## missSBM

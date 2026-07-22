@@ -13,7 +13,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, undirected, no covariate", {
 
   ## Construction----------------------------------------------------------------
   mySBM_sbm     <- sbm::SimpleSBM_fit$new(sampler_undirected_nocov$networkData, 'bernoulli', FALSE)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE, nbCores = 1))
   mySBM_sbm$setModel(3)
 
   net <- missSBM:::partlyObservedNetwork$new(sampler_undirected_nocov$networkData)
@@ -41,7 +41,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate", {
 
   ## Construction----------------------------------------------------------------
   mySBM_sbm     <- sbm::SimpleSBM_fit$new(sampler_directed_nocov$networkData, 'bernoulli', TRUE)
-  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE))
+  mySBM_sbm$optimize(estimOptions=list(verbosity = 0, plot = FALSE, nbCores = 1))
   mySBM_sbm$setModel(3)
 
   net <- missSBM:::partlyObservedNetwork$new(sampler_directed_nocov$networkData)
