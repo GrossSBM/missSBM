@@ -1,15 +1,7 @@
 
 # missSBM 1.1.1
 
-Patch release fixing two install/check failures found by CRAN's own
-pretest/check machines after 1.1.0 was accepted:
-
-- Debian pretest install failure (`undefined symbol: dgelsd_`): caused by
-  `.Rbuildignore` erroneously excluding `src/Makevars` from the built
-  tarball, so `PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)` was never
-  shipped and LAPACK's `dgelsd` (used internally by RcppArmadillo's
-  `arma::solve()`) was left unresolved on that machine.
-  (https://win-builder.r-project.org/incoming_pretest/missSBM_1.1.0_20260721_165706/Debian/00install.out)
+Patch release fixing check failures found by CRAN's own machines after 1.1.0 was accepted:
 
 - r-oldrel-macos-arm64 segfault during checks: caused by `blockmodels`'s
   internal use of fork-based `parallel::mclapply` for parallel

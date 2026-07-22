@@ -2,10 +2,6 @@
 
 ## Bug fixes
 
-- Fix `.Rbuildignore` erroneously excluding `src/Makevars` from the built
-  tarball, so `PKG_LIBS` never linked LAPACK/BLAS; this caused an
-  `undefined symbol: dgelsd_` install failure on CRAN's Debian pretest
-  machine (`arma::solve()`'s least-squares path uses LAPACK's `dgelsd`).
 - Force sequential execution (`nbCores = 1`) in the `blockmodels`-based
   reference tests, avoiding a segfault caused by `blockmodels`'s internal
   `parallel::mclapply` use, which is unsafe when combined with macOS's
@@ -28,9 +24,9 @@
   classes; this used to be silent, and split/merge exploration's own repair of it could
   silently corrupt `vBlocks`'s bookkeeping (duplicated/missing entries, non-smooth ICL/ELBO in
   `plot()`). Now fixed and made visible: `missSBM_fit$repair(control)` recovers a collapsed fit ;
-  new `occupiedBlocks`/ `degenerate` fields expose any remaining collapse; 
-  `bestModel` skips degenerate models when possible and `plot()` marks them with a distinct point 
-  shape; `estimateMissSBM()`'s new `stopOnDegenerate`/`maxConsecutiveDegenerate` controls 
+  new `occupiedBlocks`/ `degenerate` fields expose any remaining collapse;
+  `bestModel` skips degenerate models when possible and `plot()` marks them with a distinct point
+  shape; `estimateMissSBM()`'s new `stopOnDegenerate`/`maxConsecutiveDegenerate` controls
   (default `TRUE`/2) stop forward exploration from growing further into a persistently unsupported range.
 - new `estimate_chain()` (`missSBM_collection`) / `warmChain` control (default `FALSE`, opt-in):
   initializes each model by splitting the already-converged, smaller neighbor instead of an
@@ -68,7 +64,7 @@
 - `missSBM_fit`'s `polish()`, `repair()`, `candidates_split()` and `candidates_merge()` gain the
   same default `control` as `doVEM()`, so they can be called standalone without building a full
   control list first; `missSBM_collection`'s calls (which always pass an explicit control list)
-  are unaffected ; `missSBM_collection`'s `estimate()`/`polish()`/`explore()` now share a control 
+  are unaffected ; `missSBM_collection`'s `estimate()`/`polish()`/`explore()` now share a control
   list stored at construction, no longer requiring `control` on every call.
 - Factored `missSBM_collection`'s `explore_forward()`/`explore_backward()` into a shared private
   `explore_direction()`, and `missSBM_fit`'s `candidates_split()`/`candidates_merge()`'s trial-fit
@@ -92,7 +88,7 @@
 
   - Fix linking problem with new version of nloptR (2.0.0)
   - Reference the JSS paper
-  
+
 # missSBM 1.0.1 [2021-06-04]
 
   - less conservative tests to avoid random failure in CRAN checks
@@ -132,7 +128,7 @@
   - moving ownership to großBM
 
 # missSBM 0.2.1 [2019-09-16]
- 
+
   - added S3 methods for missSBM_fit, SBM_fit
 
 # missSBM 0.2.0 [2019-06-06]
@@ -145,4 +141,3 @@
 # missSBM 0.1.0-9000 [2019-02-26]
 
 * Added a `NEWS.md` file to track changes to the package.
-
