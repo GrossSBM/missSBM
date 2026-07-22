@@ -2,6 +2,8 @@
 
 ## missSBM 1.1.0 (2026-07-21)
 
+CRAN release: 2026-07-21
+
 ### Major changes
 
 - **Breaking**:
