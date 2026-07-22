@@ -1,5 +1,17 @@
 # Changelog
 
+## missSBM 1.1.1
+
+### Bug fixes
+
+- Force sequential execution (`nbCores = 1`) in the `blockmodels`-based
+  reference tests, avoiding a segfault caused by `blockmodels`’s
+  internal
+  [`parallel::mclapply`](https://rdrr.io/r/parallel/mclapply.html) use,
+  which is unsafe when combined with macOS’s Accelerate/vecLib
+  BLAS-LAPACK framework (observed on CRAN’s r-oldrel-macos-arm64 check
+  machine).
+
 ## missSBM 1.1.0 (2026-07-21)
 
 CRAN release: 2026-07-21
