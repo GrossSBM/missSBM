@@ -1,3 +1,17 @@
+# missSBM 1.1.1
+
+## Bug fixes
+
+- Fix `.Rbuildignore` erroneously excluding `src/Makevars` from the built
+  tarball, so `PKG_LIBS` never linked LAPACK/BLAS; this caused an
+  `undefined symbol: dgelsd_` install failure on CRAN's Debian pretest
+  machine (`arma::solve()`'s least-squares path uses LAPACK's `dgelsd`).
+- Force sequential execution (`nbCores = 1`) in the `blockmodels`-based
+  reference tests, avoiding a segfault caused by `blockmodels`'s internal
+  `parallel::mclapply` use, which is unsafe when combined with macOS's
+  Accelerate/vecLib BLAS-LAPACK framework (observed on CRAN's
+  r-oldrel-macos-arm64 check machine).
+
 # missSBM 1.1.0 (2026-07-21)
 
 ## Major changes

@@ -1,37 +1,25 @@
 
-# missSBM 1.1.0
+# missSBM 1.1.1
 
-Fixes the WARNING currently shown on the CRAN check page for missSBM
-(https://cran.r-project.org/web/checks/check_results_missSBM.html) on
-r-devel-linux-x86_64-debian-gcc, r-devel-linux-x86_64-fedora-gcc and
-r-patched-linux-x86_64: a `-Wmismatched-new-delete` warning raised in
-RcppArmadillo's `memory.hpp`, triggered while compiling `src/packing.cpp`.
-This release replaces the NLopt/CCSAQ optimizer previously used to fit the
-covariate connectivity parameters with a builtin Newton-Raphson solver;
-`src/packing.cpp` and `src/nlopt_wrapper.cpp` are removed and `nloptr` is no
-longer a dependency, so the warning has nothing left to be raised from.
+Patch release fixing two install/check failures found by CRAN's own
+pretest/check machines after 1.1.0 was accepted:
 
-## Breaking change
+- Debian pretest install failure (`undefined symbol: dgelsd_`): caused by
+  `.Rbuildignore` erroneously excluding `src/Makevars` from the built
+  tarball, so `PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)` was never
+  shipped and LAPACK's `dgelsd` (used internally by RcppArmadillo's
+  `arma::solve()`) was left unresolved on that machine.
+  (https://win-builder.r-project.org/incoming_pretest/missSBM_1.1.0_20260721_165706/Debian/00install.out)
 
-`estimateMissSBM()`'s `control` argument must now be built with the new
-`missSBM_param()` helper (one named, documented, defaulted argument per
-option) instead of a raw `list(...)`; passing a plain list now errors with a
-message pointing at the replacement. This also means unknown/typo'd option
-names now fail immediately instead of being silently ignored.
+- r-oldrel-macos-arm64 segfault during checks: caused by `blockmodels`'s
+  internal use of fork-based `parallel::mclapply` for parallel
+  initialization exploration, which is unsafe on macOS in combination with
+  the Accelerate/vecLib BLAS-LAPACK framework. Fixed by forcing
+  `nbCores = 1` in the two test files that build a `blockmodels`-based
+  reference model for comparison; no change to missSBM's own code.
+  (https://www.r-project.org/nosvn/R.check/r-oldrel-macos-arm64/missSBM-00check.html)
 
-We checked the single reverse dependency, `gsbm` (which has missSBM in
-`Suggests`, used only in a vignette): it calls
-`missSBM::estimateMissSBM(A, vBlocks, "node")` with no `control` argument, so
-it is unaffected by this change.
-
-Also in this release: several new opt-in/on-by-default features to make
-model selection across numbers of blocks more robust when the requested
-number of blocks exceeds what the network actually supports (VEM class
-collapse recovery, a node-swap polishing step, an alternative warm-start
-initialization scheme), a refactor exposing `missSBM_fit`'s split/merge
-exploration as instance methods, and several profiling-driven performance
-fixes to `estimateMissSBM()`'s hot paths (roughly 3x faster on our
-benchmark, bit-identical results). See NEWS.md for the full changelog.
+No other changes since 1.1.0. See NEWS.md for details.
 
 ## Tested environments
 
@@ -42,8 +30,6 @@ benchmark, bit-identical results). See NEWS.md for the full changelog.
     Windows Server 2022 (R-release), macOS (R-release)
 
 ## R CMD check results
-
-Duration: 2m 27.6s
 
 ❯ checking compilation flags used ... NOTE
   Compilation used the following non-portable flag(s):
