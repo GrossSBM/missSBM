@@ -94,11 +94,12 @@ missSBM_fit <-
       if (!useCov) covariates <- list()
 
       if (length(covariates) == 0) {
-        ## the SBM part of 'degree' is fitted on the observed dyads only: with a node-centered
-        ## sampling, the dyads between two unobserved nodes are never observed, and fitting the
-        ## SBM on their imputations lets them feed back on themselves (connectivity of a block of
-        ## unobserved nodes drifting to 0). Only the sampling part uses the imputations.
-        if (netSampling %in% c("double-standard", "block-node", "block-dyad")) {
+        ## the SBM part of the node-centered designs ('block-node', 'degree') is fitted on the
+        ## observed dyads only: the dyads between two unobserved nodes are never observed, and
+        ## fitting the SBM on their imputations lets them feed back on themselves (connectivity of
+        ## a block of unobserved nodes drifting to 0). 'block-node' only adds its sampling term to
+        ## the update of the blocks; 'degree' only uses the imputations in its sampling part.
+        if (netSampling %in% c("double-standard", "block-dyad")) {
           private$SBM <- SimpleSBM_fit_MNAR$new(partlyObservedNet, clusterInit)
         } else {
           private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
@@ -392,7 +393,11 @@ missSBM_fit <-
       - sum(xlogx(nu_x) + xlogx(1 - nu_x))
     },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
-    entropy = function(value) {private$SBM$entropy + self$entropyImputed},
+    entropy = function(value) {
+      ## 'block-node' integrates the missing dyads out (SBM fitted on the observed dyads, the
+      ## sampling depends on the blocks only): its objective has no term for the imputations
+      private$SBM$entropy + if (private$sampling$type == "block-node") 0 else self$entropyImputed
+    },
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {
       ## if(), not ifelse(): ifelse() evaluates both branches eagerly

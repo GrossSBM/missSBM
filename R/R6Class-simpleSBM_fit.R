@@ -126,7 +126,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
   )
 )
 
-#' Internal class for a binary SBM fit under MAR sampling designs without covariates.
+#' Internal class for a binary SBM fit on the observed dyads, without covariates: MAR sampling designs, and the node-centered designs 'block-node' (with its sampling term in the update of the blocks) and 'degree'.
 #'
 #' It is not designed to be called directly by the user.
 #'
@@ -147,9 +147,15 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     },
     #' @description update variational estimation of blocks (VE-step)
     #' @param ... additional arguments, only required for MNAR cases
-    update_blocks =   function(...) {
+    update_blocks =   function(log_lambda = 0, ...) {
       private$imputation_cache <- NULL
-      private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+      if (identical(log_lambda, 0)) {
+        private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+      } else if (self$nbBlocks > 1) {
+        ## sampling depending on the blocks (block-node): observed dyads + sampling term
+        log_tau   <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
+        private$Z <- t(apply(log_tau + log_lambda, 1, .softmax))
+      }
     },
     #' @description for each node, the complete-data log-likelihood it would contribute to
     #'   each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
