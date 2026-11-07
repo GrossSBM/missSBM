@@ -1,3 +1,17 @@
+# missSBM (development version)
+
+## Bug fixes
+
+- `degree` sampling: the imputations of the missing dyads were not probabilities (the
+  logistic function had been dropped from their update in 2018, so that they were the
+  linear predictor truncated to [eps, 1 - eps]), and the sampling parameters were estimated
+  on wrong degrees (the observed edges were left out of the imputed network since 1.0.0, and
+  only one triangle of an undirected network was read). The estimates of the sampling
+  parameters and the imputations of this design are now correct; the SBM part is still fitted
+  on the observed dyads, which is more robust than plugging the imputations of the dyads
+  between unobserved nodes, as these are never observed.
+- `imputedNetwork` no longer doubles the imputations with the `degree` sampling.
+
 # missSBM 1.1.1
 
 ## Bug fixes

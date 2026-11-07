@@ -94,6 +94,10 @@ missSBM_fit <-
       if (!useCov) covariates <- list()
 
       if (length(covariates) == 0) {
+        ## the SBM part of 'degree' is fitted on the observed dyads only: with a node-centered
+        ## sampling, the dyads between two unobserved nodes are never observed, and fitting the
+        ## SBM on their imputations lets them feed back on themselves (connectivity of a block of
+        ## unobserved nodes drifting to 0). Only the sampling part uses the imputations.
         if (netSampling %in% c("double-standard", "block-node", "block-dyad")) {
           private$SBM <- SimpleSBM_fit_MNAR$new(partlyObservedNet, clusterInit)
         } else {

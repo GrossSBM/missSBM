@@ -333,9 +333,12 @@ degreeSampling_fit <-
   inherit = networkSamplingNodes_fit,
   private = list(
     NAs = NULL,
+    Y   = NULL, # observed part of the network, full matrix (both triangles if undirected), 0 on missing dyads
+    S   = NULL, # pattern of the missing dyads (upper triangle if undirected)
+    directed = NULL,
     Dij = NULL, # stat required to perform imputation
     ksi = NULL, # additional variational parameter for approximation in the logistic function
-    D   = NULL  # estimation of the degrees on the observed part of the network
+    D   = NULL  # expected degrees: observed part + imputations of the missing dyads
   ),
   public = list(
     #' @description constructor
@@ -345,27 +348,36 @@ degreeSampling_fit <-
     initialize = function(partlyObservedNetwork, blockInit, connectInit) {
       super$initialize(partlyObservedNetwork, "degree")
 
-      NAs <- as.matrix(partlyObservedNetwork$samplingMatrixBar) != 0
-      if (!partlyObservedNetwork$is_directed) NAs <- NAs | t(NAs)
+      private$directed <- partlyObservedNetwork$is_directed
+      private$S <- partlyObservedNetwork$samplingMatrixBar
+      NAs <- as.matrix(private$S) != 0
+      Y   <- as.matrix(partlyObservedNetwork$networkData)
+      if (!private$directed) {
+        NAs <- NAs | t(NAs)
+        Y   <- Y + t(Y)
+      }
       private$NAs <- NAs
-      ## the node degrees - will remain the same
-      private$D <- rowSums(partlyObservedNetwork$networkData, na.rm = TRUE)
+      private$Y   <- Y
+      ## degrees on the observed part, to initialize psi
+      private$D <- rowSums(Y)
 
       ## will fluctuate along the algorithm
       private$psi <- coefficients(glm(1*(private$N_obs) ~ private$D, family = binomial(link = "logit")))
 
-      imputedNet <- blockInit %*% connectInit %*% t(blockInit)
-      imputedNet[!private$NAs] <- partlyObservedNetwork$networkData[!private$NAs]
-      self$update_parameters(imputedNet)
+      self$update_parameters(.mask_dense_at_pattern(blockInit %*% connectInit %*% t(blockInit), private$S))
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-    #' @param imputedNet an adjacency matrix where missing values have been imputed
+    #' @param nu the imputations of the missing dyads (sparse matrix with the pattern of the missing dyads)
     #' @param ... used for compatibility
     ## Jaakkola-Jordan variational bound on the logit(psi[1] + psi[2]*degree) sampling model:
     ## ksi is the per-node bound parameter, h(ksi) its associated quadratic-bound coefficient
     ## (see utils_missSBM.R), (a,b) solve the resulting 2x2 weighted least-squares system for
     ## psi -- see Tabouy, Barbillon & Chiquet (2019), \doi{10.1080/01621459.2018.1562934}
-    update_parameters = function(imputedNet, ...) {
+    update_parameters = function(nu, ...) {
+      ## nu: imputations of the missing dyads, on the pattern of private$S
+      nu <- as.matrix(nu)
+      if (!private$directed) nu <- nu + t(nu)
+      imputedNet <- private$Y + nu
       private$D  <- rowSums(imputedNet)
       nu <- imputedNet
       nu[!private$NAs] <- NA
@@ -390,7 +402,9 @@ degreeSampling_fit <-
     #' @param ... use for compatibility
     update_imputation = function(PI,...) {
       C <- 2 * h(private$ksi) * (private$psi[1] * private$psi[2] + private$psi[2]^2 * (1 + private$Dij))
-      nu <- check_boundaries((.logit(PI) - private$psi[2] + C + t(C) ))
+      eta <- .mask_dense_at_pattern(C + t(C) - private$psi[2], PI)
+      nu  <- PI
+      nu@x <- check_boundaries(.logistic(.logit(PI@x) + eta@x))
       nu
     }
   ),
