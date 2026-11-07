@@ -126,7 +126,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
   )
 )
 
-#' Internal class for a binary SBM fit on the observed dyads, without covariates: MAR sampling designs, and the node-centered designs 'block-node' (with its sampling term in the update of the blocks) and 'degree'.
+#' Internal class for a binary SBM fit on the observed dyads, without covariates: MAR sampling designs, 'block-node' and 'block-dyad' (with their sampling term in the update of the blocks) and 'degree'.
 #'
 #' It is not designed to be called directly by the user.
 #'
@@ -152,7 +152,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
       if (identical(log_lambda, 0)) {
         private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
       } else if (self$nbBlocks > 1) {
-        ## sampling depending on the blocks (block-node): observed dyads + sampling term
+        ## sampling depending on the blocks (block-node, block-dyad): observed dyads + sampling term
         log_tau   <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
         private$Z <- t(apply(log_tau + log_lambda, 1, .softmax))
       }
@@ -253,8 +253,8 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   )
 )
 
-#' Internal class for a binary SBM fit under MNAR sampling designs
-#' (double-standard, block-node, block-dyad).
+#' Internal class for a binary SBM fit on the observed dyads plus the imputations of the
+#' missing ones, for the double-standard sampling design (MNAR, depending on the value of each dyad).
 #'
 #' It is not designed to be called directly by the user.
 #'

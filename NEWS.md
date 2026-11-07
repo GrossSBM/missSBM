@@ -16,6 +16,11 @@
   missing ones. As the dyads between two unobserved nodes are never observed, their imputations
   fed back on themselves, and the connectivity of a block of unobserved nodes could drift to 0.
   In simulations (n = 200, Q = 3, 42% of observed nodes), the mean ARI goes from 0.65 to 0.94.
+- `block-dyad` sampling: same change, for the same reason (the missing dyads are ignorable given
+  the blocks, and their imputations fed back on themselves when few dyads are observed). In
+  simulations (n = 200, Q = 3, 30% of observed dyads), the mean ARI goes from 0.32 to 0.88.
+  Only `double-standard`, whose sampling depends on the value of each dyad, still fits the SBM
+  part on the imputations.
 
 # missSBM 1.1.1
 
