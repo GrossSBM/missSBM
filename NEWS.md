@@ -21,6 +21,11 @@
   simulations (n = 200, Q = 3, 30% of observed dyads), the mean ARI goes from 0.32 to 0.88.
   Only `double-standard`, whose sampling depends on the value of each dyad, still fits the SBM
   part on the imputations.
+- With these two changes, the classes no longer collapse with `block-node` sampling on larger
+  numbers of blocks (e.g., the 196 blogs of `frenchblog2007` explored up to 18 blocks).
+  The ICL of `block-node` and `block-dyad` still includes the expected log-likelihood of the
+  imputed dyads, as for the other designs, so that the ICL of different designs can be compared
+  (with a single block, `block-node` and `node`, or `block-dyad` and `dyad`, give the same ICL).
 
 # missSBM 1.1.1
 

@@ -410,8 +410,16 @@ missSBM_fit <-
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik  = function(value) {self$vExpec + self$entropy},
-    #' @field ICL double: value of the integrated classification log-likelihood
-    ICL    = function(value) {-2 * self$vExpec + self$penalty}
+    #' @field ICL double: value of the integrated classification log-likelihood. For all the
+    #'   designs, it includes the expected log-likelihood of the imputed dyads, so that the ICL
+    #'   of different sampling designs can be compared
+    ICL    = function(value) {
+      ## 'block-node' and 'block-dyad' are fitted on the observed dyads (see vExpec), but their
+      ## ICL takes the imputations into account as the other designs (equal ICL for 1 block)
+      vExpec <- if (private$sampling$type %in% c("block-node", "block-dyad"))
+        private$sampling$vExpec + private$SBM$vExpec_corrected else self$vExpec
+      -2 * vExpec + self$penalty
+    }
   )
 )
 

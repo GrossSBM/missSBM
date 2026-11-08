@@ -146,6 +146,8 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
       invisible(res)
     },
     #' @description update variational estimation of blocks (VE-step)
+    #' @param log_lambda term of the sampling design depending on the blocks ('block-node' and
+    #'   'block-dyad'), added to the update of the blocks; 0 for the other designs
     #' @param ... additional arguments, only required for MNAR cases
     update_blocks =   function(log_lambda = 0, ...) {
       private$imputation_cache <- NULL

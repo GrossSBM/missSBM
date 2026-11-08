@@ -51,7 +51,9 @@ or more classes (see \code{repair()})}
 
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-    \item{\code{ICL}}{double: value of the integrated classification log-likelihood}
+    \item{\code{ICL}}{double: value of the integrated classification log-likelihood. For all the
+designs, it includes the expected log-likelihood of the imputed dyads, so that the ICL
+of different sampling designs can be compared}
   }
   \if{html}{\out{</div>}}
 }

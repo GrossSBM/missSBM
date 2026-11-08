@@ -2,8 +2,8 @@
 % Please edit documentation in R/R6Class-simpleSBM_fit.R
 \name{SimpleSBM_fit_MNAR}
 \alias{SimpleSBM_fit_MNAR}
-\title{Internal class for a binary SBM fit under MNAR sampling designs
-(double-standard, block-node, block-dyad).}
+\title{Internal class for a binary SBM fit on the observed dyads plus the imputations of the
+missing ones, for the double-standard sampling design (MNAR, depending on the value of each dyad).}
 \description{
 It is not designed to be called directly by the user.
 }

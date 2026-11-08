@@ -21,3 +21,24 @@ for (seed in c(3, 12)) {
     expect_true(all(diff(fit$monitoring$elbo) >= -1e-8))
   })
 }
+
+## The SBM part of block-node and block-dyad is fitted on the observed dyads, but their ICL must
+## include the imputed dyads as for the other designs, so that the designs can be compared: with a
+## single block, block-node is node sampling and block-dyad is dyad sampling, and the ICLs coincide.
+test_that("block-node and block-dyad: the ICL is comparable with node and dyad sampling", {
+  set.seed(5)
+  n <- 120
+  pi <- matrix(.05, 2, 2); diag(pi) <- c(.4, .2)
+  sbm <- sbm::sampleSimpleSBM(n, c(.4, .6), list(mean = pi))
+  ctrl <- missSBM_param(trace = FALSE, iterates = 0, threshold = 1e-8, maxIter = 500)
+
+  A_node <- missSBM::observeNetwork(sbm$networkData, "node", .6)
+  ICL_node       <- estimateMissSBM(A_node, 1, "node",       control = ctrl)$ICL
+  ICL_block_node <- estimateMissSBM(A_node, 1, "block-node", control = ctrl)$ICL
+  expect_equal(ICL_block_node, ICL_node, tolerance = 1e-4)
+
+  A_dyad <- missSBM::observeNetwork(sbm$networkData, "dyad", .6)
+  ICL_dyad       <- estimateMissSBM(A_dyad, 1, "dyad",       control = ctrl)$ICL
+  ICL_block_dyad <- estimateMissSBM(A_dyad, 1, "block-dyad", control = ctrl)$ICL
+  expect_equal(ICL_block_dyad, ICL_dyad, tolerance = 1e-4)
+})

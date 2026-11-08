@@ -2,7 +2,7 @@
 % Please edit documentation in R/R6Class-simpleSBM_fit.R
 \name{SimpleSBM_fit_noCov}
 \alias{SimpleSBM_fit_noCov}
-\title{Internal class for a binary SBM fit under MAR sampling designs without covariates.}
+\title{Internal class for a binary SBM fit on the observed dyads, without covariates: MAR sampling designs, 'block-node' and 'block-dyad' (with their sampling term in the update of the blocks) and 'degree'.}
 \description{
 It is not designed to be called directly by the user.
 }
@@ -71,12 +71,14 @@ It is not designed to be called directly by the user.
   update variational estimation of blocks (VE-step)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit_noCov$update_blocks(...)}
+    \preformatted{SimpleSBM_fit_noCov$update_blocks(log_lambda = 0, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
+      \item{\code{log_lambda}}{term of the sampling design depending on the blocks ('block-node' and
+'block-dyad'), added to the update of the blocks; 0 for the other designs}
       \item{\code{...}}{additional arguments, only required for MNAR cases}
     }
     \if{html}{\out{</div>}}
