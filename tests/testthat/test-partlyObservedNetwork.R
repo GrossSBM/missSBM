@@ -283,3 +283,16 @@ test_that("partlyObservedNetwork: 'Bernoulli' model, directed, covariates, missi
 
 })
 
+
+test_that("partlyObservedNetwork: observed nodes, undirected, computed without R | t(R)", {
+  set.seed(2)
+  n <- 50
+  A <- matrix(rbinom(n * n, 1, .2), n, n); A[lower.tri(A)] <- t(A)[lower.tri(A)]; diag(A) <- 0
+  miss <- sample(setdiff(1:n, c(3, 7)), 15)
+  A[miss, miss] <- NA # node-centered: the dyads between two unobserved nodes are missing
+  A[3, 7] <- A[7, 3] <- NA # a missing dyad between two otherwise observed nodes
+  pon <- missSBM:::partlyObservedNetwork$new(A)
+  R <- pon$samplingMatrix
+  expect_equal(pon$observedNodes, unname(Matrix::rowSums(R | Matrix::t(R)) == n - 1))
+  expect_equal(which(!pon$observedNodes), sort(c(miss, 3, 7)))
+})

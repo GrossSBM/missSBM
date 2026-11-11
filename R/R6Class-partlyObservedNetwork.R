@@ -47,7 +47,9 @@ partlyObservedNetwork <-
       if (private$directed) {
         res <- rowSums(private$R) == (self$nbNodes - 1)
       } else {
-        res <- (rowSums(private$R | t(private$R))) == (self$nbNodes - 1)
+        ## R holds the upper triangle only: summing its rows and columns counts the observed dyads
+        ## of each node without materializing R | t(R), nearly full when most dyads are observed
+        res <- (rowSums(private$R) + colSums(private$R)) == (self$nbNodes - 1)
       }
       res
      }

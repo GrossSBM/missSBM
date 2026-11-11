@@ -273,11 +273,13 @@ blockDyadSampling_fit <-
   active = list(
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
-      ## indexes rho (dense) at R/S's sparse pattern directly, log() applied only to the
-      ## extracted entries -- rather than `sparse * dense` (an elementwise Ops that probes
-      ## isSymmetric() on the dense operand) or log()/log1p() over the full dense matrix
-      rho <- check_boundaries(private$Z %*% private$psi %*% t(private$Z))
-      sum(.mask_dense_at_pattern(rho, private$R, log)@x) + sum(.mask_dense_at_pattern(rho, private$S, function(x) log(1 - x))@x)
+      ## E_q[log p(R | Z)] = sum_{(i,j) observed} sum_{q,l} tau_iq tau_jl log(psi_ql) + same on the
+      ## missing dyads with log(1 - psi_ql): the expectation of the log, consistent with the update
+      ## of psi and with log_lambda (it was the log of the expectation, log(Z psi Z^T), before), and
+      ## computed through Z^T R Z and Z^T S Z, without any n x n matrix
+      Z <- private$Z
+      sum(as.matrix(t(Z) %*% private$R %*% Z) * log(private$psi)) +
+        sum(as.matrix(t(Z) %*% private$S %*% Z) * log(1 - private$psi))
     },
     #' @field log_lambda matrix, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {

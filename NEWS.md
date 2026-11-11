@@ -34,12 +34,21 @@
   on the observed dyads, which is more robust than plugging the imputations of the dyads
   between unobserved nodes, as these are never observed.
 - `imputedNetwork` no longer doubles the imputations with the `degree` sampling.
+- `block-dyad` sampling: the expectation of the log-likelihood of the sampling was computed as
+  the log of the expected sampling probabilities, log(Z psi Z'), instead of the expectation of
+  the log (since 2018). The updates of the parameters were right, but the objective monitored by
+  the VEM and the ICL were overestimated (by 5 to 20 on the ICL of networks with 200 nodes).
+  The estimates are unchanged in our simulations, but the selected number of blocks can change.
 
 ## Minor changes
 
 - `degree` sampling: the sampling part is computed on the sparse pattern of the missing dyads,
   in O(n + number of missing dyads) memory instead of several dense n x n matrices. Same results
   up to rounding errors (checked against the dense formulas in the tests).
+- The observed nodes of an undirected network are found without building `R | t(R)`, a nearly
+  full sparse matrix when most dyads are observed. This was done for every fit with a
+  node-centered sampling, including each candidate of the exploration: about 18% faster overall
+  on a network with 2000 nodes, same results.
 
 # missSBM 1.1.1
 
