@@ -1,5 +1,28 @@
 # missSBM (development version)
 
+## Changes in the estimation
+
+- `block-node` and `block-dyad` sampling: the SBM part is now fitted on the observed dyads,
+  with the sampling term in the update of the blocks, as was already the case for `node` and
+  `dyad`. Under these designs the sampling only depends on the blocks, so that the missing
+  dyads are ignorable given the blocks: they are now integrated out exactly, instead of being
+  approximated by a variational distribution independent of the blocks, q(Z) q(Y_miss). This is
+  a tighter lower bound of the same likelihood, not a new criterion. It also removes a feedback
+  loop: the imputations of the missing dyads, computed from the blocks, entered the update of
+  the blocks, and the dyads between two unobserved nodes, never observed, fed back on themselves
+  (the connectivity of a block of unobserved nodes could drift to 0, and classes collapsed when
+  exploring larger numbers of blocks, e.g., the 196 blogs of `frenchblog2007` up to 18 blocks).
+  The results of these two designs change. In simulations (n = 200, Q = 3), the mean ARI goes
+  from 0.65 to 0.94 for `block-node` (42% of observed nodes) and from 0.32 to 0.88 for
+  `block-dyad` (30% of observed dyads).
+- The ICL of `block-node` and `block-dyad` still includes the expected log-likelihood of the
+  imputed dyads, as for the other designs, so that the ICL of different designs can be compared
+  (with a single block, `block-node` and `node`, or `block-dyad` and `dyad`, give the same ICL).
+  This is a convention: the ICL is not the lower bound maximized by the algorithm for these two
+  designs.
+- Only `double-standard`, whose sampling depends on the value of each dyad, still fits the SBM
+  part on the imputations of the missing dyads.
+
 ## Bug fixes
 
 - `degree` sampling: the imputations of the missing dyads were not probabilities (the
@@ -11,21 +34,6 @@
   on the observed dyads, which is more robust than plugging the imputations of the dyads
   between unobserved nodes, as these are never observed.
 - `imputedNetwork` no longer doubles the imputations with the `degree` sampling.
-- `block-node` sampling: the SBM part is now fitted on the observed dyads, with the sampling
-  term in the update of the blocks, instead of the observed dyads plus the imputations of the
-  missing ones. As the dyads between two unobserved nodes are never observed, their imputations
-  fed back on themselves, and the connectivity of a block of unobserved nodes could drift to 0.
-  In simulations (n = 200, Q = 3, 42% of observed nodes), the mean ARI goes from 0.65 to 0.94.
-- `block-dyad` sampling: same change, for the same reason (the missing dyads are ignorable given
-  the blocks, and their imputations fed back on themselves when few dyads are observed). In
-  simulations (n = 200, Q = 3, 30% of observed dyads), the mean ARI goes from 0.32 to 0.88.
-  Only `double-standard`, whose sampling depends on the value of each dyad, still fits the SBM
-  part on the imputations.
-- With these two changes, the classes no longer collapse with `block-node` sampling on larger
-  numbers of blocks (e.g., the 196 blogs of `frenchblog2007` explored up to 18 blocks).
-  The ICL of `block-node` and `block-dyad` still includes the expected log-likelihood of the
-  imputed dyads, as for the other designs, so that the ICL of different designs can be compared
-  (with a single block, `block-node` and `node`, or `block-dyad` and `dyad`, give the same ICL).
 
 # missSBM 1.1.1
 
