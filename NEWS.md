@@ -35,6 +35,12 @@
   between unobserved nodes, as these are never observed.
 - `imputedNetwork` no longer doubles the imputations with the `degree` sampling.
 
+## Minor changes
+
+- `degree` sampling: the sampling part is computed on the sparse pattern of the missing dyads,
+  in O(n + number of missing dyads) memory instead of several dense n x n matrices. Same results
+  up to rounding errors (checked against the dense formulas in the tests).
+
 # missSBM 1.1.1
 
 ## Bug fixes

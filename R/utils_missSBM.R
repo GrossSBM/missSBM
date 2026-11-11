@@ -135,6 +135,16 @@ xlogx <- function(x) {
   pattern
 }
 
+## values of Z %*% M %*% t(Z) at the structural nonzeros of a dgCMatrix pattern, packaged as a
+## dgCMatrix with that same pattern, without forming the N x N matrix: O(nnz(pattern) * Q)
+## time and memory instead of O(N^2 * Q) and O(N^2).
+.bilinear_at_pattern <- function(Z, M, pattern, fun = identity) {
+  cidx <- rep.int(seq_len(ncol(pattern)), diff(pattern@p))
+  ZM <- Z %*% M
+  pattern@x <- fun(rowSums(ZM[pattern@i + 1L, , drop = FALSE] * Z[cidx, , drop = FALSE]))
+  pattern
+}
+
 .softmax <- function(x) {
   b <- max(x)
   exp(x - b) / sum(exp(x - b))

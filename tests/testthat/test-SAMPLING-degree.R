@@ -44,3 +44,50 @@ for (directed in c(FALSE, TRUE)) {
     expect_equal(unname(imputed[observed]), unname(data$A_obs[observed]))
   })
 }
+
+## the sampling part is computed on the sparse pattern of the missing dyads: check it against the
+## dense formulas (Tabouy, Barbillon & Chiquet, 2019), directed and undirected
+for (directed in c(FALSE, TRUE)) {
+  test_that(paste("degree sampling: sparse updates match the dense formulas,", if (directed) "directed" else "undirected"), {
+    set.seed(3)
+    n <- 60
+    A <- matrix(rbinom(n * n, 1, .15), n, n)
+    if (!directed) A[lower.tri(A)] <- t(A)[lower.tri(A)]
+    diag(A) <- 0
+    A[sample(n, 25), ] <- NA
+    if (!directed) A[lower.tri(A)] <- t(A)[lower.tri(A)]
+    pon <- missSBM:::partlyObservedNetwork$new(A)
+    Z <- missSBM:::clustering_indicator(sample(1:2, n, replace = TRUE))
+    PI0 <- matrix(c(.3, .05, .05, .2), 2, 2)
+    ## the initial glm of psi separates perfectly here (unobserved nodes have no observed edge)
+    fit <- suppressWarnings(missSBM:::degreeSampling_fit$new(pon, Z, PI0))
+    S <- pon$samplingMatrixBar
+    nu <- S; nu@x <- runif(length(S@x), .05, .95)
+    PI <- S; PI@x <- runif(length(S@x), .05, .95)
+
+    ## dense reference, as in missSBM <= 1.1.1 with the degree fixes
+    NAs <- as.matrix(S) != 0
+    Y   <- as.matrix(pon$networkData)
+    nuD <- as.matrix(nu)
+    if (!directed) { NAs <- NAs | t(NAs); Y <- Y + t(Y); nuD <- nuD + t(nuD) }
+    psi0 <- fit$parameters
+    N_obs <- pon$observedNodes
+    D  <- rowSums(Y + nuD)
+    V  <- nuD; V[!NAs] <- NA
+    D2 <- rowSums(V * (1 - V), na.rm = TRUE) + D^2
+    ksi <- missSBM:::check_boundaries(sqrt(psi0[1]^2 + psi0[2]^2 * D2 + 2 * psi0[1] * psi0[2] * D))
+    hk <- missSBM:::h(ksi)
+    C0 <- .5 * n - sum(!N_obs); s1 <- .5 * sum(D) - sum(D[!N_obs])
+    denom <- 2 * (sum(hk) * sum(hk * D2) - sum(hk * D)^2)
+    psi <- c((s1 * sum(hk * D) - C0 * sum(hk * D2)) / denom, (C0 * sum(hk * D) - s1 * sum(hk)) / denom)
+    V[!NAs] <- 0
+    Dij <- matrix(D, n, n) - V
+    C  <- 2 * hk * (psi[1] * psi[2] + psi[2]^2 * (1 + Dij))
+    eta <- C + t(C) - psi[2]
+    ref <- missSBM:::check_boundaries(missSBM:::.logistic(missSBM:::.logit(as.matrix(PI)) + eta))[as.matrix(S) != 0]
+
+    fit$update_parameters(nu)
+    expect_equal(fit$parameters, psi, tolerance = 1e-12)
+    expect_equal(fit$update_imputation(PI)@x, ref, tolerance = 1e-12)
+  })
+}

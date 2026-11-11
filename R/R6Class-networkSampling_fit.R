@@ -331,12 +331,14 @@ blockNodeSampling_fit <-
 degreeSampling_fit <-
   R6::R6Class(classname = "degreeSampling_fit",
   inherit = networkSamplingNodes_fit,
+  ## Everything is stored in O(n + number of missing dyads): the degrees as vectors, the
+  ## imputations on the sparse pattern of the missing dyads (upper triangle if undirected).
   private = list(
-    NAs = NULL,
-    Y   = NULL, # observed part of the network, full matrix (both triangles if undirected), 0 on missing dyads
-    S   = NULL, # pattern of the missing dyads (upper triangle if undirected)
     directed = NULL,
-    Dij = NULL, # stat required to perform imputation
+    D_obs = NULL, # degrees on the observed part of the network (constant)
+    miss_i = NULL, miss_j = NULL, # row and column of each missing dyad, in the order of the pattern
+    miss_t = NULL, # directed: position of dyad (j, i) among the missing dyads, NA if it is observed
+    nu_x = NULL, # current imputations of the missing dyads, in the order of the pattern
     ksi = NULL, # additional variational parameter for approximation in the logistic function
     D   = NULL  # expected degrees: observed part + imputations of the missing dyads
   ),
@@ -349,22 +351,25 @@ degreeSampling_fit <-
       super$initialize(partlyObservedNetwork, "degree")
 
       private$directed <- partlyObservedNetwork$is_directed
-      private$S <- partlyObservedNetwork$samplingMatrixBar
-      NAs <- as.matrix(private$S) != 0
-      Y   <- as.matrix(partlyObservedNetwork$networkData)
-      if (!private$directed) {
-        NAs <- NAs | t(NAs)
-        Y   <- Y + t(Y)
+      S <- partlyObservedNetwork$samplingMatrixBar
+      private$miss_i <- S@i + 1L
+      private$miss_j <- rep.int(seq_len(ncol(S)), diff(S@p))
+      if (private$directed) {
+        n <- ncol(S)
+        key <- private$miss_i + (private$miss_j - 1) * n
+        private$miss_t <- match(private$miss_j + (private$miss_i - 1) * n, key)
       }
-      private$NAs <- NAs
-      private$Y   <- Y
+      Y <- partlyObservedNetwork$networkData
+      private$D_obs <- as.numeric(
+        if (private$directed) Matrix::rowSums(Y) else Matrix::rowSums(Y) + Matrix::colSums(Y)
+      )
       ## degrees on the observed part, to initialize psi
-      private$D <- rowSums(Y)
+      private$D <- private$D_obs
 
       ## will fluctuate along the algorithm
       private$psi <- coefficients(glm(1*(private$N_obs) ~ private$D, family = binomial(link = "logit")))
 
-      self$update_parameters(.mask_dense_at_pattern(blockInit %*% connectInit %*% t(blockInit), private$S))
+      self$update_parameters(.bilinear_at_pattern(blockInit, connectInit, S))
     },
     #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
     #' @param nu the imputations of the missing dyads (sparse matrix with the pattern of the missing dyads)
@@ -374,16 +379,19 @@ degreeSampling_fit <-
     ## (see utils_missSBM.R), (a,b) solve the resulting 2x2 weighted least-squares system for
     ## psi -- see Tabouy, Barbillon & Chiquet (2019), \doi{10.1080/01621459.2018.1562934}
     update_parameters = function(nu, ...) {
-      ## nu: imputations of the missing dyads, on the pattern of private$S
-      nu <- as.matrix(nu)
-      if (!private$directed) nu <- nu + t(nu)
-      imputedNet <- private$Y + nu
-      private$D  <- rowSums(imputedNet)
-      nu <- imputedNet
-      nu[!private$NAs] <- NA
-      D2 <- rowSums(nu * (1 - nu), na.rm = TRUE) + private$D^2
+      ## nu: imputations of the missing dyads, on the pattern of the missing dyads
+      private$nu_x <- nu@x
+      ## expected degrees and their second moments: sums over the rows (and the columns, for the
+      ## other triangle of an undirected network) of the imputations
+      row_sums <- function(M) {
+        as.numeric(if (private$directed) Matrix::rowSums(M) else Matrix::rowSums(M) + Matrix::colSums(M))
+      }
+      private$D <- private$D_obs + row_sums(nu)
+      V <- nu
+      V@x <- nu@x * (1 - nu@x)
+      D2 <- row_sums(V) + private$D^2
       private$ksi <- check_boundaries(sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * private$D))
-      C  <- .5 * nrow(imputedNet) - sum(!private$N_obs)
+      C  <- .5 * length(private$D) - sum(!private$N_obs)
       s1 <- .5 * sum(private$D) - sum(private$D[!private$N_obs])
       s_hksi   <- sum(h(private$ksi))
       s_hksiD  <- sum(h(private$ksi) * private$D)
@@ -392,19 +400,25 @@ degreeSampling_fit <-
       a <- (s1 * s_hksiD - C * s_hksiD2) / denom
       b <- (C * s_hksiD - s1 * s_hksi) / denom
       private$psi <- c(a, b)
-
-      ## update stat required to perform imputation
-      nu[!private$NAs] <- 0
-      private$Dij <- matrix(private$D, nrow(imputedNet), ncol(imputedNet)) - nu
     },
     #' @description a method to update the imputation of the missing entries.
     #' @param PI the matrix of inter/intra class probability of connection
     #' @param ... use for compatibility
     update_imputation = function(PI,...) {
-      C <- 2 * h(private$ksi) * (private$psi[1] * private$psi[2] + private$psi[2]^2 * (1 + private$Dij))
-      eta <- .mask_dense_at_pattern(C + t(C) - private$psi[2], PI)
+      ## for a missing dyad (i, j): C_ij + C_ji - psi[2], with
+      ## C_ij = 2 h(ksi_i) (psi[1] psi[2] + psi[2]^2 (1 + D_i - nu_ij)), nu_ij taken as 0 when the
+      ## dyad is observed (only possible for (j, i) in a directed network)
+      i <- private$miss_i; j <- private$miss_j
+      nu_ij <- private$nu_x
+      nu_ji <- if (private$directed) {
+        res <- private$nu_x[private$miss_t]; res[is.na(res)] <- 0; res
+      } else nu_ij
+      hk <- 2 * h(private$ksi)
+      a  <- private$psi[1] * private$psi[2]
+      b  <- private$psi[2]^2
+      eta <- hk[i] * (a + b * (1 + private$D[i] - nu_ij)) + hk[j] * (a + b * (1 + private$D[j] - nu_ji)) - private$psi[2]
       nu  <- PI
-      nu@x <- check_boundaries(.logistic(.logit(PI@x) + eta@x))
+      nu@x <- check_boundaries(.logistic(.logit(PI@x) + eta))
       nu
     }
   ),
