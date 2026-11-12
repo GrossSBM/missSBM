@@ -40,7 +40,7 @@ plot(sbm_node)
 plot(sbm_node, type = "monitoring")
 
 ## try MNAR with block-dyad sampling
-sbm_block <- estimateMissSBM(blog_obs, blocks, "block-node", control = missSBM_param(iterates = 3))
+sbm_block <- estimateMissSBM(blog_obs, blocks, "block-node", control = missSBM_param(iterates = 2))
 plot(sbm_block)
 plot(sbm_block, type = "monitoring")
 
