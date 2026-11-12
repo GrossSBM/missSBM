@@ -15,13 +15,27 @@
   The results of these two designs change. In simulations (n = 200, Q = 3), the mean ARI goes
   from 0.65 to 0.94 for `block-node` (42% of observed nodes) and from 0.32 to 0.88 for
   `block-dyad` (30% of observed dyads).
-- The ICL of `block-node` and `block-dyad` still includes the expected log-likelihood of the
-  imputed dyads, as for the other designs, so that the ICL of different designs can be compared
-  (with a single block, `block-node` and `node`, or `block-dyad` and `dyad`, give the same ICL).
-  This is a convention: the ICL is not the lower bound maximized by the algorithm for these two
-  designs.
+- The ICL is now built on the observed data, for all the designs: the observed dyads and the
+  sampling matrix, the missing dyads being integrated out. It is -2 times the variational lower
+  bound maximized by the algorithm, without the entropy of the blocks, plus the penalty: the
+  same relation between the ICL and the bound as for a fully observed SBM. For the designs
+  whose sampling only depends on the blocks (`dyad`, `node`, `covar-*`, `block-node`,
+  `block-dyad`), the missing dyads are integrated out exactly. For `degree` and
+  `double-standard`, the bound includes the entropy of the imputations. The ICL of the previous
+  versions added the expected log-likelihood of the imputed dyads, without their entropy, as if
+  the missing dyads were classified: as the imputations are computed by the model, this
+  rewards purer blocks with no data behind them, and favors more blocks, the more so as more
+  dyads are missing. In simulations (`inst/simus/PR48-block-designs/`), the true number of
+  blocks is selected in 95% to 100% of the cases in 11 settings out of 12 (it was 0% to 100%),
+  and the ICL now picks the design that generated the data among `node` / `block-node` and
+  `dyad` / `block-dyad` (it preferred `block-node` and `double-standard` in most cases). The
+  selected models of all the designs can change.
+- `missSBM_param(ICL = "completed")` restores the ICL of the previous versions, to reproduce
+  former results. Both are available on each model (fields `ICLobserved` and `ICLcompleted` of
+  `missSBM_fit`). With a single block, `block-node` and `node`, or `block-dyad` and `dyad`,
+  still give the same ICL, with both.
 - Only `double-standard`, whose sampling depends on the value of each dyad, still fits the SBM
-  part on the imputations of the missing dyads.
+  part on the imputations of the missing dyads (see #52).
 
 ## Bug fixes
 

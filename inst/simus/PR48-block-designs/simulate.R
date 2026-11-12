@@ -7,12 +7,14 @@
 ##   - "grid": data simulated and fitted with block-node or block-dyad, 3 observation rates x
 ##     2 connectivity structures, Q = 1:6 explored: selected Q, ARI, RMSE of the connectivity
 ##     and of the sampling parameters, degenerate fits.
-##   - "design": data simulated under node / block-node (resp. dyad / block-dyad), fitted with
-##     both designs: does the ICL pick the design that generated the data?
+##   - "design": data simulated under node / block-node / degree (resp. dyad / block-dyad /
+##     double-standard), fitted with the three designs of the family: does the ICL pick the
+##     design that generated the data?
 ##
 ## Usage (from the root of the package):
-##   Rscript inst/simus/PR48-block-designs/simulate.R <path to missSBM source> <label> [nb cores]
-## writes inst/simus/PR48-block-designs/results/<label>.rds
+##   [SIMU_ICL=observed|completed] Rscript inst/simus/PR48-block-designs/simulate.R <path to missSBM source> <label> [nb cores]
+## writes inst/simus/PR48-block-designs/results/<label>.rds. SIMU_ICL sets the ICL used by the
+## exploration and the selection (missSBM_param(ICL = ...)), for the versions that have it.
 
 args  <- commandArgs(TRUE)
 pkg   <- args[1]
@@ -33,6 +35,8 @@ Q      <- 3
 alpha  <- c(.25, .35, .40)
 vBlocks <- 1:6
 nb_rep <- as.integer(Sys.getenv("SIMU_NB_REP", 20)) # fewer replicates for a quick try
+ICL    <- Sys.getenv("SIMU_ICL", "")
+control <- if (nzchar(ICL)) missSBM_param(trace = FALSE, ICL = ICL) else missSBM_param(trace = FALSE)
 
 connectivity <- list(
   assortative    = matrix(c(.60, .05, .05,
@@ -56,6 +60,10 @@ psi <- list(
   medium = make_psi(c(.70, .50, .30), .30),
   high   = make_psi(c(.95, .90, .85), .80)
 )
+## experiment 2 only (medium rate): degree, P(node i observed) = logistic(a + b * degree of i),
+## and double-standard, P(dyad observed | 0) and P(dyad observed | 1)
+degree_param <- c(-2.4, .08)
+double_standard_param <- c(.3, .7)
 
 ## ---------------------------------------------------------------------------------------
 ## helpers
@@ -71,7 +79,9 @@ observe <- function(net, design, rate) {
     "node"       = observeNetwork(net$networkData, "node", mean(rho[[rate]][net$memberships])),
     "dyad"       = observeNetwork(net$networkData, "dyad", {
       z <- net$memberships; P <- psi[[rate]][z, z]; mean(P[upper.tri(P)])
-    })
+    }),
+    "degree"          = observeNetwork(net$networkData, "degree", degree_param),
+    "double-standard" = observeNetwork(net$networkData, "double-standard", double_standard_param)
   )
 }
 
@@ -100,16 +110,10 @@ metrics_at_Q <- function(collection, net, design, rate) {
   )
 }
 
-## ICL built on the bound of the log-likelihood of the observed data only, log p(Y^o, R): without
-## the expected log-likelihood of the imputed dyads that the current convention adds (valid for
-## the designs whose SBM part is fitted on the observed dyads, i.e. not double-standard)
-ICL_obs <- function(m) -2 * (m$fittedSampling$vExpec + m$fittedSBM$vExpec) + m$penalty
-best_obs <- function(collection) collection$models[[which.min(sapply(collection$models, ICL_obs))]]
-
 fit_design <- function(A, design, seed) {
   set.seed(seed)
   time <- system.time(
-    collection <- estimateMissSBM(A, vBlocks, design, control = missSBM_param(trace = FALSE))
+    collection <- suppressWarnings(estimateMissSBM(A, vBlocks, design, control = control))
   )[["elapsed"]]
   list(collection = collection, time = time)
 }
@@ -132,8 +136,6 @@ run_grid <- function(k) {
       data.frame(obs_rate = mean(!is.na(upper(A))),
                  Q_sel    = best$fittedSBM$nbBlocks,
                  ARI_sel  = aricode::ARI(best$fittedSBM$memberships, net$memberships),
-                 Q_sel_obs   = best_obs(f$collection)$fittedSBM$nbBlocks,
-                 ARI_sel_obs = aricode::ARI(best_obs(f$collection)$fittedSBM$memberships, net$memberships),
                  nb_degenerate = sum(sapply(f$collection$models, function(m)
                    length(unique(m$fittedSBM$memberships)) < m$fittedSBM$nbBlocks)),
                  time = f$time, error = NA_character_),
@@ -145,32 +147,28 @@ run_grid <- function(k) {
 
 ## ---------------------------------------------------------------------------------------
 ## experiment 2: choice of the design by the ICL (assortative network, medium rate)
-design_cases <- expand.grid(rep = seq_len(nb_rep),
-                            truth = c("node", "block-node", "dyad", "block-dyad"),
-                            stringsAsFactors = FALSE)
-design_cases$family <- ifelse(design_cases$truth %in% c("node", "block-node"), "node", "dyad")
+families <- list(node = c("node", "block-node", "degree"), dyad = c("dyad", "block-dyad", "double-standard"))
+design_cases <- expand.grid(rep = seq_len(nb_rep), truth = unlist(families), stringsAsFactors = FALSE)
+design_cases$family <- ifelse(design_cases$truth %in% families$node, "node", "dyad")
 design_cases$seed   <- 100000 + 1000 * match(design_cases$truth, unique(design_cases$truth)) + design_cases$rep
 
 run_design <- function(k) {
   d <- design_cases[k, ]
-  candidates <- if (d$family == "node") c("node", "block-node") else c("dyad", "block-dyad")
+  candidates <- families[[d$family]]
   res <- tryCatch({
     net <- sample_net(connectivity$assortative, d$seed)
     set.seed(d$seed + 1)
     A <- observe(net, d$truth, "medium")
-    collections <- lapply(candidates, function(design) fit_design(A, design, d$seed + 2)$collection)
-    fits <- lapply(collections, function(col) col$bestModel)
+    fits <- lapply(candidates, function(design) fit_design(A, design, d$seed + 2)$collection$bestModel)
     ICL <- sapply(fits, function(m) m$ICL)
-    ICL_o <- sapply(collections, function(col) ICL_obs(best_obs(col)))
+    ## one column per candidate, named by its rank in the family (1: MAR, 2: block, 3: other MNAR)
+    per_candidate <- function(prefix, values) setNames(as.list(values), paste0(prefix, seq_along(values)))
     data.frame(
       obs_rate = mean(!is.na(upper(A))),
-      ICL_MAR = ICL[1], ICL_block = ICL[2],
-      chosen  = candidates[which.min(ICL)],
-      chosen_obs = candidates[which.min(ICL_o)],
-      Q_MAR_obs = best_obs(collections[[1]])$fittedSBM$nbBlocks, Q_block_obs = best_obs(collections[[2]])$fittedSBM$nbBlocks,
-      Q_MAR   = fits[[1]]$fittedSBM$nbBlocks, Q_block = fits[[2]]$fittedSBM$nbBlocks,
-      ARI_MAR = aricode::ARI(fits[[1]]$fittedSBM$memberships, net$memberships),
-      ARI_block = aricode::ARI(fits[[2]]$fittedSBM$memberships, net$memberships),
+      chosen   = candidates[which.min(ICL)],
+      per_candidate("Q_", sapply(fits, function(m) m$fittedSBM$nbBlocks)),
+      per_candidate("ARI_", sapply(fits, function(m) aricode::ARI(m$fittedSBM$memberships, net$memberships))),
+      per_candidate("ICL_", ICL),
       error = NA_character_
     )
   }, error = function(e) data.frame(error = conditionMessage(e)))
@@ -188,6 +186,7 @@ bind <- function(l) {
 }
 results <- list(
   label   = label,
+  ICL     = if (nzchar(ICL)) ICL else "default",
   version = as.character(utils::packageVersion("missSBM", lib.loc = NULL)),
   commit  = tryCatch(system2("git", c("-C", pkg, "rev-parse", "--short", "HEAD"), stdout = TRUE), error = function(e) NA),
   date    = Sys.time(),

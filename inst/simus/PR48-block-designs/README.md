@@ -1,10 +1,15 @@
-# Simulations for PR #48: block-node and block-dyad
+# Simulations for PR #48: block-node and block-dyad, and the ICL
 
 PR #48 fits the SBM part of `block-node` and `block-dyad` on the observed dyads: the missing
 dyads, ignorable given the blocks, are integrated out instead of being approximated by a
-factorized variational distribution q(Z) q(Y^m). These simulations compare master and the PR
-when the number of blocks and the design are unknown. The earlier simulations of the PR fixed
-Q to its true value.
+factorized variational distribution q(Z) q(Y^m). It also makes the ICL built on the observed
+data the default (`missSBM_param(ICL = "observed")`). These simulations compare three versions
+when the number of blocks and the design are unknown:
+
+- `master`: before the PR;
+- `PR48-completed`: the PR with the ICL of the network completed by the imputations, the
+  convention of the previous versions (`ICL = "completed"`);
+- `PR48-observed`: the PR with the ICL built on the observed data (the default).
 
 ## Settings
 
@@ -17,9 +22,11 @@ Q to its true value.
   same for both versions.
 - **Experiment 1:** data simulated and fitted with `block-node` or `block-dyad`, 2 connectivities
   x 3 rates.
-- **Experiment 2:** data simulated under `node`, `block-node`, `dyad` or `block-dyad` (assortative,
-  medium rate; the MAR designs at the mean rate of the block ones). Each network is fitted with
-  the MAR design and the block design of its family, and the ICL picks one.
+- **Experiment 2:** data simulated under one of the designs of a family, `node`, `block-node`,
+  `degree` or `dyad`, `block-dyad`, `double-standard` (assortative connectivity, medium rate;
+  the MAR designs at the mean rate of the block ones; `degree` with ψ = (−2.4, 0.08) and
+  `double-standard` with (p0, p1) = (0.3, 0.7), close to the rates of the other designs of the
+  family). Each network is fitted with the three designs of its family, and the ICL picks one.
 
 ## Reproduce
 
@@ -29,55 +36,54 @@ From the root of the package, with master checked out in a separate worktree:
 git worktree add ../missSBM-master origin/master
 export OPENBLAS_NUM_THREADS=1
 Rscript inst/simus/PR48-block-designs/simulate.R ../missSBM-master master 16
-Rscript inst/simus/PR48-block-designs/simulate.R . PR48 16
-Rscript inst/simus/PR48-block-designs/summarize.R master PR48
+SIMU_ICL=completed Rscript inst/simus/PR48-block-designs/simulate.R . PR48-completed 16
+SIMU_ICL=observed  Rscript inst/simus/PR48-block-designs/simulate.R . PR48-observed 16
+Rscript inst/simus/PR48-block-designs/summarize.R master PR48-completed PR48-observed
 ```
 
-About 3 minutes per version on 16 cores. The results are in `results/`; the tables are in
+About 4 minutes per version on 16 cores. The results are in `results/`; the tables are in
 `results/summary.md`.
 
 ## Findings
 
-**At the true number of blocks, the PR is better almost everywhere.** For `block-dyad`
+**At the true number of blocks, the new variational approximation is better almost everywhere**
+(`master` → `PR48-*`, the fit at Q = 3 does not depend on the ICL). For `block-dyad`
 (assortative), the ARI goes from 0.68 to 0.99 at the low rate and from 0.85 to 0.99 at the
-medium rate. The RMSE of the connectivity is divided by up to 6 (it is the same at the high
-rates). The degenerate fits per collection go from 0.2–1.4 to 0–0.2. Exceptions: the RMSE of
-the sampling parameters at the medium rate with `block-dyad` (0.047 → 0.066 assortative,
-0.052 → 0.117 disassortative) and at the high rate with `block-node` (0.070 → 0.086
-assortative, 0.079 → 0.147 disassortative), and the ARI of `block-node` with disassortative
-connectivity at the high rate (0.91 → 0.85).
+medium rate; with disassortative connectivity at the low rate, from 0 to 0.54 (0.96 with the
+exploration guided by the new ICL). The RMSE of the connectivity is divided by up to 6 (it is
+the same at the high rates). The degenerate fits per collection go from 0.2–1.4 to 0–0.3.
 
-**With the current ICL, the PR selects too many blocks.** The true Q is selected less often:
-for `block-dyad` (assortative, medium rate), 85% on master and 25% with the PR.
+**With the ICL of the completed network, the PR selects too many blocks.** For `block-dyad`
+(assortative, medium rate), the true Q is selected in 85% of the cases on master and 25% with
+the PR. The ICL of the completed network adds −2 E[log p(Y^m | Z)] on the imputed dyads, without
+their entropy. As the imputations are computed by the model itself, this term is about
+2 Σ H(π_{z_i z_j}) over the missing dyads: it rewards purer blocks, i.e. more blocks, with no
+data behind them, and the more dyads are missing, the larger the reward. The new approximation
+makes the imputations closer to π_{z_i z_j}, hence the stronger effect.
 
-**The ICL does not pick the right design, on master as with the PR.** Under `node` sampling,
-`block-node` is chosen in 20 cases out of 20. With `dyad`, a MAR design that the PR does not
-change, the selected Q is 5.5 on average, for a true Q of 3.
+**The ICL built on the observed data fixes the selection of Q.** The true Q is selected in 95%
+to 100% of the cases in 11 settings out of 12 (it was 0% to 100% on master, 5% to 100% with the
+completed network), and the ARI at the selected Q is then that at the true Q. The exception is
+`block-node` with disassortative connectivity at the low rate (47% of the dyads observed, but
+the nodes of the third block observed with probability 0.1): the true Q is selected in 15% of
+the cases, 2 blocks are often selected, the ARI is 0.51 (0.32 with the completed network).
 
-**Cause: the expected log-likelihood of the imputed dyads in the ICL.** The ICL of every design
-adds E[log p(Y^m | Z)] (`vExpec_corrected`) on the imputed dyads, without the entropy of their
-imputations. As the imputations are computed by the model itself, this term is about
-−Σ H(π_{z_i z_j}) over the missing dyads. It rewards purer blocks, i.e. more blocks, with no
-data behind them, and the more dyads are missing, the larger the reward.
+**It also fixes the choice of the design**, among the three designs of each family:
 
-**An ICL built on the observed data fixes both.** That is, the bound of log p(Y^o, R) without
-the entropy of τ: `-2 * (fittedSampling$vExpec + fittedSBM$vExpec) + penalty`. It is computed
-here on the same collections, without changing the exploration. With the PR:
+- With the completed network (master and PR), `double-standard` is chosen in 20 cases out of 20
+  under both `double-standard` and `block-dyad`, and `block-node` in 20 out of 20 under both
+  `node` and `degree` (and in 16 or 17 under `block-node`). The right choices for
+  `double-standard` and `block-node` only reflect this bias.
+- With the observed data, the true design is chosen in 100% (`node`), 95% (`block-node`),
+  100% (`dyad`) and 100% (`block-dyad`) of the cases.
+- `degree` is never chosen, by any version: `block-node` is chosen instead (18 cases out of 20,
+  `node` 2). The assortative network makes the degrees depend on the blocks, so that `block-node`
+  is a good approximation of `degree`, with no variational gap (the ICL of `degree` keeps the
+  factorized q(Y^m) and the Jaakkola-Jordan bound). The partitions are the same (ARI 0.97).
+- `double-standard` is chosen in 60% of the cases (`block-dyad` in the others). Here too, the
+  dyads of the dense blocks are the most observed, which `block-dyad` can mimic, and the ICL of
+  `double-standard` keeps the gap of the factorized q(Y^m). Issue #52 proposes to integrate the
+  missing dyads out given the blocks for this design too, which removes this gap.
 
-- The true Q is selected in 100% of the cases for `block-dyad` (assortative, low and medium
-  rates; it was 10% and 25%). For `block-node`, the rate goes from 5% to 85% (medium) and from
-  50% to 100% (high).
-- The ARI at the selected Q goes from 0.81 to 0.99 (`block-dyad`, low rate) and from 0.75 to
-  0.96 (`block-node`, medium rate).
-- The true design is chosen in 100% (`node`, it was 0%), 95% (`block-node`), 100% (`dyad`) and
-  100% (`block-dyad`) of the cases. The selected Q of `dyad` goes from 5.5 to 3.0.
-
-The weak spots left are `block-node` at the low rate and with disassortative connectivity at the
-medium rate, where the true Q is selected in 30% to 50% of the cases: little is observed there.
-
-On master, the ICL built on the observed data has no meaning for the block designs: their SBM
-part is fitted on the imputations.
-
-With a single block, this ICL still gives the same value for `node` and `block-node` (resp.
-`dyad` and `block-dyad`). For `degree` and `double-standard`, whose sampling part keeps the
-imputations, the comparable criterion is the full bound, with the entropy of the imputations.
+With a single block, the ICL built on the observed data still gives the same value for `node`
+and `block-node` (resp. `dyad` and `block-dyad`).
