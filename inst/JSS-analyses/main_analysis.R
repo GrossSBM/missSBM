@@ -18,7 +18,7 @@ party <- vertex.attributes(frenchblog2007)$party
 party_num <- as.numeric(as.factor(party))
 
 ## SBM with no missing edge or node
-blocks <- 1:15
+blocks <- 1:14 # the ICL selects 8 to 10 blocks, see below
 sbm_full <- estimateMissSBM(blog, blocks, "node")
 plot(sbm_full)
 plot(sbm_full, "monitoring")
@@ -35,12 +35,12 @@ blog_obs <- observeNetwork(adjacencyMatrix = blog, sampling = "block-node",
   clusters = sbm_full$bestModel$fittedSBM$memberships)
 
 ## try MAR
-sbm_node <- estimateMissSBM(blog_obs, blocks, "node", control = list(iterates = 2))
+sbm_node <- estimateMissSBM(blog_obs, blocks, "node", control = missSBM_param(iterates = 2))
 plot(sbm_node)
 plot(sbm_node, type = "monitoring")
 
 ## try MNAR with block-dyad sampling
-sbm_block <- estimateMissSBM(blog_obs, blocks, "block-node", control = list(iterates = 3))
+sbm_block <- estimateMissSBM(blog_obs, blocks, "block-node", control = missSBM_param(iterates = 2))
 plot(sbm_block)
 plot(sbm_block, type = "monitoring")
 
@@ -87,7 +87,7 @@ res_auc <- mclapply(1:500, function(i) {
   subGraph <- observeNetwork(blog, "block-node", runif(nBlocks), cl0)
   missing <- which(as.matrix(is.na(subGraph)))
   true_dyads <- blog[missing]
-  sbm_block <- estimateMissSBM(subGraph, nBlocks, "block-node", control = list(cores = 1, trace = 0))
+  sbm_block <- estimateMissSBM(subGraph, nBlocks, "block-node", control = missSBM_param(trace = FALSE))
   imputed_dyads <- sbm_block$bestModel$imputedNetwork[missing]
   c(rate = 1 - length(missing)/length(blog), auc  = auc(true_dyads, imputed_dyads, quiet = TRUE))
 }, mc.cores = 10)
@@ -114,31 +114,31 @@ blog_subgraph_obs <- blog_subgraph %>% as_adjacency_matrix() %>%
 blocks <- 2:8
 sbm_covar_full <- blog_subgraph %>% as_adjacency_matrix() %>%
   estimateMissSBM(blocks, "node", covariates =  list(dummy_party),
-    control = list(useCov = TRUE, iterates = 2))
+    control = missSBM_param(useCov = TRUE, iterates = 2))
 # plot(sbm_covar_full, "icl")
 # plot(sbm_covar_full, "monitoring")
 
 ## fit SBM on the partly observed, taking the covariate into account in the SBM and the sampling
 sbm_covar1 <- estimateMissSBM(blog_subgraph_obs, blocks, "covar-node",
-  covariates =  list(dummy_party), control = list(useCov = TRUE, iterates = 2))
+  covariates =  list(dummy_party), control = missSBM_param(useCov = TRUE, iterates = 2))
 # plot(sbm_covar1, "icl")
 # plot(sbm_covar1, "monitoring")
 
 ## fit SBM on the partly observed, taking the covariate into account only in the sampling
 sbm_covar2 <- estimateMissSBM(blog_subgraph_obs, blocks, "covar-node",
-  covariates = list(dummy_party), control = list(useCov = FALSE, iterates = 2))
+  covariates = list(dummy_party), control = missSBM_param(useCov = FALSE, iterates = 2))
 # plot(sbm_covar2, "icl")
 # plot(sbm_covar2, "monitoring")
 
 ## fit SBM on the partly observed, taking the covariate into account only in the SBM
 sbm_covar3 <- estimateMissSBM(blog_subgraph_obs, blocks, "node",
-  covariates =  list(dummy_party), control = list(useCov = TRUE, iterates = 2))
+  covariates =  list(dummy_party), control = missSBM_param(useCov = TRUE, iterates = 2))
 # plot(sbm_covar3,  "icl")
 # plot(sbm_covar3, "monitoring")
 
 ## fit SBM on the partly observed, not taking the covariate into account
 sbm_covar4 <- estimateMissSBM(blog_subgraph_obs, blocks, "node",
-  control = list(useCov = FALSE, iterates = 2))
+  control = missSBM_param(useCov = FALSE, iterates = 2))
 # plot(sbm_covar4, "icl")
 # plot(sbm_covar4, "monitoring")
 

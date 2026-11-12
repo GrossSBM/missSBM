@@ -76,9 +76,14 @@ test_that("flag_degenerate_tail() caps forwardLimit only for a persistent run, a
   expect_null(priv$forwardLimit)
 })
 
-test_that("estimateMissSBM()'s exploration stops growing forward into a persistently degenerate range", {
+test_that("block-node sampling on a small network no longer collapses classes (non-regression)", {
   skip_on_cran() # network-scale reproduction, too slow for CRAN's routine checks
 
+  ## This scenario used to produce a persistently degenerate tail (collapsed classes from
+  ## nbBlocks = 12 onward). The collapses came from the block-node fit, which let the imputed
+  ## dyads feed back on the SBM part; since the SBM part is fitted on the observed dyads only
+  ## (see NEWS), all the blocks stay occupied. The stopping rule on a degenerate tail is tested
+  ## above on a forced degenerate state.
   frenchblog <- igraph::delete_vertices(missSBM::frenchblog2007, which(igraph::degree(missSBM::frenchblog2007) == 0))
   frenchblog <- igraph::delete_vertices(frenchblog, 61:igraph::vcount(frenchblog))
   blog <- igraph::as_adjacency_matrix(frenchblog, sparse = FALSE)
@@ -89,13 +94,12 @@ test_that("estimateMissSBM()'s exploration stops growing forward into a persiste
   blog_obs <- observeNetwork(blog, sampling = "block-node", parameters = samplingParameters,
                               clusters = sbm_full$bestModel$fittedSBM$memberships)
 
-  expect_warning(
-    res <- estimateMissSBM(blog_obs, 1:16, "block-node", control = missSBM_param(trace = FALSE, iterates = 1)),
-    "does not appear to support"
+  expect_no_warning(
+    res <- estimateMissSBM(blog_obs, 1:16, "block-node", control = missSBM_param(trace = FALSE, iterates = 1))
   )
-
-  ## a genuinely over-specified tail: at least the top model is flagged degenerate
-  expect_true(res$degenerate[length(res$degenerate)])
-  ## bestModel must not be one of the degenerate ones
-  expect_false(res$bestModel$degenerate)
+  expect_equal(res$vBlocks, 1:16)
+  expect_false(any(res$degenerate))
+  expect_equal(res$occupiedBlocks, res$vBlocks)
+  ## the selected model is a small one, far from the end of the explored range
+  expect_lte(res$bestModel$fittedSBM$nbBlocks, 8)
 })

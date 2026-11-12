@@ -59,13 +59,13 @@ Class for fitting a degree sampling
   a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{degreeSampling_fit$update_parameters(imputedNet, ...)}
+    \preformatted{degreeSampling_fit$update_parameters(nu, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
+      \item{\code{nu}}{the imputations of the missing dyads (sparse matrix with the pattern of the missing dyads)}
       \item{\code{...}}{used for compatibility}
     }
     \if{html}{\out{</div>}}

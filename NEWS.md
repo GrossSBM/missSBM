@@ -1,3 +1,69 @@
+# missSBM (development version)
+
+## Changes in the estimation
+
+- `block-node` and `block-dyad` sampling: the SBM part is now fitted on the observed dyads,
+  with the sampling term in the update of the blocks, as was already the case for `node` and
+  `dyad`. Under these designs the sampling only depends on the blocks, so that the missing
+  dyads are ignorable given the blocks: they are now integrated out exactly, instead of being
+  approximated by a variational distribution independent of the blocks, q(Z) q(Y_miss). This is
+  a tighter lower bound of the same likelihood, not a new criterion. It also removes a feedback
+  loop: the imputations of the missing dyads, computed from the blocks, entered the update of
+  the blocks, and the dyads between two unobserved nodes, never observed, fed back on themselves
+  (the connectivity of a block of unobserved nodes could drift to 0, and classes collapsed when
+  exploring larger numbers of blocks, e.g., the 196 blogs of `frenchblog2007` up to 18 blocks).
+  The results of these two designs change. In simulations (n = 200, Q = 3), the mean ARI goes
+  from 0.65 to 0.94 for `block-node` (42% of observed nodes) and from 0.32 to 0.88 for
+  `block-dyad` (30% of observed dyads).
+- The ICL is now built on the observed data, for all the designs: the observed dyads and the
+  sampling matrix, the missing dyads being integrated out. It is -2 times the variational lower
+  bound maximized by the algorithm, without the entropy of the blocks, plus the penalty: the
+  same relation between the ICL and the bound as for a fully observed SBM. For the designs
+  whose sampling only depends on the blocks (`dyad`, `node`, `covar-*`, `block-node`,
+  `block-dyad`), the missing dyads are integrated out exactly. For `degree` and
+  `double-standard`, the bound includes the entropy of the imputations. The ICL of the previous
+  versions added the expected log-likelihood of the imputed dyads, without their entropy, as if
+  the missing dyads were classified: as the imputations are computed by the model, this
+  rewards purer blocks with no data behind them, and favors more blocks, the more so as more
+  dyads are missing. In simulations (`inst/simus/PR48-block-designs/`), the true number of
+  blocks is selected in 95% to 100% of the cases in 11 settings out of 12 (it was 0% to 100%),
+  and the ICL now picks the design that generated the data among `node` / `block-node` and
+  `dyad` / `block-dyad` (it preferred `block-node` and `double-standard` in most cases). The
+  selected models of all the designs can change.
+- `missSBM_param(ICL = "completed")` restores the ICL of the previous versions, to reproduce
+  former results. Both are available on each model (fields `ICLobserved` and `ICLcompleted` of
+  `missSBM_fit`). With a single block, `block-node` and `node`, or `block-dyad` and `dyad`,
+  still give the same ICL, with both.
+- Only `double-standard`, whose sampling depends on the value of each dyad, still fits the SBM
+  part on the imputations of the missing dyads (see #52).
+
+## Bug fixes
+
+- `degree` sampling: the imputations of the missing dyads were not probabilities (the
+  logistic function had been dropped from their update in 2018, so that they were the
+  linear predictor truncated to [eps, 1 - eps]), and the sampling parameters were estimated
+  on wrong degrees (the observed edges were left out of the imputed network since 1.0.0, and
+  only one triangle of an undirected network was read). The estimates of the sampling
+  parameters and the imputations of this design are now correct; the SBM part is still fitted
+  on the observed dyads, which is more robust than plugging the imputations of the dyads
+  between unobserved nodes, as these are never observed.
+- `imputedNetwork` no longer doubles the imputations with the `degree` sampling.
+- `block-dyad` sampling: the expectation of the log-likelihood of the sampling was computed as
+  the log of the expected sampling probabilities, log(Z psi Z'), instead of the expectation of
+  the log (since 2018). The updates of the parameters were right, but the objective monitored by
+  the VEM and the ICL were overestimated (by 5 to 20 on the ICL of networks with 200 nodes).
+  The estimates are unchanged in our simulations, but the selected number of blocks can change.
+
+## Minor changes
+
+- `degree` sampling: the sampling part is computed on the sparse pattern of the missing dyads,
+  in O(n + number of missing dyads) memory instead of several dense n x n matrices. Same results
+  up to rounding errors (checked against the dense formulas in the tests).
+- The observed nodes of an undirected network are found without building `R | t(R)`, a nearly
+  full sparse matrix when most dyads are observed. This was done for every fit with a
+  node-centered sampling, including each candidate of the exploration: about 18% faster overall
+  on a network with 2000 nodes, same results.
+
 # missSBM 1.1.1
 
 ## Bug fixes
