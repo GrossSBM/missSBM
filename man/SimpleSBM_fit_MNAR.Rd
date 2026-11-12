@@ -40,6 +40,7 @@ It is not designed to be called directly by the user.
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-get_state'><code>SimpleSBM_fit$get_state()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="vExpec_imputed"><a href='../../missSBM/html/SimpleSBM_fit_noCov.html#method-SimpleSBM_fit_noCov-vExpec_imputed'><code>SimpleSBM_fit_noCov$vExpec_imputed()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

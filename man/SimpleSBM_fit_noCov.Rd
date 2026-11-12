@@ -26,6 +26,7 @@ It is not designed to be called directly by the user.
     \item \href{#method-SimpleSBM_fit_noCov-update_parameters}{\code{SimpleSBM_fit_noCov$update_parameters()}}
     \item \href{#method-SimpleSBM_fit_noCov-update_blocks}{\code{SimpleSBM_fit_noCov$update_blocks()}}
     \item \href{#method-SimpleSBM_fit_noCov-polish_log_tau}{\code{SimpleSBM_fit_noCov$polish_log_tau()}}
+    \item \href{#method-SimpleSBM_fit_noCov-vExpec_imputed}{\code{SimpleSBM_fit_noCov$vExpec_imputed()}}
     \item \href{#method-SimpleSBM_fit_noCov-clone}{\code{SimpleSBM_fit_noCov$clone()}}
   }
 }
@@ -106,6 +107,27 @@ moves in \code{missSBM_fit$polish()}.
   }
   \subsection{Returns}{
     an N x Q matrix
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimpleSBM_fit_noCov-vExpec_imputed"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_noCov-vExpec_imputed}{}}}
+\subsection{\code{SimpleSBM_fit_noCov$vExpec_imputed()}}{
+  variational expectation of the log-likelihood of the missing dyads, given
+their imputations (used by the ICL of 'degree', see \link{missSBM_fit})
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit_noCov$vExpec_imputed(nu)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{nu}}{the imputations of the missing dyads (sparse matrix with the pattern of the
+missing dyads)}
+    }
+    \if{html}{\out{</div>}}
   }
 }
 

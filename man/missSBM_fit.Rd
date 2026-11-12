@@ -51,9 +51,21 @@ or more classes (see \code{repair()})}
 
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-    \item{\code{ICL}}{double: value of the integrated classification log-likelihood. For all the
-designs, it includes the expected log-likelihood of the imputed dyads, so that the ICL
-of different sampling designs can be compared}
+    \item{\code{criterion}}{the ICL used to compare and select models: "observed" or "completed" (see
+\code{\link[=missSBM_param]{missSBM_param()}})}
+
+    \item{\code{ICLobserved}}{double: ICL built on the observed data (the observed dyads and the
+sampling matrix), the missing dyads being integrated out: -2 times the variational
+lower bound of the log-likelihood of the observed data, without the entropy of the
+blocks, plus the penalty. For 'double-standard' and 'degree', whose sampling depends on
+the missing dyads, the bound includes the entropy of their imputations.}
+
+    \item{\code{ICLcompleted}}{double: ICL of the network completed by the imputations, the
+convention of the previous versions of missSBM: it adds the expected log-likelihood of the imputed dyads,
+without their entropy, for all the designs}
+
+    \item{\code{ICL}}{double: value of the integrated classification log-likelihood used to compare
+models, \code{ICLobserved} or \code{ICLcompleted} according to \code{criterion}}
   }
   \if{html}{\out{</div>}}
 }
@@ -80,7 +92,13 @@ of different sampling designs can be compared}
   constructor for networkSampling
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}
+    \preformatted{missSBM_fit$new(
+  partlyObservedNet,
+  netSampling,
+  clusterInit,
+  useCov = TRUE,
+  ICL = c("observed", "completed")
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -90,6 +108,8 @@ of different sampling designs can be compared}
       \item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
       \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
       \item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
+      \item{\code{ICL}}{character, the ICL returned by the field \code{ICL} and used to compare models:
+"observed" (default) or "completed". See \code{\link[=missSBM_param]{missSBM_param()}}.}
     }
     \if{html}{\out{</div>}}
   }

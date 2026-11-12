@@ -173,7 +173,7 @@ missSBM_collection <-
       if (control$trace) cat(" Initialization of", length(clusterInit), "model(s).", "\n")
       private$missSBM_fit <- lapply(clusterInit,
         function(cl0) {
-          missSBM_fit$new(partlyObservedNet, sampling, cl0, control$useCov)
+          missSBM_fit$new(partlyObservedNet, sampling, cl0, control$useCov, control$ICL)
         }
       )
     },

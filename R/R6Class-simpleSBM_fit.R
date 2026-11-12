@@ -166,6 +166,13 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @return an N x Q matrix
     polish_log_tau = function(log_lambda = 0) {
       private$E_step(private$Y, private$R, self$indMemberships, private$theta$mean, private$pi, rescale = FALSE) + log_lambda
+    },
+    #' @description variational expectation of the log-likelihood of the missing dyads, given
+    #'   their imputations (used by the ICL of 'degree', see [missSBM_fit])
+    #' @param nu the imputations of the missing dyads (sparse matrix with the pattern of the
+    #'   missing dyads)
+    vExpec_imputed = function(nu) {
+      private$vLL_complete(nu, private$S, private$Z, private$theta$mean, private$pi) - sum(private$Z %*% log(private$pi))
     }
   ),
   active = list(
