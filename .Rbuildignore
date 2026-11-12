@@ -13,6 +13,7 @@
 ^README_files$
 ^inst/tries
 ^inst/simus
+^inst/Formularius
 ^inst/tests_against_timCode
 ^inst/JSS-analyses
 ^inst/.*\.pdf$
