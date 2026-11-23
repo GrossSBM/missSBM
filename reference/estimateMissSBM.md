@@ -131,17 +131,25 @@ collection <-
 #> 
 #>  Initialization of 4 model(s). 
 #>  Performing VEM inference
-#>      Model with 3 blocks.    Model with 1 blocks.    Model with 4 blocks.    Model with 2 blocks. Polishing (node-swap)
+#>      Model with 3 blocks.
+    Model with 1 blocks.
+    Model with 4 blocks.
+    Model with 2 blocks.
+ Polishing (node-swap)
 #> 
 #>  Looking for better solutions
-#>  Pass 1   Going forward +++                                                                                                     Pass 1   Going backward +++                                                                                                    
+#>  Pass 1   Going forward +++
+                                                                                                    
+ Pass 1   Going backward +++
+                                                                                                    
+
 plot(collection, "monitoring")
 
 plot(collection, "icl")
 
 
 collection$ICL
-#> [1] 10584.442  9886.688  9485.626  9535.876
+#> [1] 9346.703 8880.484 8587.389 8641.349
 coef(collection$bestModel$fittedSBM, "connectivity")
 #> $mean
 #>            [,1]       [,2]       [,3]
@@ -152,20 +160,10 @@ coef(collection$bestModel$fittedSBM, "connectivity")
 
 myModel <- collection$bestModel
 plot(myModel, "expected")
-#> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-#> ℹ Please use tidy evaluation idioms with `aes()`.
-#> ℹ See also `vignette("ggplot2-in-packages")` for more information.
-#> ℹ The deprecated feature was likely used in the sbm package.
-#>   Please report the issue at <https://github.com/GrossSBM/sbm/issues>.
-#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `linewidth` instead.
-#> ℹ The deprecated feature was likely used in the sbm package.
-#>   Please report the issue at <https://github.com/GrossSBM/sbm/issues>.
 
 plot(myModel, "imputed")
 
 plot(myModel, "meso")
-
 coef(myModel, "sampling")
 #> [1] 0.7553535
 coef(myModel, "connectivity")

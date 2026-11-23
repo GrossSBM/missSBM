@@ -1,4 +1,4 @@
-# Internal class for a binary SBM fit under MAR sampling designs without covariates.
+# Internal class for a binary SBM fit on the observed dyads, without covariates: MAR sampling designs, 'block-node' and 'block-dyad' (with their sampling term in the update of the blocks) and 'degree'.
 
 It is not designed to be called directly by the user.
 
@@ -35,6 +35,8 @@ It is not designed to be called directly by the user.
 - [`SimpleSBM_fit_noCov$update_blocks()`](#method-SimpleSBM_fit_noCov-update_blocks)
 
 - [`SimpleSBM_fit_noCov$polish_log_tau()`](#method-SimpleSBM_fit_noCov-polish_log_tau)
+
+- [`SimpleSBM_fit_noCov$vExpec_imputed()`](#method-SimpleSBM_fit_noCov-vExpec_imputed)
 
 - [`SimpleSBM_fit_noCov$clone()`](#method-SimpleSBM_fit_noCov-clone)
 
@@ -77,9 +79,15 @@ update variational estimation of blocks (VE-step)
 
 #### Usage
 
-    SimpleSBM_fit_noCov$update_blocks(...)
+    SimpleSBM_fit_noCov$update_blocks(log_lambda = 0, ...)
 
 #### Arguments
+
+- `log_lambda`:
+
+  term of the sampling design depending on the blocks ('block-node' and
+  'block-dyad'), added to the update of the blocks; 0 for the other
+  designs
 
 - `...`:
 
@@ -106,6 +114,25 @@ node-swap moves in `missSBM_fit$polish()`.
 #### Returns
 
 an N x Q matrix
+
+------------------------------------------------------------------------
+
+### `SimpleSBM_fit_noCov$vExpec_imputed()`
+
+variational expectation of the log-likelihood of the missing dyads,
+given their imputations (used by the ICL of 'degree', see
+[missSBM_fit](https://grosssbm.github.io/missSBM/reference/missSBM_fit.md))
+
+#### Usage
+
+    SimpleSBM_fit_noCov$vExpec_imputed(nu)
+
+#### Arguments
+
+- `nu`:
+
+  the imputations of the missing dyads (sparse matrix with the pattern
+  of the missing dyads)
 
 ------------------------------------------------------------------------
 

@@ -303,10 +303,19 @@ collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
 #> 
 #>  Initialization of 5 model(s). 
 #>  Performing VEM inference
-#>      Model with 2 blocks.    Model with 1 blocks.    Model with 5 blocks.    Model with 4 blocks.    Model with 3 blocks. Polishing (node-swap)
+#>      Model with 4 blocks.
+    Model with 2 blocks.
+    Model with 5 blocks.
+    Model with 1 blocks.
+    Model with 3 blocks.
+ Polishing (node-swap)
 #> 
 #>  Looking for better solutions
-#>  Pass 1   Going forward ++++                                                                                                     Pass 1   Going backward ++++                                                                                                    
+#>  Pass 1   Going forward ++++
+                                                                                                    
+ Pass 1   Going backward ++++
+                                                                                                    
+
 class(collection)
 #> [1] "missSBM_collection" "R6"                
 ```

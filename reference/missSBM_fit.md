@@ -75,9 +75,33 @@ the user and exported as S3 methods. See the documentation for
   double: approximation of the log-likelihood (variational lower bound)
   reached
 
+- `criterion`:
+
+  the ICL used to compare and select models: "observed" or "completed"
+  (see
+  [`missSBM_param()`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md))
+
+- `ICLobserved`:
+
+  double: ICL built on the observed data (the observed dyads and the
+  sampling matrix), the missing dyads being integrated out: -2 times the
+  variational lower bound of the log-likelihood of the observed data,
+  without the entropy of the blocks, plus the penalty. For
+  'double-standard' and 'degree', whose sampling depends on the missing
+  dyads, the bound includes the entropy of their imputations.
+
+- `ICLcompleted`:
+
+  double: ICL of the network completed by the imputations, the
+  convention of the previous versions of missSBM: it adds the expected
+  log-likelihood of the imputed dyads, without their entropy, for all
+  the designs
+
 - `ICL`:
 
-  double: value of the integrated classification log-likelihood
+  double: value of the integrated classification log-likelihood used to
+  compare models, `ICLobserved` or `ICLcompleted` according to
+  `criterion`
 
 ## Methods
 
@@ -113,7 +137,13 @@ constructor for networkSampling
 
 #### Usage
 
-    missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)
+    missSBM_fit$new(
+      partlyObservedNet,
+      netSampling,
+      clusterInit,
+      useCov = TRUE,
+      ICL = c("observed", "completed")
+    )
 
 #### Arguments
 
@@ -139,6 +169,12 @@ constructor for networkSampling
   logical. If covariates are present in partlyObservedNet, should they
   be used for the inference or of the network sampling design, or just
   for the SBM inference? default is TRUE.
+
+- `ICL`:
+
+  character, the ICL returned by the field `ICL` and used to compare
+  models: "observed" (default) or "completed". See
+  [`missSBM_param()`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md).
 
 ------------------------------------------------------------------------
 
@@ -407,10 +443,17 @@ collection <- estimateMissSBM(adjMatrix, 3:5, sampling = "dyad")
 #> 
 #>  Initialization of 3 model(s). 
 #>  Performing VEM inference
-#>      Model with 3 blocks.    Model with 4 blocks.    Model with 5 blocks. Polishing (node-swap)
+#>      Model with 3 blocks.
+    Model with 5 blocks.
+    Model with 4 blocks.
+ Polishing (node-swap)
 #> 
 #>  Looking for better solutions
-#>  Pass 1   Going forward ++                                                                                                     Pass 1   Going backward ++                                                                                                    
+#>  Pass 1   Going forward ++
+                                                                                                    
+ Pass 1   Going backward ++
+                                                                                                    
+
 my_missSBM_fit <- collection$bestModel
 class(my_missSBM_fit)
 #> [1] "missSBM_fit" "R6"         

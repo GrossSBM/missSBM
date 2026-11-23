@@ -136,9 +136,11 @@ collection_sbm_full <-
   estimateMissSBM(belligerent_adjacency, vBlocks, sampling = "node", control = missSBM_param(iterates = 2))
 ```
 
-As expected, the ICL on the fully observed network is better. But more
-interestingly, the number of groups selected may differ in the presence
-of missing data.
+The ICL of the partially observed network is built on the observed data
+only (the missing dyads are integrated out), so its values cannot be
+compared with the ICL of the fully observed network: the data differ.
+What can be compared is the number of groups each one selects, which may
+differ in the presence of missing data.
 
 ``` r
 
@@ -166,8 +168,8 @@ table(
 
     ##    
     ##      1  2  3
-    ##   1 14  4  0
-    ##   2  0 33 32
+    ##   1 14  3  0
+    ##   2  0 34 32
 
 The model finally fitted on the network data can be represented thanks
 to a plot method applying on objects with class `SBM`:
@@ -364,7 +366,7 @@ collection_sbm_trade_miss$bestModel$fittedSampling$parameters
 collection_sbm_trade_miss$bestModel$fittedSBM$covarParam
 ```
 
-    ## [1] 0.2038448
+    ## [1] 0.163484
 
 When you are done, do not forget to get back to the standard sequential
 plan with future.

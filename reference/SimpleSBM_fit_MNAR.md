@@ -1,4 +1,4 @@
-# Internal class for a binary SBM fit under MNAR sampling designs (double-standard, block-node, block-dyad).
+# Internal class for a binary SBM fit on the observed dyads plus the imputations of the missing ones, for the double-standard sampling design (MNAR, depending on the value of each dyad).
 
 It is not designed to be called directly by the user.
 
@@ -46,6 +46,7 @@ Inherited methods
 - [`SimpleSBM_fit$get_state()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-get_state)
 - [`SimpleSBM_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-reorder)
 - [`SimpleSBM_fit$set_state()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-set_state)
+- [`SimpleSBM_fit_noCov$vExpec_imputed()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_noCov.html#method-vExpec_imputed)
 
 ------------------------------------------------------------------------
 

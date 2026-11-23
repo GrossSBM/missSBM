@@ -66,13 +66,14 @@ to do (corresponds to MAR sampling)
 
 #### Usage
 
-    degreeSampling_fit$update_parameters(imputedNet, ...)
+    degreeSampling_fit$update_parameters(nu, ...)
 
 #### Arguments
 
-- `imputedNet`:
+- `nu`:
 
-  an adjacency matrix where missing values have been imputed
+  the imputations of the missing dyads (sparse matrix with the pattern
+  of the missing dyads)
 
 - `...`:
 
