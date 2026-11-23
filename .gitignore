@@ -54,3 +54,6 @@ inst/doc
 tests/testthat/Rplots.pdf
 
 snowflake.log
+
+# Formularius: derivations kept local for now
+inst/Formularius/

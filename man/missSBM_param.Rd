@@ -18,6 +18,7 @@ missSBM_param(
   stopOnDegenerate = TRUE,
   maxConsecutiveDegenerate = 2,
   warmChain = FALSE,
+  ICL = c("observed", "completed"),
   trace = TRUE
 )
 }
@@ -80,6 +81,22 @@ by splitting (see \link{missSBM_fit}'s \code{split()}) the already-converged, sm
 higher numbers of blocks. Sequential in the number of blocks, unlike the default
 (\code{FALSE}), which fits every model in parallel: can be slower in wall-clock time when
 several workers are available. Default is FALSE.}
+
+\item{ICL}{character, the integrated classification likelihood (ICL) used to compare the
+models, along the exploration and to select the best one:
+\itemize{
+\item "observed" (default): ICL built on the observed data, the observed dyads and the
+sampling matrix, the missing dyads being integrated out. It is -2 times the variational
+lower bound of the log-likelihood of the observed data, without the entropy of the
+blocks, plus the penalty. For "double-standard" and "degree", whose sampling depends on
+the missing dyads, this bound includes the entropy of their imputations.
+\item "completed": ICL of the network completed by the imputations, the convention of
+the previous versions of missSBM. It adds the expected log-likelihood of the imputed dyads, without their
+entropy, which favors more blocks when many dyads are missing.
+}
+
+Both are available on each model (fields \code{ICLobserved} and \code{ICLcompleted} of
+\link{missSBM_fit}).}
 
 \item{trace}{logical for verbosity. Default is TRUE.}
 }

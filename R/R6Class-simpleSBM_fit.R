@@ -126,7 +126,7 @@ R6::R6Class(classname = "SimpleSBM_fit",
   )
 )
 
-#' Internal class for a binary SBM fit under MAR sampling designs without covariates.
+#' Internal class for a binary SBM fit on the observed dyads, without covariates: MAR sampling designs, 'block-node' and 'block-dyad' (with their sampling term in the update of the blocks) and 'degree'.
 #'
 #' It is not designed to be called directly by the user.
 #'
@@ -146,10 +146,18 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
       invisible(res)
     },
     #' @description update variational estimation of blocks (VE-step)
+    #' @param log_lambda term of the sampling design depending on the blocks ('block-node' and
+    #'   'block-dyad'), added to the update of the blocks; 0 for the other designs
     #' @param ... additional arguments, only required for MNAR cases
-    update_blocks =   function(...) {
+    update_blocks =   function(log_lambda = 0, ...) {
       private$imputation_cache <- NULL
-      private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+      if (identical(log_lambda, 0)) {
+        private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
+      } else if (self$nbBlocks > 1) {
+        ## sampling depending on the blocks (block-node, block-dyad): observed dyads + sampling term
+        log_tau   <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
+        private$Z <- t(apply(log_tau + log_lambda, 1, .softmax))
+      }
     },
     #' @description for each node, the complete-data log-likelihood it would contribute to
     #'   each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
@@ -158,6 +166,13 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @return an N x Q matrix
     polish_log_tau = function(log_lambda = 0) {
       private$E_step(private$Y, private$R, self$indMemberships, private$theta$mean, private$pi, rescale = FALSE) + log_lambda
+    },
+    #' @description variational expectation of the log-likelihood of the missing dyads, given
+    #'   their imputations (used by the ICL of 'degree', see [missSBM_fit])
+    #' @param nu the imputations of the missing dyads (sparse matrix with the pattern of the
+    #'   missing dyads)
+    vExpec_imputed = function(nu) {
+      private$vLL_complete(nu, private$S, private$Z, private$theta$mean, private$pi) - sum(private$Z %*% log(private$pi))
     }
   ),
   active = list(
@@ -247,8 +262,8 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   )
 )
 
-#' Internal class for a binary SBM fit under MNAR sampling designs
-#' (double-standard, block-node, block-dyad).
+#' Internal class for a binary SBM fit on the observed dyads plus the imputations of the
+#' missing ones, for the double-standard sampling design (MNAR, depending on the value of each dyad).
 #'
 #' It is not designed to be called directly by the user.
 #'

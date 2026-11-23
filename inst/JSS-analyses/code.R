@@ -51,7 +51,7 @@ party <- vertex.attributes(frenchblog2007)$party
 
 
 ## ----set-blocks1--------------------------------------------------------------
-blocks <- 1:18
+blocks <- 1:14
 
 
 ## ----inference-full-graph, message = FALSE, eval = FALSE----------------------

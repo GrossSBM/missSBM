@@ -107,7 +107,7 @@ collection_sbm_full <-
   estimateMissSBM(belligerent_adjacency, vBlocks, sampling = "node", control = missSBM_param(iterates = 2))
 ```
 
-As expected, the ICL on the fully observed network is better. But more interestingly, the number of groups selected may differ in the presence of missing data.
+The ICL of the partially observed network is built on the observed data only (the missing dyads are integrated out), so its values cannot be compared with the ICL of the fully observed network: the data differ. What can be compared is the number of groups each one selects, which may differ in the presence of missing data.
 
 ```{r plot comparison full}
 rbind(
