@@ -81,7 +81,8 @@ or more classes (see <code>repair()</code>)</p></dd>
 
 
     <dt><code>entropyImputed</code></dt>
-<dd><p>the entropy of the distribution of the imputed dyads</p></dd>
+<dd><p>the entropy of the distribution of the imputed dyads ('double-standard':
+its expectation given the blocks)</p></dd>
 
 
     <dt><code>entropy</code></dt>
@@ -109,8 +110,8 @@ or more classes (see <code>repair()</code>)</p></dd>
 <dd><p>double: ICL built on the observed data (the observed dyads and the
 sampling matrix), the missing dyads being integrated out: -2 times the variational
 lower bound of the log-likelihood of the observed data, without the entropy of the
-blocks, plus the penalty. For 'double-standard' and 'degree', whose sampling depends on
-the missing dyads, the bound includes the entropy of their imputations.</p></dd>
+blocks, plus the penalty. For 'degree', whose sampling depends on the degrees, the bound
+includes the entropy of the imputations.</p></dd>
 
 
     <dt><code>ICLcompleted</code></dt>

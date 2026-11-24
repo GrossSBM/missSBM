@@ -135,6 +135,12 @@ permute group labels by order of decreasing probability
 
     SimpleSBM_fit$reorder()
 
+#### Returns
+
+invisibly, the permutation `o` applied (new block `k` is former block
+`o[k]`), so that the parameters of the sampling indexed by the blocks
+can follow
+
 ------------------------------------------------------------------------
 
 ### `SimpleSBM_fit$get_state()`

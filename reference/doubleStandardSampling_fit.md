@@ -1,6 +1,20 @@
 # Class for fitting a double-standard sampling
 
-Class for fitting a double-standard sampling
+A dyad is observed with probability \\p_0\\ if it is 0, \\p_1\\ if it is
+1 (the vector of parameters is \\(p_0, p_1)\\). Given the blocks, a dyad
+between blocks q and l is missing with probability \\m\_{ql} =
+\pi\_{ql}(1 - p_1) + (1 - \pi\_{ql})(1 - p_0)\\: the missing dyads are
+integrated out given the blocks, and the posterior probability that a
+missing dyad between blocks q and l is an edge is \\\nu\_{ql} =
+\pi\_{ql}(1 - p_1) / m\_{ql}\\, a Q x Q matrix. The parameters are
+updated jointly with the connectivity of the SBM (see
+[SimpleSBM_fit_MNAR](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md)):
+this class only stores them, with the terms of the sampling.
+
+With a single block, \\(\pi, p_0, p_1)\\ are not identifiable: the
+observed data only inform \\\pi p_1\\ and \\(1 - \pi) p_0\\. The fit is
+then constrained to \\p_0 = p_1\\, that is, to dyad sampling, with one
+parameter.
 
 ## Super classes
 
@@ -11,9 +25,30 @@ Class for fitting a double-standard sampling
 
 ## Active bindings
 
+- `df`:
+
+  the number of parameters: 2, or 1 with a single block (p0 = p1)
+
 - `vExpec`:
 
-  variational expectation of the sampling
+  variational expectation of the log-likelihood of the sampling, the
+  missing dyads being integrated out given the blocks: \\E\_\tau\[\log
+  p(R \mid Y^o, Z)\]\\
+
+- `log_lambda`:
+
+  Q x Q matrix, the log-probability that a dyad between blocks q and l
+  is missing, the term of the missing dyads in the update of the blocks
+
+- `blockImputation`:
+
+  Q x Q matrix, the posterior probability that a missing dyad between
+  blocks q and l is an edge, with the current parameters
+
+- `entropyImputed`:
+
+  the expected entropy of the missing dyads given the blocks,
+  \\\sum\_{q,l} (Z^\top S Z)\_{ql} H(\nu\_{ql})\\
 
 ## Methods
 
@@ -24,6 +59,8 @@ Class for fitting a double-standard sampling
 - [`doubleStandardSampling_fit$update_parameters()`](#method-doubleStandardSampling_fit-update_parameters)
 
 - [`doubleStandardSampling_fit$update_imputation()`](#method-doubleStandardSampling_fit-update_imputation)
+
+- [`doubleStandardSampling_fit$reorder()`](#method-doubleStandardSampling_fit-reorder)
 
 - [`doubleStandardSampling_fit$clone()`](#method-doubleStandardSampling_fit-clone)
 
@@ -40,7 +77,7 @@ constructor
 
 #### Usage
 
-    doubleStandardSampling_fit$new(partlyObservedNetwork, ...)
+    doubleStandardSampling_fit$new(partlyObservedNetwork, blockInit, connectInit)
 
 #### Arguments
 
@@ -49,26 +86,41 @@ constructor
   a object with class partlyObservedNetwork representing the observed
   data with possibly missing entries
 
-- `...`:
+- `blockInit`:
 
-  used for compatibility
+  n x Q matrix of initial block indicators
+
+- `connectInit`:
+
+  Q x Q matrix of initial connectivity of the SBM
 
 ------------------------------------------------------------------------
 
 ### `doubleStandardSampling_fit$update_parameters()`
 
-a method to update the estimation of the parameters. By default, nothing
-to do (corresponds to MAR sampling)
+stores the parameters, updated jointly with the connectivity of the SBM
+(see
+[SimpleSBM_fit_MNAR](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md)),
+and the current blocks
 
 #### Usage
 
-    doubleStandardSampling_fit$update_parameters(nu, ...)
+    doubleStandardSampling_fit$update_parameters(Z, theta, psi = NULL, ...)
 
 #### Arguments
 
-- `nu`:
+- `Z`:
 
-  an adjacency matrix with imputed values (only)
+  probabilities of block memberships
+
+- `theta`:
+
+  the connectivity of the SBM
+
+- `psi`:
+
+  the updated (p0, p1); `NULL` with a single block, where p0 = p1 is the
+  observation rate (dyad sampling)
 
 - `...`:
 
@@ -78,17 +130,40 @@ to do (corresponds to MAR sampling)
 
 ### `doubleStandardSampling_fit$update_imputation()`
 
-a method to update the imputation of the missing entries.
+no imputation is needed along the VEM: the missing dyads are integrated
+out given the blocks (see the field `blockImputation`)
 
 #### Usage
 
-    doubleStandardSampling_fit$update_imputation(nu)
+    doubleStandardSampling_fit$update_imputation(...)
 
 #### Arguments
 
-- `nu`:
+- `...`:
 
-  the matrix of (uncorrected) imputation for missing entries
+  use for compatibility
+
+#### Returns
+
+`NULL`
+
+------------------------------------------------------------------------
+
+### `doubleStandardSampling_fit$reorder()`
+
+permute the parameters indexed by the blocks, after the blocks of the
+SBM were permuted
+
+#### Usage
+
+    doubleStandardSampling_fit$reorder(o)
+
+#### Arguments
+
+- `o`:
+
+  the permutation applied to the blocks (new block k is former block
+  `o[k]`)
 
 ------------------------------------------------------------------------
 

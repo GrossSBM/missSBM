@@ -64,6 +64,7 @@
 <li><p><a href="#method-networkSamplingDyads_fit-show"><code>networkSamplingDyads_fit$show()</code></a></p></li>
 <li><p><a href="#method-networkSamplingDyads_fit-update_parameters"><code>networkSamplingDyads_fit$update_parameters()</code></a></p></li>
 <li><p><a href="#method-networkSamplingDyads_fit-update_imputation"><code>networkSamplingDyads_fit$update_imputation()</code></a></p></li>
+<li><p><a href="#method-networkSamplingDyads_fit-reorder"><code>networkSamplingDyads_fit$reorder()</code></a></p></li>
 <li><p><a href="#method-networkSamplingDyads_fit-clone"><code>networkSamplingDyads_fit$clone()</code></a></p></li>
 </ul></div><p><details open><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href="networkSampling.html#method-print"><code>networkSampling$print()</code></a></span></li>
 </ul></details></p><hr><a id="method-networkSamplingDyads_fit-initialize"></a><div class="section">
@@ -126,13 +127,30 @@
 
 </div>
 
+<p></p><hr><a id="method-networkSamplingDyads_fit-reorder"></a><div class="section">
+<h3 id="networksamplingdyads-fit-reorder-"><code>networkSamplingDyads_fit$reorder()</code><a class="anchor" aria-label="anchor" href="#networksamplingdyads-fit-reorder-"></a></h3>
+<p>permute the parameters indexed by the blocks, after the blocks of the SBM
+were permuted. By default, nothing to do (no parameter indexed by the blocks)</p><div class="section">
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">networkSamplingDyads_fit</span><span class="op">$</span><span class="fu">reorder</span><span class="op">(</span><span class="va">o</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>o</code></dt>
+<dd><p>the permutation applied to the blocks (new block k is former block <code>o[k]</code>)</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-networkSamplingDyads_fit-clone"></a><div class="section">
 <h3 id="networksamplingdyads-fit-clone-"><code>networkSamplingDyads_fit$clone()</code><a class="anchor" aria-label="anchor" href="#networksamplingdyads-fit-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">networkSamplingDyads_fit</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

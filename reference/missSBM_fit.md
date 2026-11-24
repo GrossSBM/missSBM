@@ -56,6 +56,7 @@ the user and exported as S3 methods. See the documentation for
 - `entropyImputed`:
 
   the entropy of the distribution of the imputed dyads
+  ('double-standard': its expectation given the blocks)
 
 - `entropy`:
 
@@ -86,9 +87,9 @@ the user and exported as S3 methods. See the documentation for
   double: ICL built on the observed data (the observed dyads and the
   sampling matrix), the missing dyads being integrated out: -2 times the
   variational lower bound of the log-likelihood of the observed data,
-  without the entropy of the blocks, plus the penalty. For
-  'double-standard' and 'degree', whose sampling depends on the missing
-  dyads, the bound includes the entropy of their imputations.
+  without the entropy of the blocks, plus the penalty. For 'degree',
+  whose sampling depends on the degrees, the bound includes the entropy
+  of the imputations.
 
 - `ICLcompleted`:
 

@@ -26,6 +26,7 @@ Class for fitting a node-centered sampling with covariate
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
+- [`networkSamplingNodes_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-reorder)
 - [`networkSamplingNodes_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-show)
 - [`networkSamplingNodes_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-update_imputation)
 - [`networkSamplingNodes_fit$update_parameters()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-update_parameters)

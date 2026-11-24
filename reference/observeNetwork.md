@@ -93,7 +93,10 @@ for a complete description.
 
   - double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is
     observed \| the dyad is equal to 0), p1 = Prob(Dyad (i,j) is
-    observed \| the dyad is equal to 1)
+    observed \| the dyad is equal to 1). (p0, p1) are identified through
+    the differences of connectivity between the blocks: with a single
+    block, they are not identifiable, and the model is fitted with p0 =
+    p1, i.e. as dyad sampling (with a warning).
 
   - block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is
     observed \| node i is in cluster q)

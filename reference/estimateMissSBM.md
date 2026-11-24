@@ -83,7 +83,10 @@ for a complete description.
 
   - double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is
     observed \| the dyad is equal to 0), p1 = Prob(Dyad (i,j) is
-    observed \| the dyad is equal to 1)
+    observed \| the dyad is equal to 1). (p0, p1) are identified through
+    the differences of connectivity between the blocks: with a single
+    block, they are not identifiable, and the model is fitted with p0 =
+    p1, i.e. as dyad sampling (with a warning).
 
   - block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is
     observed \| node i is in cluster q)
@@ -153,9 +156,9 @@ collection$ICL
 coef(collection$bestModel$fittedSBM, "connectivity")
 #> $mean
 #>            [,1]       [,2]       [,3]
-#> [1,] 0.50247919 0.05509355 0.05696972
-#> [2,] 0.05509355 0.50953677 0.05164995
-#> [3,] 0.05696972 0.05164995 0.53003541
+#> [1,] 0.50953677 0.05164995 0.05509355
+#> [2,] 0.05164995 0.53003541 0.05696972
+#> [3,] 0.05509355 0.05696972 0.50247919
 #> 
 
 myModel <- collection$bestModel
@@ -169,9 +172,9 @@ coef(myModel, "sampling")
 coef(myModel, "connectivity")
 #> $mean
 #>            [,1]       [,2]       [,3]
-#> [1,] 0.50247919 0.05509355 0.05696972
-#> [2,] 0.05509355 0.50953677 0.05164995
-#> [3,] 0.05696972 0.05164995 0.53003541
+#> [1,] 0.50953677 0.05164995 0.05509355
+#> [2,] 0.05164995 0.53003541 0.05696972
+#> [3,] 0.05509355 0.05696972 0.50247919
 #> 
 predict(myModel)[1:5, 1:5]
 #> 5 x 5 sparse Matrix of class "dgCMatrix"

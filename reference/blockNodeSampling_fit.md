@@ -28,6 +28,8 @@ Class for fitting a block-node sampling
 
 - [`blockNodeSampling_fit$update_parameters()`](#method-blockNodeSampling_fit-update_parameters)
 
+- [`blockNodeSampling_fit$reorder()`](#method-blockNodeSampling_fit-reorder)
+
 - [`blockNodeSampling_fit$clone()`](#method-blockNodeSampling_fit-clone)
 
 Inherited methods
@@ -77,6 +79,24 @@ to do (corresponds to MAR sampling)
 - `Z`:
 
   indicator of blocks
+
+------------------------------------------------------------------------
+
+### `blockNodeSampling_fit$reorder()`
+
+permute the parameters indexed by the blocks, after the blocks of the
+SBM were permuted
+
+#### Usage
+
+    blockNodeSampling_fit$reorder(o)
+
+#### Arguments
+
+- `o`:
+
+  the permutation applied to the blocks (new block k is former block
+  `o[k]`)
 
 ------------------------------------------------------------------------
 

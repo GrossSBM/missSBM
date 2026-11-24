@@ -137,9 +137,9 @@ missSBM_param(
     dyads and the sampling matrix, the missing dyads being integrated
     out. It is -2 times the variational lower bound of the
     log-likelihood of the observed data, without the entropy of the
-    blocks, plus the penalty. For "double-standard" and "degree", whose
-    sampling depends on the missing dyads, this bound includes the
-    entropy of their imputations.
+    blocks, plus the penalty. For "degree", whose sampling depends on
+    the degrees, this bound includes the entropy of the imputations of
+    the missing dyads.
 
   - "completed": ICL of the network completed by the imputations, the
     convention of the previous versions of missSBM. It adds the expected

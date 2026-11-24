@@ -30,6 +30,8 @@ Virtual class used to define a family of networkSamplingDyads_fit
 
 - [`networkSamplingDyads_fit$update_imputation()`](#method-networkSamplingDyads_fit-update_imputation)
 
+- [`networkSamplingDyads_fit$reorder()`](#method-networkSamplingDyads_fit-reorder)
+
 - [`networkSamplingDyads_fit$clone()`](#method-networkSamplingDyads_fit-clone)
 
 Inherited methods
@@ -100,6 +102,25 @@ a method to update the imputation of the missing entries.
 - `nu`:
 
   the matrix of (uncorrected) imputation for missing entries
+
+------------------------------------------------------------------------
+
+### `networkSamplingDyads_fit$reorder()`
+
+permute the parameters indexed by the blocks, after the blocks of the
+SBM were permuted. By default, nothing to do (no parameter indexed by
+the blocks)
+
+#### Usage
+
+    networkSamplingDyads_fit$reorder(o)
+
+#### Arguments
+
+- `o`:
+
+  the permutation applied to the blocks (new block k is former block
+  `o[k]`)
 
 ------------------------------------------------------------------------
 

@@ -30,6 +30,7 @@ Class for fitting a degree sampling
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
+- [`networkSamplingNodes_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-reorder)
 - [`networkSamplingNodes_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-show)
 
 ------------------------------------------------------------------------

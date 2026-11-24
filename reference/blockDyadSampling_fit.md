@@ -28,6 +28,8 @@ Class for fitting a block-dyad sampling
 
 - [`blockDyadSampling_fit$update_parameters()`](#method-blockDyadSampling_fit-update_parameters)
 
+- [`blockDyadSampling_fit$reorder()`](#method-blockDyadSampling_fit-reorder)
+
 - [`blockDyadSampling_fit$clone()`](#method-blockDyadSampling_fit-clone)
 
 Inherited methods
@@ -77,6 +79,24 @@ to do (corresponds to MAR sampling)
 - `Z`:
 
   probabilities of block memberships
+
+------------------------------------------------------------------------
+
+### `blockDyadSampling_fit$reorder()`
+
+permute the parameters indexed by the blocks, after the blocks of the
+SBM were permuted
+
+#### Usage
+
+    blockDyadSampling_fit$reorder(o)
+
+#### Arguments
+
+- `o`:
+
+  the permutation applied to the blocks (new block k is former block
+  `o[k]`)
 
 ------------------------------------------------------------------------
 

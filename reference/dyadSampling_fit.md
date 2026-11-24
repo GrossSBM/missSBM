@@ -26,6 +26,7 @@ Class for fitting a dyad sampling
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
+- [`networkSamplingDyads_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html#method-reorder)
 - [`networkSamplingDyads_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html#method-show)
 - [`networkSamplingDyads_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html#method-update_imputation)
 - [`networkSamplingDyads_fit$update_parameters()`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html#method-update_parameters)
