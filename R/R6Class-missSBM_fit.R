@@ -166,7 +166,8 @@ missSBM_fit <-
           private$sampling <- state$sampling
           private$nu       <- state$nu
         },
-        reorder    = function() private$SBM$reorder()
+        ## the parameters of the sampling indexed by the blocks follow the permutation
+        reorder    = function() private$sampling$reorder(private$SBM$reorder())
       )
 
       invisible(private$optStatus)

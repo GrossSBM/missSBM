@@ -12,8 +12,10 @@ for (seed in c(3, 12)) {
     sbm <- sbm::sampleSimpleSBM(n, c(.2, .3, .5), list(mean = pi))
     A_obs <- missSBM::observeNetwork(sbm$networkData, "block-node", c(.8, .5, .2), clusters = sbm$memberships)
 
-    fit <- estimateMissSBM(A_obs, vBlocks = Q, sampling = "block-node",
-                           control = missSBM_param(trace = FALSE, iterates = 0, threshold = 1e-5, maxIter = 300))$models[[1]]
+    ## the default pipeline (exploration over the number of blocks): at a fixed Q, without
+    ## exploration, the VEM can stop in a local optimum (seed 12), which polish() cannot leave
+    fit <- estimateMissSBM(A_obs, vBlocks = 1:5, sampling = "block-node",
+                           control = missSBM_param(trace = FALSE, iterates = 1, threshold = 1e-5, maxIter = 300))$models[[Q]]
 
     expect_gt(aricode::ARI(fit$fittedSBM$memberships, sbm$memberships), 0.85)
     expect_gt(min(diag(fit$fittedSBM$connectParam$mean)), 0.1)

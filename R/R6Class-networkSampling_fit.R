@@ -35,7 +35,11 @@ networkSamplingDyads_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param nu the matrix of (uncorrected) imputation for missing entries
-    update_imputation = function(nu) {nu} # good for MCAR on node, dyads and MNAR with blocks
+    update_imputation = function(nu) {nu}, # good for MCAR on node, dyads and MNAR with blocks
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
+    #' @param o the permutation applied to the blocks (new block k is former block o[k])
+    reorder = function(o) {invisible(self)}
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -81,7 +85,11 @@ networkSamplingNodes_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param nu the matrix of (uncorrected) imputation for missing entries
-    update_imputation = function(nu) {nu} ## good for MCAR on node, dyads and MNAR with blocks
+    update_imputation = function(nu) {nu}, ## good for MCAR on node, dyads and MNAR with blocks
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
+    #' @param o the permutation applied to the blocks (new block k is former block o[k])
+    reorder = function(o) {invisible(self)}
   ),
   active = list(
     #' @field penalty double, value of the penalty term in ICL
@@ -268,6 +276,14 @@ blockDyadSampling_fit <-
       } else {
         private$psi <- check_boundaries(( ZtRZ + t(ZtRZ) ) / ( Zbar %o% Zbar - Zbar ))
       }
+    },
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted
+    #' @param o the permutation applied to the blocks (new block k is former block o[k])
+    reorder = function(o) {
+      private$psi <- private$psi[o, o, drop = FALSE]
+      private$Z   <- private$Z[, o, drop = FALSE]
+      invisible(self)
     }
   ),
   active = list(
@@ -313,6 +329,15 @@ blockNodeSampling_fit <-
       private$So  <- colSums(Z[ private$N_obs, , drop = FALSE])
       private$Sm  <- colSums(Z[!private$N_obs, , drop = FALSE])
       private$psi <- check_boundaries(private$So / (private$So + private$Sm))
+    },
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted
+    #' @param o the permutation applied to the blocks (new block k is former block o[k])
+    reorder = function(o) {
+      private$psi <- private$psi[o]
+      private$So  <- private$So[o]
+      private$Sm  <- private$Sm[o]
+      invisible(self)
     }
   ),
   active = list(

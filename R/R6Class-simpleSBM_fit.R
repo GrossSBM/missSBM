@@ -89,12 +89,15 @@ R6::R6Class(classname = "SimpleSBM_fit",
       )
     },
     #' @description permute group labels by order of decreasing probability
+    #' @return invisibly, the permutation \code{o} applied (new block \code{k} is former block
+    #'   \code{o[k]}), so that the parameters of the sampling indexed by the blocks can follow
     reorder = function(){
       private$imputation_cache <- NULL
       o <- order(private$theta$mean %*% private$pi, decreasing = TRUE)
       private$pi <- private$pi[o]
       private$theta$mean <- private$theta$mean[o, o, drop = FALSE]
       private$Z <- private$Z[, o, drop = FALSE]
+      invisible(o)
     },
     #' @description a lightweight snapshot of the mutable VEM state (as opposed to \code{clone()},
     #' which duplicates the whole object, including the -- possibly large -- network data)

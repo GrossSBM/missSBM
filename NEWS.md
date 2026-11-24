@@ -53,6 +53,12 @@
   the log (since 2018). The updates of the parameters were right, but the objective monitored by
   the VEM and the ICL were overestimated (by 5 to 20 on the ICL of networks with 200 nodes).
   The estimates are unchanged in our simulations, but the selected number of blocks can change.
+- `block-node` and `block-dyad` sampling: the sampling parameters, indexed by the blocks, were
+  not permuted with the blocks of the SBM when these are reordered at the end of the VEM, so that
+  `fittedSampling$parameters` (and `coef()`) did not match the blocks of `fittedSBM`, and
+  `polish()` added a permuted sampling term to its gains. The ICL was not affected. A side effect:
+  this permuted term acted as a random perturbation that could get `polish()` out of a local
+  optimum, so that a fit at a fixed number of blocks without exploration can now end elsewhere.
 
 ## Minor changes
 
