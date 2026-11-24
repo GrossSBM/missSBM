@@ -19,7 +19,7 @@
   sampling matrix, the missing dyads being integrated out. It is -2 times the variational lower
   bound maximized by the algorithm, evaluated at the MAP memberships (each node in its most
   probable block, as the classification likelihood of Biernacki, Celeux & Govaert), plus the
-  penalty. For the designs
+  penalty; the same for the ICL of the fitted SBM alone (`fittedSBM$ICL`). For the designs
   whose sampling only depends on the blocks (`dyad`, `node`, `covar-*`, `block-node`,
   `block-dyad`), and for `double-standard`, the missing dyads are integrated out exactly. For
   `degree`, the bound includes the expected log-likelihood and the entropy of the imputations.
