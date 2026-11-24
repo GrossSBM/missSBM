@@ -52,8 +52,14 @@ SimpleSBM_fit_noCov, SimpleSBM_fit_withCov and SimpleSBM_fit_MNAR."></head><body
 <dd><p>the type of SBM (distribution of edges values, network type, presence of covariates)</p></dd>
 
 
+    <dt><code>nbObservedDyads</code></dt>
+<dd><p>the number of observed dyads</p></dd>
+
+
     <dt><code>penalty</code></dt>
-<dd><p>double, value of the penalty term in ICL</p></dd>
+<dd><p>double, value of the penalty term in ICL: the connectivity and the effects
+of the covariates are estimated on the observed dyads, which are counted instead of all
+the possible dyads (as sbm does for a network with missing values)</p></dd>
 
 
     <dt><code>entropy</code></dt>

@@ -41,11 +41,42 @@
   among `node` / `block-node` and `dyad` / `block-dyad` (it preferred
   `block-node` and `double-standard` in most cases). The selected models
   of all the designs can change.
-- `missSBM_param(ICL = "completed")` restores the ICL of the previous
-  versions, to reproduce former results. Both are available on each
-  model (fields `ICLobserved` and `ICLcompleted` of `missSBM_fit`). With
-  a single block, `block-node` and `node`, or `block-dyad` and `dyad`,
-  still give the same ICL, with both.
+- The penalty of the ICL built on the observed data counts the observed
+  dyads for the connectivity of the SBM (and the effects of the
+  covariates), estimated on them, instead of all the possible dyads
+  ([\#51](https://github.com/grossSBM/missSBM/issues/51)), as sbm does
+  for a network with missing values. The sampling parameters still count
+  all the dyads (or all the nodes): the sampling matrix is fully
+  observed. The penalty of each connectivity parameter decreases by
+  -log(rate of observed dyads), e.g. 1.9 at 15% of observed dyads. In
+  simulations (`inst/simus/PR51-penalty/`, 800 networks near the
+  detectability threshold, Erdos-Renyi included), the selected number of
+  blocks changes for 5 networks, all toward the true one, and no
+  structure is found in Erdos-Renyi networks with either penalty; the
+  campaign of [\#48](https://github.com/grossSBM/missSBM/issues/48) is
+  unchanged. New field `nbObservedDyads` of the fitted SBM.
+- The ICL of the previous versions, built on the network completed by
+  the imputations, is no longer available (it was kept as
+  `missSBM_param(ICL = "completed")` during the development of this
+  version, and is removed in
+  [\#51](https://github.com/grossSBM/missSBM/issues/51)): it has no
+  justification, and it would not reproduce former results anyway, as
+  the estimation of all the MNAR designs has changed. To reproduce
+  former results, install missSBM 1.1.0 (e.g.,
+  `remotes::install_version("missSBM", "1.1.0")`). With a single block,
+  `block-node` and `node`, or `block-dyad` and `dyad`, still give the
+  same ICL.
+- The VEM monitors (and stops on) the bound it maximizes, `loglik`, for
+  all the designs but `degree`. For `dyad`, `node` and `covar-*`, it
+  monitored the expected log-likelihood of the network completed by the
+  imputations of the SBM plus their entropy, which is not the bound: the
+  fits of these designs can stop at a different iteration (in
+  simulations, same selected number of blocks, ICL differences without
+  direction). `degree` keeps the objective it monitored, so that its
+  fits are unchanged: a practical choice, as its VEM maximizes no single
+  objective (its SBM part ignores the sampling, and its clustering is
+  that of `node` sampling; see
+  [\#55](https://github.com/grossSBM/missSBM/issues/55)).
 - `double-standard` sampling
   ([\#52](https://github.com/grossSBM/missSBM/issues/52)): the missing
   dyads are also integrated out given the blocks, instead of being

@@ -45,11 +45,6 @@ parameter.
   Q x Q matrix, the posterior probability that a missing dyad between
   blocks q and l is an edge, with the current parameters
 
-- `entropyImputed`:
-
-  the expected entropy of the missing dyads given the blocks,
-  \\\sum\_{q,l} (Z^\top S Z)\_{ql} H(\nu\_{ql})\\
-
 ## Methods
 
 ### Public methods

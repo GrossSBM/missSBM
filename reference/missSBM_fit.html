@@ -81,48 +81,39 @@ or more classes (see <code>repair()</code>)</p></dd>
 
 
     <dt><code>entropyImputed</code></dt>
-<dd><p>the entropy of the distribution of the imputed dyads ('double-standard':
-its expectation given the blocks)</p></dd>
+<dd><p>the entropy of the imputations of the missing dyads, variational
+parameters of the 'degree' sampling only (0 for the other designs, whose missing dyads
+are integrated out)</p></dd>
 
 
     <dt><code>entropy</code></dt>
-<dd><p>the entropy due to the distribution of the imputed dyads and of the clustering</p></dd>
+<dd><p>the entropy of the variational distribution: of the blocks, and of the
+imputations of the missing dyads for 'degree'</p></dd>
 
 
     <dt><code>vExpec</code></dt>
-<dd><p>double: variational expectation of the complete log-likelihood</p></dd>
+<dd><p>double: variational expectation of the log-likelihood of the observed data
+(the observed dyads and the sampling matrix) and of the blocks; for 'degree', also of the
+missing dyads under their imputations</p></dd>
 
 
     <dt><code>penalty</code></dt>
-<dd><p>double, value of the penalty term in ICL</p></dd>
+<dd><p>double, value of the penalty term in the ICL: the connectivity of the SBM
+(and the effects of the covariates) counts the observed dyads, on which it is
+estimated, the parameters of the sampling all the dyads (or all the nodes), as the
+sampling matrix is fully observed</p></dd>
 
 
     <dt><code>loglik</code></dt>
 <dd><p>double: approximation of the log-likelihood (variational lower bound) reached</p></dd>
 
 
-    <dt><code>criterion</code></dt>
-<dd><p>the ICL used to compare and select models: "observed" or "completed" (see
-<code><a href="missSBM_param.html">missSBM_param()</a></code>)</p></dd>
-
-
-    <dt><code>ICLobserved</code></dt>
-<dd><p>double: ICL built on the observed data (the observed dyads and the
-sampling matrix), the missing dyads being integrated out: -2 times the variational
-lower bound of the log-likelihood of the observed data, without the entropy of the
-blocks, plus the penalty. For 'degree', whose sampling depends on the degrees, the bound
-includes the entropy of the imputations.</p></dd>
-
-
-    <dt><code>ICLcompleted</code></dt>
-<dd><p>double: ICL of the network completed by the imputations, the
-convention of the previous versions of missSBM: it adds the expected log-likelihood of the imputed dyads,
-without their entropy, for all the designs</p></dd>
-
-
     <dt><code>ICL</code></dt>
-<dd><p>double: value of the integrated classification log-likelihood used to compare
-models, <code>ICLobserved</code> or <code>ICLcompleted</code> according to <code>criterion</code></p></dd>
+<dd><p>double: integrated classification likelihood, built on the observed data (the
+observed dyads and the sampling matrix), the missing dyads being integrated out: -2
+times the variational lower bound of the log-likelihood of the observed data, without
+the entropy of the blocks, plus the penalty. For 'degree', whose sampling depends on
+the degrees, the bound includes the entropy of the imputations.</p></dd>
 
 
 </dl><p></p></div>
@@ -147,13 +138,7 @@ models, <code>ICLobserved</code> or <code>ICLcompleted</code> according to <code
 <h3 id="misssbm-fit-new-"><code>missSBM_fit$new()</code><a class="anchor" aria-label="anchor" href="#misssbm-fit-new-"></a></h3>
 <p>constructor for networkSampling</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/missSBM_fit.html">missSBM_fit</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>  <span class="va">partlyObservedNet</span>,</span>
-<span>  <span class="va">netSampling</span>,</span>
-<span>  <span class="va">clusterInit</span>,</span>
-<span>  useCov <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  ICL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"observed"</span>, <span class="st">"completed"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/missSBM_fit.html">missSBM_fit</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">partlyObservedNet</span>, <span class="va">netSampling</span>, <span class="va">clusterInit</span>, useCov <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>partlyObservedNet</code></dt>
@@ -167,10 +152,6 @@ models, <code>ICLobserved</code> or <code>ICLcompleted</code> according to <code
 
       <dt><code>useCov</code></dt>
 <dd><p>logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.</p></dd>
-
-      <dt><code>ICL</code></dt>
-<dd><p>character, the ICL returned by the field <code>ICL</code> and used to compare models:
-"observed" (default) or "completed". See <code><a href="missSBM_param.html">missSBM_param()</a></code>.</p></dd>
 
 
 </dl><p></p></div>

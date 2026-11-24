@@ -55,54 +55,41 @@ the user and exported as S3 methods. See the documentation for
 
 - `entropyImputed`:
 
-  the entropy of the distribution of the imputed dyads
-  ('double-standard': its expectation given the blocks)
+  the entropy of the imputations of the missing dyads, variational
+  parameters of the 'degree' sampling only (0 for the other designs,
+  whose missing dyads are integrated out)
 
 - `entropy`:
 
-  the entropy due to the distribution of the imputed dyads and of the
-  clustering
+  the entropy of the variational distribution: of the blocks, and of the
+  imputations of the missing dyads for 'degree'
 
 - `vExpec`:
 
-  double: variational expectation of the complete log-likelihood
+  double: variational expectation of the log-likelihood of the observed
+  data (the observed dyads and the sampling matrix) and of the blocks;
+  for 'degree', also of the missing dyads under their imputations
 
 - `penalty`:
 
-  double, value of the penalty term in ICL
+  double, value of the penalty term in the ICL: the connectivity of the
+  SBM (and the effects of the covariates) counts the observed dyads, on
+  which it is estimated, the parameters of the sampling all the dyads
+  (or all the nodes), as the sampling matrix is fully observed
 
 - `loglik`:
 
   double: approximation of the log-likelihood (variational lower bound)
   reached
 
-- `criterion`:
-
-  the ICL used to compare and select models: "observed" or "completed"
-  (see
-  [`missSBM_param()`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md))
-
-- `ICLobserved`:
-
-  double: ICL built on the observed data (the observed dyads and the
-  sampling matrix), the missing dyads being integrated out: -2 times the
-  variational lower bound of the log-likelihood of the observed data,
-  without the entropy of the blocks, plus the penalty. For 'degree',
-  whose sampling depends on the degrees, the bound includes the entropy
-  of the imputations.
-
-- `ICLcompleted`:
-
-  double: ICL of the network completed by the imputations, the
-  convention of the previous versions of missSBM: it adds the expected
-  log-likelihood of the imputed dyads, without their entropy, for all
-  the designs
-
 - `ICL`:
 
-  double: value of the integrated classification log-likelihood used to
-  compare models, `ICLobserved` or `ICLcompleted` according to
-  `criterion`
+  double: integrated classification likelihood, built on the observed
+  data (the observed dyads and the sampling matrix), the missing dyads
+  being integrated out: -2 times the variational lower bound of the
+  log-likelihood of the observed data, without the entropy of the
+  blocks, plus the penalty. For 'degree', whose sampling depends on the
+  degrees, the bound includes the entropy of the imputations.
 
 ## Methods
 
@@ -138,13 +125,7 @@ constructor for networkSampling
 
 #### Usage
 
-    missSBM_fit$new(
-      partlyObservedNet,
-      netSampling,
-      clusterInit,
-      useCov = TRUE,
-      ICL = c("observed", "completed")
-    )
+    missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)
 
 #### Arguments
 
@@ -170,12 +151,6 @@ constructor for networkSampling
   logical. If covariates are present in partlyObservedNet, should they
   be used for the inference or of the network sampling design, or just
   for the SBM inference? default is TRUE.
-
-- `ICL`:
-
-  character, the ICL returned by the field `ICL` and used to compare
-  models: "observed" (default) or "completed". See
-  [`missSBM_param()`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md).
 
 ------------------------------------------------------------------------
 

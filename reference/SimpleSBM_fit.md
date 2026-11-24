@@ -20,9 +20,16 @@ and
   the type of SBM (distribution of edges values, network type, presence
   of covariates)
 
+- `nbObservedDyads`:
+
+  the number of observed dyads
+
 - `penalty`:
 
-  double, value of the penalty term in ICL
+  double, value of the penalty term in ICL: the connectivity and the
+  effects of the covariates are estimated on the observed dyads, which
+  are counted instead of all the possible dyads (as sbm does for a
+  network with missing values)
 
 - `entropy`:
 

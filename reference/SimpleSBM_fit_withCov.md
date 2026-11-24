@@ -21,11 +21,6 @@ It is not designed to be called directly by the user.
   double: variational approximation of the expectation complete
   log-likelihood
 
-- `vExpec_corrected`:
-
-  double: variational approximation of the expectation complete
-  log-likelihood with correction to be comparable with MNAR criteria
-
 ## Methods
 
 ### Public methods
