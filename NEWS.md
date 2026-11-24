@@ -51,8 +51,10 @@
   `degree`. For `dyad`, `node` and `covar-*`, it monitored the expected log-likelihood of the
   network completed by the imputations of the SBM plus their entropy, which is not the bound:
   the fits of these designs can stop at a different iteration (in simulations, same selected
-  number of blocks, ICL differences without direction). `degree`, whose VEM is not a coordinate
-  ascent of its bound, keeps the objective it monitored, so that its fits are unchanged.
+  number of blocks, ICL differences without direction). `degree` keeps the objective it
+  monitored, so that its fits are unchanged: a practical choice, as its VEM maximizes no single
+  objective (its SBM part ignores the sampling, and its clustering is that of `node` sampling;
+  see #55).
 - `double-standard` sampling (#52): the missing dyads are also integrated out given the blocks,
   instead of being approximated by imputations independent of the blocks. A dyad between blocks
   q and l is missing with probability m_ql = pi_ql (1 - p1) + (1 - pi_ql) (1 - p0): this term

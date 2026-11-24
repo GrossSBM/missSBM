@@ -45,9 +45,10 @@ missSBM_fit <-
     useCov            = NULL,
 
     ## the objective monitored by the VEM, whose decrease stops it: the bound (loglik), except
-    ## for 'degree', whose VEM is not a coordinate ascent of its bound (the SBM part is fitted
-    ## on the observed dyads only, which is more robust): as before #51, its SBM part takes the
-    ## imputations of the SBM instead of those of the sampling, so that its fits are unchanged
+    ## for 'degree', whose VEM maximizes no single objective (its SBM part ignores the sampling,
+    ## its sampling part is fitted given the SBM). A practical choice, without justification:
+    ## as before #51, its SBM part takes the imputations of the SBM instead of those of the
+    ## sampling, which did not decrease in practice, so that its fits are unchanged (see #55)
     monitored_objective = function() {
       if (private$sampling$type != "degree") return(self$loglik)
       entropy_nu <- if (is.null(private$nu)) 0 else - sum(xlogx(private$nu@x) + xlogx(1 - private$nu@x))
