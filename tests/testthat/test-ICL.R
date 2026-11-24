@@ -60,6 +60,29 @@ test_that("double-standard: the missing dyads are integrated out given the block
   expect_equal(fit$ICLobserved, -2 * (fit$loglik - fit$fittedSBM$entropy) + fit$penalty)
   ## the completed network: the expected log-likelihood of the completed dyads, i.e. log m_ql
   ## minus the entropy of the posterior of the missing dyads given the blocks
-  expect_equal(fit$ICLcompleted, -2 * (fit$vExpec - fit$entropyImputed) + fit$penalty)
+  expect_equal(fit$ICLcompleted, -2 * (fit$vExpec - fit$entropyImputed) + fit$penaltyCompleted)
   expect_gt(fit$entropyImputed, 0)
+})
+
+test_that("the penalty of the ICL built on the observed data counts the observed dyads (#51)", {
+  for (directed in c(FALSE, TRUE)) {
+    set.seed(7)
+    sim <- sbm::sampleSimpleSBM(N, c(.4, .6), list(mean = matrix(c(.5, .1, .1, .3), 2, 2)), directed = directed)
+    A   <- observeNetwork(sim$networkData, "dyad", .3)
+    fit <- estimateMissSBM(A, 2, "dyad", control = ctrl())$bestModel
+    nb_obs <- if (directed) sum(!is.na(A)) - N else sum(!is.na(A[upper.tri(A)]))
+    nb_all <- if (directed) N * (N - 1) else N * (N - 1) / 2
+    expect_equal(fit$fittedSBM$nbObservedDyads, nb_obs)
+    ## the connectivity parameters only: the sampling and the block proportions are unchanged
+    nb_connect <- if (directed) 4 else 3
+    expect_equal(fit$penaltyCompleted - fit$penaltyObserved, nb_connect * log(nb_all / nb_obs))
+    expect_equal(fit$penalty, fit$penaltyObserved)
+    expect_equal(fit$ICLobserved, -2 * (fit$fittedSampling$vExpec + fit$fittedSBM$vExpec) + fit$penaltyObserved)
+    ## the ICL of the completed network keeps the penalty of the previous versions
+    fit_c <- estimateMissSBM(A, 2, "dyad", control = ctrl(ICL = "completed"))$bestModel
+    expect_equal(fit_c$penalty, fit_c$penaltyCompleted)
+  }
+  ## a fully observed network: the same penalty as before
+  fit <- estimateMissSBM(sbm_sim$networkData, 2, "dyad", control = ctrl())$bestModel
+  expect_equal(fit$penaltyObserved, fit$penaltyCompleted)
 })

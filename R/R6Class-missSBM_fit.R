@@ -426,8 +426,18 @@ missSBM_fit <-
         if (private$sampling$type %in% c("block-dyad", "block-node", "double-standard"))
           private$SBM$vExpec else private$SBM$vExpec_corrected
     },
-    #' @field penalty double, value of the penalty term in ICL
-    penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
+    #' @field penalty double, value of the penalty term in the ICL used to compare models,
+    #'   \code{penaltyObserved} or \code{penaltyCompleted} according to \code{criterion}
+    penalty = function(value) {
+      if (identical(private$ICLcriterion, "completed")) self$penaltyCompleted else self$penaltyObserved
+    },
+    #' @field penaltyObserved double, penalty of \code{ICLobserved}: the connectivity of the SBM
+    #'   counts the observed dyads, the parameters of the sampling all the dyads (or all the
+    #'   nodes), as the sampling matrix is fully observed
+    penaltyObserved = function(value) {private$SBM$penaltyObserved + private$sampling$penalty},
+    #' @field penaltyCompleted double, penalty of \code{ICLcompleted}: the connectivity of the SBM
+    #'   counts all the possible dyads, as in the previous versions of missSBM
+    penaltyCompleted = function(value) {private$SBM$penalty + private$sampling$penalty},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik  = function(value) {self$vExpec + self$entropy},
     #' @field criterion the ICL used to compare and select models: "observed" or "completed" (see
@@ -436,8 +446,8 @@ missSBM_fit <-
     #' @field ICLobserved double: ICL built on the observed data (the observed dyads and the
     #'   sampling matrix), the missing dyads being integrated out: -2 times the variational
     #'   lower bound of the log-likelihood of the observed data, without the entropy of the
-    #'   blocks, plus the penalty. For 'degree', whose sampling depends on the degrees, the bound
-    #'   includes the entropy of the imputations.
+    #'   blocks, plus the penalty \code{penaltyObserved}. For 'degree', whose sampling depends
+    #'   on the degrees, the bound includes the entropy of the imputations.
     ICLobserved = function(value) {
       vExpec <- switch(private$sampling$type,
         ## the SBM is fitted on the observed dyads, the imputations only enter the sampling part
@@ -448,7 +458,7 @@ missSBM_fit <-
         ## the missing dyads are integrated out given the blocks (all the other designs)
         private$sampling$vExpec + private$SBM$vExpec
       )
-      -2 * vExpec + self$penalty
+      -2 * vExpec + self$penaltyObserved
     },
     #' @field ICLcompleted double: ICL of the network completed by the imputations, the
     #'   convention of the previous versions of missSBM: it adds the expected log-likelihood of the imputed dyads,
@@ -463,7 +473,7 @@ missSBM_fit <-
         "block-dyad"      = private$sampling$vExpec + private$SBM$vExpec_corrected,
         "double-standard" = self$vExpec - self$entropyImputed,
         self$vExpec)
-      -2 * vExpec + self$penalty
+      -2 * vExpec + self$penaltyCompleted
     },
     #' @field ICL double: value of the integrated classification log-likelihood used to compare
     #'   models, \code{ICLobserved} or \code{ICLcompleted} according to \code{criterion}

@@ -54,10 +54,14 @@
 #'     sampling matrix, the missing dyads being integrated out. It is -2 times the variational
 #'     lower bound of the log-likelihood of the observed data, without the entropy of the
 #'     blocks, plus the penalty. For "degree", whose sampling depends on the degrees, this bound
-#'     includes the entropy of the imputations of the missing dyads.
+#'     includes the entropy of the imputations of the missing dyads. The penalty counts the
+#'     observed dyads for the connectivity (and the effects of the covariates), which are
+#'     estimated on them, all the dyads (or nodes) for the sampling parameters, as the sampling
+#'     matrix is fully observed.
 #'   * "completed": ICL of the network completed by the imputations, the convention of
 #'     the previous versions of missSBM. It adds the expected log-likelihood of the imputed dyads, without their
-#'     entropy, which favors more blocks when many dyads are missing.
+#'     entropy, which favors more blocks when many dyads are missing. Its penalty counts all
+#'     the possible dyads for the connectivity, as in the previous versions.
 #'
 #'   Both are available on each model (fields \code{ICLobserved} and \code{ICLcompleted} of
 #'   [missSBM_fit]).

@@ -48,7 +48,15 @@ its expectation given the blocks)}
 
     \item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
 
-    \item{\code{penalty}}{double, value of the penalty term in ICL}
+    \item{\code{penalty}}{double, value of the penalty term in the ICL used to compare models,
+\code{penaltyObserved} or \code{penaltyCompleted} according to \code{criterion}}
+
+    \item{\code{penaltyObserved}}{double, penalty of \code{ICLobserved}: the connectivity of the SBM
+counts the observed dyads, the parameters of the sampling all the dyads (or all the
+nodes), as the sampling matrix is fully observed}
+
+    \item{\code{penaltyCompleted}}{double, penalty of \code{ICLcompleted}: the connectivity of the SBM
+counts all the possible dyads, as in the previous versions of missSBM}
 
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
@@ -58,8 +66,8 @@ its expectation given the blocks)}
     \item{\code{ICLobserved}}{double: ICL built on the observed data (the observed dyads and the
 sampling matrix), the missing dyads being integrated out: -2 times the variational
 lower bound of the log-likelihood of the observed data, without the entropy of the
-blocks, plus the penalty. For 'degree', whose sampling depends on the degrees, the bound
-includes the entropy of the imputations.}
+blocks, plus the penalty \code{penaltyObserved}. For 'degree', whose sampling depends
+on the degrees, the bound includes the entropy of the imputations.}
 
     \item{\code{ICLcompleted}}{double: ICL of the network completed by the imputations, the
 convention of the previous versions of missSBM: it adds the expected log-likelihood of the imputed dyads,

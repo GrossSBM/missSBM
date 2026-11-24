@@ -30,6 +30,16 @@
   and the ICL now picks the design that generated the data among `node` / `block-node` and
   `dyad` / `block-dyad` (it preferred `block-node` and `double-standard` in most cases). The
   selected models of all the designs can change.
+- The penalty of the ICL built on the observed data counts the observed dyads for the
+  connectivity of the SBM (and the effects of the covariates), estimated on them, instead of all
+  the possible dyads (#51), as sbm does for a network with missing values. The sampling
+  parameters still count all the dyads (or all the nodes): the sampling matrix is fully observed.
+  The penalty of each connectivity parameter decreases by -log(rate of observed dyads), e.g. 1.9
+  at 15% of observed dyads. In simulations (`inst/simus/PR51-penalty/`, 800 networks near the
+  detectability threshold, Erdos-Renyi included), the selected number of blocks changes for 7
+  networks, all toward the true one, and no structure is found in Erdos-Renyi networks with
+  either penalty; the campaign of #48 is unchanged. New fields `penaltyObserved` and
+  `penaltyCompleted` of `missSBM_fit`; `penalty` is the one of the ICL in use.
 - `missSBM_param(ICL = "completed")` restores the ICL of the previous versions, to reproduce
   former results. Both are available on each model (fields `ICLobserved` and `ICLcompleted` of
   `missSBM_fit`). With a single block, `block-node` and `node`, or `block-dyad` and `dyad`,
