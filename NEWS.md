@@ -73,7 +73,7 @@
   network and keeps the partition. In simulations (`inst/simus/issue55-degree/`, n = 200), the
   ICL chooses `degree` when it generated the data in 100% of the cases for a medium or strong
   effect of the degree (0% to 20% before), 20% for a weak one, and in 5% of the cases without
-  effect of the degree; in the campaign of #48, `degree` is chosen in 85% of the cases under
+  effect of the degree; in the campaign of #48, `degree` is chosen in 90% of the cases under
   `degree` sampling (0% before), the true design in 95% under `node` and 60% under `block-node`
   (the two designs are close for an assortative network). The `monitoring` of a `degree` fit
   has a column `stage`.

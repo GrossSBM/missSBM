@@ -130,11 +130,11 @@ Rerun as `PR55` (tables in `results/summary-PR55.md`, PR52-observed → PR51-obs
 `degree` is now fitted in three stages, ending with the coordinate ascent of its bound, and the
 ICL is the bound at the MAP memberships for all the designs.
 
-- **Experiment 2, family of `node`:** `degree` is chosen in 85% of the cases under `degree`
+- **Experiment 2, family of `node`:** `degree` is chosen in 90% of the cases under `degree`
   sampling (0% before); the true design in 95% under `node` (100%) and 60% under `block-node`
   (95%), `degree` being chosen instead: with an assortative network, the observation of a node
   depends on its degree under both designs. Over the three designs, the true one is chosen in
-  80% of the cases, against 65% before, when `block-node` was always preferred.
+  82% of the cases, against 65% before, when `block-node` was always preferred.
 - With the ICL minus the entropy of the soft memberships (the definition before #55),
   `block-node` was recovered in 25% of the cases only: the imputations of `degree`, computed from
   the memberships, make them near-hard, which that definition rewarded.

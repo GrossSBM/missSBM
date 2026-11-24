@@ -1,5 +1,5 @@
 Each cell: PR52-observed → PR51-observed → PR55, mean over 20 replicates.
-Runs: PR52-observed at cbe717a, ICL observed (4 min); PR51-observed at 522d354, ICL default (4 min); PR55 at 2408731, ICL default (3 min).
+Runs: PR52-observed at cbe717a, ICL observed (4 min); PR51-observed at 522d354, ICL default (4 min); PR55 at 9bef32c, ICL default (3 min).
 
 ### Experiment 1: block-node and block-dyad, Q = 1 to 6 explored, true Q = 3
 
@@ -24,7 +24,7 @@ Runs: PR52-observed at cbe717a, ICL observed (4 min); PR51-observed at 522d354, 
 |:---------------|--------------:|------------------:|:---------------------------------|-----------------------:|------------------:|
 |node            |           0.70| 1.00 → 1.00 → 0.95|block-node: 0, degree: 1          |         3.0 → 3.0 → 3.0| 0.98 → 0.98 → 0.98|
 |block-node      |           0.71| 0.95 → 0.95 → 0.60|node: 0, degree: 8                |         3.0 → 3.0 → 3.0| 0.97 → 0.97 → 0.97|
-|degree          |           0.67| 0.00 → 0.00 → 0.85|node: 1, block-node: 2            |         3.0 → 3.0 → 3.0| 0.97 → 0.97 → 0.97|
+|degree          |           0.67| 0.00 → 0.00 → 0.90|node: 1, block-node: 1            |         3.0 → 3.0 → 3.0| 0.97 → 0.97 → 0.97|
 |dyad            |           0.35| 1.00 → 1.00 → 1.00|block-dyad: 0, double-standard: 0 |         2.9 → 3.0 → 3.0| 0.86 → 0.89 → 0.90|
 |block-dyad      |           0.35| 1.00 → 1.00 → 1.00|dyad: 0, double-standard: 0       |         3.0 → 3.0 → 3.0| 0.99 → 0.99 → 0.99|
 |double-standard |           0.35| 1.00 → 1.00 → 1.00|dyad: 0, block-dyad: 0            |         3.0 → 3.0 → 3.0| 0.99 → 0.99 → 0.99|
