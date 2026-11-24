@@ -32,6 +32,8 @@ Virtual class used to define a family of networkSamplingNodes_fit
 
 - [`networkSamplingNodes_fit$reorder()`](#method-networkSamplingNodes_fit-reorder)
 
+- [`networkSamplingNodes_fit$vExpec_at()`](#method-networkSamplingNodes_fit-vExpec_at)
+
 - [`networkSamplingNodes_fit$clone()`](#method-networkSamplingNodes_fit-clone)
 
 Inherited methods
@@ -121,6 +123,23 @@ the blocks)
 
   the permutation applied to the blocks (new block k is former block
   `o[k]`)
+
+------------------------------------------------------------------------
+
+### `networkSamplingNodes_fit$vExpec_at()`
+
+the variational expectation of the log-likelihood of the sampling at
+given memberships (used by the ICL, at the MAP memberships)
+
+#### Usage
+
+    networkSamplingNodes_fit$vExpec_at(Z)
+
+#### Arguments
+
+- `Z`:
+
+  an n x Q matrix of memberships
 
 ------------------------------------------------------------------------
 

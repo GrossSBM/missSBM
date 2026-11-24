@@ -31,6 +31,8 @@ It is not designed to be called directly by the user.
 
 - [`SimpleSBM_fit_withCov$polish_log_tau()`](#method-SimpleSBM_fit_withCov-polish_log_tau)
 
+- [`SimpleSBM_fit_withCov$vExpec_at()`](#method-SimpleSBM_fit_withCov-vExpec_at)
+
 - [`SimpleSBM_fit_withCov$clone()`](#method-SimpleSBM_fit_withCov-clone)
 
 Inherited methods
@@ -93,7 +95,7 @@ decide node-swap moves in `missSBM_fit$polish()`.
 
 #### Usage
 
-    SimpleSBM_fit_withCov$polish_log_tau(log_lambda = 0)
+    SimpleSBM_fit_withCov$polish_log_tau(log_lambda = 0, ...)
 
 #### Arguments
 
@@ -101,9 +103,31 @@ decide node-swap moves in `missSBM_fit$polish()`.
 
   additional sampling-design-dependent term, added as-is
 
+- `...`:
+
+  additional arguments, not used
+
 #### Returns
 
 an N x Q matrix
+
+------------------------------------------------------------------------
+
+### `SimpleSBM_fit_withCov$vExpec_at()`
+
+variational expectation of the log-likelihood of the observed dyads and
+of the blocks at given memberships (used by the ICL, at the MAP
+memberships)
+
+#### Usage
+
+    SimpleSBM_fit_withCov$vExpec_at(Z)
+
+#### Arguments
+
+- `Z`:
+
+  an n x Q matrix of memberships
 
 ------------------------------------------------------------------------
 

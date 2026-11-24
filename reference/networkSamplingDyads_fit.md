@@ -32,6 +32,8 @@ Virtual class used to define a family of networkSamplingDyads_fit
 
 - [`networkSamplingDyads_fit$reorder()`](#method-networkSamplingDyads_fit-reorder)
 
+- [`networkSamplingDyads_fit$vExpec_at()`](#method-networkSamplingDyads_fit-vExpec_at)
+
 - [`networkSamplingDyads_fit$clone()`](#method-networkSamplingDyads_fit-clone)
 
 Inherited methods
@@ -121,6 +123,23 @@ the blocks)
 
   the permutation applied to the blocks (new block k is former block
   `o[k]`)
+
+------------------------------------------------------------------------
+
+### `networkSamplingDyads_fit$vExpec_at()`
+
+the variational expectation of the log-likelihood of the sampling at
+given memberships (used by the ICL, at the MAP memberships)
+
+#### Usage
+
+    networkSamplingDyads_fit$vExpec_at(Z)
+
+#### Arguments
+
+- `Z`:
+
+  an n x Q matrix of memberships
 
 ------------------------------------------------------------------------
 

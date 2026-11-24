@@ -152,7 +152,7 @@ plot(collection, "icl")
 
 
 collection$ICL
-#> [1] 9346.422 8879.642 8585.705 8631.687
+#> [1] 9346.422 8879.635 8585.705 8625.259
 coef(collection$bestModel$fittedSBM, "connectivity")
 #> $mean
 #>            [,1]       [,2]       [,3]

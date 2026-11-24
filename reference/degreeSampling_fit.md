@@ -13,7 +13,11 @@ Class for fitting a degree sampling
 
 - `vExpec`:
 
-  variational expectation of the sampling
+  lower bound of the variational expectation of the log-likelihood of
+  the sampling, by the bound of Jaakkola and Jordan: with x_i = a + b
+  D_i, \\\log \sigma(x) \geq \log \sigma(\zeta) + (x - \zeta)/2 +
+  h(\zeta)(x^2 - \zeta^2)\\ and \\\log(1 - \sigma(x)) = \log \sigma(x) -
+  x\\, in expectation over the imputations
 
 ## Methods
 
@@ -32,6 +36,7 @@ Inherited methods
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
 - [`networkSamplingNodes_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-reorder)
 - [`networkSamplingNodes_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-show)
+- [`networkSamplingNodes_fit$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-vExpec_at)
 
 ------------------------------------------------------------------------
 

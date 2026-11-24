@@ -42,7 +42,11 @@ and
 
 - `ICL`:
 
-  double: value of the integrated classification log-likelihood
+  double: value of the integrated classification log-likelihood: -2
+  times the variational expectation of the complete log-likelihood at
+  the MAP memberships (each node in its most probable block), plus the
+  penalty, as for
+  [missSBM_fit](https://grosssbm.github.io/missSBM/reference/missSBM_fit.md)
 
 ## Methods
 

@@ -103,6 +103,7 @@ blocks q and l is an edge, with the current parameters</p></dd>
 <li><p><a href="#method-doubleStandardSampling_fit-update_parameters"><code>doubleStandardSampling_fit$update_parameters()</code></a></p></li>
 <li><p><a href="#method-doubleStandardSampling_fit-update_imputation"><code>doubleStandardSampling_fit$update_imputation()</code></a></p></li>
 <li><p><a href="#method-doubleStandardSampling_fit-reorder"><code>doubleStandardSampling_fit$reorder()</code></a></p></li>
+<li><p><a href="#method-doubleStandardSampling_fit-vExpec_at"><code>doubleStandardSampling_fit$vExpec_at()</code></a></p></li>
 <li><p><a href="#method-doubleStandardSampling_fit-clone"><code>doubleStandardSampling_fit$clone()</code></a></p></li>
 </ul></div><p><details open><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href="networkSampling.html#method-print"><code>networkSampling$print()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href="networkSamplingDyads_fit.html#method-show"><code>networkSamplingDyads_fit$show()</code></a></span></li>
@@ -192,13 +193,30 @@ were permuted</p><div class="section">
 
 </div>
 
+<p></p><hr><a id="method-doubleStandardSampling_fit-vExpec_at"></a><div class="section">
+<h3 id="doublestandardsampling-fit-vexpec-at-"><code>doubleStandardSampling_fit$vExpec_at()</code><a class="anchor" aria-label="anchor" href="#doublestandardsampling-fit-vexpec-at-"></a></h3>
+<p>the variational expectation of the log-likelihood of the sampling at given
+memberships (used by the ICL, at the MAP memberships)</p><div class="section">
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">doubleStandardSampling_fit</span><span class="op">$</span><span class="fu">vExpec_at</span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>Z</code></dt>
+<dd><p>an n x Q matrix of memberships</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-doubleStandardSampling_fit-clone"></a><div class="section">
 <h3 id="doublestandardsampling-fit-clone-"><code>doubleStandardSampling_fit$clone()</code><a class="anchor" aria-label="anchor" href="#doublestandardsampling-fit-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">doubleStandardSampling_fit</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

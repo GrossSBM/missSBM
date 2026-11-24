@@ -24,17 +24,25 @@
 - The ICL is now built on the observed data, for all the designs: the
   observed dyads and the sampling matrix, the missing dyads being
   integrated out. It is -2 times the variational lower bound maximized
-  by the algorithm, without the entropy of the blocks, plus the penalty:
-  the same relation between the ICL and the bound as for a fully
-  observed SBM. For the designs whose sampling only depends on the
-  blocks (`dyad`, `node`, `covar-*`, `block-node`, `block-dyad`), and
-  for `double-standard`, the missing dyads are integrated out exactly.
-  For `degree`, the bound includes the entropy of the imputations. The
-  ICL of the previous versions added the expected log-likelihood of the
-  imputed dyads, without their entropy, as if the missing dyads were
-  classified: as the imputations are computed by the model, this rewards
-  purer blocks with no data behind them, and favors more blocks, the
-  more so as more dyads are missing. In simulations
+  by the algorithm, evaluated at the MAP memberships (each node in its
+  most probable block, as the classification likelihood of Biernacki,
+  Celeux & Govaert), plus the penalty; the same for the ICL of the
+  fitted SBM alone (`fittedSBM$ICL`). For the designs whose sampling
+  only depends on the blocks (`dyad`, `node`, `covar-*`, `block-node`,
+  `block-dyad`), and for `double-standard`, the missing dyads are
+  integrated out exactly. For `degree`, the bound includes the expected
+  log-likelihood and the entropy of the imputations. (During the
+  development of this version, the ICL was the bound minus the entropy
+  of the soft memberships: under `degree`, whose imputations, computed
+  from the memberships, make them near-hard, this rewarded `degree`,
+  chosen in 20% to 75% of the cases under `node` and `block-node`
+  sampling; at the MAP memberships, the designs are on an equal footing,
+  [\#55](https://github.com/grossSBM/missSBM/issues/55).) The ICL of the
+  previous versions added the expected log-likelihood of the imputed
+  dyads, without their entropy, as if the missing dyads were classified:
+  as the imputations are computed by the model, this rewards purer
+  blocks with no data behind them, and favors more blocks, the more so
+  as more dyads are missing. In simulations
   (`inst/simus/PR48-block-designs/`), the true number of blocks is
   selected in 95% to 100% of the cases in 11 settings out of 12 (it was
   0% to 100%), and the ICL now picks the design that generated the data
@@ -51,7 +59,7 @@
   -log(rate of observed dyads), e.g. 1.9 at 15% of observed dyads. In
   simulations (`inst/simus/PR51-penalty/`, 800 networks near the
   detectability threshold, Erdos-Renyi included), the selected number of
-  blocks changes for 5 networks, all toward the true one, and no
+  blocks changes for 13 networks, all toward the true one, and no
   structure is found in Erdos-Renyi networks with either penalty; the
   campaign of [\#48](https://github.com/grossSBM/missSBM/issues/48) is
   unchanged. New field `nbObservedDyads` of the fitted SBM.
@@ -67,16 +75,40 @@
   `block-node` and `node`, or `block-dyad` and `dyad`, still give the
   same ICL.
 - The VEM monitors (and stops on) the bound it maximizes, `loglik`, for
-  all the designs but `degree`. For `dyad`, `node` and `covar-*`, it
-  monitored the expected log-likelihood of the network completed by the
-  imputations of the SBM plus their entropy, which is not the bound: the
-  fits of these designs can stop at a different iteration (in
-  simulations, same selected number of blocks, ICL differences without
-  direction). `degree` keeps the objective it monitored, so that its
-  fits are unchanged: a practical choice, as its VEM maximizes no single
-  objective (its SBM part ignores the sampling, and its clustering is
-  that of `node` sampling; see
-  [\#55](https://github.com/grossSBM/missSBM/issues/55)).
+  all the designs. For `dyad`, `node` and `covar-*`, it monitored the
+  expected log-likelihood of the network completed by the imputations of
+  the SBM plus their entropy, which is not the bound: the fits of these
+  designs can stop at a different iteration (in simulations, same
+  selected number of blocks, ICL differences without direction).
+- `degree` sampling
+  ([\#55](https://github.com/grossSBM/missSBM/issues/55)): the VEM
+  maximizes the bound of the model again (factorized q(Z) q(Y_miss),
+  bound of Jaakkola and Jordan), as in Tabouy, Barbillon & Chiquet
+  (2020). Since missSBM 1.0.0, its SBM part was fitted on the observed
+  dyads, ignoring the sampling (the clustering was that of `node`
+  sampling), and its sampling part given the SBM part: no single
+  objective was maximized. It is now fitted in three stages, each
+  stopping on the objective it increases: the SBM part on the observed
+  dyads, the sampling part given the SBM part, then the coordinate
+  ascent of the bound in all the variables, the blocks and the
+  connectivity being updated on the network completed by the imputations
+  (new internal class `SimpleSBM_fit_degree`). The sampling part, which
+  only involves the missing dyads, is iterated to convergence given the
+  SBM part (in stage 2 and at each M-step of stage 3), as the EM of
+  `double-standard`: with the default threshold, one step per iteration
+  stopped it early. Started from the usual initialization, this
+  coordinate ascent reaches worse local optima; from the first two
+  stages, it increases the bound in every simulated network and keeps
+  the partition. In simulations (`inst/simus/issue55-degree/`, n = 200),
+  the ICL chooses `degree` when it generated the data in 100% of the
+  cases for a medium or strong effect of the degree (0% to 20% before),
+  20% for a weak one, and in 5% of the cases without effect of the
+  degree; in the campaign of
+  [\#48](https://github.com/grossSBM/missSBM/issues/48), `degree` is
+  chosen in 90% of the cases under `degree` sampling (0% before), the
+  true design in 95% under `node` and 60% under `block-node` (the two
+  designs are close for an assortative network). The `monitoring` of a
+  `degree` fit has a column `stage`.
 - `double-standard` sampling
   ([\#52](https://github.com/grossSBM/missSBM/issues/52)): the missing
   dyads are also integrated out given the blocks, instead of being
@@ -119,6 +151,16 @@
   between unobserved nodes, as these are never observed.
 - `imputedNetwork` no longer doubles the imputations with the `degree`
   sampling.
+- `degree` sampling, bound of Jaakkola and Jordan: the variational
+  parameter zeta_i, at its optimum sqrt(E\[(a + b D_i)^2\]), often above
+  1, was truncated to \[eps, 1 - eps\] like a probability (since 2018).
+  The estimates of (a, b) and the imputations were biased, the more so
+  as the effect of the degree is strong (b underestimated by 15% for a
+  strong effect, n = 200; now 0.6%; `inst/simus/issue55-degree/`). Also,
+  the expected log-likelihood of the sampling, used in the ICL, plugged
+  the expected degrees into log logistic(a + b D_i), which is above its
+  expectation (Jensen), instead of the bound of Jaakkola and Jordan that
+  the updates maximize: the ICL of `degree` now uses this bound.
 - `block-dyad` sampling: the expectation of the log-likelihood of the
   sampling was computed as the log of the expected sampling
   probabilities, log(Z psi Z’), instead of the expectation of the log

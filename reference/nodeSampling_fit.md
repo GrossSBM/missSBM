@@ -30,6 +30,7 @@ Inherited methods
 - [`networkSamplingNodes_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-show)
 - [`networkSamplingNodes_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-update_imputation)
 - [`networkSamplingNodes_fit$update_parameters()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-update_parameters)
+- [`networkSamplingNodes_fit$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-vExpec_at)
 
 ------------------------------------------------------------------------
 

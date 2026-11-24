@@ -88,6 +88,7 @@ Q x Q given the memberships.</p>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href="SimpleSBM_fit.html#method-initialize"><code>SimpleSBM_fit$initialize()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href="SimpleSBM_fit.html#method-reorder"><code>SimpleSBM_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href="SimpleSBM_fit.html#method-set_state"><code>SimpleSBM_fit$set_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="vExpec_at"><a href="SimpleSBM_fit_noCov.html#method-vExpec_at"><code>SimpleSBM_fit_noCov$vExpec_at()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="vExpec_imputed"><a href="SimpleSBM_fit_noCov.html#method-vExpec_imputed"><code>SimpleSBM_fit_noCov$vExpec_imputed()</code></a></span></li>
 </ul></details></p><hr><a id="method-SimpleSBM_fit_MNAR-update_parameters"></a><div class="section">
 <h3 id="simplesbm-fit-mnar-update-parameters-"><code>SimpleSBM_fit_MNAR$update_parameters()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-mnar-update-parameters-"></a></h3>
@@ -138,12 +139,15 @@ missing (field <code>log_lambda</code> of <a href="doubleStandardSampling_fit.ht
 to each class if hard-assigned there (parameters held fixed), used to decide node-swap
 moves in <code>missSBM_fit$polish()</code>.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_MNAR</span><span class="op">$</span><span class="fu">polish_log_tau</span><span class="op">(</span>log_lambda <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_MNAR</span><span class="op">$</span><span class="fu">polish_log_tau</span><span class="op">(</span>log_lambda <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>log_lambda</code></dt>
 <dd><p>Q x Q matrix, the log-probability that a dyad between blocks q and l is
 missing</p></dd>
+
+      <dt><code>...</code></dt>
+<dd><p>additional arguments, not used</p></dd>
 
 
 </dl><p></p></div>

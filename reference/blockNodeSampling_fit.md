@@ -30,6 +30,8 @@ Class for fitting a block-node sampling
 
 - [`blockNodeSampling_fit$reorder()`](#method-blockNodeSampling_fit-reorder)
 
+- [`blockNodeSampling_fit$vExpec_at()`](#method-blockNodeSampling_fit-vExpec_at)
+
 - [`blockNodeSampling_fit$clone()`](#method-blockNodeSampling_fit-clone)
 
 Inherited methods
@@ -97,6 +99,23 @@ SBM were permuted
 
   the permutation applied to the blocks (new block k is former block
   `o[k]`)
+
+------------------------------------------------------------------------
+
+### `blockNodeSampling_fit$vExpec_at()`
+
+the variational expectation of the log-likelihood of the sampling at
+given memberships (used by the ICL, at the MAP memberships)
+
+#### Usage
+
+    blockNodeSampling_fit$vExpec_at(Z)
+
+#### Arguments
+
+- `Z`:
+
+  an n x Q matrix of memberships
 
 ------------------------------------------------------------------------
 

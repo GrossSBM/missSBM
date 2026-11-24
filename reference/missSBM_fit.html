@@ -54,7 +54,7 @@ as S3 methods. See the documentation for  <code><a href="https://rdrr.io/r/metho
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
     <p></p><div class="r6-active-bindings"><dl><dt><code>fittedSBM</code></dt>
-<dd><p>the fitted SBM with class <code><a href="SimpleSBM_fit_noCov.html">SimpleSBM_fit_noCov</a></code>, <code><a href="SimpleSBM_fit_withCov.html">SimpleSBM_fit_withCov</a></code> or
+<dd><p>the fitted SBM with class <code><a href="SimpleSBM_fit_noCov.html">SimpleSBM_fit_noCov</a></code>, <code><a href="SimpleSBM_fit_withCov.html">SimpleSBM_fit_withCov</a></code>, <code><a href="SimpleSBM_fit_degree.html">SimpleSBM_fit_degree</a></code> or
 <code><a href="SimpleSBM_fit_MNAR.html">SimpleSBM_fit_MNAR</a></code> inheriting from class <code><a href="https://grosssbm.github.io/sbm/reference/SimpleSBM_fit.html" class="external-link">sbm::SimpleSBM_fit</a></code></p></dd>
 
 
@@ -110,10 +110,11 @@ sampling matrix is fully observed</p></dd>
 
     <dt><code>ICL</code></dt>
 <dd><p>double: integrated classification likelihood, built on the observed data (the
-observed dyads and the sampling matrix), the missing dyads being integrated out: -2
-times the variational lower bound of the log-likelihood of the observed data, without
-the entropy of the blocks, plus the penalty. For 'degree', whose sampling depends on
-the degrees, the bound includes the entropy of the imputations.</p></dd>
+observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
+the variational lower bound of the log-likelihood of the observed data and of the blocks,
+evaluated at the MAP memberships (hard assignment of each node to its most probable
+block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+bound includes the expected log-likelihood and the entropy of the imputations.</p></dd>
 
 
 </dl><p></p></div>

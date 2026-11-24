@@ -57,6 +57,8 @@ parameter.
 
 - [`doubleStandardSampling_fit$reorder()`](#method-doubleStandardSampling_fit-reorder)
 
+- [`doubleStandardSampling_fit$vExpec_at()`](#method-doubleStandardSampling_fit-vExpec_at)
+
 - [`doubleStandardSampling_fit$clone()`](#method-doubleStandardSampling_fit-clone)
 
 Inherited methods
@@ -159,6 +161,23 @@ SBM were permuted
 
   the permutation applied to the blocks (new block k is former block
   `o[k]`)
+
+------------------------------------------------------------------------
+
+### `doubleStandardSampling_fit$vExpec_at()`
+
+the variational expectation of the log-likelihood of the sampling at
+given memberships (used by the ICL, at the MAP memberships)
+
+#### Usage
+
+    doubleStandardSampling_fit$vExpec_at(Z)
+
+#### Arguments
+
+- `Z`:
+
+  an n x Q matrix of memberships
 
 ------------------------------------------------------------------------
 

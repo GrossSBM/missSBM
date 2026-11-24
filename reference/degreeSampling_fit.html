@@ -46,7 +46,10 @@
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
     <p></p><div class="r6-active-bindings"><dl><dt><code>vExpec</code></dt>
-<dd><p>variational expectation of the sampling</p></dd>
+<dd><p>lower bound of the variational expectation of the log-likelihood of the
+sampling, by the bound of Jaakkola and Jordan: with x_i = a + b D_i,
+\(\log \sigma(x) \geq \log \sigma(\zeta) + (x - \zeta)/2 + h(\zeta)(x^2 - \zeta^2)\)
+and \(\log(1 - \sigma(x)) = \log \sigma(x) - x\), in expectation over the imputations</p></dd>
 
 
 </dl><p></p></div>
@@ -63,6 +66,7 @@
 </ul></div><p><details open><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href="networkSampling.html#method-print"><code>networkSampling$print()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="reorder"><a href="networkSamplingNodes_fit.html#method-reorder"><code>networkSamplingNodes_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href="networkSamplingNodes_fit.html#method-show"><code>networkSamplingNodes_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="vExpec_at"><a href="networkSamplingNodes_fit.html#method-vExpec_at"><code>networkSamplingNodes_fit$vExpec_at()</code></a></span></li>
 </ul></details></p><hr><a id="method-degreeSampling_fit-initialize"></a><div class="section">
 <h3 id="degreesampling-fit-new-"><code>degreeSampling_fit$new()</code><a class="anchor" aria-label="anchor" href="#degreesampling-fit-new-"></a></h3>
 <p>constructor</p><div class="section">

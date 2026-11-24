@@ -22,7 +22,8 @@ the user and exported as S3 methods. See the documentation for
 
   the fitted SBM with class
   [`SimpleSBM_fit_noCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_noCov.md),
-  [`SimpleSBM_fit_withCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_withCov.md)
+  [`SimpleSBM_fit_withCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_withCov.md),
+  [`SimpleSBM_fit_degree`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_degree.md)
   or
   [`SimpleSBM_fit_MNAR`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md)
   inheriting from class
@@ -87,9 +88,11 @@ the user and exported as S3 methods. See the documentation for
   double: integrated classification likelihood, built on the observed
   data (the observed dyads and the sampling matrix), the missing dyads
   being integrated out: -2 times the variational lower bound of the
-  log-likelihood of the observed data, without the entropy of the
-  blocks, plus the penalty. For 'degree', whose sampling depends on the
-  degrees, the bound includes the entropy of the imputations.
+  log-likelihood of the observed data and of the blocks, evaluated at
+  the MAP memberships (hard assignment of each node to its most probable
+  block), plus the penalty. For 'degree', whose missing dyads cannot be
+  integrated out, the bound includes the expected log-likelihood and the
+  entropy of the imputations.
 
 ## Methods
 

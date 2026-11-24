@@ -294,7 +294,7 @@ and the parameters in the SBM associated with the covariate:
 collection_sbm_power_miss$bestModel$fittedSBM$covarParam
 ```
 
-    ## [1] -5.366534
+    ## [1] -11.9517
 
 #### Trade data
 

@@ -64,6 +64,7 @@
 <li><p><a href="#method-SimpleSBM_fit_noCov-update_blocks"><code>SimpleSBM_fit_noCov$update_blocks()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit_noCov-polish_log_tau"><code>SimpleSBM_fit_noCov$polish_log_tau()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit_noCov-vExpec_imputed"><code>SimpleSBM_fit_noCov$vExpec_imputed()</code></a></p></li>
+<li><p><a href="#method-SimpleSBM_fit_noCov-vExpec_at"><code>SimpleSBM_fit_noCov$vExpec_at()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit_noCov-clone"><code>SimpleSBM_fit_noCov$clone()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href="https://grosssbm.github.io/sbm/reference/SBM.html#method-print"><code>sbm::SBM$print()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href="https://grosssbm.github.io/sbm/reference/SBM.html#method-rNetwork"><code>sbm::SBM$rNetwork()</code></a></span></li>
@@ -119,11 +120,14 @@
 each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
 moves in <code>missSBM_fit$polish()</code>.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_noCov</span><span class="op">$</span><span class="fu">polish_log_tau</span><span class="op">(</span>log_lambda <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_noCov</span><span class="op">$</span><span class="fu">polish_log_tau</span><span class="op">(</span>log_lambda <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>log_lambda</code></dt>
 <dd><p>additional sampling-design-dependent term, added as-is</p></dd>
+
+      <dt><code>...</code></dt>
+<dd><p>additional arguments, not used</p></dd>
 
 
 </dl><p></p></div>
@@ -139,12 +143,32 @@ moves in <code>missSBM_fit$polish()</code>.</p><div class="section">
 <p>variational expectation of the log-likelihood of the missing dyads, given
 their imputations (used by the ICL of 'degree', see <a href="missSBM_fit.html">missSBM_fit</a>)</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_noCov</span><span class="op">$</span><span class="fu">vExpec_imputed</span><span class="op">(</span><span class="va">nu</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_noCov</span><span class="op">$</span><span class="fu">vExpec_imputed</span><span class="op">(</span><span class="va">nu</span>, Z <span class="op">=</span> <span class="va">private</span><span class="op">$</span><span class="va">Z</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>nu</code></dt>
 <dd><p>the imputations of the missing dyads (sparse matrix with the pattern of the
 missing dyads)</p></dd>
+
+      <dt><code>Z</code></dt>
+<dd><p>an n x Q matrix of memberships (default: the current variational ones)</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-SimpleSBM_fit_noCov-vExpec_at"></a><div class="section">
+<h3 id="simplesbm-fit-nocov-vexpec-at-"><code>SimpleSBM_fit_noCov$vExpec_at()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-nocov-vexpec-at-"></a></h3>
+<p>variational expectation of the log-likelihood of the observed dyads and of
+the blocks at given memberships (used by the ICL, at the MAP memberships)</p><div class="section">
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_noCov</span><span class="op">$</span><span class="fu">vExpec_at</span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>Z</code></dt>
+<dd><p>an n x Q matrix of memberships</p></dd>
 
 
 </dl><p></p></div>
@@ -155,10 +179,10 @@ missing dyads)</p></dd>
 <p></p><hr><a id="method-SimpleSBM_fit_noCov-clone"></a><div class="section">
 <h3 id="simplesbm-fit-nocov-clone-"><code>SimpleSBM_fit_noCov$clone()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-nocov-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_noCov</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

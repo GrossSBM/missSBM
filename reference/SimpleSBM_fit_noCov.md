@@ -33,6 +33,8 @@ It is not designed to be called directly by the user.
 
 - [`SimpleSBM_fit_noCov$vExpec_imputed()`](#method-SimpleSBM_fit_noCov-vExpec_imputed)
 
+- [`SimpleSBM_fit_noCov$vExpec_at()`](#method-SimpleSBM_fit_noCov-vExpec_at)
+
 - [`SimpleSBM_fit_noCov$clone()`](#method-SimpleSBM_fit_noCov-clone)
 
 Inherited methods
@@ -98,13 +100,17 @@ node-swap moves in `missSBM_fit$polish()`.
 
 #### Usage
 
-    SimpleSBM_fit_noCov$polish_log_tau(log_lambda = 0)
+    SimpleSBM_fit_noCov$polish_log_tau(log_lambda = 0, ...)
 
 #### Arguments
 
 - `log_lambda`:
 
   additional sampling-design-dependent term, added as-is
+
+- `...`:
+
+  additional arguments, not used
 
 #### Returns
 
@@ -120,7 +126,7 @@ given their imputations (used by the ICL of 'degree', see
 
 #### Usage
 
-    SimpleSBM_fit_noCov$vExpec_imputed(nu)
+    SimpleSBM_fit_noCov$vExpec_imputed(nu, Z = private$Z)
 
 #### Arguments
 
@@ -128,6 +134,28 @@ given their imputations (used by the ICL of 'degree', see
 
   the imputations of the missing dyads (sparse matrix with the pattern
   of the missing dyads)
+
+- `Z`:
+
+  an n x Q matrix of memberships (default: the current variational ones)
+
+------------------------------------------------------------------------
+
+### `SimpleSBM_fit_noCov$vExpec_at()`
+
+variational expectation of the log-likelihood of the observed dyads and
+of the blocks at given memberships (used by the ICL, at the MAP
+memberships)
+
+#### Usage
+
+    SimpleSBM_fit_noCov$vExpec_at(Z)
+
+#### Arguments
+
+- `Z`:
+
+  an n x Q matrix of memberships
 
 ------------------------------------------------------------------------
 

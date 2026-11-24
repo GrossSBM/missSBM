@@ -49,6 +49,7 @@ Inherited methods
 - [`SimpleSBM_fit$initialize()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-initialize)
 - [`SimpleSBM_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-reorder)
 - [`SimpleSBM_fit$set_state()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-set_state)
+- [`SimpleSBM_fit_noCov$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_noCov.html#method-vExpec_at)
 - [`SimpleSBM_fit_noCov$vExpec_imputed()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_noCov.html#method-vExpec_imputed)
 
 ------------------------------------------------------------------------
@@ -108,7 +109,7 @@ used to decide node-swap moves in `missSBM_fit$polish()`.
 
 #### Usage
 
-    SimpleSBM_fit_MNAR$polish_log_tau(log_lambda = 0)
+    SimpleSBM_fit_MNAR$polish_log_tau(log_lambda = 0, ...)
 
 #### Arguments
 
@@ -116,6 +117,10 @@ used to decide node-swap moves in `missSBM_fit$polish()`.
 
   Q x Q matrix, the log-probability that a dyad between blocks q and l
   is missing
+
+- `...`:
+
+  additional arguments, not used
 
 #### Returns
 
