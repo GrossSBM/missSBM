@@ -12,7 +12,10 @@ Class for fitting a degree sampling
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{vExpec}}{variational expectation of the sampling}
+    \item{\code{vExpec}}{lower bound of the variational expectation of the log-likelihood of the
+sampling, by the bound of Jaakkola and Jordan: with x_i = a + b D_i,
+\eqn{\log \sigma(x) \geq \log \sigma(\zeta) + (x - \zeta)/2 + h(\zeta)(x^2 - \zeta^2)}
+and \eqn{\log(1 - \sigma(x)) = \log \sigma(x) - x}, in expectation over the imputations}
   }
   \if{html}{\out{</div>}}
 }

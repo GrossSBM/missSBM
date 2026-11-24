@@ -85,6 +85,14 @@
   on the observed dyads, which is more robust than plugging the imputations of the dyads
   between unobserved nodes, as these are never observed.
 - `imputedNetwork` no longer doubles the imputations with the `degree` sampling.
+- `degree` sampling, bound of Jaakkola and Jordan: the variational parameter zeta_i, at its
+  optimum sqrt(E[(a + b D_i)^2]), often above 1, was truncated to [eps, 1 - eps] like a
+  probability (since 2018). The estimates of (a, b) and the imputations were biased, the more so
+  as the effect of the degree is strong (b underestimated by 15% for a strong effect, n = 200; now
+  0.6%; `inst/simus/issue55-degree/`). Also, the expected log-likelihood of the sampling, used in
+  the ICL, plugged the expected degrees into log logistic(a + b D_i), which is above its
+  expectation (Jensen), instead of the bound of Jaakkola and Jordan that the updates maximize: the
+  ICL of `degree` now uses this bound.
 - `block-dyad` sampling: the expectation of the log-likelihood of the sampling was computed as
   the log of the expected sampling probabilities, log(Z psi Z'), instead of the expectation of
   the log (since 2018). The updates of the parameters were right, but the objective monitored by

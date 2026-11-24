@@ -75,7 +75,7 @@ for (directed in c(FALSE, TRUE)) {
     D  <- rowSums(Y + nuD)
     V  <- nuD; V[!NAs] <- NA
     D2 <- rowSums(V * (1 - V), na.rm = TRUE) + D^2
-    ksi <- missSBM:::check_boundaries(sqrt(psi0[1]^2 + psi0[2]^2 * D2 + 2 * psi0[1] * psi0[2] * D))
+    ksi <- pmax(sqrt(psi0[1]^2 + psi0[2]^2 * D2 + 2 * psi0[1] * psi0[2] * D), 1e-6)
     hk <- missSBM:::h(ksi)
     C0 <- .5 * n - sum(!N_obs); s1 <- .5 * sum(D) - sum(D[!N_obs])
     denom <- 2 * (sum(hk) * sum(hk * D2) - sum(hk * D)^2)
