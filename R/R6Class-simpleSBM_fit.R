@@ -118,8 +118,12 @@ R6::R6Class(classname = "SimpleSBM_fit",
   active = list(
     #' @field type the type of SBM (distribution of edges values, network type, presence of covariates)
     type = function(value) {private$variant},
-    #' @field penalty double, value of the penalty term in ICL
-    penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
+    #' @field nbObservedDyads the number of observed dyads
+    nbObservedDyads = function(value) {sum(private$R)},
+    #' @field penalty double, value of the penalty term in ICL: the connectivity and the effects
+    #'   of the covariates are estimated on the observed dyads, which are counted instead of all
+    #'   the possible dyads (as sbm does for a network with missing values)
+    penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbObservedDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
     #' @field entropy double, value of the entropy due to the clustering distribution
     entropy  = function(value) {-sum(xlogx(private$Z))},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
@@ -188,13 +192,6 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
-    },
-    #' @field vExpec_corrected double: variational approximation of the expectation complete log-likelihood with correction to be comparable with MNAR criteria
-    vExpec_corrected = function(value) {
-      vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
-      vLL_IMP <- private$vLL_complete(self$imputation, private$S, private$Z, private$theta$mean, private$pi)
-      vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
-      vLL
     }
   )
 )
@@ -254,13 +251,6 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
     vExpec = function(value) {
       private$vLL_complete(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
-    },
-    #' @field vExpec_corrected double: variational approximation of the expectation complete log-likelihood with correction to be comparable with MNAR criteria
-    vExpec_corrected = function(value) {
-      vLL_MAR <- private$vLL_complete(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
-      vLL_IMP <- private$vLL_complete(self$imputation, private$S, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
-      vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
-      vLL
     }
   )
 )

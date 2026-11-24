@@ -14,7 +14,8 @@
 ## Usage (from the root of the package):
 ##   [SIMU_ICL=observed|completed] Rscript inst/simus/PR48-block-designs/simulate.R <path to missSBM source> <label> [nb cores]
 ## writes inst/simus/PR48-block-designs/results/<label>.rds. SIMU_ICL sets the ICL used by the
-## exploration and the selection (missSBM_param(ICL = ...)), for the versions that have it.
+## exploration and the selection (missSBM_param(ICL = ...)), for the versions that have it (from
+## #48 to #51, which removed it): leave it unset for later versions.
 
 args  <- commandArgs(TRUE)
 pkg   <- args[1]
