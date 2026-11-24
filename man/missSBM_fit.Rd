@@ -41,40 +41,29 @@ or more classes (see \code{repair()})}
 
     \item{\code{degenerate}}{\code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}}
 
-    \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads ('double-standard':
-its expectation given the blocks)}
+    \item{\code{entropyImputed}}{the entropy of the imputations of the missing dyads, variational
+parameters of the 'degree' sampling only (0 for the other designs, whose missing dyads
+are integrated out)}
 
-    \item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
+    \item{\code{entropy}}{the entropy of the variational distribution: of the blocks, and of the
+imputations of the missing dyads for 'degree'}
 
-    \item{\code{vExpec}}{double: variational expectation of the complete log-likelihood}
+    \item{\code{vExpec}}{double: variational expectation of the log-likelihood of the observed data
+(the observed dyads and the sampling matrix) and of the blocks; for 'degree', also of the
+missing dyads under their imputations}
 
-    \item{\code{penalty}}{double, value of the penalty term in the ICL used to compare models,
-\code{penaltyObserved} or \code{penaltyCompleted} according to \code{criterion}}
-
-    \item{\code{penaltyObserved}}{double, penalty of \code{ICLobserved}: the connectivity of the SBM
-counts the observed dyads, the parameters of the sampling all the dyads (or all the
-nodes), as the sampling matrix is fully observed}
-
-    \item{\code{penaltyCompleted}}{double, penalty of \code{ICLcompleted}: the connectivity of the SBM
-counts all the possible dyads, as in the previous versions of missSBM}
+    \item{\code{penalty}}{double, value of the penalty term in the ICL: the connectivity of the SBM
+(and the effects of the covariates) counts the observed dyads, on which it is
+estimated, the parameters of the sampling all the dyads (or all the nodes), as the
+sampling matrix is fully observed}
 
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-    \item{\code{criterion}}{the ICL used to compare and select models: "observed" or "completed" (see
-\code{\link[=missSBM_param]{missSBM_param()}})}
-
-    \item{\code{ICLobserved}}{double: ICL built on the observed data (the observed dyads and the
-sampling matrix), the missing dyads being integrated out: -2 times the variational
-lower bound of the log-likelihood of the observed data, without the entropy of the
-blocks, plus the penalty \code{penaltyObserved}. For 'degree', whose sampling depends
-on the degrees, the bound includes the entropy of the imputations.}
-
-    \item{\code{ICLcompleted}}{double: ICL of the network completed by the imputations, the
-convention of the previous versions of missSBM: it adds the expected log-likelihood of the imputed dyads,
-without their entropy, for all the designs}
-
-    \item{\code{ICL}}{double: value of the integrated classification log-likelihood used to compare
-models, \code{ICLobserved} or \code{ICLcompleted} according to \code{criterion}}
+    \item{\code{ICL}}{double: integrated classification likelihood, built on the observed data (the
+observed dyads and the sampling matrix), the missing dyads being integrated out: -2
+times the variational lower bound of the log-likelihood of the observed data, without
+the entropy of the blocks, plus the penalty. For 'degree', whose sampling depends on
+the degrees, the bound includes the entropy of the imputations.}
   }
   \if{html}{\out{</div>}}
 }
@@ -101,13 +90,7 @@ models, \code{ICLobserved} or \code{ICLcompleted} according to \code{criterion}}
   constructor for networkSampling
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{missSBM_fit$new(
-  partlyObservedNet,
-  netSampling,
-  clusterInit,
-  useCov = TRUE,
-  ICL = c("observed", "completed")
-)}
+    \preformatted{missSBM_fit$new(partlyObservedNet, netSampling, clusterInit, useCov = TRUE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -117,8 +100,6 @@ models, \code{ICLobserved} or \code{ICLcompleted} according to \code{criterion}}
       \item{\code{netSampling}}{The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")}
       \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.}
       \item{\code{useCov}}{logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.}
-      \item{\code{ICL}}{character, the ICL returned by the field \code{ICL} and used to compare models:
-"observed" (default) or "completed". See \code{\link[=missSBM_param]{missSBM_param()}}.}
     }
     \if{html}{\out{</div>}}
   }

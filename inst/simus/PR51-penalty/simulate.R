@@ -1,6 +1,6 @@
 ## Issue #51: penalty of the ICL built on the observed data, counting the observed dyads (this
-## branch) or all the possible dyads (before). Both are computed on the same fits: each model
-## carries penaltyObserved and penaltyCompleted (the latter counts all the dyads).
+## branch) or all the possible dyads (before). Both are computed on the same fits: the penalty
+## counting all the dyads adds (nbConnectParam + nbCovariates) log(nbDyads / nbObservedDyads).
 ##
 ## Usage, from the root of the package:
 ##   OPENBLAS_NUM_THREADS=1 Rscript inst/simus/PR51-penalty/simulate.R [cores]
@@ -27,8 +27,11 @@ run <- function(k) {
   s0 <- sbm::sampleSimpleSBM(g$n, m$alpha, list(mean = m$pi))
   A  <- observeNetwork(s0$networkData, g$design, rates[[g$design]][[g$rate]])
   col <- estimateMissSBM(A, 1:5, g$design, control = missSBM_param(trace = FALSE))
-  icl_observed <- sapply(col$models, function(f) f$ICLobserved)
-  icl_all      <- sapply(col$models, function(f) f$ICLobserved - f$penaltyObserved + f$penaltyCompleted)
+  icl_observed <- sapply(col$models, function(f) f$ICL)
+  icl_all      <- sapply(col$models, function(f) {
+    sbm <- f$fittedSBM
+    f$ICL + (sbm$nbConnectParam + sbm$nbCovariates) * log(sbm$nbDyads / sbm$nbObservedDyads)
+  })
   data.frame(g, Qtrue = m$Q, observed_dyads = mean(!is.na(A[upper.tri(A)])),
              Q_all = which.min(icl_all), Q_observed = which.min(icl_observed))
 }

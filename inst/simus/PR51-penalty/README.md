@@ -9,8 +9,8 @@ penalized −log(rate of observed dyads) less: 1.9 at 15% of observed dyads, 1.0
 
 The risk of a lighter penalty is to select too many blocks, so these simulations target the
 regimes where the selection of Q is borderline. Both penalties are computed on the same fits:
-each model carries `penaltyObserved` (counts the observed dyads) and `penaltyCompleted` (counts
-all the dyads, the penalty of the previous versions, kept for `ICL = "completed"`).
+the penalty counting all the dyads adds (nbConnectParam + nbCovariates) log(nbDyads /
+nbObservedDyads) to the ICL.
 
 ## Settings
 

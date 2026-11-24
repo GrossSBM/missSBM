@@ -289,13 +289,7 @@ doubleStandardSampling_fit <-
     log_lambda = function(value) {log(private$m())},
     #' @field blockImputation Q x Q matrix, the posterior probability that a missing dyad between
     #'   blocks q and l is an edge, with the current parameters
-    blockImputation = function(value) {private$nu()},
-    #' @field entropyImputed the expected entropy of the missing dyads given the blocks,
-    #'   \eqn{\sum_{q,l} (Z^\top S Z)_{ql} H(\nu_{ql})}
-    entropyImputed = function(value) {
-      nu <- private$nu()
-      - sum(private$ZtSZ * (xlogx(nu) + xlogx(1 - nu)))
-    }
+    blockImputation = function(value) {private$nu()}
   )
 )
 

@@ -43,12 +43,27 @@ missSBM_fit <-
     partlyObservedNet = NULL,
     netSampling       = NULL,
     useCov            = NULL,
-    ICLcriterion      = NULL, # the ICL used to compare and select models: "observed" or "completed"
+
+    ## the objective monitored by the VEM, whose decrease stops it: the bound (loglik), except
+    ## for 'degree', whose VEM is not a coordinate ascent of its bound (the SBM part is fitted
+    ## on the observed dyads only, which is more robust): as before #51, its SBM part takes the
+    ## imputations of the SBM instead of those of the sampling, so that its fits are unchanged
+    monitored_objective = function() {
+      if (private$sampling$type != "degree") return(self$loglik)
+      entropy_nu <- if (is.null(private$nu)) 0 else - sum(xlogx(private$nu@x) + xlogx(1 - private$nu@x))
+      private$sampling$vExpec + private$SBM$vExpec + private$SBM$vExpec_imputed(private$SBM$imputation) +
+        private$SBM$entropy + entropy_nu
+    },
+
+    ## the imputations of the missing dyads under 'degree' (variational parameters of its sampling)
+    imputations_degree = function() {
+      if (is.null(private$nu)) private$sampling$update_imputation(private$SBM$imputation) else private$nu
+    },
 
     ## builds a new missSBM_fit from a candidate clustering, either replacing self's own fit
     ## (in_place = TRUE) or returning it as a new object -- shared by split() and merge()
     build_candidate = function(candidate_labels, in_place) {
-      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate_labels, private$useCov, private$ICLcriterion)
+      new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate_labels, private$useCov)
       if (in_place) {
         private$SBM      <- new_fit$fittedSBM
         private$sampling <- new_fit$fittedSampling
@@ -83,9 +98,7 @@ missSBM_fit <-
     #' @param netSampling The sampling design for the modelling of missing data: MAR designs ("dyad", "node") and MNAR designs ("double-standard", "block-dyad", "block-node" ,"degree")
     #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering. The number of blocks is deduced from the number of levels in with \code{clusterInit}.
     #' @param useCov logical. If covariates are present in partlyObservedNet, should they be used for the inference or of the network sampling design, or just for the SBM inference? default is TRUE.
-    #' @param ICL character, the ICL returned by the field \code{ICL} and used to compare models:
-    #'   "observed" (default) or "completed". See [missSBM_param()].
-    initialize = function(partlyObservedNet, netSampling, clusterInit, useCov = TRUE, ICL = c("observed", "completed")) {
+    initialize = function(partlyObservedNet, netSampling, clusterInit, useCov = TRUE) {
 
       ## Basic sanity checks
       stopifnot(netSampling %in% available_samplings)
@@ -129,7 +142,6 @@ missSBM_fit <-
       private$partlyObservedNet <- partlyObservedNet
       private$netSampling       <- netSampling
       private$useCov            <- useCov
-      private$ICLcriterion      <- match.arg(ICL)
     },
     #' @description a method to perform inference of the current missSBM fit with variational EM
     #' @param control `r .rd_control_vem`
@@ -164,7 +176,7 @@ missSBM_fit <-
             private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
           }
         },
-        get_loglik = function() self$loglik,
+        get_loglik = function() private$monitored_objective(),
         get_theta  = function() private$SBM$connectParam$mean,
         ## a lightweight snapshot of the fit (no cloning of the network data)
         snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
@@ -401,85 +413,41 @@ missSBM_fit <-
     occupiedBlocks = function(value) {length(unique(private$SBM$memberships))},
     #' @field degenerate \code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}
     degenerate     = function(value) {is_degenerate(self)},
-    #' @field entropyImputed the entropy of the distribution of the imputed dyads ('double-standard':
-    #'   its expectation given the blocks)
+    #' @field entropyImputed the entropy of the imputations of the missing dyads, variational
+    #'   parameters of the 'degree' sampling only (0 for the other designs, whose missing dyads
+    #'   are integrated out)
     entropyImputed = function(value) {
-      if (private$sampling$type == "double-standard") return(private$sampling$entropyImputed)
+      if (private$sampling$type != "degree") return(0)
       ## operate on the stored values only (private$nu is sparse, nonzero only at missing
-      ## dyads): `xlogx(1 - private$nu)` would densify the whole N x N matrix and dispatch
-      ## ifelse() through costly S4 machinery for every VEM iteration
-      if (is.null(private$nu)) return(0)
-      nu_x <- private$nu@x
+      ## dyads): `xlogx(1 - private$nu)` would densify the whole N x N matrix
+      nu_x <- private$imputations_degree()@x
       - sum(xlogx(nu_x) + xlogx(1 - nu_x))
     },
-    #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
-    entropy = function(value) {
-      ## 'block-node', 'block-dyad' and 'double-standard' integrate the missing dyads out given
-      ## the blocks: no term for the imputations
-      private$SBM$entropy +
-        if (private$sampling$type %in% c("block-node", "block-dyad", "double-standard")) 0 else self$entropyImputed
-    },
-    #' @field vExpec double: variational expectation of the complete log-likelihood
+    #' @field entropy the entropy of the variational distribution: of the blocks, and of the
+    #'   imputations of the missing dyads for 'degree'
+    entropy = function(value) {private$SBM$entropy + self$entropyImputed},
+    #' @field vExpec double: variational expectation of the log-likelihood of the observed data
+    #'   (the observed dyads and the sampling matrix) and of the blocks; for 'degree', also of the
+    #'   missing dyads under their imputations
     vExpec  = function(value) {
-      ## if(), not ifelse(): ifelse() evaluates both branches eagerly
-      private$sampling$vExpec +
-        if (private$sampling$type %in% c("block-dyad", "block-node", "double-standard"))
-          private$SBM$vExpec else private$SBM$vExpec_corrected
+      ## 'degree': the SBM is fitted on the observed dyads, the imputations only enter the
+      ## sampling part; all the other designs integrate the missing dyads out given the blocks
+      private$sampling$vExpec + private$SBM$vExpec +
+        if (private$sampling$type == "degree") private$SBM$vExpec_imputed(private$imputations_degree()) else 0
     },
-    #' @field penalty double, value of the penalty term in the ICL used to compare models,
-    #'   \code{penaltyObserved} or \code{penaltyCompleted} according to \code{criterion}
-    penalty = function(value) {
-      if (identical(private$ICLcriterion, "completed")) self$penaltyCompleted else self$penaltyObserved
-    },
-    #' @field penaltyObserved double, penalty of \code{ICLobserved}: the connectivity of the SBM
-    #'   counts the observed dyads, the parameters of the sampling all the dyads (or all the
-    #'   nodes), as the sampling matrix is fully observed
-    penaltyObserved = function(value) {private$SBM$penaltyObserved + private$sampling$penalty},
-    #' @field penaltyCompleted double, penalty of \code{ICLcompleted}: the connectivity of the SBM
-    #'   counts all the possible dyads, as in the previous versions of missSBM
-    penaltyCompleted = function(value) {private$SBM$penalty + private$sampling$penalty},
+    #' @field penalty double, value of the penalty term in the ICL: the connectivity of the SBM
+    #'   (and the effects of the covariates) counts the observed dyads, on which it is
+    #'   estimated, the parameters of the sampling all the dyads (or all the nodes), as the
+    #'   sampling matrix is fully observed
+    penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik  = function(value) {self$vExpec + self$entropy},
-    #' @field criterion the ICL used to compare and select models: "observed" or "completed" (see
-    #'   [missSBM_param()])
-    criterion = function(value) {private$ICLcriterion},
-    #' @field ICLobserved double: ICL built on the observed data (the observed dyads and the
-    #'   sampling matrix), the missing dyads being integrated out: -2 times the variational
-    #'   lower bound of the log-likelihood of the observed data, without the entropy of the
-    #'   blocks, plus the penalty \code{penaltyObserved}. For 'degree', whose sampling depends
-    #'   on the degrees, the bound includes the entropy of the imputations.
-    ICLobserved = function(value) {
-      vExpec <- switch(private$sampling$type,
-        ## the SBM is fitted on the observed dyads, the imputations only enter the sampling part
-        "degree" = {
-          nu <- if (is.null(private$nu)) private$sampling$update_imputation(private$SBM$imputation) else private$nu
-          private$sampling$vExpec + private$SBM$vExpec + private$SBM$vExpec_imputed(nu) + self$entropyImputed
-        },
-        ## the missing dyads are integrated out given the blocks (all the other designs)
-        private$sampling$vExpec + private$SBM$vExpec
-      )
-      -2 * vExpec + self$penaltyObserved
-    },
-    #' @field ICLcompleted double: ICL of the network completed by the imputations, the
-    #'   convention of the previous versions of missSBM: it adds the expected log-likelihood of the imputed dyads,
-    #'   without their entropy, for all the designs
-    ICLcompleted = function(value) {
-      ## 'block-node' and 'block-dyad' are fitted on the observed dyads (see vExpec), but this
-      ## ICL takes the imputations into account as the other designs (equal ICL for 1 block)
-      ## 'double-standard': the missing dyads are integrated out given the blocks, log m_ql is the
-      ## expected log-likelihood of the completed dyad plus the entropy of its posterior nu_ql
-      vExpec <- switch(private$sampling$type,
-        "block-node"      = ,
-        "block-dyad"      = private$sampling$vExpec + private$SBM$vExpec_corrected,
-        "double-standard" = self$vExpec - self$entropyImputed,
-        self$vExpec)
-      -2 * vExpec + self$penaltyCompleted
-    },
-    #' @field ICL double: value of the integrated classification log-likelihood used to compare
-    #'   models, \code{ICLobserved} or \code{ICLcompleted} according to \code{criterion}
-    ICL    = function(value) {
-      if (identical(private$ICLcriterion, "completed")) self$ICLcompleted else self$ICLobserved
-    }
+    #' @field ICL double: integrated classification likelihood, built on the observed data (the
+    #'   observed dyads and the sampling matrix), the missing dyads being integrated out: -2
+    #'   times the variational lower bound of the log-likelihood of the observed data, without
+    #'   the entropy of the blocks, plus the penalty. For 'degree', whose sampling depends on
+    #'   the degrees, the bound includes the entropy of the imputations.
+    ICL    = function(value) {-2 * (self$loglik - private$SBM$entropy) + self$penalty}
   )
 )
 

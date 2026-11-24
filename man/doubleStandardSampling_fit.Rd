@@ -33,9 +33,6 @@ missing, the term of the missing dyads in the update of the blocks}
 
     \item{\code{blockImputation}}{Q x Q matrix, the posterior probability that a missing dyad between
 blocks q and l is an edge, with the current parameters}
-
-    \item{\code{entropyImputed}}{the expected entropy of the missing dyads given the blocks,
-\eqn{\sum_{q,l} (Z^\top S Z)_{ql} H(\nu_{ql})}}
   }
   \if{html}{\out{</div>}}
 }

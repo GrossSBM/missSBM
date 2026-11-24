@@ -38,12 +38,21 @@
   at 15% of observed dyads. In simulations (`inst/simus/PR51-penalty/`, 800 networks near the
   detectability threshold, Erdos-Renyi included), the selected number of blocks changes for 7
   networks, all toward the true one, and no structure is found in Erdos-Renyi networks with
-  either penalty; the campaign of #48 is unchanged. New fields `penaltyObserved` and
-  `penaltyCompleted` of `missSBM_fit`; `penalty` is the one of the ICL in use.
-- `missSBM_param(ICL = "completed")` restores the ICL of the previous versions, to reproduce
-  former results. Both are available on each model (fields `ICLobserved` and `ICLcompleted` of
-  `missSBM_fit`). With a single block, `block-node` and `node`, or `block-dyad` and `dyad`,
-  still give the same ICL, with both.
+  either penalty; the campaign of #48 is unchanged. New field `nbObservedDyads` of the fitted
+  SBM.
+- The ICL of the previous versions, built on the network completed by the imputations, is no
+  longer available (it was kept as `missSBM_param(ICL = "completed")` during the development of
+  this version, and is removed in #51): it has no justification, and it would not reproduce
+  former results anyway, as the estimation of all the MNAR designs has changed. To reproduce
+  former results, install missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
+  With a single block, `block-node` and `node`, or `block-dyad` and `dyad`, still give the same
+  ICL.
+- The VEM monitors (and stops on) the bound it maximizes, `loglik`, for all the designs but
+  `degree`. For `dyad`, `node` and `covar-*`, it monitored the expected log-likelihood of the
+  network completed by the imputations of the SBM plus their entropy, which is not the bound:
+  the fits of these designs can stop at a different iteration (in simulations, same selected
+  number of blocks, ICL differences without direction). `degree`, whose VEM is not a coordinate
+  ascent of its bound, keeps the objective it monitored, so that its fits are unchanged.
 - `double-standard` sampling (#52): the missing dyads are also integrated out given the blocks,
   instead of being approximated by imputations independent of the blocks. A dyad between blocks
   q and l is missing with probability m_ql = pi_ql (1 - p1) + (1 - pi_ql) (1 - p0): this term

@@ -48,23 +48,6 @@
 #'   higher numbers of blocks. Sequential in the number of blocks, unlike the default
 #'   (\code{FALSE}), which fits every model in parallel: can be slower in wall-clock time when
 #'   several workers are available. Default is FALSE.
-#' @param ICL character, the integrated classification likelihood (ICL) used to compare the
-#'   models, along the exploration and to select the best one:
-#'   * "observed" (default): ICL built on the observed data, the observed dyads and the
-#'     sampling matrix, the missing dyads being integrated out. It is -2 times the variational
-#'     lower bound of the log-likelihood of the observed data, without the entropy of the
-#'     blocks, plus the penalty. For "degree", whose sampling depends on the degrees, this bound
-#'     includes the entropy of the imputations of the missing dyads. The penalty counts the
-#'     observed dyads for the connectivity (and the effects of the covariates), which are
-#'     estimated on them, all the dyads (or nodes) for the sampling parameters, as the sampling
-#'     matrix is fully observed.
-#'   * "completed": ICL of the network completed by the imputations, the convention of
-#'     the previous versions of missSBM. It adds the expected log-likelihood of the imputed dyads, without their
-#'     entropy, which favors more blocks when many dyads are missing. Its penalty counts all
-#'     the possible dyads for the connectivity, as in the previous versions.
-#'
-#'   Both are available on each model (fields \code{ICLobserved} and \code{ICLcompleted} of
-#'   [missSBM_fit]).
 #' @param trace logical for verbosity. Default is TRUE.
 #'
 #' @return a list of parameters configuring the fit, with class \code{missSBM_param}.
@@ -88,11 +71,9 @@ missSBM_param <- function(
     stopOnDegenerate          = TRUE,
     maxConsecutiveDegenerate  = 2,
     warmChain                 = FALSE,
-    ICL                       = c("observed", "completed"),
     trace                     = TRUE
 ) {
   imputation <- match.arg(imputation)
-  ICL        <- match.arg(ICL)
 
   structure(list(
     threshold                = threshold,
@@ -108,7 +89,6 @@ missSBM_param <- function(
     stopOnDegenerate          = stopOnDegenerate,
     maxConsecutiveDegenerate  = maxConsecutiveDegenerate,
     warmChain                 = warmChain,
-    ICL                       = ICL,
     trace                     = trace
   ), class = "missSBM_param")
 }

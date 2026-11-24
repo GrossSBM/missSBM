@@ -15,8 +15,6 @@ It is not designed to be called directly by the user.
     \item{\code{imputation}}{the matrix of imputed values}
 
     \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
-
-    \item{\code{vExpec_corrected}}{double: variational approximation of the expectation complete log-likelihood with correction to be comparable with MNAR criteria}
   }
   \if{html}{\out{</div>}}
 }

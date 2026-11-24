@@ -90,21 +90,19 @@ test_that("missing at random: p0 and p1 are estimated close to each other", {
 
 test_that("with a single block: not identifiable, fitted as dyad sampling with a warning", {
   sim <- sim_ds(6, n = 100)
-  ctrl <- function(crit) missSBM_param(trace = FALSE, iterates = 0, ICL = crit)
+  ctrl <- missSBM_param(trace = FALSE, iterates = 0)
   expect_warning(
-    col <- estimateMissSBM(sim$A, 1:2, "double-standard", control = ctrl("observed")),
+    col <- estimateMissSBM(sim$A, 1:2, "double-standard", control = ctrl),
     "not identifiable"
   )
-  expect_silent(estimateMissSBM(sim$A, 2, "double-standard", control = ctrl("observed")))
+  expect_silent(estimateMissSBM(sim$A, 2, "double-standard", control = ctrl))
   fit <- col$models[[1]]
   rate <- mean(!is.na(sim$A[upper.tri(sim$A)]))
   expect_equal(fit$fittedSampling$parameters, c(rate, rate))
   expect_equal(fit$fittedSampling$df, 1)
   expect_equal(col$models[[2]]$fittedSampling$df, 2)
-  ## the same ICL as dyad sampling, with both criteria
-  for (crit in c("observed", "completed")) {
-    ICL_ds   <- suppressWarnings(estimateMissSBM(sim$A, 1, "double-standard", control = ctrl(crit)))$ICL
-    ICL_dyad <- estimateMissSBM(sim$A, 1, "dyad", control = ctrl(crit))$ICL
-    expect_equal(ICL_ds, ICL_dyad, tolerance = 1e-8)
-  }
+  ## the same ICL as dyad sampling
+  ICL_ds   <- suppressWarnings(estimateMissSBM(sim$A, 1, "double-standard", control = ctrl))$ICL
+  ICL_dyad <- estimateMissSBM(sim$A, 1, "dyad", control = ctrl)$ICL
+  expect_equal(ICL_ds, ICL_dyad, tolerance = 1e-8)
 })
