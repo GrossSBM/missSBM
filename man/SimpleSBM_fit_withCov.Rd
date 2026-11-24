@@ -92,13 +92,14 @@ each class if hard-assigned there (theta/beta/pi held fixed), used to decide nod
 moves in \code{missSBM_fit$polish()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit_withCov$polish_log_tau(log_lambda = 0)}
+    \preformatted{SimpleSBM_fit_withCov$polish_log_tau(log_lambda = 0, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{log_lambda}}{additional sampling-design-dependent term, added as-is}
+      \item{\code{...}}{additional arguments, not used}
     }
     \if{html}{\out{</div>}}
   }

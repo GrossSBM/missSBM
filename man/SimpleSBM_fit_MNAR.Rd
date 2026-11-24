@@ -101,7 +101,7 @@ to each class if hard-assigned there (parameters held fixed), used to decide nod
 moves in \code{missSBM_fit$polish()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit_MNAR$polish_log_tau(log_lambda = 0)}
+    \preformatted{SimpleSBM_fit_MNAR$polish_log_tau(log_lambda = 0, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -109,6 +109,7 @@ moves in \code{missSBM_fit$polish()}.
     \describe{
       \item{\code{log_lambda}}{Q x Q matrix, the log-probability that a dyad between blocks q and l is
 missing}
+      \item{\code{...}}{additional arguments, not used}
     }
     \if{html}{\out{</div>}}
   }

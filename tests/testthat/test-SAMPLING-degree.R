@@ -91,3 +91,78 @@ for (directed in c(FALSE, TRUE)) {
     expect_equal(fit$update_imputation(PI)@x, ref, tolerance = 1e-12)
   })
 }
+
+## ---------------------------------------------------------------------------------------------
+## The bound of Jaakkola and Jordan and the three stages of the VEM (#55)
+
+## a small undirected network under degree sampling, its fit at the true clustering
+small_degree_fit <- function(seed, n = 40, maxIter = 100, threshold = 1e-6) {
+  set.seed(seed)
+  sim <- sbm::sampleSimpleSBM(n, c(.5, .5), list(mean = matrix(c(.4, .05, .05, .2), 2, 2)))
+  A   <- missSBM::observeNetwork(sim$networkData, "degree", c(-2, .2))
+  pon <- missSBM:::partlyObservedNetwork$new(A)
+  ## the initial glm of (a, b) can separate perfectly on a small network
+  fit <- suppressWarnings(missSBM:::missSBM_fit$new(pon, "degree", sim$memberships))
+  fit$doVEM(list(threshold = threshold, maxIter = maxIter, fixPointIter = 3, trace = FALSE))
+  list(fit = fit, pon = pon)
+}
+
+test_that("degree: the sampling term is the bound of Jaakkola and Jordan, below its expectation", {
+  x <- small_degree_fit(11)
+  samp <- x$fit$fittedSampling
+  priv <- environment(samp$update_parameters)$private
+  nu <- environment(x$fit$doVEM)$private$nu
+  a <- samp$parameters[1]; b <- samp$parameters[2]
+  ## the exact expectation of log p(R | D) under the imputations: the degree of node i is its
+  ## observed degree plus a sum of independent Bernoulli(nu_ij) (Poisson-binomial), by convolution
+  nuD <- as.matrix(nu); nuD <- nuD + t(nuD)
+  exact <- sum(sapply(seq_along(priv$D_obs), function(i) {
+    p <- 1
+    for (v in nuD[i, nuD[i, ] > 0]) p <- c(p * (1 - v), 0) + c(0, p * v)
+    D <- priv$D_obs[i] + seq_along(p) - 1
+    x <- a + b * D
+    sum(p * if (priv$N_obs[i]) plogis(x, log.p = TRUE) else plogis(-x, log.p = TRUE))
+  }))
+  plug_in <- sum(ifelse(priv$N_obs, plogis(a + b * priv$D, log.p = TRUE), plogis(-(a + b * priv$D), log.p = TRUE)))
+  expect_lte(samp$vExpec, exact)
+  ## the expected degrees plugged in (the previous vExpec) are above the expectation (Jensen)
+  expect_gte(plug_in, exact)
+  ## zeta is not a probability: at its optimum, sqrt(E[(a + b D)^2]), often above 1
+  expect_gt(max(priv$ksi), 1)
+})
+
+test_that("degree: three stages, the bound J_zeta increases in stages 2 and 3, and loglik is J_zeta", {
+  x <- small_degree_fit(12)
+  fit <- x$fit
+  mon <- fit$monitoring
+  expect_equal(unique(mon$stage), c("SBM on the observed dyads", "sampling given the SBM", "coordinate ascent"))
+  for (s in unique(mon$stage)) {
+    elbo <- mon$elbo[mon$stage == s]
+    expect_true(all(diff(elbo) >= -1e-6 * abs(elbo[-1])))
+  }
+  ## loglik is J_zeta, computed dyad by dyad
+  SBM <- fit$fittedSBM; priv <- environment(SBM$get_state)$private
+  nu  <- environment(fit$doVEM)$private$nu
+  tau <- SBM$probMemberships; theta <- SBM$connectParam$mean; alpha <- SBM$blockProp
+  Yc  <- as.matrix(priv$Y + nu); Rc <- as.matrix(priv$R + priv$S)
+  ll_sbm <- sum(tau %*% log(alpha))
+  for (i in seq_len(nrow(Yc))) for (j in which(Rc[i, ] > 0))
+    ll_sbm <- ll_sbm + sum(outer(tau[i, ], tau[j, ]) * (Yc[i, j] * log(theta) + (1 - Yc[i, j]) * log(1 - theta)))
+  H_tau <- -sum(tau * log(tau)); H_nu <- -sum(nu@x * log(nu@x) + (1 - nu@x) * log(1 - nu@x))
+  expect_equal(fit$loglik, ll_sbm + fit$fittedSampling$vExpec + H_tau + H_nu, tolerance = 1e-8)
+  expect_equal(fit$ICL, -2 * (fit$loglik - SBM$entropy) + fit$penalty)
+})
+
+test_that("degree: polish_log_tau() matches a brute-force delta of the completed network", {
+  x <- small_degree_fit(13)
+  SBM <- x$fit$fittedSBM; priv <- environment(SBM$get_state)$private
+  nu  <- environment(x$fit$doVEM)$private$nu
+  Zhard <- SBM$indMemberships; cl0 <- SBM$memberships; Q <- ncol(Zhard)
+  log_tau <- SBM$polish_log_tau(0, nu = nu)
+  vLL <- function(Z) missSBM:::vLL_complete_sparse_bernoulli_nocovariate(priv$Y + nu, priv$R + priv$S, Z,
+                                                                         SBM$connectParam$mean, SBM$blockProp)
+  for (i in c(1, 10, 25)) for (q in setdiff(1:Q, cl0[i])) {
+    brute <- vLL(replace(Zhard, cbind(i, 1:Q), diag(Q)[q, ])) - vLL(Zhard)
+    expect_equal(log_tau[i, q] - log_tau[i, cl0[i]], brute, tolerance = 1e-8)
+  }
+})

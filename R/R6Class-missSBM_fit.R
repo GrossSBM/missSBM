@@ -44,16 +44,66 @@ missSBM_fit <-
     netSampling       = NULL,
     useCov            = NULL,
 
-    ## the objective monitored by the VEM, whose decrease stops it: the bound (loglik), except
-    ## for 'degree', whose VEM maximizes no single objective (its SBM part ignores the sampling,
-    ## its sampling part is fitted given the SBM). A practical choice, without justification:
-    ## as before #51, its SBM part takes the imputations of the SBM instead of those of the
-    ## sampling, which did not decrease in practice, so that its fits are unchanged (see #55)
-    monitored_objective = function() {
-      if (private$sampling$type != "degree") return(self$loglik)
-      entropy_nu <- if (is.null(private$nu)) 0 else - sum(xlogx(private$nu@x) + xlogx(1 - private$nu@x))
-      private$sampling$vExpec + private$SBM$vExpec + private$SBM$vExpec_imputed(private$SBM$imputation) +
-        private$SBM$entropy + entropy_nu
+    ## replaces self's fit by that of a candidate (polish(), repair()), with its imputations
+    adopt = function(candidate) {
+      private$SBM      <- candidate$fittedSBM
+      private$sampling <- candidate$fittedSampling
+      private$nu       <- candidate$.__enclos_env__$private$nu
+      if (is.null(private$nu)) private$nu <- private$sampling$update_imputation(private$SBM$imputation)
+    },
+
+    ## the VEM of the degree sampling, whose missing dyads cannot be integrated out (the sampling
+    ## of a node depends on a whole row of the network), in three stages, each stopping on the
+    ## objective it increases (#55):
+    ## 1. the SBM part on the observed dyads, stopping on its bound (the VEM of a MAR design);
+    ## 2. the sampling part (imputations nu, (a, b), zeta) given the SBM part;
+    ## 3. the coordinate ascent of the bound of the model (factorized q(Z) q(Y^m), bound of
+    ##    Jaakkola and Jordan) in all the variables: the blocks and the connectivity are updated
+    ##    on the network completed by nu. Starting it from stages 1 and 2 avoids the poor local
+    ##    optima of the coordinate ascent from the initial clustering.
+    doVEM_degree = function(control) {
+      snapshot <- function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu)
+      restore  <- function(state) {
+        private$SBM$set_state(state$SBM)
+        private$sampling <- state$sampling
+        private$nu       <- state$nu
+      }
+      reorder <- function() private$SBM$reorder()
+      theta   <- function() private$SBM$connectParam$mean
+      stage <- function(name, e_step, m_step, get_loglik, get_theta) {
+        res <- run_VEM(control, init_stop = FALSE, e_step, m_step, get_loglik, get_theta, snapshot, restore, reorder)
+        res$stage <- name
+        res
+      }
+      update_nu <- function() private$nu <- private$sampling$update_imputation(private$SBM$imputation)
+
+      s1 <- stage("SBM on the observed dyads",
+        e_step     = function(fixPointIter) for (i in seq.int(fixPointIter)) private$SBM$update_blocks(),
+        m_step     = function() private$SBM$update_parameters(),
+        get_loglik = function() private$SBM$loglik,
+        get_theta  = theta)
+      s2 <- stage("sampling given the SBM",
+        e_step     = function(fixPointIter) update_nu(),
+        m_step     = function() private$sampling$update_parameters(private$nu),
+        get_loglik = function() self$loglik,
+        get_theta  = function() private$sampling$parameters)
+      s3 <- stage("coordinate ascent",
+        e_step     = function(fixPointIter) {
+          for (i in seq.int(fixPointIter)) {
+            update_nu()
+            private$sampling$update_parameters(private$nu)
+            private$SBM$update_blocks(nu = private$nu)
+          }
+        },
+        m_step     = function() {
+          private$SBM$update_parameters(private$nu)
+          private$sampling$update_parameters(private$nu)
+        },
+        get_loglik = function() self$loglik,
+        get_theta  = theta)
+      s2$iteration <- s2$iteration + max(s1$iteration)
+      s3$iteration <- s3$iteration + max(s2$iteration)
+      rbind(s1, s2, s3)
     },
 
     ## the imputations of the missing dyads under 'degree' (variational parameters of its sampling)
@@ -111,15 +161,18 @@ missSBM_fit <-
       if (!useCov) covariates <- list()
 
       if (length(covariates) == 0) {
-        ## the SBM part of 'block-node', 'block-dyad' and 'degree' is fitted on the observed dyads
-        ## only: fitting it on the imputations of dyads that are never (or seldom) observed, such
-        ## as the dyads between two unobserved nodes, lets them feed back on themselves (connectivity
-        ## of a block drifting to 0). 'block-node' and 'block-dyad' only add their sampling term to
-        ## the update of the blocks; 'degree' only uses the imputations in its sampling part.
+        ## the SBM part of 'block-node' and 'block-dyad' is fitted on the observed dyads only:
+        ## fitting it on the imputations of dyads that are never (or seldom) observed, such as the
+        ## dyads between two unobserved nodes, lets them feed back on themselves (connectivity of
+        ## a block drifting to 0). 'block-node' and 'block-dyad' only add their sampling term to
+        ## the update of the blocks. 'degree' cannot integrate them out: see doVEM_degree().
         ## 'double-standard' integrates the missing dyads out given the blocks: their term enters
         ## the update of the blocks, and their posterior given the blocks the M-step.
         if (netSampling == "double-standard") {
           private$SBM <- SimpleSBM_fit_MNAR$new(partlyObservedNet, clusterInit)
+        } else if (netSampling == "degree") {
+          ## fitted in three stages, see doVEM_degree()
+          private$SBM <- SimpleSBM_fit_degree$new(partlyObservedNet, clusterInit)
         } else {
           private$SBM <- SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit)
         }
@@ -154,6 +207,11 @@ missSBM_fit <-
                              ifelse(private$SBM$directed, "directed", "undirected"),"' SBM.\n", sep = "")
       if (control$trace) cat("\n\tImputation assumes a '", private$sampling$type,"' network-sampling process\n", sep = "")
 
+      if (private$sampling$type == "degree") {
+        private$optStatus <- private$doVEM_degree(control)
+        return(invisible(private$optStatus))
+      }
+
       private$optStatus <- run_VEM(
         control    = control,
         init_stop  = FALSE,
@@ -177,7 +235,7 @@ missSBM_fit <-
             private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
           }
         },
-        get_loglik = function() private$monitored_objective(),
+        get_loglik = function() self$loglik,
         get_theta  = function() private$SBM$connectParam$mean,
         ## a lightweight snapshot of the fit (no cloning of the network data)
         snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
@@ -303,9 +361,7 @@ missSBM_fit <-
       candidate_labels <- repair_empty_classes(private$SBM$memberships, private$SBM$nbBlocks)
       candidate <- private$build_candidate(candidate_labels, in_place = FALSE)
       candidate$doVEM(control)
-      private$SBM      <- candidate$fittedSBM
-      private$sampling <- candidate$fittedSampling
-      private$nu       <- private$sampling$update_imputation(private$SBM$imputation)
+      private$adopt(candidate)
       invisible(self)
     },
     #' @description discrete node-swap polishing (Kernighan-Lin / greedy-ICL style): after VEM
@@ -333,7 +389,7 @@ missSBM_fit <-
         }
         cl <- private$SBM$memberships
         N  <- length(cl)
-        log_tau <- private$SBM$polish_log_tau(private$sampling$log_lambda)
+        log_tau <- private$SBM$polish_log_tau(private$sampling$log_lambda, nu = private$nu)
 
         current_score <- log_tau[cbind(seq_len(N), cl)]
         log_tau[cbind(seq_len(N), cl)] <- -Inf # exclude the current class from the search
@@ -359,11 +415,9 @@ missSBM_fit <-
         ## reject a candidate whose VEM refit collapsed a class, even if its ICL looks better:
         ## it would leave self degenerate (see the guard above)
         if (!is_degenerate(candidate) && candidate$ICL < best_icl) {
-          private$SBM      <- candidate$fittedSBM
-          private$sampling <- candidate$fittedSampling
-          ## re-derive nu from the just-accepted state (not NULL: unlike split()/merge(),
-          ## polish() must leave self immediately usable
-          private$nu       <- private$sampling$update_imputation(private$SBM$imputation)
+          ## with its imputations (not NULL: unlike split()/merge(), polish() must leave self
+          ## immediately usable)
+          private$adopt(candidate)
           best_icl         <- candidate$ICL
         } else break
       }
@@ -390,7 +444,7 @@ missSBM_fit <-
   ## ACTIVE BINDING
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
-    #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`] or
+    #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`], [`SimpleSBM_fit_degree`] or
     #' [`SimpleSBM_fit_MNAR`] inheriting from class [`sbm::SimpleSBM_fit`]
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
