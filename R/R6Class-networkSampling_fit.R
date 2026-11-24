@@ -39,7 +39,11 @@ networkSamplingDyads_fit <-
     #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
     #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
     #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
-    reorder = function(o) {invisible(self)}
+    reorder = function(o) {invisible(self)},
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {self$vExpec} # the sampling does not depend on the blocks
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -89,7 +93,11 @@ networkSamplingNodes_fit <-
     #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
     #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
     #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
-    reorder = function(o) {invisible(self)}
+    reorder = function(o) {invisible(self)},
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {self$vExpec} # the sampling does not depend on the blocks
   ),
   active = list(
     #' @field penalty double, value of the penalty term in ICL
@@ -272,6 +280,13 @@ doubleStandardSampling_fit <-
       private$ZtSZ  <- private$ZtSZ[o, o, drop = FALSE]
       private$theta <- private$theta[o, o, drop = FALSE]
       invisible(self)
+    },
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
+        sum(as.matrix(t(Z) %*% private$S %*% Z) * log(private$m()))
     }
   ),
   active = list(
@@ -334,6 +349,13 @@ blockDyadSampling_fit <-
       private$psi <- private$psi[o, o, drop = FALSE]
       private$Z   <- private$Z[, o, drop = FALSE]
       invisible(self)
+    },
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      sum(as.matrix(t(Z) %*% private$R %*% Z) * log(private$psi)) +
+        sum(as.matrix(t(Z) %*% private$S %*% Z) * log(1 - private$psi))
     }
   ),
   active = list(
@@ -388,6 +410,13 @@ blockNodeSampling_fit <-
       private$So  <- private$So[o]
       private$Sm  <- private$Sm[o]
       invisible(self)
+    },
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      c(crossprod(colSums(Z[ private$N_obs, , drop = FALSE]), log(private$psi)) +
+        crossprod(colSums(Z[!private$N_obs, , drop = FALSE]), log(1 - private$psi)))
     }
   ),
   active = list(
@@ -417,7 +446,8 @@ degreeSampling_fit <-
     miss_t = NULL, # directed: position of dyad (j, i) among the missing dyads, NA if it is observed
     nu_x = NULL, # current imputations of the missing dyads, in the order of the pattern
     ksi = NULL, # additional variational parameter for approximation in the logistic function
-    D   = NULL  # expected degrees: observed part + imputations of the missing dyads
+    D   = NULL, # expected degrees: observed part + imputations of the missing dyads
+    D2  = NULL  # expected squared degrees
   ),
   public = list(
     #' @description constructor
@@ -467,7 +497,10 @@ degreeSampling_fit <-
       V <- nu
       V@x <- nu@x * (1 - nu@x)
       D2 <- row_sums(V) + private$D^2
-      private$ksi <- check_boundaries(sqrt( private$psi[1]^2 + private$psi[2]^2 * D2  + 2 * private$psi[1] * private$psi[2] * private$D))
+      private$D2 <- D2
+      ## the optimal zeta_i = sqrt(E[(a + b D_i)^2]), any positive value (not a probability: it is
+      ## often above 1); bounded away from 0, where h(zeta) is 0/0
+      private$ksi <- pmax(sqrt(pmax(private$psi[1]^2 + private$psi[2]^2 * D2 + 2 * private$psi[1] * private$psi[2] * private$D, 0)), 1e-6)
       C  <- .5 * length(private$D) - sum(!private$N_obs)
       s1 <- .5 * sum(private$D) - sum(private$D[!private$N_obs])
       s_hksi   <- sum(h(private$ksi))
@@ -500,11 +533,14 @@ degreeSampling_fit <-
     }
   ),
   active = list(
-    #' @field vExpec variational expectation of the sampling
+    #' @field vExpec lower bound of the variational expectation of the log-likelihood of the
+    #'   sampling, by the bound of Jaakkola and Jordan: with x_i = a + b D_i,
+    #'   \eqn{\log \sigma(x) \geq \log \sigma(\zeta) + (x - \zeta)/2 + h(\zeta)(x^2 - \zeta^2)}
+    #'   and \eqn{\log(1 - \sigma(x)) = \log \sigma(x) - x}, in expectation over the imputations
     vExpec = function() {
-      prob <-  check_boundaries(.logistic(private$psi[1] + private$psi[2] * private$D))
-      res  <-  sum(private$N_obs * log(prob)) + sum( (!private$N_obs) * log(1 - prob))
-      res
+      a <- private$psi[1]; b <- private$psi[2]; z <- private$ksi; D <- private$D
+      - sum((a + b * D)[!private$N_obs]) +
+        sum(-log1p(exp(-z)) + (a + b * D - z) / 2 + h(z) * (a^2 + 2 * a * b * D + b^2 * private$D2 - z^2))
     }
   )
 )

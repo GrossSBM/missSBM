@@ -26,6 +26,7 @@ Virtual class used to define a family of networkSamplingNodes_fit
     \item \href{#method-networkSamplingNodes_fit-update_parameters}{\code{networkSamplingNodes_fit$update_parameters()}}
     \item \href{#method-networkSamplingNodes_fit-update_imputation}{\code{networkSamplingNodes_fit$update_imputation()}}
     \item \href{#method-networkSamplingNodes_fit-reorder}{\code{networkSamplingNodes_fit$reorder()}}
+    \item \href{#method-networkSamplingNodes_fit-vExpec_at}{\code{networkSamplingNodes_fit$vExpec_at()}}
     \item \href{#method-networkSamplingNodes_fit-clone}{\code{networkSamplingNodes_fit$clone()}}
   }
 }
@@ -119,6 +120,26 @@ were permuted. By default, nothing to do (no parameter indexed by the blocks)
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-vExpec_at"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-vExpec_at}{}}}
+\subsection{\code{networkSamplingNodes_fit$vExpec_at()}}{
+  the variational expectation of the log-likelihood of the sampling at given
+memberships (used by the ICL, at the MAP memberships)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSamplingNodes_fit$vExpec_at(Z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Z}}{an n x Q matrix of memberships}
     }
     \if{html}{\out{</div>}}
   }

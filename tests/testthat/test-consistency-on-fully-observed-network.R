@@ -39,5 +39,10 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   )
   my_collection$estimate(control)
 
-  expect_lt(my_SBM$ICL, my_collection$ICL) ## different due an addition df for sampling
+  ## the same ICL (at the MAP memberships), but for the parameter of the sampling (every node is
+  ## observed: its expected log-likelihood is 0)
+  ## (the three fits start from the same clustering and run the same VEM)
+  expect_equal(my_missSBM$ICL, my_missSBM$fittedSBM$ICL + log(ncol(A)))
+  expect_equal(my_missSBM$ICL, my_SBM$ICL + log(ncol(A)), tolerance = 1e-6)
+  expect_equal(unname(my_collection$ICL), my_SBM$ICL + log(ncol(A)), tolerance = 1e-6)
 })

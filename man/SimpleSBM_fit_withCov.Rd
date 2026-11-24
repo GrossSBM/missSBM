@@ -24,6 +24,7 @@ It is not designed to be called directly by the user.
     \item \href{#method-SimpleSBM_fit_withCov-update_parameters}{\code{SimpleSBM_fit_withCov$update_parameters()}}
     \item \href{#method-SimpleSBM_fit_withCov-update_blocks}{\code{SimpleSBM_fit_withCov$update_blocks()}}
     \item \href{#method-SimpleSBM_fit_withCov-polish_log_tau}{\code{SimpleSBM_fit_withCov$polish_log_tau()}}
+    \item \href{#method-SimpleSBM_fit_withCov-vExpec_at}{\code{SimpleSBM_fit_withCov$vExpec_at()}}
     \item \href{#method-SimpleSBM_fit_withCov-clone}{\code{SimpleSBM_fit_withCov$clone()}}
   }
 }
@@ -92,18 +93,39 @@ each class if hard-assigned there (theta/beta/pi held fixed), used to decide nod
 moves in \code{missSBM_fit$polish()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit_withCov$polish_log_tau(log_lambda = 0)}
+    \preformatted{SimpleSBM_fit_withCov$polish_log_tau(log_lambda = 0, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{log_lambda}}{additional sampling-design-dependent term, added as-is}
+      \item{\code{...}}{additional arguments, not used}
     }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
     an N x Q matrix
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimpleSBM_fit_withCov-vExpec_at"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-vExpec_at}{}}}
+\subsection{\code{SimpleSBM_fit_withCov$vExpec_at()}}{
+  variational expectation of the log-likelihood of the observed dyads and of
+the blocks at given memberships (used by the ICL, at the MAP memberships)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit_withCov$vExpec_at(Z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Z}}{an n x Q matrix of memberships}
+    }
+    \if{html}{\out{</div>}}
   }
 }
 

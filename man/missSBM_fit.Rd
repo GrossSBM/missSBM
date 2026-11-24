@@ -26,7 +26,7 @@ plot(my_missSBM_fit, "imputed")
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}} or
+    \item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}}, \code{\link{SimpleSBM_fit_degree}} or
 \code{\link{SimpleSBM_fit_MNAR}} inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
 
     \item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
@@ -60,10 +60,11 @@ sampling matrix is fully observed}
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
     \item{\code{ICL}}{double: integrated classification likelihood, built on the observed data (the
-observed dyads and the sampling matrix), the missing dyads being integrated out: -2
-times the variational lower bound of the log-likelihood of the observed data, without
-the entropy of the blocks, plus the penalty. For 'degree', whose sampling depends on
-the degrees, the bound includes the entropy of the imputations.}
+observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
+the variational lower bound of the log-likelihood of the observed data and of the blocks,
+evaluated at the MAP memberships (hard assignment of each node to its most probable
+block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+bound includes the expected log-likelihood and the entropy of the imputations.}
   }
   \if{html}{\out{</div>}}
 }

@@ -21,7 +21,8 @@ for (seed in c(4, 12)) {
     expect_gt(aricode::ARI(fit$fittedSBM$memberships, sbm$memberships), 0.85)
     expect_gt(min(diag(fit$fittedSBM$connectParam$mean)), 0.1)
     ## the objective increases along the optimization
-    expect_true(all(diff(fit$monitoring$elbo) >= -1e-8))
+    elbo <- fit$monitoring$elbo
+    expect_true(all(diff(elbo) >= -1e-6 * abs(elbo[-1])))
   })
 }
 

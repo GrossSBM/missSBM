@@ -42,6 +42,7 @@ It is not designed to be called directly by the user.
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-initialize'><code>SimpleSBM_fit$initialize()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="vExpec_at"><a href='../../missSBM/html/SimpleSBM_fit_noCov.html#method-SimpleSBM_fit_noCov-vExpec_at'><code>SimpleSBM_fit_noCov$vExpec_at()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="vExpec_imputed"><a href='../../missSBM/html/SimpleSBM_fit_noCov.html#method-SimpleSBM_fit_noCov-vExpec_imputed'><code>SimpleSBM_fit_noCov$vExpec_imputed()</code></a></span></li>
 </ul>
 </details>}}
@@ -101,7 +102,7 @@ to each class if hard-assigned there (parameters held fixed), used to decide nod
 moves in \code{missSBM_fit$polish()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit_MNAR$polish_log_tau(log_lambda = 0)}
+    \preformatted{SimpleSBM_fit_MNAR$polish_log_tau(log_lambda = 0, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -109,6 +110,7 @@ moves in \code{missSBM_fit$polish()}.
     \describe{
       \item{\code{log_lambda}}{Q x Q matrix, the log-probability that a dyad between blocks q and l is
 missing}
+      \item{\code{...}}{additional arguments, not used}
     }
     \if{html}{\out{</div>}}
   }

@@ -7,15 +7,33 @@ A_node <- observeNetwork(sbm_sim$networkData, "node", .6)
 A_dyad <- observeNetwork(sbm_sim$networkData, "dyad", .6)
 ctrl <- function(...) missSBM_param(trace = FALSE, iterates = 0, polish = FALSE, ...)
 
-test_that("the ICL integrates the missing dyads out: -2 (bound - entropy of the blocks) + penalty", {
+## the MAP memberships of a fit, and the log-likelihood of the observed dyads and of the blocks
+## at given memberships
+map_Z <- function(fit) {
+  tau <- fit$fittedSBM$probMemberships
+  Z <- matrix(0, nrow(tau), ncol(tau)); Z[cbind(seq_len(nrow(tau)), max.col(tau))] <- 1; Z
+}
+vLL_obs <- function(fit, Z) {
+  priv <- environment(fit$fittedSBM$get_state)$private
+  missSBM:::vLL_complete_sparse_bernoulli_nocovariate(priv$Y, priv$R, Z, fit$fittedSBM$connectParam$mean, fit$fittedSBM$blockProp)
+}
+
+test_that("the ICL is -2 times the bound at the MAP memberships, plus the penalty", {
   for (design in c("node", "block-node", "dyad", "block-dyad")) {
     A <- if (design %in% c("node", "block-node")) A_node else A_dyad
     fit <- estimateMissSBM(A, 2, design, control = ctrl())$bestModel
-    expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec + fit$fittedSBM$vExpec) + fit$penalty)
-    expect_equal(fit$ICL, -2 * (fit$loglik - fit$fittedSBM$entropy) + fit$penalty)
+    Z <- map_Z(fit)
+    expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec_at(Z) + vLL_obs(fit, Z)) + fit$penalty)
+    ## near-hard memberships: close to the bound without the entropy of the blocks
+    expect_equal(fit$ICL, -2 * (fit$loglik - fit$fittedSBM$entropy) + fit$penalty, tolerance = 1e-3)
     ## no variational distribution on the missing dyads
     expect_equal(fit$entropyImputed, 0)
   }
+  ## block-node: the sampling term at the MAP memberships, node by node
+  fit <- estimateMissSBM(A_node, 2, "block-node", control = ctrl())$bestModel
+  rho <- fit$fittedSampling$parameters; z <- max.col(fit$fittedSBM$probMemberships)
+  obs <- missSBM:::partlyObservedNetwork$new(A_node)$observedNodes
+  expect_equal(fit$fittedSampling$vExpec_at(map_Z(fit)), sum(log(rho[z[obs]])) + sum(log(1 - rho[z[!obs]])))
 })
 
 test_that("the option ICL of missSBM_param() is gone (the ICL of the completed network)", {
@@ -35,8 +53,9 @@ test_that("degree: the ICL includes the expected log-likelihood and the entropy 
   expect_true(is.finite(fit$ICL))
   expect_gt(fit$entropyImputed, 0)
   nu <- environment(fit$doVEM)$private$nu # the imputations of the sampling
-  expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec + fit$fittedSBM$vExpec +
-                                fit$fittedSBM$vExpec_imputed(nu) + fit$entropyImputed) + fit$penalty)
+  Z  <- map_Z(fit)
+  expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec + fit$fittedSBM$vExpec_at(Z) +
+                                fit$fittedSBM$vExpec_imputed(nu, Z) + fit$entropyImputed) + fit$penalty)
 })
 
 test_that("double-standard: the missing dyads are integrated out given the blocks", {
@@ -44,8 +63,8 @@ test_that("double-standard: the missing dyads are integrated out given the block
   A_ds <- observeNetwork(sbm_sim$networkData, "double-standard", c(.4, .8))
   fit <- estimateMissSBM(A_ds, 2, "double-standard", control = ctrl())$bestModel
   ## as for the designs ignorable given the blocks: no entropy of the imputations
-  expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec + fit$fittedSBM$vExpec) + fit$penalty)
-  expect_equal(fit$ICL, -2 * (fit$loglik - fit$fittedSBM$entropy) + fit$penalty)
+  Z <- map_Z(fit)
+  expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec_at(Z) + vLL_obs(fit, Z)) + fit$penalty)
 })
 
 test_that("the penalty counts the observed dyads for the connectivity (#51)", {

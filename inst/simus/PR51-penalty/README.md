@@ -39,6 +39,11 @@ Rerun after the removal of the ICL of the completed network (same PR), which cha
 VEM of `dyad` and `node` stops (it now monitors the bound it maximizes): 7 networks differed
 before, 5 now, all toward the true Q in both runs.
 
+Rerun again with the ICL at the MAP memberships (#55, `results/summary.md`): 13 networks differ,
+all toward the true Q; no structure in the Erdős–Rényi networks; the true Q is selected slightly
+more often with both penalties (61% and 62% of the SBM networks with all and observed dyads).
+The figures below are those of the first run.
+
 - **No structure is found in Erdős–Rényi networks** with either penalty (160 networks, Q = 1
   always selected).
 - **The selected Q differs for 5 networks out of 800, all toward the true Q** (SBM with 3 blocks,
