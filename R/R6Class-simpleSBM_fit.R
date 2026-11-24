@@ -179,6 +179,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #'   their imputations (used by the ICL of 'degree', see [missSBM_fit])
     #' @param nu the imputations of the missing dyads (sparse matrix with the pattern of the
     #'   missing dyads)
+    #' @param Z an n x Q matrix of memberships (default: the current variational ones)
     vExpec_imputed = function(nu, Z = private$Z) {
       private$vLL_complete(nu, private$S, Z, private$theta$mean, private$pi) - sum(Z %*% log(private$pi))
     },

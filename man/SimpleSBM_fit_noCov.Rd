@@ -126,6 +126,7 @@ their imputations (used by the ICL of 'degree', see \link{missSBM_fit})
     \describe{
       \item{\code{nu}}{the imputations of the missing dyads (sparse matrix with the pattern of the
 missing dyads)}
+      \item{\code{Z}}{an n x Q matrix of memberships (default: the current variational ones)}
     }
     \if{html}{\out{</div>}}
   }

@@ -118,11 +118,12 @@ stage3 <- function(st, fixPointIter = 3, ...) {
   }, J_zeta, ...)
 }
 
-## the ICL of degree: -2 (J_zeta - H(tau)) + penalty (as in the package since #54)
+## the ICL of degree, as in the package since #55: -2 J_zeta at the MAP memberships + penalty
 ICL_degree <- function(st) {
   Q <- ncol(st$Z); n <- nrow(st$Z)
   pen <- Q * (Q + 1) / 2 * log(sum(st$R)) + (Q - 1) * log(n) + 2 * log(n)
-  -2 * (J_zeta(st) - entropy_tau(st$Z)) + pen
+  Zhat <- matrix(0, n, Q); Zhat[cbind(seq_len(n), max.col(st$Z))] <- 1
+  -2 * (vLL(st$Y + st$nu, st$R + st$S, Zhat, st$theta, st$alpha) + J_sampling(st) + entropy_nu(st$nu)) + pen
 }
 
 ## the three estimators, from the same initial clustering
