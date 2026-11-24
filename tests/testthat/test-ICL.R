@@ -38,10 +38,9 @@ test_that("with a single block, both ICL are equal for node and block-node, dyad
   }
 })
 
-test_that("degree and double-standard: the ICL built on the observed data includes the entropy of the imputations", {
+test_that("degree: the ICL built on the observed data includes the entropy of the imputations", {
   set.seed(2)
   A_degree <- observeNetwork(sbm_sim$networkData, "degree", c(-1, .05))
-  A_ds     <- observeNetwork(sbm_sim$networkData, "double-standard", c(.4, .8))
   fit <- suppressWarnings(estimateMissSBM(A_degree, 2, "degree", control = ctrl()))$bestModel
   expect_true(is.finite(fit$ICLobserved))
   ## the expected log-likelihood of the missing dyads, at the imputations of the SBM, is the
@@ -50,7 +49,17 @@ test_that("degree and double-standard: the ICL built on the observed data includ
                fit$fittedSBM$vExpec_corrected - fit$fittedSBM$vExpec)
   expect_equal(fit$ICL, fit$ICLobserved)
 
+})
+
+test_that("double-standard: the missing dyads are integrated out given the blocks", {
+  set.seed(2)
+  A_ds <- observeNetwork(sbm_sim$networkData, "double-standard", c(.4, .8))
   fit <- estimateMissSBM(A_ds, 2, "double-standard", control = ctrl())$bestModel
-  expect_equal(fit$ICLobserved, -2 * (fit$vExpec + fit$entropyImputed) + fit$penalty)
+  ## as for the designs ignorable given the blocks: no entropy of the imputations
+  expect_equal(fit$ICLobserved, -2 * (fit$fittedSampling$vExpec + fit$fittedSBM$vExpec) + fit$penalty)
   expect_equal(fit$ICLobserved, -2 * (fit$loglik - fit$fittedSBM$entropy) + fit$penalty)
+  ## the completed network: the expected log-likelihood of the completed dyads, i.e. log m_ql
+  ## minus the entropy of the posterior of the missing dyads given the blocks
+  expect_equal(fit$ICLcompleted, -2 * (fit$vExpec - fit$entropyImputed) + fit$penalty)
+  expect_gt(fit$entropyImputed, 0)
 })

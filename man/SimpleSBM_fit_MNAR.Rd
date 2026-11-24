@@ -2,29 +2,30 @@
 % Please edit documentation in R/R6Class-simpleSBM_fit.R
 \name{SimpleSBM_fit_MNAR}
 \alias{SimpleSBM_fit_MNAR}
-\title{Internal class for a binary SBM fit on the observed dyads plus the imputations of the
-missing ones, for the double-standard sampling design (MNAR, depending on the value of each dyad).}
+\title{Internal class for a binary SBM fit under the double-standard sampling design (MNAR,
+depending on the value of each dyad).}
 \description{
+The missing dyads are integrated out given the blocks. A dyad between blocks q and l is
+missing with probability \eqn{m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)}, where
+\eqn{(p_0, p_1)} are the parameters of the sampling: the update of the blocks gets the term
+\eqn{\sum_{j} \sum_l \tau_{jl} \log m_{ql}} over the missing dyads (i, j). The missing dyads
+tie the connectivity to \eqn{(p_0, p_1)}: the M-step maximizes over the three jointly, by EM
+on the missing dyads (the posterior probability that a missing dyad between blocks q and l
+is an edge is \eqn{\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}}), iterated to convergence, all in
+Q x Q given the memberships.
+
 It is not designed to be called directly by the user.
 }
 \section{Super classes}{
-\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{SimpleSBM_fit}} -> \code{\link[missSBM:SimpleSBM_fit_noCov]{SimpleSBM_fit_noCov}} -> \code{SimpleSBM_MNAR_noCov}
-}
-\section{Active bindings}{
-  \if{html}{\out{<div class="r6-active-bindings">}}
-  \describe{
-    \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
-  }
-  \if{html}{\out{</div>}}
+\code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{\link[missSBM:SimpleSBM_fit]{SimpleSBM_fit}} -> \code{\link[missSBM:SimpleSBM_fit_noCov]{SimpleSBM_fit_noCov}} -> \code{SimpleSBM_fit_MNAR}
 }
 \section{Methods}{
 \subsection{Public methods}{
   \itemize{
-    \item \href{#method-SimpleSBM_MNAR_noCov-initialize}{\code{SimpleSBM_MNAR_noCov$new()}}
-    \item \href{#method-SimpleSBM_MNAR_noCov-update_parameters}{\code{SimpleSBM_MNAR_noCov$update_parameters()}}
-    \item \href{#method-SimpleSBM_MNAR_noCov-update_blocks}{\code{SimpleSBM_MNAR_noCov$update_blocks()}}
-    \item \href{#method-SimpleSBM_MNAR_noCov-polish_log_tau}{\code{SimpleSBM_MNAR_noCov$polish_log_tau()}}
-    \item \href{#method-SimpleSBM_MNAR_noCov-clone}{\code{SimpleSBM_MNAR_noCov$clone()}}
+    \item \href{#method-SimpleSBM_fit_MNAR-update_parameters}{\code{SimpleSBM_fit_MNAR$update_parameters()}}
+    \item \href{#method-SimpleSBM_fit_MNAR-update_blocks}{\code{SimpleSBM_fit_MNAR$update_blocks()}}
+    \item \href{#method-SimpleSBM_fit_MNAR-polish_log_tau}{\code{SimpleSBM_fit_MNAR$polish_log_tau()}}
+    \item \href{#method-SimpleSBM_fit_MNAR-clone}{\code{SimpleSBM_fit_MNAR$clone()}}
   }
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
@@ -38,88 +39,76 @@ It is not designed to be called directly by the user.
   <li><span class="pkg-link" data-pkg="sbm" data-topic="SimpleSBM" data-id="show"><a href='../../sbm/html/SimpleSBM.html#method-SimpleSBM-show'><code>sbm::SimpleSBM$show()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>SimpleSBM_fit$doVEM()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-get_state'><code>SimpleSBM_fit$get_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-initialize'><code>SimpleSBM_fit$initialize()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit_noCov" data-id="vExpec_imputed"><a href='../../missSBM/html/SimpleSBM_fit_noCov.html#method-SimpleSBM_fit_noCov-vExpec_imputed'><code>SimpleSBM_fit_noCov$vExpec_imputed()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-initialize"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-initialize}{}}}
-\subsection{\code{SimpleSBM_MNAR_noCov$new()}}{
-  constructor for simpleSBM_fit for missSBM purpose
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_MNAR_noCov$new(networkData, clusterInit)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{networkData}}{a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork}
-      \item{\code{clusterInit}}{Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.}
-    }
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-update_parameters"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-update_parameters}{}}}
-\subsection{\code{SimpleSBM_MNAR_noCov$update_parameters()}}{
+\if{html}{\out{<a id="method-SimpleSBM_fit_MNAR-update_parameters"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_MNAR-update_parameters}{}}}
+\subsection{\code{SimpleSBM_fit_MNAR$update_parameters()}}{
   update parameters estimation (M-step)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_MNAR_noCov$update_parameters(nu = NULL)}
+    \preformatted{SimpleSBM_fit_MNAR$update_parameters(psi = NULL, tol = 1e-08, maxit = 10000)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{nu}}{currently imputed values}
+      \item{\code{psi}}{the parameters (p0, p1) of the sampling, starting point of the joint M-step.
+If \code{NULL}, or with a single block (where the sampling is constrained to dyad
+sampling), the SBM is fitted on the observed dyads.}
+      \item{\code{tol, maxit}}{tolerance on the parameters and maximal number of iterations of the EM
+on the missing dyads}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisibly, the updated (p0, p1), or \code{NULL} if the SBM is fitted on the
+observed dyads
   }
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-update_blocks"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-update_blocks}{}}}
-\subsection{\code{SimpleSBM_MNAR_noCov$update_blocks()}}{
+\if{html}{\out{<a id="method-SimpleSBM_fit_MNAR-update_blocks"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_MNAR-update_blocks}{}}}
+\subsection{\code{SimpleSBM_fit_MNAR$update_blocks()}}{
   update variational estimation of blocks (VE-step)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_MNAR_noCov$update_blocks(log_lambda = 0)}
+    \preformatted{SimpleSBM_fit_MNAR$update_blocks(log_lambda = 0)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{log_lambda}}{additional term sampling dependent used to de-bias estimation of tau}
+      \item{\code{log_lambda}}{Q x Q matrix, the log-probability that a dyad between blocks q and l is
+missing (field \code{log_lambda} of \link{doubleStandardSampling_fit})}
     }
     \if{html}{\out{</div>}}
   }
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-polish_log_tau"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-polish_log_tau}{}}}
-\subsection{\code{SimpleSBM_MNAR_noCov$polish_log_tau()}}{
-  for each node, the complete-data log-likelihood it would contribute to
-each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
-moves in \code{missSBM_fit$polish()}. Unlike \code{update_blocks()}'s tau update (which
-combines the observed- and imputed-part E-steps as-is), this subtracts one copy of
-\code{log(pi)}: both E-step calls add it, so summing them double-counts it relative to
-\code{vExpec}'s convention -- verified numerically to matter (see git history).
+\if{html}{\out{<a id="method-SimpleSBM_fit_MNAR-polish_log_tau"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_MNAR-polish_log_tau}{}}}
+\subsection{\code{SimpleSBM_fit_MNAR$polish_log_tau()}}{
+  for each node, the log-likelihood of the observed data it would contribute
+to each class if hard-assigned there (parameters held fixed), used to decide node-swap
+moves in \code{missSBM_fit$polish()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_MNAR_noCov$polish_log_tau(log_lambda = 0)}
+    \preformatted{SimpleSBM_fit_MNAR$polish_log_tau(log_lambda = 0)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{log_lambda}}{additional sampling-design-dependent term, added as-is}
+      \item{\code{log_lambda}}{Q x Q matrix, the log-probability that a dyad between blocks q and l is
+missing}
     }
     \if{html}{\out{</div>}}
   }
@@ -129,13 +118,13 @@ combines the observed- and imputed-part E-steps as-is), this subtracts one copy 
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_MNAR_noCov-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_MNAR_noCov-clone}{}}}
-\subsection{\code{SimpleSBM_MNAR_noCov$clone()}}{
+\if{html}{\out{<a id="method-SimpleSBM_fit_MNAR-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_MNAR-clone}{}}}
+\subsection{\code{SimpleSBM_fit_MNAR$clone()}}{
   The objects of this class are cloneable with this method.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_MNAR_noCov$clone(deep = FALSE)}
+    \preformatted{SimpleSBM_fit_MNAR$clone(deep = FALSE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{

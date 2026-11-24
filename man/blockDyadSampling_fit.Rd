@@ -23,6 +23,7 @@ Class for fitting a block-dyad sampling
   \itemize{
     \item \href{#method-blockDyadSampling_fit-initialize}{\code{blockDyadSampling_fit$new()}}
     \item \href{#method-blockDyadSampling_fit-update_parameters}{\code{blockDyadSampling_fit$update_parameters()}}
+    \item \href{#method-blockDyadSampling_fit-reorder}{\code{blockDyadSampling_fit$reorder()}}
     \item \href{#method-blockDyadSampling_fit-clone}{\code{blockDyadSampling_fit$clone()}}
   }
 }
@@ -68,6 +69,26 @@ Class for fitting a block-dyad sampling
     \describe{
       \item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
       \item{\code{Z}}{probabilities of block memberships}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-blockDyadSampling_fit-reorder"></a>}}
+\if{latex}{\out{\hypertarget{method-blockDyadSampling_fit-reorder}{}}}
+\subsection{\code{blockDyadSampling_fit$reorder()}}{
+  permute the parameters indexed by the blocks, after the blocks of the SBM
+were permuted
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockDyadSampling_fit$reorder(o)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
     }
     \if{html}{\out{</div>}}
   }

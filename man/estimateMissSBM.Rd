@@ -51,7 +51,10 @@ node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete 
 }
 \item Missing Not At Random (MNAR)
 \itemize{
-\item double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)
+\item double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1).
+(p0, p1) are identified through the differences of connectivity between the blocks: with a
+single block, they are not identifiable, and the model is fitted with p0 = p1, i.e. as dyad
+sampling (with a warning).
 \item block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)
 \item block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)
 }

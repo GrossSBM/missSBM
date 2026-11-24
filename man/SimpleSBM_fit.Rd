@@ -105,6 +105,10 @@ It is not designed to be called directly by the user; see the concrete variants
     \preformatted{SimpleSBM_fit$reorder()}
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    invisibly, the permutation \code{o} applied (new block \code{k} is former block
+\code{o[k]}), so that the parameters of the sampling indexed by the blocks can follow
+  }
 }
 
 \if{html}{\out{<hr>}}

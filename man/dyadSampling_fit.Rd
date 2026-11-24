@@ -26,6 +26,7 @@ Class for fitting a dyad sampling
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="reorder"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-reorder'><code>networkSamplingDyads_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>networkSamplingDyads_fit$show()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_imputation'><code>networkSamplingDyads_fit$update_imputation()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_parameters'><code>networkSamplingDyads_fit$update_parameters()</code></a></span></li>
