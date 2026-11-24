@@ -35,9 +35,13 @@ About 2 minutes on 16 cores. The tables are in `results/summary.md`.
 
 ## Findings
 
+Rerun after the removal of the ICL of the completed network (same PR), which changes where the
+VEM of `dyad` and `node` stops (it now monitors the bound it maximizes): 7 networks differed
+before, 5 now, all toward the true Q in both runs.
+
 - **No structure is found in Erdős–Rényi networks** with either penalty (160 networks, Q = 1
   always selected).
-- **The selected Q differs for 7 networks out of 800, all toward the true Q** (SBM with 3 blocks,
+- **The selected Q differs for 5 networks out of 800, all toward the true Q** (SBM with 3 blocks,
   `dyad` sampling at 15% or 35%, or `node` sampling at 35% with n = 100). Elsewhere, both
   penalties select the same Q.
 - Near the threshold, the ICL remains conservative with both penalties: at 15% of observed

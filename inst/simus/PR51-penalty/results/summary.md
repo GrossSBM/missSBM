@@ -1,5 +1,5 @@
 Each cell: all the dyads → the observed dyads in the penalty, mean over 20 replicates.
-Commit: 5c8eb2b 
+Commit: 522d354 
 
 
 
@@ -39,7 +39,7 @@ Commit: 5c8eb2b
 |   sbm3a|      3|   node| medium| 200|           0.85|     1.00 → 1.00|       3.0 → 3.0|
 |   sbm3b|      3|   dyad|    low| 100|           0.15|     0.00 → 0.00|       1.0 → 1.0|
 |   sbm3b|      3|   dyad|    low| 200|           0.15|     0.15 → 0.15|       1.4 → 1.5|
-|   sbm3b|      3|   dyad| medium| 100|           0.35|     0.10 → 0.20|       1.8 → 1.9|
+|   sbm3b|      3|   dyad| medium| 100|           0.35|     0.15 → 0.15|       1.9 → 1.9|
 |   sbm3b|      3|   dyad| medium| 200|           0.35|     1.00 → 1.00|       3.0 → 3.0|
 |   sbm3b|      3|   node|    low| 100|           0.58|     0.95 → 0.95|       3.0 → 3.0|
 |   sbm3b|      3|   node|    low| 200|           0.58|     1.00 → 1.00|       3.0 → 3.0|
@@ -47,16 +47,14 @@ Commit: 5c8eb2b
 |   sbm3b|      3|   node| medium| 200|           0.84|     1.00 → 1.00|       3.0 → 3.0|
 
 
-Networks whose selected Q differs between the two penalties: 7 out of 800 
+Networks whose selected Q differs between the two penalties: 5 out of 800 
 
 
 
 |net   |   n|design |rate   | Qtrue| Q_all| Q_observed|
 |:-----|---:|:------|:------|-----:|-----:|----------:|
-|sbm3b | 100|dyad   |medium |     3|     2|          3|
 |sbm3b | 200|dyad   |low    |     3|     1|          2|
 |sbm3b | 200|dyad   |low    |     3|     1|          2|
 |sbm3a | 100|node   |low    |     3|     1|          2|
 |sbm3b | 100|dyad   |medium |     3|     1|          2|
-|sbm3b | 100|dyad   |medium |     3|     2|          3|
 |sbm3a | 200|dyad   |medium |     3|     2|          3|

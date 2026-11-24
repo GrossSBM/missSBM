@@ -36,7 +36,7 @@
   parameters still count all the dyads (or all the nodes): the sampling matrix is fully observed.
   The penalty of each connectivity parameter decreases by -log(rate of observed dyads), e.g. 1.9
   at 15% of observed dyads. In simulations (`inst/simus/PR51-penalty/`, 800 networks near the
-  detectability threshold, Erdos-Renyi included), the selected number of blocks changes for 7
+  detectability threshold, Erdos-Renyi included), the selected number of blocks changes for 5
   networks, all toward the true one, and no structure is found in Erdos-Renyi networks with
   either penalty; the campaign of #48 is unchanged. New field `nbObservedDyads` of the fitted
   SBM.

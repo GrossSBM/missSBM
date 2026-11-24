@@ -1,5 +1,5 @@
 Each cell: master → PR52-observed → PR51-observed, mean over 20 replicates.
-Runs: master at a7cb46d, ICL default (4 min); PR52-observed at cbe717a, ICL observed (4 min); PR51-observed at 5c8eb2b, ICL observed (4 min).
+Runs: master at a7cb46d, ICL default (4 min); PR52-observed at cbe717a, ICL observed (4 min); PR51-observed at 522d354, ICL default (4 min).
 
 ### Experiment 1: block-node and block-dyad, Q = 1 to 6 explored, true Q = 3
 
