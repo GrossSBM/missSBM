@@ -115,3 +115,11 @@ The tables are in `results/summary-PR52.md` (master → PR48-observed → PR52-o
   it out of a local optimum. At the low rate of `block-dyad`, the true Q is selected in 95%
   (assortative) and 85% (disassortative) of the cases, instead of 100% and 95%, and the ARI at
   Q = 3 goes from 0.96 to 0.89 (disassortative). The other settings are unchanged.
+
+## Update for #51: the penalty counts the observed dyads
+
+Rerun as `PR51-observed` (tables in `results/summary-PR51.md`, master → PR52-observed →
+PR51-observed). All the cells are unchanged except `dyad` sampling in experiment 2: one more
+network with the true Q (mean selected Q 2.9 → 3.0, ARI 0.86 → 0.89). See
+`inst/simus/PR51-penalty/` for simulations targeting the regimes where the selection of Q is
+borderline.
