@@ -56,10 +56,11 @@ missSBM_fit <-
     ## of a node depends on a whole row of the network), in three stages, each stopping on the
     ## objective it increases (#55):
     ## 1. the SBM part on the observed dyads, stopping on its bound (the VEM of a MAR design);
-    ## 2. the sampling part (imputations nu, (a, b), zeta) given the SBM part;
+    ## 2. the sampling part (imputations nu, (a, b), zeta) given the SBM part, to convergence;
     ## 3. the coordinate ascent of the bound of the model (factorized q(Z) q(Y^m), bound of
     ##    Jaakkola and Jordan) in all the variables: the blocks and the connectivity are updated
-    ##    on the network completed by nu. Starting it from stages 1 and 2 avoids the poor local
+    ##    on the network completed by nu, the sampling part converged at each M-step. Starting it
+    ##    from stages 1 and 2 avoids the poor local
     ##    optima of the coordinate ascent from the initial clustering.
     doVEM_degree = function(control) {
       snapshot <- function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu)
@@ -75,35 +76,41 @@ missSBM_fit <-
         res$stage <- name
         res
       }
-      update_nu <- function() private$nu <- private$sampling$update_imputation(private$SBM$imputation)
-
       s1 <- stage("SBM on the observed dyads",
         e_step     = function(fixPointIter) for (i in seq.int(fixPointIter)) private$SBM$update_blocks(),
         m_step     = function() private$SBM$update_parameters(),
         get_loglik = function() private$SBM$loglik,
         get_theta  = theta)
-      s2 <- stage("sampling given the SBM",
-        e_step     = function(fixPointIter) update_nu(),
-        m_step     = function() private$sampling$update_parameters(private$nu),
-        get_loglik = function() self$loglik,
-        get_theta  = function() private$sampling$parameters)
+      ## stage 2: the sampling part given the SBM part, to convergence
+      elbo0 <- self$loglik
+      private$fit_sampling_degree()
+      s2 <- data.frame(iteration = max(s1$iteration) + 1:2, delta_parameters = NA, delta_objective = NA,
+                       elbo = c(elbo0, self$loglik), stage = "sampling given the SBM")
       s3 <- stage("coordinate ascent",
-        e_step     = function(fixPointIter) {
-          for (i in seq.int(fixPointIter)) {
-            update_nu()
-            private$sampling$update_parameters(private$nu)
-            private$SBM$update_blocks(nu = private$nu)
-          }
-        },
+        e_step     = function(fixPointIter) for (i in seq.int(fixPointIter)) private$SBM$update_blocks(nu = private$nu),
         m_step     = function() {
           private$SBM$update_parameters(private$nu)
-          private$sampling$update_parameters(private$nu)
+          private$fit_sampling_degree()
         },
         get_loglik = function() self$loglik,
         get_theta  = theta)
-      s2$iteration <- s2$iteration + max(s1$iteration)
       s3$iteration <- s3$iteration + max(s2$iteration)
       rbind(s1, s2, s3)
+    },
+
+    ## the sampling part of 'degree' (imputations nu, zeta, (a, b)) given the SBM part, iterated
+    ## to convergence, as the EM of 'double-standard' on the missing dyads in its M-step: it only
+    ## involves the missing dyads, and one step per iteration of the VEM stopped it early
+    fit_sampling_degree = function(tol = 1e-8, maxit = 1000) {
+      for (k in seq_len(maxit)) {
+        psi_old <- private$sampling$parameters
+        nu_old  <- if (is.null(private$nu)) NULL else private$nu@x
+        private$nu <- private$sampling$update_imputation(private$SBM$imputation)
+        private$sampling$update_parameters(private$nu)
+        if (!is.null(nu_old) &&
+            max(abs(private$sampling$parameters - psi_old), abs(private$nu@x - nu_old)) < tol) break
+      }
+      invisible(k)
     },
 
     ## the MAP memberships, as an n x Q indicator matrix (also with empty classes)

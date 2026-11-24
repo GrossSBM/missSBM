@@ -96,10 +96,10 @@ for (directed in c(FALSE, TRUE)) {
 ## The bound of Jaakkola and Jordan and the three stages of the VEM (#55)
 
 ## a small undirected network under degree sampling, its fit at the true clustering
-small_degree_fit <- function(seed, n = 40, maxIter = 100, threshold = 1e-6) {
+small_degree_fit <- function(seed, n = 60, maxIter = 100, threshold = 1e-6) {
   set.seed(seed)
   sim <- sbm::sampleSimpleSBM(n, c(.5, .5), list(mean = matrix(c(.4, .05, .05, .2), 2, 2)))
-  A   <- missSBM::observeNetwork(sim$networkData, "degree", c(-2, .2))
+  A   <- missSBM::observeNetwork(sim$networkData, "degree", c(-1.5, .2))
   pon <- missSBM:::partlyObservedNetwork$new(A)
   ## the initial glm of (a, b) can separate perfectly on a small network
   fit <- suppressWarnings(missSBM:::missSBM_fit$new(pon, "degree", sim$memberships))
@@ -127,8 +127,12 @@ test_that("degree: the sampling term is the bound of Jaakkola and Jordan, below 
   expect_lte(samp$vExpec, exact)
   ## the expected degrees plugged in (the previous vExpec) are above the expectation (Jensen)
   expect_gte(plug_in, exact)
-  ## zeta is not a probability: at its optimum, sqrt(E[(a + b D)^2]), often above 1
-  expect_gt(max(priv$ksi), 1)
+  ## zeta is not a probability: its optimum sqrt(E[(a + b D)^2]) is not truncated to 1
+  samp2 <- samp$clone(); priv2 <- environment(samp2$update_parameters)$private
+  priv2$psi <- c(-3, .3)
+  samp2$update_parameters(nu)
+  expect_equal(priv2$ksi, pmax(sqrt(pmax(9 + .09 * priv2$D2 - 1.8 * priv2$D, 0)), 1e-6)) # 1e-6: h(0) is 0/0
+  expect_gt(max(priv2$ksi), 1)
 })
 
 test_that("degree: three stages, the bound J_zeta increases in stages 2 and 3, and loglik is J_zeta", {
@@ -151,7 +155,7 @@ test_that("degree: three stages, the bound J_zeta increases in stages 2 and 3, a
   H_tau <- -sum(tau * log(tau)); H_nu <- -sum(nu@x * log(nu@x) + (1 - nu@x) * log(1 - nu@x))
   expect_equal(fit$loglik, ll_sbm + fit$fittedSampling$vExpec + H_tau + H_nu, tolerance = 1e-8)
   ## the ICL: the bound at the MAP memberships
-  Z <- SBM$indMemberships
+  Z <- matrix(0, nrow(tau), ncol(tau)); Z[cbind(seq_len(nrow(tau)), max.col(tau))] <- 1
   expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec + SBM$vExpec_at(Z) + SBM$vExpec_imputed(nu, Z) +
                                 H_nu) + fit$penalty)
 })

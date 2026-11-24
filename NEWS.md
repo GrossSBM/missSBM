@@ -66,7 +66,9 @@
   increases: the SBM part on the observed dyads, the sampling part given the SBM part, then the
   coordinate ascent of the bound in all the variables, the blocks and the connectivity being
   updated on the network completed by the imputations (new internal class
-  `SimpleSBM_fit_degree`). Started from the usual initialization, this coordinate ascent reaches
+  `SimpleSBM_fit_degree`). The sampling part, which only involves the missing dyads, is iterated
+  to convergence given the SBM part (in stage 2 and at each M-step of stage 3), as the EM of
+  `double-standard`: with the default threshold, one step per iteration stopped it early. Started from the usual initialization, this coordinate ascent reaches
   worse local optima; from the first two stages, it increases the bound in every simulated
   network and keeps the partition. In simulations (`inst/simus/issue55-degree/`, n = 200), the
   ICL chooses `degree` when it generated the data in 100% of the cases for a medium or strong
