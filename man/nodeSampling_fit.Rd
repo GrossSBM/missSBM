@@ -23,13 +23,14 @@ Class for fitting a node sampling
     \item \href{#method-nodeSampling_fit-clone}{\code{nodeSampling_fit$clone()}}
   }
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="reorder"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-reorder'><code>networkSamplingNodes_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>networkSamplingNodes_fit$show()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-update_imputation'><code>networkSamplingNodes_fit$update_imputation()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-update_parameters'><code>networkSamplingNodes_fit$update_parameters()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="vExpec_at"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-vExpec_at'><code>networkSamplingNodes_fit$vExpec_at()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

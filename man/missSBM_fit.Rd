@@ -60,10 +60,11 @@ sampling matrix is fully observed}
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
     \item{\code{ICL}}{double: integrated classification likelihood, built on the observed data (the
-observed dyads and the sampling matrix), the missing dyads being integrated out: -2
-times the variational lower bound of the log-likelihood of the observed data, without
-the entropy of the blocks, plus the penalty. For 'degree', whose sampling depends on
-the degrees, the bound includes the entropy of the imputations.}
+observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
+the variational lower bound of the log-likelihood of the observed data and of the blocks,
+evaluated at the MAP memberships (hard assignment of each node to its most probable
+block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+bound includes the expected log-likelihood and the entropy of the imputations.}
   }
   \if{html}{\out{</div>}}
 }

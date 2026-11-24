@@ -150,7 +150,10 @@ test_that("degree: three stages, the bound J_zeta increases in stages 2 and 3, a
     ll_sbm <- ll_sbm + sum(outer(tau[i, ], tau[j, ]) * (Yc[i, j] * log(theta) + (1 - Yc[i, j]) * log(1 - theta)))
   H_tau <- -sum(tau * log(tau)); H_nu <- -sum(nu@x * log(nu@x) + (1 - nu@x) * log(1 - nu@x))
   expect_equal(fit$loglik, ll_sbm + fit$fittedSampling$vExpec + H_tau + H_nu, tolerance = 1e-8)
-  expect_equal(fit$ICL, -2 * (fit$loglik - SBM$entropy) + fit$penalty)
+  ## the ICL: the bound at the MAP memberships
+  Z <- SBM$indMemberships
+  expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec + SBM$vExpec_at(Z) + SBM$vExpec_imputed(nu, Z) +
+                                H_nu) + fit$penalty)
 })
 
 test_that("degree: polish_log_tau() matches a brute-force delta of the completed network", {

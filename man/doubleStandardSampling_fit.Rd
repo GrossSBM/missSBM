@@ -43,6 +43,7 @@ blocks q and l is an edge, with the current parameters}
     \item \href{#method-doubleStandardSampling_fit-update_parameters}{\code{doubleStandardSampling_fit$update_parameters()}}
     \item \href{#method-doubleStandardSampling_fit-update_imputation}{\code{doubleStandardSampling_fit$update_imputation()}}
     \item \href{#method-doubleStandardSampling_fit-reorder}{\code{doubleStandardSampling_fit$reorder()}}
+    \item \href{#method-doubleStandardSampling_fit-vExpec_at}{\code{doubleStandardSampling_fit$vExpec_at()}}
     \item \href{#method-doubleStandardSampling_fit-clone}{\code{doubleStandardSampling_fit$clone()}}
   }
 }
@@ -135,6 +136,26 @@ were permuted
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-doubleStandardSampling_fit-vExpec_at"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-vExpec_at}{}}}
+\subsection{\code{doubleStandardSampling_fit$vExpec_at()}}{
+  the variational expectation of the log-likelihood of the sampling at given
+memberships (used by the ICL, at the MAP memberships)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{doubleStandardSampling_fit$vExpec_at(Z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Z}}{an n x Q matrix of memberships}
     }
     \if{html}{\out{</div>}}
   }

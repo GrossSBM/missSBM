@@ -106,6 +106,14 @@ missSBM_fit <-
       rbind(s1, s2, s3)
     },
 
+    ## the MAP memberships, as an n x Q indicator matrix (also with empty classes)
+    map_memberships = function() {
+      tau <- private$SBM$probMemberships
+      Z <- matrix(0, nrow(tau), ncol(tau))
+      Z[cbind(seq_len(nrow(tau)), max.col(tau, ties.method = "first"))] <- 1
+      Z
+    },
+
     ## the imputations of the missing dyads under 'degree' (variational parameters of its sampling)
     imputations_degree = function() {
       if (is.null(private$nu)) private$sampling$update_imputation(private$SBM$imputation) else private$nu
@@ -498,11 +506,18 @@ missSBM_fit <-
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik  = function(value) {self$vExpec + self$entropy},
     #' @field ICL double: integrated classification likelihood, built on the observed data (the
-    #'   observed dyads and the sampling matrix), the missing dyads being integrated out: -2
-    #'   times the variational lower bound of the log-likelihood of the observed data, without
-    #'   the entropy of the blocks, plus the penalty. For 'degree', whose sampling depends on
-    #'   the degrees, the bound includes the entropy of the imputations.
-    ICL    = function(value) {-2 * (self$loglik - private$SBM$entropy) + self$penalty}
+    #'   observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
+    #'   the variational lower bound of the log-likelihood of the observed data and of the blocks,
+    #'   evaluated at the MAP memberships (hard assignment of each node to its most probable
+    #'   block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+    #'   bound includes the expected log-likelihood and the entropy of the imputations.
+    ICL    = function(value) {
+      Z <- private$map_memberships()
+      J <- private$sampling$vExpec_at(Z) + private$SBM$vExpec_at(Z) +
+        if (private$sampling$type == "degree")
+          private$SBM$vExpec_imputed(private$imputations_degree(), Z) + self$entropyImputed else 0
+      -2 * J + self$penalty
+    }
   )
 )
 

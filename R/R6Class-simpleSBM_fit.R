@@ -179,8 +179,14 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #'   their imputations (used by the ICL of 'degree', see [missSBM_fit])
     #' @param nu the imputations of the missing dyads (sparse matrix with the pattern of the
     #'   missing dyads)
-    vExpec_imputed = function(nu) {
-      private$vLL_complete(nu, private$S, private$Z, private$theta$mean, private$pi) - sum(private$Z %*% log(private$pi))
+    vExpec_imputed = function(nu, Z = private$Z) {
+      private$vLL_complete(nu, private$S, Z, private$theta$mean, private$pi) - sum(Z %*% log(private$pi))
+    },
+    #' @description variational expectation of the log-likelihood of the observed dyads and of
+    #'   the blocks at given memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      private$vLL_complete(private$Y, private$R, Z, private$theta$mean, private$pi)
     }
   ),
   active = list(
@@ -241,6 +247,12 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     #' @return an N x Q matrix
     polish_log_tau = function(log_lambda = 0, ...) {
       private$E_step(private$Y, private$R, self$covarEffect, self$indMemberships, .logit(private$theta$mean), private$pi, !self$directed, FALSE) + log_lambda
+    },
+    #' @description variational expectation of the log-likelihood of the observed dyads and of
+    #'   the blocks at given memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      private$vLL_complete(private$Y, private$R, self$covarEffect, Z, .logit(private$theta$mean), private$pi)
     }
   ),
   active = list(

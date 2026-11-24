@@ -39,7 +39,11 @@ networkSamplingDyads_fit <-
     #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
     #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
     #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
-    reorder = function(o) {invisible(self)}
+    reorder = function(o) {invisible(self)},
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {self$vExpec} # the sampling does not depend on the blocks
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -89,7 +93,11 @@ networkSamplingNodes_fit <-
     #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
     #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
     #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
-    reorder = function(o) {invisible(self)}
+    reorder = function(o) {invisible(self)},
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {self$vExpec} # the sampling does not depend on the blocks
   ),
   active = list(
     #' @field penalty double, value of the penalty term in ICL
@@ -272,6 +280,13 @@ doubleStandardSampling_fit <-
       private$ZtSZ  <- private$ZtSZ[o, o, drop = FALSE]
       private$theta <- private$theta[o, o, drop = FALSE]
       invisible(self)
+    },
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
+        sum(as.matrix(t(Z) %*% private$S %*% Z) * log(private$m()))
     }
   ),
   active = list(
@@ -334,6 +349,13 @@ blockDyadSampling_fit <-
       private$psi <- private$psi[o, o, drop = FALSE]
       private$Z   <- private$Z[, o, drop = FALSE]
       invisible(self)
+    },
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      sum(as.matrix(t(Z) %*% private$R %*% Z) * log(private$psi)) +
+        sum(as.matrix(t(Z) %*% private$S %*% Z) * log(1 - private$psi))
     }
   ),
   active = list(
@@ -388,6 +410,13 @@ blockNodeSampling_fit <-
       private$So  <- private$So[o]
       private$Sm  <- private$Sm[o]
       invisible(self)
+    },
+    #' @description the variational expectation of the log-likelihood of the sampling at given
+    #'   memberships (used by the ICL, at the MAP memberships)
+    #' @param Z an n x Q matrix of memberships
+    vExpec_at = function(Z) {
+      c(crossprod(colSums(Z[ private$N_obs, , drop = FALSE]), log(private$psi)) +
+        crossprod(colSums(Z[!private$N_obs, , drop = FALSE]), log(1 - private$psi)))
     }
   ),
   active = list(

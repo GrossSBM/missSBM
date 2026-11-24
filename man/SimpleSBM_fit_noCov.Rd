@@ -25,6 +25,7 @@ It is not designed to be called directly by the user.
     \item \href{#method-SimpleSBM_fit_noCov-update_blocks}{\code{SimpleSBM_fit_noCov$update_blocks()}}
     \item \href{#method-SimpleSBM_fit_noCov-polish_log_tau}{\code{SimpleSBM_fit_noCov$polish_log_tau()}}
     \item \href{#method-SimpleSBM_fit_noCov-vExpec_imputed}{\code{SimpleSBM_fit_noCov$vExpec_imputed()}}
+    \item \href{#method-SimpleSBM_fit_noCov-vExpec_at}{\code{SimpleSBM_fit_noCov$vExpec_at()}}
     \item \href{#method-SimpleSBM_fit_noCov-clone}{\code{SimpleSBM_fit_noCov$clone()}}
   }
 }
@@ -117,7 +118,7 @@ moves in \code{missSBM_fit$polish()}.
 their imputations (used by the ICL of 'degree', see \link{missSBM_fit})
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit_noCov$vExpec_imputed(nu)}
+    \preformatted{SimpleSBM_fit_noCov$vExpec_imputed(nu, Z = private$Z)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -125,6 +126,26 @@ their imputations (used by the ICL of 'degree', see \link{missSBM_fit})
     \describe{
       \item{\code{nu}}{the imputations of the missing dyads (sparse matrix with the pattern of the
 missing dyads)}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimpleSBM_fit_noCov-vExpec_at"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_noCov-vExpec_at}{}}}
+\subsection{\code{SimpleSBM_fit_noCov$vExpec_at()}}{
+  variational expectation of the log-likelihood of the observed dyads and of
+the blocks at given memberships (used by the ICL, at the MAP memberships)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit_noCov$vExpec_at(Z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Z}}{an n x Q matrix of memberships}
     }
     \if{html}{\out{</div>}}
   }

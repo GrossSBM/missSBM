@@ -24,6 +24,7 @@ Class for fitting a block-node sampling
     \item \href{#method-blockNodeSampling_fit-initialize}{\code{blockNodeSampling_fit$new()}}
     \item \href{#method-blockNodeSampling_fit-update_parameters}{\code{blockNodeSampling_fit$update_parameters()}}
     \item \href{#method-blockNodeSampling_fit-reorder}{\code{blockNodeSampling_fit$reorder()}}
+    \item \href{#method-blockNodeSampling_fit-vExpec_at}{\code{blockNodeSampling_fit$vExpec_at()}}
     \item \href{#method-blockNodeSampling_fit-clone}{\code{blockNodeSampling_fit$clone()}}
   }
 }
@@ -89,6 +90,26 @@ were permuted
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-blockNodeSampling_fit-vExpec_at"></a>}}
+\if{latex}{\out{\hypertarget{method-blockNodeSampling_fit-vExpec_at}{}}}
+\subsection{\code{blockNodeSampling_fit$vExpec_at()}}{
+  the variational expectation of the log-likelihood of the sampling at given
+memberships (used by the ICL, at the MAP memberships)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockNodeSampling_fit$vExpec_at(Z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Z}}{an n x Q matrix of memberships}
     }
     \if{html}{\out{</div>}}
   }
