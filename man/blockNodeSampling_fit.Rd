@@ -23,6 +23,7 @@ Class for fitting a block-node sampling
   \itemize{
     \item \href{#method-blockNodeSampling_fit-initialize}{\code{blockNodeSampling_fit$new()}}
     \item \href{#method-blockNodeSampling_fit-update_parameters}{\code{blockNodeSampling_fit$update_parameters()}}
+    \item \href{#method-blockNodeSampling_fit-reorder}{\code{blockNodeSampling_fit$reorder()}}
     \item \href{#method-blockNodeSampling_fit-clone}{\code{blockNodeSampling_fit$clone()}}
   }
 }
@@ -68,6 +69,26 @@ Class for fitting a block-node sampling
     \describe{
       \item{\code{imputedNet}}{an adjacency matrix where missing values have been imputed}
       \item{\code{Z}}{indicator of blocks}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-blockNodeSampling_fit-reorder"></a>}}
+\if{latex}{\out{\hypertarget{method-blockNodeSampling_fit-reorder}{}}}
+\subsection{\code{blockNodeSampling_fit$reorder()}}{
+  permute the parameters indexed by the blocks, after the blocks of the SBM
+were permuted
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{blockNodeSampling_fit$reorder(o)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
     }
     \if{html}{\out{</div>}}
   }

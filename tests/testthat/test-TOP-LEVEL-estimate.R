@@ -31,13 +31,15 @@ test_that("missSBM and class missSBM-fit are coherent", {
     missSBM <- missSBM:::missSBM_fit$new(partlyObservedNet, sampling, cl0, TRUE)
     out_missSBM <- missSBM$doVEM(control)
 
-    ## Perform inference with the top level function
-    collection <- estimateMissSBM(
+    ## Perform inference with the top level function ('double-standard' warns that it is not
+    ## identifiable with a single block, see test-double-standard.R)
+    estimate <- function() estimateMissSBM(
       adjacencyMatrix = adjMatrix,
       vBlocks     = 1:3,
       sampling    = sampling,
       control     = missSBM_param(threshold = 1e-3, maxIter = 100, fixPointIter = 5, trace = 0, iterates = 0)
     )
+    collection <- if (sampling == "double-standard") suppressWarnings(estimate()) else estimate()
 
     expect_is(collection, "missSBM_collection")
     expect_gte(aricode::ARI(collection$models[[Q]]$fittedSBM$memberships, missSBM$fittedSBM$memberships), 1)

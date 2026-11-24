@@ -25,6 +25,7 @@ Virtual class used to define a family of networkSamplingNodes_fit
     \item \href{#method-networkSamplingNodes_fit-show}{\code{networkSamplingNodes_fit$show()}}
     \item \href{#method-networkSamplingNodes_fit-update_parameters}{\code{networkSamplingNodes_fit$update_parameters()}}
     \item \href{#method-networkSamplingNodes_fit-update_imputation}{\code{networkSamplingNodes_fit$update_imputation()}}
+    \item \href{#method-networkSamplingNodes_fit-reorder}{\code{networkSamplingNodes_fit$reorder()}}
     \item \href{#method-networkSamplingNodes_fit-clone}{\code{networkSamplingNodes_fit$clone()}}
   }
 }
@@ -98,6 +99,26 @@ Virtual class used to define a family of networkSamplingNodes_fit
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-networkSamplingNodes_fit-reorder"></a>}}
+\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-reorder}{}}}
+\subsection{\code{networkSamplingNodes_fit$reorder()}}{
+  permute the parameters indexed by the blocks, after the blocks of the SBM
+were permuted. By default, nothing to do (no parameter indexed by the blocks)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{networkSamplingNodes_fit$reorder(o)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
     }
     \if{html}{\out{</div>}}
   }

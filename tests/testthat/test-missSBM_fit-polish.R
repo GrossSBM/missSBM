@@ -5,7 +5,7 @@ context("test missSBM_fit's node-swap polishing (polish())")
 ## (theta/pi held fixed) -- i.e. it reuses the existing E-step machinery (rescale = FALSE, hard
 ## Z) rather than any new numerical code. Checked here against a brute-force recomputation of
 ## vLL_complete_sparse_bernoulli_* for a handful of (node, class) reassignments, on the three
-## SimpleSBM_fit variants (noCov, withCov, MNAR).
+## SimpleSBM_fit variants (noCov, withCov, MNAR for double-standard).
 
 set.seed(1)
 N <- 60; Q <- 4
@@ -40,21 +40,24 @@ test_that("polish_log_tau() matches a brute-force complete-data log-likelihood d
   }
 })
 
-test_that("polish_log_tau() matches a brute-force complete-data log-likelihood delta (MNAR)", {
-  blog_obs <- missSBM::observeNetwork(sampler$networkData, "block-node",
-                                       c(0.9, 0.3, 0.9, 0.5), clusters = sampler$memberships)
-  fit <- missSBM:::SimpleSBM_fit_MNAR$new(missSBM:::partlyObservedNetwork$new(blog_obs), sampler$memberships)
-  fit$doVEM(threshold = 1e-3, maxIter = 20, fixPointIter = 3, trace = FALSE)
+test_that("polish_log_tau() matches a brute-force log-likelihood delta (double-standard)", {
+  ds_obs <- missSBM::observeNetwork(sampler$networkData, "double-standard", c(0.3, 0.8))
+  fit <- missSBM:::missSBM_fit$new(missSBM:::partlyObservedNetwork$new(ds_obs), "double-standard",
+                                   sampler$memberships, TRUE)
+  fit$doVEM(list(threshold = 1e-3, maxIter = 20, fixPointIter = 3, trace = FALSE))
+  SBM   <- fit$fittedSBM
+  priv  <- environment(SBM$get_state)$private
+  log_m <- fit$fittedSampling$log_lambda
 
-  priv    <- environment(fit$get_state)$private
-  Zhard   <- fit$indMemberships
-  cl0     <- fit$memberships
-  log_tau <- fit$polish_log_tau()
+  Zhard   <- SBM$indMemberships
+  cl0     <- SBM$memberships
+  log_tau <- SBM$polish_log_tau(log_m)
 
+  ## the observed dyads, plus log m_ql for each missing dyad: the log-likelihood of the observed
+  ## data (up to the terms of the observed dyads in the sampling, which do not depend on Z)
   vLL <- function(Zmat) {
-    missSBM:::vLL_complete_sparse_bernoulli_nocovariate(priv$Y, priv$R, Zmat, fit$connectParam$mean, fit$blockProp) +
-      missSBM:::vLL_complete_sparse_bernoulli_nocovariate(priv$V, priv$S, Zmat, fit$connectParam$mean, fit$blockProp) -
-      sum(Zmat %*% log(fit$blockProp))
+    missSBM:::vLL_complete_sparse_bernoulli_nocovariate(priv$Y, priv$R, Zmat, SBM$connectParam$mean, SBM$blockProp) +
+      sum(as.matrix(t(Zmat) %*% priv$S %*% Zmat) * log_m)
   }
 
   for (i in c(1, 15, 40)) for (q in setdiff(1:Q, cl0[i])) {

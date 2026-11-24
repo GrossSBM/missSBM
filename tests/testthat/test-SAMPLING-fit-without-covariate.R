@@ -32,7 +32,7 @@ test_that("Consistency of sampling fit for undirected bernoulli withou covariate
       sampling$name,
       "dyad"            = missSBM:::dyadSampling_fit$new(partlyObservedNet),
       "node"            = missSBM:::nodeSampling_fit$new(partlyObservedNet),
-      "double-standard" = missSBM:::doubleStandardSampling_fit$new(partlyObservedNet),
+      "double-standard" = missSBM:::doubleStandardSampling_fit$new(partlyObservedNet, Z0, sampler_undirected_nocov$connectParam$mean),
       "block-node"      = missSBM:::blockNodeSampling_fit$new(partlyObservedNet, Z0),
       "block-dyad"      = missSBM:::blockDyadSampling_fit$new(partlyObservedNet, Z0),
       "degree"          = missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sampler_undirected_nocov$connectParam$mean)
@@ -48,13 +48,8 @@ test_that("Consistency of sampling fit for undirected bernoulli withou covariate
     ## performed here, is not expected to recover the truth to the same tolerance as
     ## the other (closed-form) designs -- see test-TOP-LEVEL-estimate.R for a check of
     ## the fully iterated fit.
-    ## "double-standard"'s initial psi is bootstrapped from a single, undifferentiated
-    ## "average" imputation of the missing dyads: whenever that fill value equals the
-    ## exact empirical observed edge rate, psi[1] and psi[2] are mathematically forced
-    ## to coincide (a structural degeneracy of this one-shot estimator, not a bug), so
-    ## this single, non-iterated call isn't expected to recover the truth precisely --
-    ## see test-TOP-LEVEL-estimate.R / test-MISSSBM_collection.R for the fully iterated
-    ## fit, which does refine it through update_imputation() each VEM step.
+    ## "double-standard" starts from dyad sampling (p0 = p1 = the observation rate): only the
+    ## iterated fit separates them -- see test-double-standard.R.
     if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
     } else if (!sampling$name %in% c("degree", "double-standard")) {
@@ -90,7 +85,7 @@ test_that("Consistency of sampling fit for directed network, no covariates", {
       sampling$name,
       "dyad"            = missSBM:::dyadSampling_fit$new(partlyObservedNet),
       "node"            = missSBM:::nodeSampling_fit$new(partlyObservedNet),
-      "double-standard" = missSBM:::doubleStandardSampling_fit$new(partlyObservedNet),
+      "double-standard" = missSBM:::doubleStandardSampling_fit$new(partlyObservedNet, Z0, sampler_directed_nocov$connectParam$mean),
       "block-node"      = missSBM:::blockNodeSampling_fit$new(partlyObservedNet, Z0),
       "block-dyad"      = missSBM:::blockDyadSampling_fit$new(partlyObservedNet, Z0),
       "degree"          = missSBM:::degreeSampling_fit$new(partlyObservedNet, Z0, sampler_directed_nocov$connectParam$mean)
@@ -106,13 +101,8 @@ test_that("Consistency of sampling fit for directed network, no covariates", {
     ## performed here, is not expected to recover the truth to the same tolerance as
     ## the other (closed-form) designs -- see test-TOP-LEVEL-estimate.R for a check of
     ## the fully iterated fit.
-    ## "double-standard"'s initial psi is bootstrapped from a single, undifferentiated
-    ## "average" imputation of the missing dyads: whenever that fill value equals the
-    ## exact empirical observed edge rate, psi[1] and psi[2] are mathematically forced
-    ## to coincide (a structural degeneracy of this one-shot estimator, not a bug), so
-    ## this single, non-iterated call isn't expected to recover the truth precisely --
-    ## see test-TOP-LEVEL-estimate.R / test-MISSSBM_collection.R for the fully iterated
-    ## fit, which does refine it through update_imputation() each VEM step.
+    ## "double-standard" starts from dyad sampling (p0 = p1 = the observation rate): only the
+    ## iterated fit separates them -- see test-double-standard.R.
     if (sampling$name %in% c("dyad", "node")) {
       expect_lt(error(fittedSampling$parameters, sampling$psi), tol_truth)
     } else if (!sampling$name %in% c("degree", "double-standard")) {

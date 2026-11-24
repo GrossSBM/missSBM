@@ -28,6 +28,7 @@ Class for fitting a degree sampling
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="reorder"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-reorder'><code>networkSamplingNodes_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>networkSamplingNodes_fit$show()</code></a></span></li>
 </ul>
 </details>}}

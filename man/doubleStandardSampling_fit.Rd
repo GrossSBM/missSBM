@@ -4,7 +4,17 @@
 \alias{doubleStandardSampling_fit}
 \title{Class for fitting a double-standard sampling}
 \description{
-Class for fitting a double-standard sampling
+A dyad is observed with probability \eqn{p_0} if it is 0, \eqn{p_1} if it is 1 (the vector of
+parameters is \eqn{(p_0, p_1)}). Given the blocks, a dyad between blocks q and l is missing
+with probability \eqn{m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)}: the missing dyads
+are integrated out given the blocks, and the posterior probability that a missing dyad between
+blocks q and l is an edge is \eqn{\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}}, a Q x Q matrix.
+The parameters are updated jointly with the connectivity of the SBM (see
+\link{SimpleSBM_fit_MNAR}): this class only stores them, with the terms of the sampling.
+
+With a single block, \eqn{(\pi, p_0, p_1)} are not identifiable: the observed data only inform
+\eqn{\pi p_1} and \eqn{(1 - \pi) p_0}. The fit is then constrained to \eqn{p_0 = p_1}, that is,
+to dyad sampling, with one parameter.
 }
 \section{Super classes}{
 \code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{doubleStandardSampling_fit}
@@ -12,7 +22,20 @@ Class for fitting a double-standard sampling
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{vExpec}}{variational expectation of the sampling}
+    \item{\code{df}}{the number of parameters: 2, or 1 with a single block (p0 = p1)}
+
+    \item{\code{vExpec}}{variational expectation of the log-likelihood of the sampling, the missing
+dyads being integrated out given the blocks:
+\eqn{E_\tau[\log p(R \mid Y^o, Z)]}}
+
+    \item{\code{log_lambda}}{Q x Q matrix, the log-probability that a dyad between blocks q and l is
+missing, the term of the missing dyads in the update of the blocks}
+
+    \item{\code{blockImputation}}{Q x Q matrix, the posterior probability that a missing dyad between
+blocks q and l is an edge, with the current parameters}
+
+    \item{\code{entropyImputed}}{the expected entropy of the missing dyads given the blocks,
+\eqn{\sum_{q,l} (Z^\top S Z)_{ql} H(\nu_{ql})}}
   }
   \if{html}{\out{</div>}}
 }
@@ -22,6 +45,7 @@ Class for fitting a double-standard sampling
     \item \href{#method-doubleStandardSampling_fit-initialize}{\code{doubleStandardSampling_fit$new()}}
     \item \href{#method-doubleStandardSampling_fit-update_parameters}{\code{doubleStandardSampling_fit$update_parameters()}}
     \item \href{#method-doubleStandardSampling_fit-update_imputation}{\code{doubleStandardSampling_fit$update_imputation()}}
+    \item \href{#method-doubleStandardSampling_fit-reorder}{\code{doubleStandardSampling_fit$reorder()}}
     \item \href{#method-doubleStandardSampling_fit-clone}{\code{doubleStandardSampling_fit$clone()}}
   }
 }
@@ -38,14 +62,15 @@ Class for fitting a double-standard sampling
   constructor
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{doubleStandardSampling_fit$new(partlyObservedNetwork, ...)}
+    \preformatted{doubleStandardSampling_fit$new(partlyObservedNetwork, blockInit, connectInit)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
-      \item{\code{...}}{used for compatibility}
+      \item{\code{blockInit}}{n x Q matrix of initial block indicators}
+      \item{\code{connectInit}}{Q x Q matrix of initial connectivity of the SBM}
     }
     \if{html}{\out{</div>}}
   }
@@ -55,16 +80,20 @@ Class for fitting a double-standard sampling
 \if{html}{\out{<a id="method-doubleStandardSampling_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-update_parameters}{}}}
 \subsection{\code{doubleStandardSampling_fit$update_parameters()}}{
-  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  stores the parameters, updated jointly with the connectivity of the SBM
+(see \link{SimpleSBM_fit_MNAR}), and the current blocks
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{doubleStandardSampling_fit$update_parameters(nu, ...)}
+    \preformatted{doubleStandardSampling_fit$update_parameters(Z, theta, psi = NULL, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{nu}}{an adjacency matrix with imputed values (only)}
+      \item{\code{Z}}{probabilities of block memberships}
+      \item{\code{theta}}{the connectivity of the SBM}
+      \item{\code{psi}}{the updated (p0, p1); \code{NULL} with a single block, where p0 = p1 is the
+observation rate (dyad sampling)}
       \item{\code{...}}{use for compatibility}
     }
     \if{html}{\out{</div>}}
@@ -75,16 +104,40 @@ Class for fitting a double-standard sampling
 \if{html}{\out{<a id="method-doubleStandardSampling_fit-update_imputation"></a>}}
 \if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-update_imputation}{}}}
 \subsection{\code{doubleStandardSampling_fit$update_imputation()}}{
-  a method to update the imputation of the missing entries.
+  no imputation is needed along the VEM: the missing dyads are integrated out
+given the blocks (see the field \code{blockImputation})
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{doubleStandardSampling_fit$update_imputation(nu)}
+    \preformatted{doubleStandardSampling_fit$update_imputation(...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
+      \item{\code{...}}{use for compatibility}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-doubleStandardSampling_fit-reorder"></a>}}
+\if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-reorder}{}}}
+\subsection{\code{doubleStandardSampling_fit$reorder()}}{
+  permute the parameters indexed by the blocks, after the blocks of the SBM
+were permuted
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{doubleStandardSampling_fit$reorder(o)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
     }
     \if{html}{\out{</div>}}
   }

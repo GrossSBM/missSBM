@@ -89,12 +89,15 @@ R6::R6Class(classname = "SimpleSBM_fit",
       )
     },
     #' @description permute group labels by order of decreasing probability
+    #' @return invisibly, the permutation \code{o} applied (new block \code{k} is former block
+    #'   \code{o[k]}), so that the parameters of the sampling indexed by the blocks can follow
     reorder = function(){
       private$imputation_cache <- NULL
       o <- order(private$theta$mean %*% private$pi, decreasing = TRUE)
       private$pi <- private$pi[o]
       private$theta$mean <- private$theta$mean[o, o, drop = FALSE]
       private$Z <- private$Z[, o, drop = FALSE]
+      invisible(o)
     },
     #' @description a lightweight snapshot of the mutable VEM state (as opposed to \code{clone()},
     #' which duplicates the whole object, including the -- possibly large -- network data)
@@ -262,79 +265,90 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
   )
 )
 
-#' Internal class for a binary SBM fit on the observed dyads plus the imputations of the
-#' missing ones, for the double-standard sampling design (MNAR, depending on the value of each dyad).
+#' Internal class for a binary SBM fit under the double-standard sampling design (MNAR,
+#' depending on the value of each dyad).
+#'
+#' The missing dyads are integrated out given the blocks. A dyad between blocks q and l is
+#' missing with probability \eqn{m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)}, where
+#' \eqn{(p_0, p_1)} are the parameters of the sampling: the update of the blocks gets the term
+#' \eqn{\sum_{j} \sum_l \tau_{jl} \log m_{ql}} over the missing dyads (i, j). The missing dyads
+#' tie the connectivity to \eqn{(p_0, p_1)}: the M-step maximizes over the three jointly, by EM
+#' on the missing dyads (the posterior probability that a missing dyad between blocks q and l
+#' is an edge is \eqn{\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}}), iterated to convergence, all in
+#' Q x Q given the memberships.
 #'
 #' It is not designed to be called directly by the user.
 #'
 #' @import R6
 SimpleSBM_fit_MNAR <-
-R6::R6Class(classname = "SimpleSBM_MNAR_noCov",
+R6::R6Class(classname = "SimpleSBM_fit_MNAR",
   inherit = SimpleSBM_fit_noCov,
   private = list(
-    V = NULL # matrix of imputed values
+    ## term of the missing dyads in the update of the blocks: for each node i and block q, the sum
+    ## over its missing dyads (i, j) of sum_l Z_jl log m_ql (both triangles if undirected)
+    missing_term = function(Z, log_m) {
+      if (identical(log_m, 0)) return(0) # no sampling term (the SBM alone)
+      as.matrix(private$S %*% Z %*% t(log_m) + Matrix::t(private$S) %*% Z %*% log_m)
+    }
   ),
   public = list(
-    #' @description constructor for simpleSBM_fit for missSBM purpose
-    #' @param networkData a structure to store network under missing data condition: either a matrix possibly with NA, or a missSBM:::partlyObservedNetwork
-    #' @param clusterInit Initial clustering: a vector with size \code{ncol(adjacencyMatrix)}, providing a user-defined clustering with \code{nbBlocks} levels.
-    initialize = function(networkData, clusterInit) {
-      super$initialize(networkData, clusterInit)
-      private$V <- self$imputation
-    },
     #' @description update parameters estimation (M-step)
-    #' @param nu currently imputed values
-    update_parameters = function(nu = NULL) {
+    #' @param psi the parameters (p0, p1) of the sampling, starting point of the joint M-step.
+    #'   If \code{NULL}, or with a single block (where the sampling is constrained to dyad
+    #'   sampling), the SBM is fitted on the observed dyads.
+    #' @param tol,maxit tolerance on the parameters and maximal number of iterations of the EM
+    #'   on the missing dyads
+    #' @return invisibly, the updated (p0, p1), or \code{NULL} if the SBM is fitted on the
+    #'   observed dyads
+    update_parameters = function(psi = NULL, tol = 1e-8, maxit = 10000) {
       private$imputation_cache <- NULL
-      if (is.null(nu)) { # fall back to the MAR case
+      if (is.null(psi) || self$nbBlocks == 1) {
         super$update_parameters()
-      } else {
-        private$V <- nu
-        ## only Bernoulli for the moment !!!
-        Zbar <- colSums(private$Z)
-        tZYZ <- t(private$Z) %*% private$Y %*% private$Z
-        tZVZ <- t(private$Z) %*% private$V %*% private$Z
-        if (self$directed) {
-          private$theta$mean <- check_boundaries(as.matrix ( (tZYZ + tZVZ) / ( Zbar %o% Zbar - Zbar ) ))
-        } else {
-          private$theta$mean <-  check_boundaries(as.matrix ( (tZYZ + t(tZYZ) + tZVZ + t(tZVZ)) / ( Zbar %o% Zbar - Zbar ) ) )
-        }
-        private$pi <- check_boundaries(colMeans(private$Z))
+        return(invisible(NULL))
       }
+      Z <- private$Z
+      Y1 <- as.matrix(t(Z) %*% private$Y %*% Z) # observed edges between blocks q and l
+      N  <- as.matrix(t(Z) %*% private$R %*% Z) # observed dyads
+      M  <- as.matrix(t(Z) %*% private$S %*% Z) # missing dyads
+      ## the statistics of the sampling count each dyad once
+      So <- sum(Y1); So.bar <- sum(N) - So; Dm <- sum(M)
+      if (!self$directed) {Y1 <- Y1 + t(Y1); N <- N + t(N); M <- M + t(M)}
+      theta <- private$theta$mean
+      for (k in seq_len(maxit)) {
+        theta_old <- theta; psi_old <- psi
+        ## E: posterior probability that a missing dyad between blocks q and l is an edge
+        nu <- theta * (1 - psi[2]) / (theta * (1 - psi[2]) + (1 - theta) * (1 - psi[1]))
+        ## M: the missing dyads completed by nu
+        theta <- check_boundaries((Y1 + nu * M) / (N + M))
+        Sm  <- Dm * sum(nu * M) / sum(M) # expected edges among the missing dyads, each counted once
+        psi <- check_boundaries(c(So.bar / (So.bar + Dm - Sm), So / (So + Sm)))
+        if (max(abs(theta - theta_old), abs(psi - psi_old)) < tol) break
+      }
+      private$theta$mean <- theta
+      private$pi <- check_boundaries(colMeans(Z))
+      invisible(psi)
     },
     #' @description update variational estimation of blocks (VE-step)
-    #' @param log_lambda additional term sampling dependent used to de-bias estimation of tau
-    update_blocks =   function(log_lambda = 0) {
+    #' @param log_lambda Q x Q matrix, the log-probability that a dyad between blocks q and l is
+    #'   missing (field \code{log_lambda} of [doubleStandardSampling_fit])
+    update_blocks = function(log_lambda = 0) {
       private$imputation_cache <- NULL
       if (self$nbBlocks > 1) {
-        log_tau_obs  <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
-        log_tau_miss <- private$E_step(private$V, private$S, private$Z, private$theta$mean, private$pi, rescale = FALSE)
-        private$Z    <- t(apply(log_tau_obs  + log_tau_miss + log_lambda, 1, .softmax))
+        log_tau <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE) +
+          private$missing_term(private$Z, log_lambda)
+        private$Z <- t(apply(log_tau, 1, .softmax))
       }
     },
-    #' @description for each node, the complete-data log-likelihood it would contribute to
-    #'   each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
-    #'   moves in \code{missSBM_fit$polish()}. Unlike \code{update_blocks()}'s tau update (which
-    #'   combines the observed- and imputed-part E-steps as-is), this subtracts one copy of
-    #'   \code{log(pi)}: both E-step calls add it, so summing them double-counts it relative to
-    #'   \code{vExpec}'s convention -- verified numerically to matter (see git history).
-    #' @param log_lambda additional sampling-design-dependent term, added as-is
+    #' @description for each node, the log-likelihood of the observed data it would contribute
+    #'   to each class if hard-assigned there (parameters held fixed), used to decide node-swap
+    #'   moves in \code{missSBM_fit$polish()}.
+    #' @param log_lambda Q x Q matrix, the log-probability that a dyad between blocks q and l is
+    #'   missing
     #' @return an N x Q matrix
     polish_log_tau = function(log_lambda = 0) {
       Zhard <- self$indMemberships
-      log_tau_obs  <- private$E_step(private$Y, private$R, Zhard, private$theta$mean, private$pi, rescale = FALSE)
-      log_tau_miss <- private$E_step(private$V, private$S, Zhard, private$theta$mean, private$pi, rescale = FALSE)
-      log_tau_obs + log_tau_miss - matrix(log(private$pi), nrow(Zhard), self$nbBlocks, byrow = TRUE) + log_lambda
-    }
-  ),
-  active = list(
-    #' @field vExpec double: variational approximation of the expectation complete log-likelihood
-    vExpec = function(value) {
-      vLL_MAR <- private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
-      vLL_IMP <- private$vLL_complete(private$V, private$S, private$Z, private$theta$mean, private$pi)
-      vLL <- vLL_MAR + vLL_IMP - sum(private$Z %*% log(private$pi)) # counted twice
-      vLL
+      private$E_step(private$Y, private$R, Zhard, private$theta$mean, private$pi, rescale = FALSE) +
+        private$missing_term(Zhard, log_lambda)
     }
   )
 )
-

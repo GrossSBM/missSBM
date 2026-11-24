@@ -102,7 +102,8 @@ missSBM_fit <-
         ## as the dyads between two unobserved nodes, lets them feed back on themselves (connectivity
         ## of a block drifting to 0). 'block-node' and 'block-dyad' only add their sampling term to
         ## the update of the blocks; 'degree' only uses the imputations in its sampling part.
-        ## 'double-standard' needs the imputations: the sampling depends on the value of each dyad.
+        ## 'double-standard' integrates the missing dyads out given the blocks: their term enters
+        ## the update of the blocks, and their posterior given the blocks the M-step.
         if (netSampling == "double-standard") {
           private$SBM <- SimpleSBM_fit_MNAR$new(partlyObservedNet, clusterInit)
         } else {
@@ -118,7 +119,7 @@ missSBM_fit <-
         "node"            = nodeSampling_fit$new(partlyObservedNet),
         "covar-dyad"      = covarDyadSampling_fit$new(partlyObservedNet),
         "covar-node"      = covarNodeSampling_fit$new(partlyObservedNet),
-        "double-standard" = doubleStandardSampling_fit$new(partlyObservedNet),
+        "double-standard" = doubleStandardSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit), private$SBM$connectParam$mean),
         "block-node"      = blockNodeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "block-dyad"      = blockDyadSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit)),
         "degree"          = degreeSampling_fit$new(partlyObservedNet, clustering_indicator(clusterInit), private$SBM$connectParam$mean),
@@ -152,10 +153,16 @@ missSBM_fit <-
           }
         },
         m_step     = function() {
-          # update the parameters of the SBM (a.k.a pi and theta)
-          private$SBM$update_parameters(private$nu)
-          # update the parameters of network sampling process (a.k.a psi)
-          private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
+          if (private$sampling$type == "double-standard") {
+            ## the missing dyads tie the connectivity to (p0, p1): joint update by the SBM
+            psi <- private$SBM$update_parameters(private$sampling$parameters)
+            private$sampling$update_parameters(Z = private$SBM$probMemberships, theta = private$SBM$connectParam$mean, psi = psi)
+          } else {
+            # update the parameters of the SBM (a.k.a pi and theta)
+            private$SBM$update_parameters(private$nu)
+            # update the parameters of network sampling process (a.k.a psi)
+            private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
+          }
         },
         get_loglik = function() self$loglik,
         get_theta  = function() private$SBM$connectParam$mean,
@@ -166,7 +173,8 @@ missSBM_fit <-
           private$sampling <- state$sampling
           private$nu       <- state$nu
         },
-        reorder    = function() private$SBM$reorder()
+        ## the parameters of the sampling indexed by the blocks follow the permutation
+        reorder    = function() private$sampling$reorder(private$SBM$reorder())
       )
 
       invisible(private$optStatus)
@@ -376,7 +384,12 @@ missSBM_fit <-
     fittedSampling = function(value) {private$sampling},
     #' @field imputedNetwork The network data as a matrix with NAs values imputed with the current model
     imputedNetwork = function(value) {
-      res <- private$SBM$networkData + private$nu
+      nu <- if (private$sampling$type == "double-standard")
+        ## the posterior given the blocks, averaged over the memberships, at the missing dyads
+        .bilinear_at_pattern(private$SBM$probMemberships, private$sampling$blockImputation,
+                             private$partlyObservedNet$samplingMatrixBar)
+        else private$nu
+      res <- private$SBM$networkData + nu
       if (!private$SBM$directed) res <- res + t(res)
       res
     },
@@ -388,8 +401,10 @@ missSBM_fit <-
     occupiedBlocks = function(value) {length(unique(private$SBM$memberships))},
     #' @field degenerate \code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}
     degenerate     = function(value) {is_degenerate(self)},
-    #' @field entropyImputed the entropy of the distribution of the imputed dyads
+    #' @field entropyImputed the entropy of the distribution of the imputed dyads ('double-standard':
+    #'   its expectation given the blocks)
     entropyImputed = function(value) {
+      if (private$sampling$type == "double-standard") return(private$sampling$entropyImputed)
       ## operate on the stored values only (private$nu is sparse, nonzero only at missing
       ## dyads): `xlogx(1 - private$nu)` would densify the whole N x N matrix and dispatch
       ## ifelse() through costly S4 machinery for every VEM iteration
@@ -399,9 +414,10 @@ missSBM_fit <-
     },
     #' @field entropy the entropy due to the distribution of the imputed dyads and of the clustering
     entropy = function(value) {
-      ## 'block-node' and 'block-dyad' integrate the missing dyads out (SBM fitted on the observed
-      ## dyads, the sampling depends on the blocks only): no term for the imputations
-      private$SBM$entropy + if (private$sampling$type %in% c("block-node", "block-dyad")) 0 else self$entropyImputed
+      ## 'block-node', 'block-dyad' and 'double-standard' integrate the missing dyads out given
+      ## the blocks: no term for the imputations
+      private$SBM$entropy +
+        if (private$sampling$type %in% c("block-node", "block-dyad", "double-standard")) 0 else self$entropyImputed
     },
     #' @field vExpec double: variational expectation of the complete log-likelihood
     vExpec  = function(value) {
@@ -420,18 +436,16 @@ missSBM_fit <-
     #' @field ICLobserved double: ICL built on the observed data (the observed dyads and the
     #'   sampling matrix), the missing dyads being integrated out: -2 times the variational
     #'   lower bound of the log-likelihood of the observed data, without the entropy of the
-    #'   blocks, plus the penalty. For 'double-standard' and 'degree', whose sampling depends on
-    #'   the missing dyads, the bound includes the entropy of their imputations.
+    #'   blocks, plus the penalty. For 'degree', whose sampling depends on the degrees, the bound
+    #'   includes the entropy of the imputations.
     ICLobserved = function(value) {
       vExpec <- switch(private$sampling$type,
-        ## the SBM part already includes the imputations
-        "double-standard" = self$vExpec + self$entropyImputed,
         ## the SBM is fitted on the observed dyads, the imputations only enter the sampling part
         "degree" = {
           nu <- if (is.null(private$nu)) private$sampling$update_imputation(private$SBM$imputation) else private$nu
           private$sampling$vExpec + private$SBM$vExpec + private$SBM$vExpec_imputed(nu) + self$entropyImputed
         },
-        ## the sampling is ignorable given the blocks: the missing dyads are integrated out
+        ## the missing dyads are integrated out given the blocks (all the other designs)
         private$sampling$vExpec + private$SBM$vExpec
       )
       -2 * vExpec + self$penalty
@@ -442,8 +456,13 @@ missSBM_fit <-
     ICLcompleted = function(value) {
       ## 'block-node' and 'block-dyad' are fitted on the observed dyads (see vExpec), but this
       ## ICL takes the imputations into account as the other designs (equal ICL for 1 block)
-      vExpec <- if (private$sampling$type %in% c("block-node", "block-dyad"))
-        private$sampling$vExpec + private$SBM$vExpec_corrected else self$vExpec
+      ## 'double-standard': the missing dyads are integrated out given the blocks, log m_ql is the
+      ## expected log-likelihood of the completed dyad plus the entropy of its posterior nu_ql
+      vExpec <- switch(private$sampling$type,
+        "block-node"      = ,
+        "block-dyad"      = private$sampling$vExpec + private$SBM$vExpec_corrected,
+        "double-standard" = self$vExpec - self$entropyImputed,
+        self$vExpec)
       -2 * vExpec + self$penalty
     },
     #' @field ICL double: value of the integrated classification log-likelihood used to compare

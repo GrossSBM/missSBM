@@ -35,7 +35,11 @@ networkSamplingDyads_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param nu the matrix of (uncorrected) imputation for missing entries
-    update_imputation = function(nu) {nu} # good for MCAR on node, dyads and MNAR with blocks
+    update_imputation = function(nu) {nu}, # good for MCAR on node, dyads and MNAR with blocks
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
+    #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
+    reorder = function(o) {invisible(self)}
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## ACTIVE BINDING
@@ -81,7 +85,11 @@ networkSamplingNodes_fit <-
     update_parameters = function(...) {invisible(NULL)},
     #' @description a method to update the imputation of the missing entries.
     #' @param nu the matrix of (uncorrected) imputation for missing entries
-    update_imputation = function(nu) {nu} ## good for MCAR on node, dyads and MNAR with blocks
+    update_imputation = function(nu) {nu}, ## good for MCAR on node, dyads and MNAR with blocks
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted. By default, nothing to do (no parameter indexed by the blocks)
+    #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
+    reorder = function(o) {invisible(self)}
   ),
   active = list(
     #' @field penalty double, value of the penalty term in ICL
@@ -191,46 +199,102 @@ covarNodeSampling_fit <-
 )
 
 #' Class for fitting a double-standard sampling
+#'
+#' A dyad is observed with probability \eqn{p_0} if it is 0, \eqn{p_1} if it is 1 (the vector of
+#' parameters is \eqn{(p_0, p_1)}). Given the blocks, a dyad between blocks q and l is missing
+#' with probability \eqn{m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)}: the missing dyads
+#' are integrated out given the blocks, and the posterior probability that a missing dyad between
+#' blocks q and l is an edge is \eqn{\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}}, a Q x Q matrix.
+#' The parameters are updated jointly with the connectivity of the SBM (see
+#' [SimpleSBM_fit_MNAR]): this class only stores them, with the terms of the sampling.
+#'
+#' With a single block, \eqn{(\pi, p_0, p_1)} are not identifiable: the observed data only inform
+#' \eqn{\pi p_1} and \eqn{(1 - \pi) p_0}. The fit is then constrained to \eqn{p_0 = p_1}, that is,
+#' to dyad sampling, with one parameter.
 doubleStandardSampling_fit <-
   R6::R6Class(classname = "doubleStandardSampling_fit",
   inherit = networkSamplingDyads_fit,
   private = list(
-    So     = NULL, ## statistics only requiring the observed part of the network
-    So.bar = NULL, ## can be computed once for all during the initialization
-    Sm     = NULL, ## these ones will be updated during the optimization
-    Sm.bar = NULL
+    So     = NULL, ## number of observed edges
+    So.bar = NULL, ## number of observed non-edges
+    S      = NULL, ## pattern of the missing dyads (upper triangle if undirected)
+    Z      = NULL, ## memberships of the last update of the parameters
+    ZtSZ   = NULL, ## Z' S Z: number of missing dyads between blocks q and l
+    theta  = NULL, ## connectivity of the SBM at the last update of the parameters
+    ## probability that a dyad between blocks q and l is missing
+    m      = function() private$theta * (1 - private$psi[2]) + (1 - private$theta) * (1 - private$psi[1]),
+    ## posterior probability that a missing dyad between blocks q and l is an edge
+    nu     = function() check_boundaries(private$theta * (1 - private$psi[2]) / private$m()),
+    single_block = function() ncol(private$Z) == 1,
+    set_blocks = function(Z, theta) {
+      private$Z     <- Z
+      private$ZtSZ  <- as.matrix(t(Z) %*% private$S %*% Z)
+      private$theta <- theta
+    }
   ),
   public = list(
     #' @description constructor
     #' @param partlyObservedNetwork a object with class partlyObservedNetwork representing the observed data with possibly missing entries
-    #' @param ... used for compatibility
-    initialize = function(partlyObservedNetwork, ...) {
+    #' @param blockInit n x Q matrix of initial block indicators
+    #' @param connectInit Q x Q matrix of initial connectivity of the SBM
+    initialize = function(partlyObservedNetwork, blockInit, connectInit) {
       super$initialize(partlyObservedNetwork, "double-standard")
-      private$So      <- sum(partlyObservedNetwork$networkData)
-      private$So.bar  <- private$card_D_o - private$So
-      self$update_parameters(partlyObservedNetwork$imputation("average") * partlyObservedNetwork$samplingMatrixBar)
+      private$So     <- sum(partlyObservedNetwork$networkData)
+      private$So.bar <- private$card_D_o - private$So
+      private$S      <- partlyObservedNetwork$samplingMatrixBar
+      ## starts from dyad sampling, p0 = p1
+      private$psi    <- rep(private$card_D_o / private$card_D, 2)
+      private$set_blocks(blockInit, connectInit)
     },
-    #' @description a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-    #' @param nu an adjacency matrix with imputed values (only)
+    #' @description stores the parameters, updated jointly with the connectivity of the SBM
+    #'   (see [SimpleSBM_fit_MNAR]), and the current blocks
+    #' @param Z probabilities of block memberships
+    #' @param theta the connectivity of the SBM
+    #' @param psi the updated (p0, p1); \code{NULL} with a single block, where p0 = p1 is the
+    #'   observation rate (dyad sampling)
     #' @param ... use for compatibility
-    update_parameters = function(nu, ...) {
-      private$Sm     <- sum(nu)
-      private$Sm.bar <- private$card_D_m - private$Sm
-      private$psi    <- c(private$So.bar / (private$So.bar + private$Sm.bar), private$So / (private$So + private$Sm))
+    update_parameters = function(Z, theta, psi = NULL, ...) {
+      private$set_blocks(Z, theta)
+      private$psi <- if (private$single_block() || is.null(psi))
+        rep(private$card_D_o / private$card_D, 2) else psi
+      invisible(self)
     },
-    #' @description a method to update the imputation of the missing entries.
-    #' @param nu the matrix of (uncorrected) imputation for missing entries
-    update_imputation = function(nu) {
-      nu@x <- .logistic(log((1 - private$psi[2]) / (1 - private$psi[1])) + .logit(nu@x) )
-      nu
+    #' @description no imputation is needed along the VEM: the missing dyads are integrated out
+    #'   given the blocks (see the field \code{blockImputation})
+    #' @param ... use for compatibility
+    #' @return \code{NULL}
+    update_imputation = function(...) {NULL},
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted
+    #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
+    reorder = function(o) {
+      private$Z     <- private$Z[, o, drop = FALSE]
+      private$ZtSZ  <- private$ZtSZ[o, o, drop = FALSE]
+      private$theta <- private$theta[o, o, drop = FALSE]
+      invisible(self)
     }
   ),
   active = list(
-    #' @field vExpec variational expectation of the sampling
+    #' @field df the number of parameters: 2, or 1 with a single block (p0 = p1)
+    df = function(value) {if (private$single_block()) 1 else 2},
+    #' @field vExpec variational expectation of the log-likelihood of the sampling, the missing
+    #'   dyads being integrated out given the blocks:
+    #'   \eqn{E_\tau[\log p(R \mid Y^o, Z)]}
     vExpec = function(value) {
-      res <- log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
-        log(1 - private$psi[2]) * private$Sm + log(1 - private$psi[1]) * private$Sm.bar
-      res
+      log(private$psi[2]) * private$So + log(private$psi[1]) * private$So.bar +
+        sum(private$ZtSZ * log(private$m()))
+    },
+    #' @field log_lambda Q x Q matrix, the log-probability that a dyad between blocks q and l is
+    #'   missing, the term of the missing dyads in the update of the blocks
+    log_lambda = function(value) {log(private$m())},
+    #' @field blockImputation Q x Q matrix, the posterior probability that a missing dyad between
+    #'   blocks q and l is an edge, with the current parameters
+    blockImputation = function(value) {private$nu()},
+    #' @field entropyImputed the expected entropy of the missing dyads given the blocks,
+    #'   \eqn{\sum_{q,l} (Z^\top S Z)_{ql} H(\nu_{ql})}
+    entropyImputed = function(value) {
+      nu <- private$nu()
+      - sum(private$ZtSZ * (xlogx(nu) + xlogx(1 - nu)))
     }
   )
 )
@@ -268,6 +332,14 @@ blockDyadSampling_fit <-
       } else {
         private$psi <- check_boundaries(( ZtRZ + t(ZtRZ) ) / ( Zbar %o% Zbar - Zbar ))
       }
+    },
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted
+    #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
+    reorder = function(o) {
+      private$psi <- private$psi[o, o, drop = FALSE]
+      private$Z   <- private$Z[, o, drop = FALSE]
+      invisible(self)
     }
   ),
   active = list(
@@ -313,6 +385,15 @@ blockNodeSampling_fit <-
       private$So  <- colSums(Z[ private$N_obs, , drop = FALSE])
       private$Sm  <- colSums(Z[!private$N_obs, , drop = FALSE])
       private$psi <- check_boundaries(private$So / (private$So + private$Sm))
+    },
+    #' @description permute the parameters indexed by the blocks, after the blocks of the SBM
+    #'   were permuted
+    #' @param o the permutation applied to the blocks (new block k is former block \code{o[k]})
+    reorder = function(o) {
+      private$psi <- private$psi[o]
+      private$So  <- private$So[o]
+      private$Sm  <- private$Sm[o]
+      invisible(self)
     }
   ),
   active = list(

@@ -53,8 +53,8 @@
 #'   * "observed" (default): ICL built on the observed data, the observed dyads and the
 #'     sampling matrix, the missing dyads being integrated out. It is -2 times the variational
 #'     lower bound of the log-likelihood of the observed data, without the entropy of the
-#'     blocks, plus the penalty. For "double-standard" and "degree", whose sampling depends on
-#'     the missing dyads, this bound includes the entropy of their imputations.
+#'     blocks, plus the penalty. For "degree", whose sampling depends on the degrees, this bound
+#'     includes the entropy of the imputations of the missing dyads.
 #'   * "completed": ICL of the network completed by the imputations, the convention of
 #'     the previous versions of missSBM. It adds the expected log-likelihood of the imputed dyads, without their
 #'     entropy, which favors more blocks when many dyads are missing.
@@ -139,7 +139,10 @@ missSBM_param <- function(
 #'    * covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)
 #'    * snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)
 #' * Missing Not At Random (MNAR)
-#'    * double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1)
+#'    * double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1).
+#'      (p0, p1) are identified through the differences of connectivity between the blocks: with a
+#'      single block, they are not identifiable, and the model is fitted with p0 = p1, i.e. as dyad
+#'      sampling (with a warning).
 #'    * block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)
 #'    * block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)
 #     * degree parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))
@@ -206,6 +209,10 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
   ## If no covariate is provided, you cannot ask for using them
   if (length(covariates) == 0) control$useCov <- FALSE
   if (control$useCov) stopifnot(sampling %in% available_samplings_covariates)
+
+  if (sampling == "double-standard" && 1 %in% vBlocks)
+    warning("With a single block, double-standard sampling is not identifiable: ",
+            "it is fitted with p0 = p1, i.e. as dyad sampling.", call. = FALSE)
 
   ## Prepare network data for estimation with missing data
   partlyObservedNet <- partlyObservedNetwork$new(adjacencyMatrix, covariates, control$similarity)

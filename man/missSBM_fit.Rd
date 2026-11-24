@@ -41,7 +41,8 @@ or more classes (see \code{repair()})}
 
     \item{\code{degenerate}}{\code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}}
 
-    \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads}
+    \item{\code{entropyImputed}}{the entropy of the distribution of the imputed dyads ('double-standard':
+its expectation given the blocks)}
 
     \item{\code{entropy}}{the entropy due to the distribution of the imputed dyads and of the clustering}
 
@@ -57,8 +58,8 @@ or more classes (see \code{repair()})}
     \item{\code{ICLobserved}}{double: ICL built on the observed data (the observed dyads and the
 sampling matrix), the missing dyads being integrated out: -2 times the variational
 lower bound of the log-likelihood of the observed data, without the entropy of the
-blocks, plus the penalty. For 'double-standard' and 'degree', whose sampling depends on
-the missing dyads, the bound includes the entropy of their imputations.}
+blocks, plus the penalty. For 'degree', whose sampling depends on the degrees, the bound
+includes the entropy of the imputations.}
 
     \item{\code{ICLcompleted}}{double: ICL of the network completed by the imputations, the
 convention of the previous versions of missSBM: it adds the expected log-likelihood of the imputed dyads,

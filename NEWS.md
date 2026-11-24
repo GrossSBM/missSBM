@@ -20,8 +20,8 @@
   bound maximized by the algorithm, without the entropy of the blocks, plus the penalty: the
   same relation between the ICL and the bound as for a fully observed SBM. For the designs
   whose sampling only depends on the blocks (`dyad`, `node`, `covar-*`, `block-node`,
-  `block-dyad`), the missing dyads are integrated out exactly. For `degree` and
-  `double-standard`, the bound includes the entropy of the imputations. The ICL of the previous
+  `block-dyad`), and for `double-standard`, the missing dyads are integrated out exactly. For
+  `degree`, the bound includes the entropy of the imputations. The ICL of the previous
   versions added the expected log-likelihood of the imputed dyads, without their entropy, as if
   the missing dyads were classified: as the imputations are computed by the model, this
   rewards purer blocks with no data behind them, and favors more blocks, the more so as more
@@ -34,8 +34,24 @@
   former results. Both are available on each model (fields `ICLobserved` and `ICLcompleted` of
   `missSBM_fit`). With a single block, `block-node` and `node`, or `block-dyad` and `dyad`,
   still give the same ICL, with both.
-- Only `double-standard`, whose sampling depends on the value of each dyad, still fits the SBM
-  part on the imputations of the missing dyads (see #52).
+- `double-standard` sampling (#52): the missing dyads are also integrated out given the blocks,
+  instead of being approximated by imputations independent of the blocks. A dyad between blocks
+  q and l is missing with probability m_ql = pi_ql (1 - p1) + (1 - pi_ql) (1 - p0): this term
+  enters the update of the blocks, and the connectivity and (p0, p1) are estimated jointly, by an
+  EM on the missing dyads iterated to convergence at each M-step, in Q x Q. The previous version
+  made one step of this EM per iteration of the VEM, which stopped long before convergence
+  (after 2 iterations with the default threshold): p1 was underestimated (0.53 for 0.8, n = 200,
+  Q = 3). In simulations (n = 200, Q = 3, 6 replicates per setting), the ARI goes from 0.73 to
+  0.92, from 0.85 to 0.98 and from 0.96 to 0.99 for (p0, p1) = (0.6, 0.3), (0.5, 0.5),
+  (0.2, 0.8), (p0, p1) are estimated without bias, and the true number of blocks is always
+  selected. Among `dyad`, `block-dyad` and `double-standard`, the ICL now picks
+  `double-standard` in 100% of the cases when it generated the data (60% before, see
+  `inst/simus/PR48-block-designs/`). No imputation of each missing dyad is stored any more:
+  `imputedNetwork` averages the posterior given the blocks over the memberships.
+- `double-standard` with a single block: (p0, p1) are only identified through the differences of
+  connectivity between the blocks. With a single block, the observed data only inform pi p1 and
+  (1 - pi) p0: the model is fitted with p0 = p1, i.e. as dyad sampling (same ICL), with one
+  sampling parameter in the penalty, and `estimateMissSBM()` warns when `vBlocks` contains 1.
 
 ## Bug fixes
 
@@ -53,6 +69,12 @@
   the log (since 2018). The updates of the parameters were right, but the objective monitored by
   the VEM and the ICL were overestimated (by 5 to 20 on the ICL of networks with 200 nodes).
   The estimates are unchanged in our simulations, but the selected number of blocks can change.
+- `block-node` and `block-dyad` sampling: the sampling parameters, indexed by the blocks, were
+  not permuted with the blocks of the SBM when these are reordered at the end of the VEM, so that
+  `fittedSampling$parameters` (and `coef()`) did not match the blocks of `fittedSBM`, and
+  `polish()` added a permuted sampling term to its gains. The ICL was not affected. A side effect:
+  this permuted term acted as a random perturbation that could get `polish()` out of a local
+  optimum, so that a fit at a fixed number of blocks without exploration can now end elsewhere.
 
 ## Minor changes
 

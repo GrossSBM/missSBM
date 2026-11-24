@@ -88,8 +88,8 @@ models, along the exploration and to select the best one:
 \item "observed" (default): ICL built on the observed data, the observed dyads and the
 sampling matrix, the missing dyads being integrated out. It is -2 times the variational
 lower bound of the log-likelihood of the observed data, without the entropy of the
-blocks, plus the penalty. For "double-standard" and "degree", whose sampling depends on
-the missing dyads, this bound includes the entropy of their imputations.
+blocks, plus the penalty. For "degree", whose sampling depends on the degrees, this bound
+includes the entropy of the imputations of the missing dyads.
 \item "completed": ICL of the network completed by the imputations, the convention of
 the previous versions of missSBM. It adds the expected log-likelihood of the imputed dyads, without their
 entropy, which favors more blocks when many dyads are missing.
