@@ -44,8 +44,10 @@
   Q = 3). In simulations (n = 200, Q = 3, 6 replicates per setting), the ARI goes from 0.73 to
   0.92, from 0.85 to 0.98 and from 0.96 to 0.99 for (p0, p1) = (0.6, 0.3), (0.5, 0.5),
   (0.2, 0.8), (p0, p1) are estimated without bias, and the true number of blocks is always
-  selected. No imputation of each missing dyad is stored any more: `imputedNetwork` averages the
-  posterior given the blocks over the memberships.
+  selected. Among `dyad`, `block-dyad` and `double-standard`, the ICL now picks
+  `double-standard` in 100% of the cases when it generated the data (60% before, see
+  `inst/simus/PR48-block-designs/`). No imputation of each missing dyad is stored any more:
+  `imputedNetwork` averages the posterior given the blocks over the memberships.
 - `double-standard` with a single block: (p0, p1) are only identified through the differences of
   connectivity between the blocks. With a single block, the observed data only inform pi p1 and
   (1 - pi) p0: the model is fitted with p0 = p1, i.e. as dyad sampling (same ICL), with one

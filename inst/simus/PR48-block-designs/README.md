@@ -87,3 +87,31 @@ the cases, 2 blocks are often selected, the ARI is 0.51 (0.32 with the completed
 
 With a single block, the ICL built on the observed data still gives the same value for `node`
 and `block-node` (resp. `dyad` and `block-dyad`).
+
+## Update for #52: double-standard integrates the missing dyads out
+
+Same campaign, rerun on the branch of #52 (`PR52-observed`, ICL built on the observed data),
+which also fixes the order of the sampling parameters of `block-node` and `block-dyad` after the
+blocks are reordered. Reproduce with
+
+```sh
+SIMU_ICL=observed Rscript inst/simus/PR48-block-designs/simulate.R . PR52-observed 16
+Rscript inst/simus/PR48-block-designs/summarize.R master PR48-observed PR52-observed
+mv inst/simus/PR48-block-designs/results/summary.md inst/simus/PR48-block-designs/results/summary-PR52.md
+git checkout inst/simus/PR48-block-designs/results/summary.md
+```
+
+The tables are in `results/summary-PR52.md` (master → PR48-observed → PR52-observed).
+
+- **`double-standard` is now chosen in 100% of the cases** when it generated the data (60% with
+  PR #48, `block-dyad` in the others), with Q = 3 selected (3.4 on average before) and an ARI of
+  0.99 (0.93). It is never chosen for data simulated under `dyad` or `block-dyad`, whose true
+  design is still chosen in 100% of the cases.
+- **Experiment 1 is not about `double-standard`**: its changes come from the order of the
+  sampling parameters. The RMSE of the sampling parameters at Q = 3 is divided by 2 to 4
+  (`block-dyad`: 0.049 → 0.012 at the low rate; `block-node`: 0.095 → 0.050 at the medium rate):
+  the parameters returned before were not those of the blocks of the SBM. The price: `polish()`
+  no longer adds a permuted sampling term, which acted as a random perturbation and sometimes got
+  it out of a local optimum. At the low rate of `block-dyad`, the true Q is selected in 95%
+  (assortative) and 85% (disassortative) of the cases, instead of 100% and 95%, and the ARI at
+  Q = 3 goes from 0.96 to 0.89 (disassortative). The other settings are unchanged.
