@@ -123,3 +123,22 @@ PR51-observed). All the cells are unchanged except `dyad` sampling in experiment
 network with the true Q (mean selected Q 2.9 → 3.0, ARI 0.86 → 0.89). See
 `inst/simus/PR51-penalty/` for simulations targeting the regimes where the selection of Q is
 borderline.
+
+## Update for #55: degree estimated by the coordinate ascent, ICL at the MAP memberships
+
+Rerun as `PR55` (tables in `results/summary-PR55.md`, PR52-observed → PR51-observed → PR55).
+`degree` is now fitted in three stages, ending with the coordinate ascent of its bound, and the
+ICL is the bound at the MAP memberships for all the designs.
+
+- **Experiment 2, family of `node`:** `degree` is chosen in 85% of the cases under `degree`
+  sampling (0% before); the true design in 95% under `node` (100%) and 60% under `block-node`
+  (95%), `degree` being chosen instead: with an assortative network, the observation of a node
+  depends on its degree under both designs. Over the three designs, the true one is chosen in
+  80% of the cases, against 65% before, when `block-node` was always preferred.
+- With the ICL minus the entropy of the soft memberships (the definition before #55),
+  `block-node` was recovered in 25% of the cases only: the imputations of `degree`, computed from
+  the memberships, make them near-hard, which that definition rewarded.
+- **Experiment 1** is unchanged, except `block-node` with disassortative connectivity at the
+  low rate: the true Q is selected in 25% of the cases (15%), the ARI at Q = 3 goes from 0.47 to
+  0.57 and the RMSE of the sampling parameters from 0.21 to 0.15.
+- The family of `dyad` is unchanged.

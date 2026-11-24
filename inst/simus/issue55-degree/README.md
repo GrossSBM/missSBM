@@ -63,10 +63,14 @@ Less than a minute on 16 cores. The tables are in `results/summary.md`.
   appear from this starting point.
 - **C slightly improves the estimates**: RMSE of the connectivity equal or lower (n = 400,
   strong effect: 0.0053 → 0.0042), a and b slightly less biased at n = 400.
-- **With C, the ICL chooses `degree` when it generated the data**: 75% to 100% of the cases at
-  n = 200 (A: 0% to 20%), 60% to 100% at n = 400 (A: 20% to 70%), depending on the effect.
-  Without effect of the degree (b = 0, i.e. node sampling), C chooses `degree` in 20% of the
-  cases at n = 200 (A: 0%), 0% at n = 400.
+- **With C, the ICL chooses `degree` when it generated the data** (ICL at the MAP memberships,
+  as in the package since #55): 100% of the cases for a medium or strong effect at n = 200 (A:
+  40% to 50%), 20% for a weak one (A: 0%); at n = 400, 85% to 100% (A: 75% to 80%) and 60% (A:
+  40%). Without effect of the degree (b = 0, i.e. node sampling), C chooses `degree` in 5% of the
+  cases at n = 200 (A: 0%), 0% at n = 400. (With the ICL minus the entropy of the soft
+  memberships, used first, C chose `degree` in 75% of the cases with a weak effect and 20%
+  without effect at n = 200: the imputations make the memberships near-hard, which that
+  definition rewarded.)
 - **B, the thesis from the usual initialization, is worse**: ARI 0.90 to 0.94 at n = 200, a
   bound lower than C's by 25 on average (15 at n = 400), and `degree` seldom chosen. It reaches a
   higher bound than C in 1 network out of 80 at n = 200, 6 at n = 400: several local maxima.
