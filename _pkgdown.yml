@@ -77,4 +77,5 @@ reference:
     - '`simpleNodeSampler`'
     - '`snowballSampler`'
     - '`summary.missSBM_fit`'
+    - '`summary.missSBM_collection`'
     - '`l1_similarity`'

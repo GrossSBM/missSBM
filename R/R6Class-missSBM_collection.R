@@ -346,3 +346,19 @@ missSBM_collection <-
     }
   )
 )
+
+#' Summary method for a [`missSBM_collection`]
+#'
+#' @name summary.missSBM_collection
+#'
+#' @param object an R6 object with class [`missSBM_collection`]
+#' @param ... additional parameters for S3 compatibility.
+#'
+#' @return a basic printing output
+#'
+#' @method summary missSBM_collection
+#' @export
+summary.missSBM_collection <- function(object, ...) {
+  stopifnot(inherits(object, "missSBM_collection"))
+  object$show()
+}
