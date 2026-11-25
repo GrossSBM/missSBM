@@ -36,10 +36,6 @@ test_that("the ICL is -2 times the bound at the MAP memberships, plus the penalt
   expect_equal(fit$fittedSampling$vExpec_at(map_Z(fit)), sum(log(rho[z[obs]])) + sum(log(1 - rho[z[!obs]])))
 })
 
-test_that("the option ICL of missSBM_param() is gone (the ICL of the completed network)", {
-  expect_error(missSBM_param(ICL = "completed"), "unused argument")
-})
-
 test_that("with a single block, the ICL is equal for node and block-node, dyad and block-dyad", {
   ICL <- function(A, design) estimateMissSBM(A, 1, design, control = ctrl())$ICL
   expect_equal(ICL(A_node, "block-node"), ICL(A_node, "node"), tolerance = 1e-4)
@@ -67,7 +63,7 @@ test_that("double-standard: the missing dyads are integrated out given the block
   expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec_at(Z) + vLL_obs(fit, Z)) + fit$penalty)
 })
 
-test_that("the penalty counts the observed dyads for the connectivity (#51)", {
+test_that("the penalty counts the observed dyads for the connectivity", {
   for (directed in c(FALSE, TRUE)) {
     set.seed(7)
     sim <- sbm::sampleSimpleSBM(N, c(.4, .6), list(mean = matrix(c(.5, .1, .1, .3), 2, 2)), directed = directed)

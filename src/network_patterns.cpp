@@ -1,5 +1,5 @@
 // The patterns of the observed dyads, of the missing ones and of the edges of a dense network
-// with NA, read in place, without any n x n temporary (#49): see .network_patterns() in R.
+// with NA, read in place, without any n x n temporary: see .network_patterns() in R.
 
 #include <Rcpp.h>
 #include <algorithm>
@@ -75,8 +75,8 @@ List network_patterns_dense(SEXP A) {
 }
 
 // -----------------------------------------------------------------
-// The update of the imputations of the degree sampling, in one pass over the missing dyads
-// (#57): see degreeSampling_fit$update_imputation(). For a missing dyad (i, j),
+// The update of the imputations of the degree sampling, in one pass over the missing dyads:
+// see degreeSampling_fit$update_imputation(). For a missing dyad (i, j),
 //   nu_ij = logistic(logit(PI_ij) + eta_ij), eta_ij = C_ij + C_ji - b,
 //   C_ij = hk_i (a b + b^2 (1 + D_i - nu_ij)),
 // with nu_ji the imputation of (j, i) in a directed network (0 when observed), bounded to

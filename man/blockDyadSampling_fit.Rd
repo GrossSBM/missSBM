@@ -7,7 +7,7 @@
 Class for fitting a block-dyad sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{blockDyadSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampling_fit]{networkSampling_fit}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{blockDyadSampling_fit}
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -31,8 +31,8 @@ Class for fitting a block-dyad sampling
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>networkSamplingDyads_fit$show()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-update_imputation'><code>networkSamplingDyads_fit$update_imputation()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="show"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-show'><code>networkSampling_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-update_imputation'><code>networkSampling_fit$update_imputation()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}
@@ -59,17 +59,18 @@ Class for fitting a block-dyad sampling
 \if{html}{\out{<a id="method-blockDyadSampling_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-blockDyadSampling_fit-update_parameters}{}}}
 \subsection{\code{blockDyadSampling_fit$update_parameters()}}{
-  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  update the parameters: the observation rate of the dyads between each pair
+of blocks
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{blockDyadSampling_fit$update_parameters(nu, Z)}
+    \preformatted{blockDyadSampling_fit$update_parameters(Z, ...)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
       \item{\code{Z}}{probabilities of block memberships}
+      \item{\code{...}}{use for compatibility}
     }
     \if{html}{\out{</div>}}
   }

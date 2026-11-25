@@ -44,16 +44,28 @@ missSBM_fit <-
     netSampling       = NULL,
     useCov            = NULL,
 
-    ## replaces self's fit by that of a candidate (polish(), repair()), with its imputations
+    ## replaces self's fit by that of a candidate (polish(), repair(), split(), merge()), with
+    ## its imputations
     adopt = function(candidate) {
       private$SBM      <- candidate$fittedSBM
       private$sampling <- candidate$fittedSampling
       private$nu       <- candidate$imputations
     },
 
+    ## a lightweight snapshot of the fit along the VEM (no cloning of the network data), and its
+    ## restoration
+    snapshot = function() {
+      list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu)
+    },
+    restore = function(state) {
+      private$SBM$set_state(state$SBM)
+      private$sampling <- state$sampling
+      private$nu       <- state$nu
+    },
+
     ## the VEM of the degree sampling, whose missing dyads cannot be integrated out (the sampling
     ## of a node depends on a whole row of the network), in three stages, each stopping on the
-    ## objective it increases (#55):
+    ## objective it increases:
     ## 1. the SBM part on the observed dyads, stopping on its bound (the VEM of a MAR design);
     ## 2. the sampling part (imputations nu, (a, b), zeta) given the SBM part, to convergence;
     ## 3. the coordinate ascent of the bound of the model (factorized q(Z) q(Y^m), bound of
@@ -62,16 +74,11 @@ missSBM_fit <-
     ##    from stages 1 and 2 avoids the poor local
     ##    optima of the coordinate ascent from the initial clustering.
     doVEM_degree = function(control) {
-      snapshot <- function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu)
-      restore  <- function(state) {
-        private$SBM$set_state(state$SBM)
-        private$sampling <- state$sampling
-        private$nu       <- state$nu
-      }
       reorder <- function() private$SBM$reorder()
       theta   <- function() private$SBM$connectParam$mean
       stage <- function(name, e_step, m_step, get_loglik, get_theta) {
-        res <- run_VEM(control, init_stop = FALSE, e_step, m_step, get_loglik, get_theta, snapshot, restore, reorder)
+        res <- run_VEM(control, init_stop = FALSE, e_step, m_step, get_loglik, get_theta,
+                       private$snapshot, private$restore, reorder)
         res$stage <- name
         res
       }
@@ -112,14 +119,6 @@ missSBM_fit <-
       invisible(k)
     },
 
-    ## the MAP memberships, as an n x Q indicator matrix (also with empty classes)
-    map_memberships = function() {
-      tau <- private$SBM$probMemberships
-      Z <- matrix(0, nrow(tau), ncol(tau))
-      Z[cbind(seq_len(nrow(tau)), max.col(tau, ties.method = "first"))] <- 1
-      Z
-    },
-
     ## the imputations of the missing dyads under 'degree' (variational parameters of its sampling)
     imputations_degree = function() {
       if (is.null(private$nu)) private$sampling$update_imputation(private$SBM$imputation) else private$nu
@@ -130,9 +129,7 @@ missSBM_fit <-
     build_candidate = function(candidate_labels, in_place) {
       new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate_labels, private$useCov)
       if (in_place) {
-        private$SBM      <- new_fit$fittedSBM
-        private$sampling <- new_fit$fittedSampling
-        private$nu       <- NULL
+        private$adopt(new_fit) # not fitted yet: no imputations
         return(invisible(self))
       }
       new_fit
@@ -230,7 +227,7 @@ missSBM_fit <-
         control    = control,
         init_stop  = FALSE,
         ## no imputation of the missing dyads along the VEM: these designs integrate them out
-        ## given the blocks (#49; 'degree', which needs them, has its own VEM)
+        ## given the blocks ('degree', which needs them, has its own VEM)
         e_step     = function(fixPointIter) {
           for (i in seq.int(fixPointIter)) {
             # update the variational parameters for block memberships (a.k.a tau)
@@ -246,28 +243,23 @@ missSBM_fit <-
             # update the parameters of the SBM (a.k.a pi and theta), on the observed dyads
             private$SBM$update_parameters()
             # update the parameters of network sampling process (a.k.a psi)
-            private$sampling$update_parameters(NULL, private$SBM$probMemberships)
+            private$sampling$update_parameters(Z = private$SBM$probMemberships)
           }
         },
         get_loglik = function() self$loglik,
         get_theta  = function() private$SBM$connectParam$mean,
-        ## a lightweight snapshot of the fit (no cloning of the network data)
-        snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
-        restore    = function(state) {
-          private$SBM$set_state(state$SBM)
-          private$sampling <- state$sampling
-          private$nu       <- state$nu
-        },
+        snapshot   = private$snapshot,
+        restore    = private$restore,
         ## the parameters of the sampling indexed by the blocks follow the permutation
         reorder    = function() private$sampling$reorder(private$SBM$reorder())
       )
 
       invisible(private$optStatus)
     },
-    #' @description clone of the current fit after splitting cluster \code{index} in two, via a
+    #' @description clone of the current fit after splitting block \code{index} in two, via a
     #'   spectral bipartition of the sub-network it induces. Builds but does not fit the
     #'   candidate (see \code{candidates_split()}).
-    #' @param index index (integer) of the cluster to split
+    #' @param index index (integer) of the block to split
     #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
     #'   (\code{FALSE}, the default)?
     #' @param base_net optional precomputed network to bipartition (as built internally at the
@@ -304,11 +296,11 @@ missSBM_fit <-
       private$build_candidate(candidate, in_place)
     },
     #' @description generate and cheaply trial-fit candidates obtained by splitting each
-    #'   splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
+    #'   splittable block in two (see \code{split()}). A block is splittable if it has at
     #'   least 4 members and non-zero variance in its induced sub-network.
     #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
     #' @param trial_niter `r .rd_trial_niter`
-    #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
+    #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable block)
     candidates_split = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), trial_niter = 2) {
       base_net <- self$imputedNetwork
       if (private$SBM$directed) base_net <- base_net %*% t(base_net)
@@ -323,10 +315,10 @@ missSBM_fit <-
       private$trial_fit_candidates(cl_splitable, function(k_) self$split(k_, base_net = base_net),
                                     control, trial_niter)
     },
-    #' @description clone of the current fit after merging clusters \code{indices[1]} and
+    #' @description clone of the current fit after merging blocks \code{indices[1]} and
     #'   \code{indices[2]} into one. Builds but does not fit the candidate (see
     #'   \code{candidates_merge()}).
-    #' @param indices indices (couple of integers) of the clusters to merge
+    #' @param indices indices (couple of integers) of the blocks to merge
     #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
     #'   (\code{FALSE}, the default)?
     #' @return a new [`missSBM_fit`] with one fewer block
@@ -343,7 +335,7 @@ missSBM_fit <-
       private$build_candidate(candidate, in_place)
     },
     #' @description generate and cheaply trial-fit candidates obtained by merging pairs of
-    #'   clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
+    #'   blocks (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
     #'   number of blocks), only the most similar-connectivity pairs are tried.
     #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
     #' @param max_candidates cap on the number of pairs tried. Default is 30.
@@ -471,7 +463,7 @@ missSBM_fit <-
                                                  private$partlyObservedNet$samplingMatrixBar),
         ## the variational parameters of the sampling
         "degree" = private$imputations_degree(),
-        ## the imputations of the SBM, computed on demand (not along the VEM, #49)
+        ## the imputations of the SBM, computed on demand (not along the VEM)
         private$sampling$update_imputation(private$SBM$imputation))
       res <- private$SBM$networkData + nu
       if (!private$SBM$directed) res <- res + t(res)
@@ -519,14 +511,14 @@ missSBM_fit <-
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik  = function(value) {self$vExpec + self$entropy},
-    #' @field ICL double: integrated classification likelihood, built on the observed data (the
-    #'   observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
-    #'   the variational lower bound of the log-likelihood of the observed data and of the blocks,
-    #'   evaluated at the MAP memberships (hard assignment of each node to its most probable
-    #'   block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+    #' @field ICL double: the ICL (Integrated Classification Likelihood, the smaller the better),
+    #'   built on the observed data (the observed dyads and the sampling matrix), the missing dyads
+    #'   being integrated out: -2 times the variational lower bound of the log-likelihood of the
+    #'   observed data and of the blocks, evaluated at the MAP memberships (hard assignment of each
+    #'   node to its most probable block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
     #'   bound includes the expected log-likelihood and the entropy of the imputations.
     ICL    = function(value) {
-      Z <- private$map_memberships()
+      Z <- .map_indicator(private$SBM$probMemberships)
       J <- private$sampling$vExpec_at(Z) + private$SBM$vExpec_at(Z) +
         if (private$sampling$type == "degree")
           private$SBM$vExpec_imputed(private$imputations_degree(), Z) + self$entropyImputed else 0
@@ -551,6 +543,15 @@ is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 #' @return A matrix of estimated probabilities of connection
 #'
 #' @importFrom stats fitted
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' fitted(myModel)[1:5, 1:5]
 #' @export
 fitted.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -559,7 +560,7 @@ fitted.missSBM_fit <- function(object, ...) {
 
 #' Prediction of a [`missSBM_fit`] (i.e. network with imputed missing dyads)
 #'
-#' @name predicted.missSBM_fit
+#' @name predict.missSBM_fit
 #'
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param ... additional parameters for S3 compatibility.
@@ -568,6 +569,16 @@ fitted.missSBM_fit <- function(object, ...) {
 #' their expected values, i.e. by there estimated probabilities of connection under the missing SBM.
 #'
 #' @importFrom stats predict
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' ## the observed dyads, and the imputations of the missing ones
+#' predict(myModel)[1:5, 1:5]
 #' @export
 predict.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -584,6 +595,15 @@ predict.missSBM_fit <- function(object, ...) {
 #' @return a basic printing output
 #'
 #' @method summary missSBM_fit
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' summary(myModel)
 #' @export
 summary.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -603,6 +623,17 @@ summary.missSBM_fit <- function(object, ...) {
 #' @param type the type specifies the field to plot, either "imputed", "expected", "meso",  or "monitoring"
 #' @param dimLabels : a list of two characters specifying the labels of the nodes. Default to \code{list(row= 'node',col = 'node')})
 #' @param ... additional parameters for S3 compatibility. Not used
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' plot(myModel, "expected")
+#' plot(myModel, "imputed")
+#' plot(myModel, "monitoring")
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
@@ -630,6 +661,17 @@ plot.missSBM_fit <- function(x, type = c("imputed", "expected", "meso", "monitor
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @return A vector or matrix of coefficients extracted from the missSBM_fit model.
 #'
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' coef(myModel, "mixture")
+#' coef(myModel, "connectivity")
+#' coef(myModel, "sampling")
 #' @export
 coef.missSBM_fit <- function(object, type = c("mixture", "connectivity", "covariates", "sampling"), ...) {
   stopifnot(is_missSBMfit(object))

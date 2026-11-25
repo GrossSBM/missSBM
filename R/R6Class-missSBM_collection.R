@@ -23,7 +23,7 @@
 #'
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
 #' adjacencyMatrix <- missSBM::frenchblog2007 %>%
-#'   igraph::delete.vertices(1:100) %>%
+#'   igraph::delete_vertices(1:100) %>%
 #'   igraph::as_adjacency_matrix() %>%
 #'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 #' collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
@@ -131,8 +131,9 @@ missSBM_collection <-
       ggplot(df, aes(x = nBlock, y = ICL)) +
         geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
         scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
-        labs(x = "#blocks", y = "Integrated Classification likelihood",
-             shape = "collapsed classes") + ggtitle("Model Selection")
+        labs(x = "#blocks", y = "Integrated Classification Likelihood (ICL)",
+             shape = "collapsed classes") + ggtitle("Model Selection") +
+        if (!any(df$collapsed)) guides(shape = "none")
     },
     plot_elbo = function() {
       df <- data.frame(nBlock = self$vBlocks,
@@ -141,14 +142,15 @@ missSBM_collection <-
       ggplot(df, aes(x = nBlock, y = elbo)) +
         geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
         scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
-        labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound",
-             shape = "collapsed classes") + ggtitle("Model Selection")
+        labs(x = "#blocks", y = "Evidence Lower Bound (variational)",
+             shape = "collapsed classes") + ggtitle("Model Selection") +
+        if (!any(df$collapsed)) guides(shape = "none")
     },
     plot_monitoring = function() {
       monitoring <- self$optimizationStatus
       monitoring$nBlock <- as.factor(monitoring$nBlock)
       ggplot(monitoring, aes(x = cumsum(iteration), y = elbo, color = nBlock)) + geom_line() + geom_point() +
-        theme_bw() + labs(x = "# cumulated V-EM iterations", y = "Evidence (variational) Lower Bound") + ggtitle("Optimization monitoring")
+        theme_bw() + labs(x = "cumulated VEM iterations", y = "Evidence Lower Bound (variational)") + ggtitle("Optimization monitoring")
     }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -312,7 +314,8 @@ missSBM_collection <-
   active = list(
     #' @field models a list of models
     models = function(value) (private$missSBM_fit),
-    #' @field ICL the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)
+    #' @field ICL the vector of the ICL (Integrated Classification Likelihood, the smaller the better)
+    #'   of the models of the collection, see [missSBM_fit]
     ICL = function(value) {setNames(sapply(self$models, function(model) model$ICL), names(self$vBlocks))},
     #' @field bestModel the best model according to the ICL, restricted to models without
     #'   collapsed classes when at least one such model is available (see \code{$degenerate})
@@ -345,3 +348,27 @@ missSBM_collection <-
     }
   )
 )
+
+#' Summary method for a [`missSBM_collection`]
+#'
+#' @name summary.missSBM_collection
+#'
+#' @param object an R6 object with class [`missSBM_collection`]
+#' @param ... additional parameters for S3 compatibility.
+#'
+#' @return a basic printing output
+#'
+#' @method summary missSBM_collection
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' summary(collection)
+#' @export
+summary.missSBM_collection <- function(object, ...) {
+  stopifnot(inherits(object, "missSBM_collection"))
+  object$show()
+}

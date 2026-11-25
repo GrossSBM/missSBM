@@ -23,11 +23,15 @@ the possible dyads (as sbm does for a network with missing values)}
 
     \item{\code{entropy}}{double, value of the entropy due to the clustering distribution}
 
+    \item{\code{vExpec}}{double: variational expectation of the complete log-likelihood of the
+observed dyads and of the blocks}
+
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-    \item{\code{ICL}}{double: value of the integrated classification log-likelihood: -2 times the
-variational expectation of the complete log-likelihood at the MAP memberships (each node
-in its most probable block), plus the penalty, as for \link{missSBM_fit}}
+    \item{\code{ICL}}{double: the ICL (Integrated Classification Likelihood) of the SBM alone: -2 times
+the variational expectation of the complete log-likelihood of the observed dyads at the
+MAP memberships (each node in its most probable block), plus the penalty, as for
+\link{missSBM_fit}}
   }
   \if{html}{\out{</div>}}
 }
@@ -39,6 +43,7 @@ in its most probable block), plus the penalty, as for \link{missSBM_fit}}
     \item \href{#method-SimpleSBM_fit-reorder}{\code{SimpleSBM_fit$reorder()}}
     \item \href{#method-SimpleSBM_fit-get_state}{\code{SimpleSBM_fit$get_state()}}
     \item \href{#method-SimpleSBM_fit-set_state}{\code{SimpleSBM_fit$set_state()}}
+    \item \href{#method-SimpleSBM_fit-polish_log_tau}{\code{SimpleSBM_fit$polish_log_tau()}}
     \item \href{#method-SimpleSBM_fit-clone}{\code{SimpleSBM_fit$clone()}}
   }
 }
@@ -146,6 +151,32 @@ which duplicates the whole object, including the -- possibly large -- network da
       \item{\code{state}}{a state, as returned by \code{get_state()}}
     }
     \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimpleSBM_fit-polish_log_tau"></a>}}
+\if{latex}{\out{\hypertarget{method-SimpleSBM_fit-polish_log_tau}{}}}
+\subsection{\code{SimpleSBM_fit$polish_log_tau()}}{
+  for each node, the log-likelihood of the observed dyads it would contribute
+to each block if hard-assigned there (parameters held fixed), plus the term of the
+sampling: the gains of the node swaps of \code{missSBM_fit$polish()}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimpleSBM_fit$polish_log_tau(log_lambda = 0, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{log_lambda}}{term of the sampling depending on the blocks, added as is (0 for the
+designs whose sampling does not depend on them)}
+      \item{\code{...}}{additional arguments, not used}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    an N x Q matrix
   }
 }
 

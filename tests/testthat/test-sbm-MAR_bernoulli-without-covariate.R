@@ -60,7 +60,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate, dyad samplin
 
 })
 
-test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate, node samping, MAR", {
+test_that("SimpleSBM_fit 'Bernoulli' model, directed, no covariate, node sampling, MAR", {
 
   sampler_directed_nocov$rNetwork(store = TRUE)
 

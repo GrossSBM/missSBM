@@ -10,11 +10,9 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
   tol_ARI   <- .8
   truth   <- referenceResults$true_sbm
 
-  cat("\nsampling: ")
   for (sampling in c("dyad", "node", "double-standard", "block-node")) {
 
     refAlgo <- referenceResults[[sampling]]
-    cat(sampling)
 
     missSBM_out <- estimateMissSBM(
       adjacencyMatrix = refAlgo$sampledNet,
@@ -30,7 +28,6 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     gap_old <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth)
-      cat(" new better on mixture")
     } else {
       expect_lt(gap_old, tol_ref)
       expect_lt(gap_old, tol_ref)
@@ -42,7 +39,6 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
     err_gap <- error(newAlgo$fittedSBM$connectParam$mean, refAlgo$connectParam, sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth)
-      cat(" new better on connectivity")
     } else {
       expect_lt(err_old, tol_ref)
       expect_lt(err_gap, tol_ref)
@@ -63,7 +59,6 @@ test_that("check consistency against Tim's code for dyad, node, double standard 
       err_gap  <- error(newAlgo$fittedSampling$parameters, refAlgo$samplingParam, sort = TRUE)
       expect_lt(err_new, 2 * tol_truth)
     }
-    cat("\n")
   }
 })
 
@@ -96,7 +91,6 @@ test_that("check consistency against Tim's code for dyad sampling with covariate
     err_gap <- error(newAlgo$fittedSBM$blockProp, refAlgo$mixtureParam, sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth)
-      cat(" new better on mixture")
     } else {
       expect_lt(err_old, tol_ref)
       expect_lt(err_gap, tol_ref)
@@ -108,7 +102,6 @@ test_that("check consistency against Tim's code for dyad sampling with covariate
     err_gap <- error(newAlgo$fittedSBM$connectParam$mean, missSBM:::.logistic(refAlgo$connectParam), sort = TRUE)
     if (err_new < err_old) {
       expect_lt(err_new, tol_truth)
-      cat(" new better on connectivity")
     } else {
       expect_lt(err_new, 10*tol_ref)
       expect_lt(err_old, 10*tol_ref)

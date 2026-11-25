@@ -14,7 +14,7 @@ test_that("missSBMcollection works", {
     partlyObservedNet  = partlyObservedNet,
     sampling    = "dyad",
     clusterInit = cl,
-    control = list(useCov = FALSE, trace = TRUE))
+    control = list(useCov = FALSE, trace = FALSE))
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, trace = 0, iterates = 0)
@@ -33,5 +33,10 @@ test_that("missSBMcollection works", {
 
   collection$explore(control, direction = "both")
   expect_is(collection, "missSBM_collection")
+
+  ## printing and summary, as for a fit
+  expect_output(print(collection), "COLLECTION OF 3 SBM fits")
+  expect_output(summary(collection), "COLLECTION OF 3 SBM fits")
+  expect_output(summary(collection$bestModel), "missSBM-fit")
 })
 

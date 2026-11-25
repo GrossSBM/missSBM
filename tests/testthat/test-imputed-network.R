@@ -1,8 +1,7 @@
 context("imputed network: the imputations at the final parameters")
 
-## Since #49, the designs that integrate the missing dyads out given the blocks compute no
-## imputation along the VEM: imputedNetwork computes them on demand, at the final parameters
-## (they came from the last E-step before, slightly stale).
+## The designs that integrate the missing dyads out given the blocks compute no imputation along
+## the VEM: imputedNetwork computes them on demand, at the final parameters.
 
 set.seed(1)
 Q <- 3

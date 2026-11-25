@@ -17,7 +17,7 @@ With a single block, \eqn{(\pi, p_0, p_1)} are not identifiable: the observed da
 to dyad sampling, with one parameter.
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{doubleStandardSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampling_fit]{networkSampling_fit}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{doubleStandardSampling_fit}
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -50,7 +50,7 @@ blocks q and l is an edge, with the current parameters}
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href='../../missSBM/html/networkSamplingDyads_fit.html#method-networkSamplingDyads_fit-show'><code>networkSamplingDyads_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="show"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-show'><code>networkSampling_fit$show()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

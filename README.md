@@ -39,6 +39,12 @@ mechanism can be ignored:
   block structure, the edge value, or the node degree, and must be
   modeled jointly with the network to avoid biased inference.
 
+The SBM and the sampling are fitted by variational EM, the missing dyads
+being integrated out given the blocks whenever the design allows it. The
+number of blocks is selected by the Integrated Classification Likelihood
+(ICL), built on the observed data, which also allows to compare sampling
+designs on the same data.
+
 ## Installation
 
 The last CRAN version is available via
@@ -71,7 +77,7 @@ adjacency <- as_adjacency_matrix(frenchblog2007, sparse = FALSE)
 ```
 
 ``` r
-full_fit <- estimateMissSBM(adjacency, vBlocks = 1:10, sampling = "node",
+full_fit <- estimateMissSBM(adjacency, vBlocks = 1:14, sampling = "node",
                              control = missSBM_param(trace = FALSE))
 ```
 
@@ -79,7 +85,8 @@ full_fit <- estimateMissSBM(adjacency, vBlocks = 1:10, sampling = "node",
 plot(full_fit, "icl")
 ```
 
-![](man/figures/README-plot-full-1.png)
+<img src="man/figures/README-plot-full-1.png"
+data-fig-alt="ICL of the SBM fitted on the fully observed network, against the number of blocks" />
 
 ### Simulate a Missing Not At Random sampling and account for it
 
@@ -97,13 +104,13 @@ sampling_rate <- ifelse(block_prop < 0.1, 0.2, 0.8)
 partial_network <- observeNetwork(adjacency, sampling = "block-node",
                                    parameters = sampling_rate,
                                    clusters = full_fit$bestModel$fittedSBM$memberships)
-mean(is.na(partial_network)) # fraction of missing dyads
+mean(is.na(partial_network[upper.tri(partial_network)])) # fraction of missing dyads
 ```
 
-    [1] 0.07891381
+    [1] 0.1327386
 
 ``` r
-partial_fit <- estimateMissSBM(partial_network, vBlocks = 1:10, sampling = "block-node",
+partial_fit <- estimateMissSBM(partial_network, vBlocks = 1:14, sampling = "block-node",
                                 control = missSBM_param(trace = FALSE, iterates = 2))
 ```
 
@@ -111,9 +118,31 @@ partial_fit <- estimateMissSBM(partial_network, vBlocks = 1:10, sampling = "bloc
 plot(partial_fit, "icl")
 ```
 
-![](man/figures/README-plot-partial-1.png)
+<img src="man/figures/README-plot-partial-1.png"
+data-fig-alt="ICL of the SBM fitted on the partly observed network with block-node sampling, against the number of blocks" />
 
-Despite about 8% of the dyads missing under this informative design,
+The ICL can also compare sampling designs fitted to the same data, here
+`"block-node"` and `"node"` (which ignores the sampling):
+
+``` r
+node_fit <- estimateMissSBM(partial_network, vBlocks = 1:14, sampling = "node",
+                             control = missSBM_param(trace = FALSE, iterates = 2))
+```
+
+``` r
+c(node = min(node_fit$ICL), "block-node" = min(partial_fit$ICL))
+```
+
+          node block-node 
+      6452.477   6427.483 
+
+On this sampling, the ICL prefers the design that generated the data.
+Over repeated samplings, it does not always: `"block-node"` has one
+sampling parameter per block, more than this sampling needs, and a small
+difference of ICL is no evidence for one design (see
+`?estimateMissSBM`).
+
+Despite 13% of the dyads missing under this informative design,
 **missSBM** recovers a block structure close to the one found on the
 fully observed network (Adjusted Rand Index, the closer to 1 the
 better):
@@ -122,22 +151,26 @@ better):
 aricode::ARI(full_fit$bestModel$fittedSBM$memberships, partial_fit$bestModel$fittedSBM$memberships)
 ```
 
-    [1] 0.8208973
+    [1] 0.7538556
+
+The expected connections under the models fitted on the full network and
+on the partly observed one:
 
 ``` r
-par(mfrow = c(1, 2))
 plot(full_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 ```
 
-![](man/figures/README-plot-expected-1.png)
+<img src="man/figures/README-plot-expected-1.png"
+data-fig-alt="Expected connections between the blogs under the model fitted on the full network" />
 
 ``` r
 plot(partial_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 ```
 
-![](man/figures/README-plot-expected-2.png)
+<img src="man/figures/README-plot-expected-2.png"
+data-fig-alt="Expected connections between the blogs under the model fitted on the partly observed network" />
 
-See `vignette("case_study_war_networks")` and [the JSS
+See the vignettes and [the JSS
 article](https://doi.org/10.18637/jss.v101.i12) for a more comprehensive
 tour, including covariates and further sampling designs.
 

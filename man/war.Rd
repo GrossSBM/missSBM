@@ -29,7 +29,7 @@ class(war$belligerent)
 igraph::gorder(war$alliance)
 igraph::gorder(war$belligerent)
 igraph::edges(war$alliance)
-igraph::get.graph.attribute(war$alliance)
+igraph::graph_attr(war$alliance)
 }
 \references{
 Sarkees, Meredith Reid and Frank Wayman (2010). Resort to War: 1816 - 2007. Washington DC: CQ Press.

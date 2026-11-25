@@ -19,7 +19,7 @@ as S3 methods. See the documentation for \code{\link[=show]{show()}} and \code{\
 
 ## Sample 75\% of dyads in  French political Blogosphere's network data
 adjacencyMatrix <- missSBM::frenchblog2007 \%>\%
-  igraph::delete.vertices(1:100) \%>\%
+  igraph::delete_vertices(1:100) \%>\%
   igraph::as_adjacency_matrix() \%>\%
   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
@@ -31,7 +31,8 @@ class(collection)
   \describe{
     \item{\code{models}}{a list of models}
 
-    \item{\code{ICL}}{the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)}
+    \item{\code{ICL}}{the vector of the ICL (Integrated Classification Likelihood, the smaller the better)
+of the models of the collection, see \link{missSBM_fit}}
 
     \item{\code{bestModel}}{the best model according to the ICL, restricted to models without
 collapsed classes when at least one such model is available (see \code{$degenerate})}

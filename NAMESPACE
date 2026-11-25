@@ -4,6 +4,7 @@ S3method(coef,missSBM_fit)
 S3method(fitted,missSBM_fit)
 S3method(plot,missSBM_fit)
 S3method(predict,missSBM_fit)
+S3method(summary,missSBM_collection)
 S3method(summary,missSBM_fit)
 export("%>%")
 export(estimateMissSBM)
@@ -25,9 +26,11 @@ importFrom(future.apply,future_lapply)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)
 importFrom(sbm,plotMyMatrix)
-importFrom(stats,binomial)
-importFrom(stats,fitted)
-importFrom(stats,glm.fit)
-importFrom(stats,predict)
-importFrom(stats,residuals)
+importFrom(stats,
+  binomial,
+  fitted,
+  glm.fit,
+  predict,
+  residuals
+)
 useDynLib(missSBM, .registration = TRUE)

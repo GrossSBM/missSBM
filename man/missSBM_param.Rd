@@ -22,12 +22,12 @@ missSBM_param(
 )
 }
 \arguments{
-\item{threshold}{V-EM algorithm stops when an optimization step changes the objective function
+\item{threshold}{the VEM stops when an optimization step changes the objective function
 or the parameters by less than threshold. Default is 1e-2.}
 
-\item{maxIter}{V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.}
+\item{maxIter}{the VEM stops when the number of iterations exceeds maxIter. Default is 50.}
 
-\item{fixPointIter}{number of fix-point iterations in the V-E step. Default is 3.}
+\item{fixPointIter}{number of fixed-point iterations in the variational E step. Default is 3.}
 
 \item{imputation}{character, the imputation strategy used to build the initial clustering (see
 \code{\link{partlyObservedNetwork}}'s \code{imputation()}). Either "median" (default),
@@ -50,12 +50,13 @@ model's own number of blocks? Cheap relative to exploration (\code{iterates}), s
 not search across numbers of blocks. Default is TRUE.}
 
 \item{iterates}{integer, the number of forward/backward exploration passes searching for a
-better number of blocks by splitting/merging clusters (unlike \code{polish}, which only
+better number of blocks by splitting/merging blocks (unlike \code{polish}, which only
 refines each model at its own number of blocks): more expensive than \code{polish}.
 \code{0} disables exploration entirely (only the initial VEM fit, plus \code{polish} if
-enabled, is returned). Default is 1.}
+enabled, is returned). Default is 1, enough on small networks; 2 are advised for a reference
+analysis of a network with many blocks.}
 
-\item{maxMergeCandidates}{integer, caps the number of cluster-pair merge candidates tried
+\item{maxMergeCandidates}{integer, caps the number of block-pair merge candidates tried
 during backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
 only the pairs with the most similar fitted connectivity profiles are tried, since merging
 two blocks with very different connectivity is rarely competitive anyway. Default is 30.}

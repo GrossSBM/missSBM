@@ -18,7 +18,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
   Q <- 3
   cl0   <- partlyObservedNet$clustering(Q)[[1]]
 
-  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = 1)
+  control <- list(threshold = 1e-4, maxIter = 200, fixPointIter = 5, trace = FALSE)
 
   ## using SBM_fit class
   my_SBM <- missSBM:::SimpleSBM_fit_noCov$new(partlyObservedNet, clusterInit = cl0)
@@ -35,7 +35,7 @@ test_that("SimpleSBM_fit_missSBM and missSBMfit are coherent", {
       partlyObservedNet  = partlyObservedNet,
       sampling    = "node",
       clusterInit = list(cl0),
-      control = list(trace = TRUE, useCov = TRUE)
+      control = list(trace = FALSE, useCov = TRUE)
   )
   my_collection$estimate(control)
 

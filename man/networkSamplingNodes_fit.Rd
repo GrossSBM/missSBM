@@ -2,37 +2,28 @@
 % Please edit documentation in R/R6Class-networkSampling_fit.R
 \name{networkSamplingNodes_fit}
 \alias{networkSamplingNodes_fit}
-\title{Virtual class used to define a family of networkSamplingNodes_fit}
+\title{Virtual class of the fits of the sampling designs on the nodes}
 \description{
-Virtual class used to define a family of networkSamplingNodes_fit
+Virtual class of the fits of the sampling designs on the nodes
 }
-\section{Super class}{
-\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{networkSamplingNodes_fit}
-}
-\section{Active bindings}{
-  \if{html}{\out{<div class="r6-active-bindings">}}
-  \describe{
-    \item{\code{penalty}}{double, value of the penalty term in ICL}
-
-    \item{\code{log_lambda}}{double, term for adjusting the imputation step which depends on the type of sampling}
-  }
-  \if{html}{\out{</div>}}
+\section{Super classes}{
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampling_fit]{networkSampling_fit}} -> \code{networkSamplingNodes_fit}
 }
 \section{Methods}{
 \subsection{Public methods}{
   \itemize{
     \item \href{#method-networkSamplingNodes_fit-initialize}{\code{networkSamplingNodes_fit$new()}}
-    \item \href{#method-networkSamplingNodes_fit-show}{\code{networkSamplingNodes_fit$show()}}
-    \item \href{#method-networkSamplingNodes_fit-update_parameters}{\code{networkSamplingNodes_fit$update_parameters()}}
-    \item \href{#method-networkSamplingNodes_fit-update_imputation}{\code{networkSamplingNodes_fit$update_imputation()}}
-    \item \href{#method-networkSamplingNodes_fit-reorder}{\code{networkSamplingNodes_fit$reorder()}}
-    \item \href{#method-networkSamplingNodes_fit-vExpec_at}{\code{networkSamplingNodes_fit$vExpec_at()}}
     \item \href{#method-networkSamplingNodes_fit-clone}{\code{networkSamplingNodes_fit$clone()}}
   }
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="reorder"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-reorder'><code>networkSampling_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="show"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-show'><code>networkSampling_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-update_imputation'><code>networkSampling_fit$update_imputation()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-update_parameters'><code>networkSampling_fit$update_parameters()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="vExpec_at"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-vExpec_at'><code>networkSampling_fit$vExpec_at()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}
@@ -50,96 +41,6 @@ Virtual class used to define a family of networkSamplingNodes_fit
     \describe{
       \item{\code{partlyObservedNetwork}}{a object with class partlyObservedNetwork representing the observed data with possibly missing entries}
       \item{\code{name}}{a character for the name of sampling to fit on the partlyObservedNetwork}
-    }
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-networkSamplingNodes_fit-show"></a>}}
-\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-show}{}}}
-\subsection{\code{networkSamplingNodes_fit$show()}}{
-  show method
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{networkSamplingNodes_fit$show()}
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-networkSamplingNodes_fit-update_parameters"></a>}}
-\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-update_parameters}{}}}
-\subsection{\code{networkSamplingNodes_fit$update_parameters()}}{
-  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{networkSamplingNodes_fit$update_parameters(...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{...}}{use for compatibility}
-    }
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-networkSamplingNodes_fit-update_imputation"></a>}}
-\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-update_imputation}{}}}
-\subsection{\code{networkSamplingNodes_fit$update_imputation()}}{
-  a method to update the imputation of the missing entries.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{networkSamplingNodes_fit$update_imputation(nu)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{nu}}{the matrix of (uncorrected) imputation for missing entries}
-    }
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-networkSamplingNodes_fit-reorder"></a>}}
-\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-reorder}{}}}
-\subsection{\code{networkSamplingNodes_fit$reorder()}}{
-  permute the parameters indexed by the blocks, after the blocks of the SBM
-were permuted. By default, nothing to do (no parameter indexed by the blocks)
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{networkSamplingNodes_fit$reorder(o)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{o}}{the permutation applied to the blocks (new block k is former block \code{o[k]})}
-    }
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-networkSamplingNodes_fit-vExpec_at"></a>}}
-\if{latex}{\out{\hypertarget{method-networkSamplingNodes_fit-vExpec_at}{}}}
-\subsection{\code{networkSamplingNodes_fit$vExpec_at()}}{
-  the variational expectation of the log-likelihood of the sampling at given
-memberships (used by the ICL, at the MAP memberships)
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{networkSamplingNodes_fit$vExpec_at(Z)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{Z}}{an n x Q matrix of memberships}
     }
     \if{html}{\out{</div>}}
   }

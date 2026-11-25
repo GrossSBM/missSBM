@@ -91,7 +91,7 @@ corrplot(partlyObservedNet_war,
 
 ### Estimation with missing data
 
-We can now adjust a Stochastic Block Model with the function `estimateMissSBM` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to avoid local minima and get a robust Integrated Classification Likelihood Criterion, commonly used to perform model selection. This will make the choice of the number of groups/blocks more robust. The number of exploration passes can be tuned via the `iterates` argument of `missSBM_param()`, passed as the `control` argument (`iterates = 0` disables exploration entirely).
+We can now adjust a Stochastic Block Model with the function `estimateMissSBM` under this type of sampling: by default, we use a forward/backward (split and merge) strategy on the clustering to avoid local minima and get a robust Integrated Classification Likelihood (ICL), commonly used to perform model selection. This will make the choice of the number of groups/blocks more robust. The number of exploration passes can be tuned via the `iterates` argument of `missSBM_param()`, passed as the `control` argument (`iterates = 0` disables exploration entirely).
 
 ```{r inference node, results='hide'}
 vBlocks <- 1:5
@@ -152,7 +152,7 @@ collection_sbm_power_full <- estimateMissSBM(belligerent_adjacency, vBlocks = vB
 
 Note that by default, the distribution of edges depends on the covariate(s), if any are included in the model.
 
-The covariate provided as a vector is transferred on edges through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`.
+The covariate provided as a vector is transferred on edges through an $\ell_1$ similarity: for edge $(i,j)$ the associated covariate is defined by $-|x_i-x_j|$ where $x_i$ denotes the covariate for node $i$. Another similarity measure could be provided via the option `similarity`.
 
 The estimated effect of the covariate is obtained through
 ```{r power_effect}

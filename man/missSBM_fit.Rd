@@ -64,11 +64,11 @@ sampling matrix is fully observed}
 
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-    \item{\code{ICL}}{double: integrated classification likelihood, built on the observed data (the
-observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
-the variational lower bound of the log-likelihood of the observed data and of the blocks,
-evaluated at the MAP memberships (hard assignment of each node to its most probable
-block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+    \item{\code{ICL}}{double: the ICL (Integrated Classification Likelihood, the smaller the better),
+built on the observed data (the observed dyads and the sampling matrix), the missing dyads
+being integrated out: -2 times the variational lower bound of the log-likelihood of the
+observed data and of the blocks, evaluated at the MAP memberships (hard assignment of each
+node to its most probable block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
 bound includes the expected log-likelihood and the entropy of the imputations.}
   }
   \if{html}{\out{</div>}}
@@ -136,7 +136,7 @@ bound includes the expected log-likelihood and the entropy of the imputations.}
 \if{html}{\out{<a id="method-missSBM_fit-split"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-split}{}}}
 \subsection{\code{missSBM_fit$split()}}{
-  clone of the current fit after splitting cluster \code{index} in two, via a
+  clone of the current fit after splitting block \code{index} in two, via a
 spectral bipartition of the sub-network it induces. Builds but does not fit the
 candidate (see \code{candidates_split()}).
   \subsection{Usage}{
@@ -147,7 +147,7 @@ candidate (see \code{candidates_split()}).
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{index}}{index (integer) of the cluster to split}
+      \item{\code{index}}{index (integer) of the block to split}
       \item{\code{in_place}}{replace \code{self}'s own fit (\code{TRUE}) or return a new object
 (\code{FALSE}, the default)?}
       \item{\code{base_net}}{optional precomputed network to bipartition (as built internally at the
@@ -167,7 +167,7 @@ be split (its induced sub-network has zero variance)
 \if{latex}{\out{\hypertarget{method-missSBM_fit-candidates_split}{}}}
 \subsection{\code{missSBM_fit$candidates_split()}}{
   generate and cheaply trial-fit candidates obtained by splitting each
-splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
+splittable block in two (see \code{split()}). A block is splittable if it has at
 least 4 members and non-zero variance in its induced sub-network.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -186,7 +186,7 @@ least 4 members and non-zero variance in its induced sub-network.
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    a list of trial-fitted \code{\link{missSBM_fit}} candidates (one per splittable cluster)
+    a list of trial-fitted \code{\link{missSBM_fit}} candidates (one per splittable block)
   }
 }
 
@@ -194,7 +194,7 @@ least 4 members and non-zero variance in its induced sub-network.
 \if{html}{\out{<a id="method-missSBM_fit-merge"></a>}}
 \if{latex}{\out{\hypertarget{method-missSBM_fit-merge}{}}}
 \subsection{\code{missSBM_fit$merge()}}{
-  clone of the current fit after merging clusters \code{indices[1]} and
+  clone of the current fit after merging blocks \code{indices[1]} and
 \code{indices[2]} into one. Builds but does not fit the candidate (see
 \code{candidates_merge()}).
   \subsection{Usage}{
@@ -205,7 +205,7 @@ least 4 members and non-zero variance in its induced sub-network.
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{indices}}{indices (couple of integers) of the clusters to merge}
+      \item{\code{indices}}{indices (couple of integers) of the blocks to merge}
       \item{\code{in_place}}{replace \code{self}'s own fit (\code{TRUE}) or return a new object
 (\code{FALSE}, the default)?}
     }
@@ -221,7 +221,7 @@ least 4 members and non-zero variance in its induced sub-network.
 \if{latex}{\out{\hypertarget{method-missSBM_fit-candidates_merge}{}}}
 \subsection{\code{missSBM_fit$candidates_merge()}}{
   generate and cheaply trial-fit candidates obtained by merging pairs of
-clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
+blocks (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
 number of blocks), only the most similar-connectivity pairs are tried.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}

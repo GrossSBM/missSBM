@@ -13,8 +13,6 @@ It is not designed to be called directly by the user.
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{imputation}}{the matrix of imputed values}
-
-    \item{\code{vExpec}}{double: variational approximation of the expectation complete log-likelihood}
   }
   \if{html}{\out{</div>}}
 }
@@ -23,7 +21,6 @@ It is not designed to be called directly by the user.
   \itemize{
     \item \href{#method-SimpleSBM_fit_withCov-update_parameters}{\code{SimpleSBM_fit_withCov$update_parameters()}}
     \item \href{#method-SimpleSBM_fit_withCov-update_blocks}{\code{SimpleSBM_fit_withCov$update_blocks()}}
-    \item \href{#method-SimpleSBM_fit_withCov-polish_log_tau}{\code{SimpleSBM_fit_withCov$polish_log_tau()}}
     \item \href{#method-SimpleSBM_fit_withCov-vExpec_at}{\code{SimpleSBM_fit_withCov$vExpec_at()}}
     \item \href{#method-SimpleSBM_fit_withCov-clone}{\code{SimpleSBM_fit_withCov$clone()}}
   }
@@ -40,6 +37,7 @@ It is not designed to be called directly by the user.
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-doVEM'><code>SimpleSBM_fit$doVEM()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-get_state'><code>SimpleSBM_fit$get_state()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-initialize'><code>SimpleSBM_fit$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="polish_log_tau"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-polish_log_tau'><code>SimpleSBM_fit$polish_log_tau()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-reorder'><code>SimpleSBM_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href='../../missSBM/html/SimpleSBM_fit.html#method-SimpleSBM_fit-set_state'><code>SimpleSBM_fit$set_state()</code></a></span></li>
 </ul>
@@ -81,31 +79,6 @@ handful of iterations -- no external optimizer is required.
       \item{\code{...}}{use for compatibility}
     }
     \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimpleSBM_fit_withCov-polish_log_tau"></a>}}
-\if{latex}{\out{\hypertarget{method-SimpleSBM_fit_withCov-polish_log_tau}{}}}
-\subsection{\code{SimpleSBM_fit_withCov$polish_log_tau()}}{
-  for each node, the complete-data log-likelihood it would contribute to
-each class if hard-assigned there (theta/beta/pi held fixed), used to decide node-swap
-moves in \code{missSBM_fit$polish()}.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{SimpleSBM_fit_withCov$polish_log_tau(log_lambda = 0, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{log_lambda}}{additional sampling-design-dependent term, added as-is}
-      \item{\code{...}}{additional arguments, not used}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    an N x Q matrix
   }
 }
 

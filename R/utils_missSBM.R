@@ -2,6 +2,43 @@ available_samplings <- c("dyad", "covar-dyad", "node", "covar-node", "block-node
 
 available_samplings_covariates <- c("dyad", "covar-dyad", "node", "covar-node")
 
+## checks of the arguments of the user-facing functions, with informative messages
+.check_adjacency <- function(adjacencyMatrix) {
+  if (!(is.matrix(adjacencyMatrix) || inherits(adjacencyMatrix, "dgCMatrix")))
+    stop("adjacencyMatrix must be a matrix, possibly with NA (or a dgCMatrix).", call. = FALSE)
+  if (nrow(adjacencyMatrix) != ncol(adjacencyMatrix))
+    stop("adjacencyMatrix must be a square matrix.", call. = FALSE)
+}
+
+.check_sampling <- function(sampling, covariates) {
+  if (!is.character(sampling) || length(sampling) != 1 || !(sampling %in% available_samplings))
+    stop("sampling must be one of ", paste0("'", available_samplings, "'", collapse = ", "), ".", call. = FALSE)
+  if (sampling %in% c("covar-dyad", "covar-node") && length(covariates) == 0)
+    stop("sampling '", sampling, "' needs covariates.", call. = FALSE)
+}
+
+.check_covariates <- function(covariates, nbNodes) {
+  if (!is.list(covariates))
+    stop("covariates must be a list of size-N vectors (node-centered) or of N x N matrices (dyad-centered).", call. = FALSE)
+  ok <- vapply(covariates, function(x)
+    if (is.null(dim(x))) length(x) == nbNodes else length(dim(x)) == 2 && all(dim(x) == nbNodes), logical(1))
+  if (!all(ok))
+    stop("each covariate must be a vector of size N = ", nbNodes, " or an N x N matrix.", call. = FALSE)
+}
+
+.check_vBlocks <- function(vBlocks, nbNodes) {
+  if (!is.numeric(vBlocks) || length(vBlocks) == 0 || anyNA(vBlocks) ||
+      any(vBlocks != round(vBlocks)) || any(vBlocks < 1) || any(vBlocks >= nbNodes))
+    stop("vBlocks must be a vector of numbers of blocks: integers between 1 and N - 1 = ", nbNodes - 1, ".", call. = FALSE)
+}
+
+.check_clusterInit <- function(clusterInit, nbBlocks, nbNodes) {
+  if (!is.list(clusterInit) || length(clusterInit) != nbBlocks)
+    stop("clusterInit must be a list with one clustering per number of blocks in vBlocks.", call. = FALSE)
+  if (!all(vapply(clusterInit, function(cl) is.numeric(cl) && length(cl) == nbNodes, logical(1))))
+    stop("each clustering of clusterInit must be a vector of N = ", nbNodes, " block labels.", call. = FALSE)
+}
+
 #' L1-similarity
 #'
 #' Compute l1-similarity between two vectors
@@ -60,8 +97,7 @@ future_lapply_shuffled <- function(X, FUN, ...) {
 ## the patterns of the observed dyads (R), of the missing ones (S) and of the edges (Y) of a
 ## network given as a dense matrix with NA or as a dgCMatrix, as sparse matrices on the valid
 ## dyads (upper triangle if undirected), and whether it is directed, without any n x n temporary
-## (#49: the masks .row() / .col() / is.na() / != 0, the copy of as.numeric() and the transpose
-## of isSymmetric() peaked at about 5 times the input). A dense matrix is read in place in C++
+## (no mask, copy or transpose of the input). A dense matrix is read in place in C++
 ## (network_patterns_dense()); a sparse one (possibly with NA), column by column. Also checks that the
 ## observed values (diagonal included) are 0 or 1, both present.
 .network_patterns <- function(A) {
@@ -178,7 +214,7 @@ xlogx <- function(x) {
 
 ## values of Z %*% M %*% t(Z) at the structural nonzeros of a dgCMatrix pattern, packaged as a
 ## dgCMatrix with that same pattern, without forming the N x N matrix nor any (nnz x Q)
-## temporary (#49): O(nnz(pattern) * Q) time, the size of the result in memory (C++).
+## temporary: O(nnz(pattern) * Q) time, the size of the result in memory (C++).
 .bilinear_at_pattern <- function(Z, M, pattern, fun = identity) {
   Z <- as.matrix(Z); storage.mode(Z) <- "double"
   pattern@x <- fun(bilinear_at_pattern_cpp(t(Z %*% M), t(Z), pattern@i, pattern@p))
@@ -189,6 +225,20 @@ xlogx <- function(x) {
   b <- max(x)
   exp(x - b) / sum(exp(x - b))
 }
+
+## the softmax of each row of a matrix of log-probabilities (up to a constant per row)
+.softmax_rows <- function(log_tau) {t(apply(log_tau, 1, .softmax))}
+
+## the MAP memberships of the probabilities tau, as an indicator matrix (empty classes kept)
+.map_indicator <- function(tau) {
+  Z <- matrix(0, nrow(tau), ncol(tau))
+  Z[cbind(seq_len(nrow(tau)), max.col(tau, ties.method = "first"))] <- 1
+  Z
+}
+
+## the counts of a (sparse) n x n matrix X by pair of blocks, weighted by the memberships Z:
+## (Z' X Z)_ql = sum_ij Z_iq X_ij Z_jl, a Q x Q matrix
+.block_counts <- function(Z, X) {as.matrix(t(Z) %*% X %*% Z)}
 
 h <- function(x) {-.5 * (.logistic(x) - 0.5) / x}
 

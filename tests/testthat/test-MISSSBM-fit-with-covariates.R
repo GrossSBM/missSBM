@@ -6,7 +6,7 @@ M <- 1
 source("utils_test.R", local = TRUE)
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 5, trace = TRUE)
+control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 5, trace = FALSE)
 
 test_that("missSBM with covariates and dyad sampling works", {
 
@@ -162,4 +162,18 @@ test_that("miss SBM with covariates and node sampling works", {
     expect_gt(aricode::ARI(missSBM$fittedSBM$memberships, sampler_undirected_cov_node$memberships), tol_ARI)
   }
 
+})
+
+test_that("covariates: a block pair without edges does not break the M-step (theta bounded)", {
+  ## the right/left subgraph of the blogosphere with the party as covariate: at Q = 7, a block
+  ## pair had no edge, theta reached 0 exactly, and the next M-step started from logit(0) = -Inf
+  blogs <- missSBM::frenchblog2007
+  blogs <- igraph::induced_subgraph(blogs, igraph::V(blogs)$party %in% c("right", "left"))
+  blogs <- igraph::delete_vertices(blogs, which(igraph::degree(blogs) == 0))
+  left  <- (igraph::V(blogs)$party == "left") * 1
+  fit <- estimateMissSBM(igraph::as_adjacency_matrix(blogs), 7, "node", covariates = list(left),
+                         control = missSBM_param(trace = FALSE, useCov = TRUE, iterates = 0))
+  expect_true(is.finite(fit$ICL))
+  theta <- fit$bestModel$fittedSBM$connectParam$mean
+  expect_true(all(theta > 0 & theta < 1))
 })

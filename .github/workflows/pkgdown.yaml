@@ -4,6 +4,8 @@ on:
   push:
     branches: [main, master]
   pull_request:
+    # also when a draft PR becomes ready for review (the job skips draft PRs, see below)
+    types: [opened, synchronize, reopened, ready_for_review]
   release:
     types: [published]
   workflow_dispatch:
@@ -15,6 +17,8 @@ permissions: read-all
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
+    # not on draft PRs: the CI runs once the PR is ready for review (or by hand)
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}

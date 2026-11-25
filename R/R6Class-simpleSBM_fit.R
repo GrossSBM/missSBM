@@ -113,6 +113,16 @@ R6::R6Class(classname = "SimpleSBM_fit",
       private$pi    <- state$pi
       private$beta  <- state$beta
       invisible(self)
+    },
+    #' @description for each node, the log-likelihood of the observed dyads it would contribute
+    #'   to each block if hard-assigned there (parameters held fixed), plus the term of the
+    #'   sampling: the gains of the node swaps of \code{missSBM_fit$polish()}
+    #' @param log_lambda term of the sampling depending on the blocks, added as is (0 for the
+    #'   designs whose sampling does not depend on them)
+    #' @param ... additional arguments, not used
+    #' @return an N x Q matrix
+    polish_log_tau = function(log_lambda = 0, ...) {
+      private$log_tau(self$indMemberships) + log_lambda
     }
   ),
   active = list(
@@ -126,17 +136,16 @@ R6::R6Class(classname = "SimpleSBM_fit",
     penalty  = function(value) {unname((self$nbConnectParam + self$nbCovariates) * log(self$nbObservedDyads) + (self$nbBlocks-1) * log(self$nbNodes))},
     #' @field entropy double, value of the entropy due to the clustering distribution
     entropy  = function(value) {-sum(xlogx(private$Z))},
+    #' @field vExpec double: variational expectation of the complete log-likelihood of the
+    #'   observed dyads and of the blocks
+    vExpec = function(value) {self$vExpec_at(private$Z)},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik = function(value) {self$vExpec + self$entropy},
-    #' @field ICL double: value of the integrated classification log-likelihood: -2 times the
-    #'   variational expectation of the complete log-likelihood at the MAP memberships (each node
-    #'   in its most probable block), plus the penalty, as for [missSBM_fit]
-    ICL    = function(value) {
-      tau <- private$Z
-      Z <- matrix(0, nrow(tau), ncol(tau))
-      Z[cbind(seq_len(nrow(tau)), max.col(tau, ties.method = "first"))] <- 1
-      -2 * self$vExpec_at(Z) + self$penalty
-    }
+    #' @field ICL double: the ICL (Integrated Classification Likelihood) of the SBM alone: -2 times
+    #'   the variational expectation of the complete log-likelihood of the observed dyads at the
+    #'   MAP memberships (each node in its most probable block), plus the penalty, as for
+    #'   [missSBM_fit]
+    ICL    = function(value) {-2 * self$vExpec_at(.map_indicator(private$Z)) + self$penalty}
   )
 )
 
@@ -148,6 +157,13 @@ R6::R6Class(classname = "SimpleSBM_fit",
 SimpleSBM_fit_noCov <-
 R6::R6Class(classname = "SimpleSBM_fit_noCov",
   inherit = SimpleSBM_fit,
+  private = list(
+    ## log tau (up to a constant per node) given the memberships of the other nodes, on the
+    ## observed dyads
+    log_tau = function(Z) {
+      private$E_step(private$Y, private$R, Z, private$theta$mean, private$pi, rescale = FALSE)
+    }
+  ),
   public = list(
     #' @description update parameters estimation (M-step)
     #' @param ... additional arguments, only required for MNAR cases
@@ -169,18 +185,8 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
         private$Z <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi)
       } else if (self$nbBlocks > 1) {
         ## sampling depending on the blocks (block-node, block-dyad): observed dyads + sampling term
-        log_tau   <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE)
-        private$Z <- t(apply(log_tau + log_lambda, 1, .softmax))
+        private$Z <- .softmax_rows(private$log_tau(private$Z) + log_lambda)
       }
-    },
-    #' @description for each node, the complete-data log-likelihood it would contribute to
-    #'   each class if hard-assigned there (theta/pi held fixed), used to decide node-swap
-    #'   moves in \code{missSBM_fit$polish()}.
-    #' @param log_lambda additional sampling-design-dependent term, added as-is
-    #' @param ... additional arguments, not used
-    #' @return an N x Q matrix
-    polish_log_tau = function(log_lambda = 0, ...) {
-      private$E_step(private$Y, private$R, self$indMemberships, private$theta$mean, private$pi, rescale = FALSE) + log_lambda
     },
     #' @description variational expectation of the log-likelihood of the missing dyads, given
     #'   their imputations (used by the ICL of 'degree', see [missSBM_fit])
@@ -201,13 +207,9 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
       if (is.null(private$imputation_cache))
-        ## at the missing dyads only, without the n x n matrix (#49)
+        ## at the missing dyads only, without the n x n matrix
         private$imputation_cache <- .bilinear_at_pattern(private$Z, log(private$theta$mean/(1-private$theta$mean)), private$S, .logistic)
       private$imputation_cache
-    },
-    #' @field vExpec double: variational approximation of the expectation complete log-likelihood
-    vExpec = function(value) {
-      private$vLL_complete(private$Y, private$R, private$Z, private$theta$mean, private$pi)
     }
   )
 )
@@ -220,6 +222,13 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
 SimpleSBM_fit_withCov <-
 R6::R6Class(classname = "SimpleSBM_fit_withCov",
   inherit = SimpleSBM_fit,
+  private = list(
+    ## log tau (up to a constant per node) given the memberships of the other nodes, on the
+    ## observed dyads
+    log_tau = function(Z) {
+      private$E_step(private$Y, private$R, self$covarEffect, Z, .logit(private$theta$mean), private$pi, !self$directed, FALSE)
+    }
+  ),
   public = list(
     #' @description update parameters estimation (M-step) via Newton-Raphson: the M-step
     #'   objective is a weighted logistic regression (concave), so Newton converges in a
@@ -239,6 +248,9 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
       )
       private$beta  <- as.numeric(res$beta)
       private$theta <- res$theta
+      ## bounded as without covariates: a connectivity of exactly 0 or 1 (no edge, or only edges,
+      ## between two blocks) makes logit(theta), the starting point of the next M-step, infinite
+      private$theta$mean <- check_boundaries(private$theta$mean)
       private$pi    <- as.numeric(res$pi)
       invisible(res)
     },
@@ -247,15 +259,6 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
     update_blocks =   function(...) {
       private$imputation_cache <- NULL
       private$Z <- private$E_step(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi, !self$directed, TRUE)
-    },
-    #' @description for each node, the complete-data log-likelihood it would contribute to
-    #'   each class if hard-assigned there (theta/beta/pi held fixed), used to decide node-swap
-    #'   moves in \code{missSBM_fit$polish()}.
-    #' @param log_lambda additional sampling-design-dependent term, added as-is
-    #' @param ... additional arguments, not used
-    #' @return an N x Q matrix
-    polish_log_tau = function(log_lambda = 0, ...) {
-      private$E_step(private$Y, private$R, self$covarEffect, self$indMemberships, .logit(private$theta$mean), private$pi, !self$directed, FALSE) + log_lambda
     },
     #' @description variational expectation of the log-likelihood of the observed dyads and of
     #'   the blocks at given memberships (used by the ICL, at the MAP memberships)
@@ -270,10 +273,6 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
       if (is.null(private$imputation_cache))
         private$imputation_cache <- .mask_dense_at_pattern(private$Z %*% .logit(private$theta$mean) %*% t(private$Z) + self$covarEffect, private$S, .logistic)
       private$imputation_cache
-    },
-    #' @field vExpec double: variational approximation of the expectation complete log-likelihood
-    vExpec = function(value) {
-      private$vLL_complete(private$Y, private$R, self$covarEffect, private$Z, .logit(private$theta$mean), private$pi)
     }
   )
 )
@@ -301,7 +300,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MNAR",
     ## over its missing dyads (i, j) of sum_l Z_jl log m_ql (both triangles if undirected)
     missing_term = function(Z, log_m) {
       if (identical(log_m, 0)) return(0) # no sampling term (the SBM alone)
-      as.matrix(private$S %*% Z %*% t(log_m) + Matrix::crossprod(private$S, Z) %*% log_m) # no transpose of S (#49)
+      as.matrix(private$S %*% Z %*% t(log_m) + Matrix::crossprod(private$S, Z) %*% log_m) # no transpose of S
     }
   ),
   public = list(
@@ -320,9 +319,9 @@ R6::R6Class(classname = "SimpleSBM_fit_MNAR",
         return(invisible(NULL))
       }
       Z <- private$Z
-      Y1 <- as.matrix(t(Z) %*% private$Y %*% Z) # observed edges between blocks q and l
-      N  <- as.matrix(t(Z) %*% private$R %*% Z) # observed dyads
-      M  <- as.matrix(t(Z) %*% private$S %*% Z) # missing dyads
+      Y1 <- .block_counts(Z, private$Y) # observed edges between blocks q and l
+      N  <- .block_counts(Z, private$R) # observed dyads
+      M  <- .block_counts(Z, private$S) # missing dyads
       ## the statistics of the sampling count each dyad once
       So <- sum(Y1); So.bar <- sum(N) - So; Dm <- sum(M)
       if (!self$directed) {Y1 <- Y1 + t(Y1); N <- N + t(N); M <- M + t(M)}
@@ -347,9 +346,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MNAR",
     update_blocks = function(log_lambda = 0) {
       private$imputation_cache <- NULL
       if (self$nbBlocks > 1) {
-        log_tau <- private$E_step(private$Y, private$R, private$Z, private$theta$mean, private$pi, rescale = FALSE) +
-          private$missing_term(private$Z, log_lambda)
-        private$Z <- t(apply(log_tau, 1, .softmax))
+        private$Z <- .softmax_rows(private$log_tau(private$Z) + private$missing_term(private$Z, log_lambda))
       }
     },
     #' @description for each node, the log-likelihood of the observed data it would contribute
@@ -361,8 +358,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MNAR",
     #' @return an N x Q matrix
     polish_log_tau = function(log_lambda = 0, ...) {
       Zhard <- self$indMemberships
-      private$E_step(private$Y, private$R, Zhard, private$theta$mean, private$pi, rescale = FALSE) +
-        private$missing_term(Zhard, log_lambda)
+      private$log_tau(Zhard) + private$missing_term(Zhard, log_lambda)
     }
   )
 )
@@ -387,7 +383,7 @@ R6::R6Class(classname = "SimpleSBM_fit_degree",
     ## log tau (up to a constant) on the network completed by nu: the E-step is linear in (Y, R),
     ## so it is the sum of the E-steps of the observed and of the imputed dyads, log(pi) counted once
     log_tau_completed = function(Z, nu) {
-      private$E_step(private$Y, private$R, Z, private$theta$mean, private$pi, rescale = FALSE) +
+      private$log_tau(Z) +
         private$E_step(nu, private$S, Z, private$theta$mean, private$pi, rescale = FALSE) -
         matrix(log(private$pi), nrow(Z), ncol(Z), byrow = TRUE)
     }
@@ -401,8 +397,8 @@ R6::R6Class(classname = "SimpleSBM_fit_degree",
       if (is.null(nu)) return(super$update_parameters())
       private$imputation_cache <- NULL
       Z  <- private$Z
-      N1 <- as.matrix(t(Z) %*% private$Y %*% Z + t(Z) %*% nu %*% Z)
-      N  <- as.matrix(t(Z) %*% private$R %*% Z + t(Z) %*% private$S %*% Z)
+      N1 <- .block_counts(Z, private$Y) + .block_counts(Z, nu)
+      N  <- .block_counts(Z, private$R) + .block_counts(Z, private$S)
       if (!self$directed) {N1 <- N1 + t(N1); N <- N + t(N)}
       private$theta$mean <- check_boundaries(N1 / N)
       private$pi <- check_boundaries(colMeans(Z))
@@ -415,7 +411,7 @@ R6::R6Class(classname = "SimpleSBM_fit_degree",
     update_blocks = function(log_lambda = 0, nu = NULL, ...) {
       if (is.null(nu)) return(super$update_blocks(log_lambda))
       private$imputation_cache <- NULL
-      if (self$nbBlocks > 1) private$Z <- t(apply(private$log_tau_completed(private$Z, nu), 1, .softmax))
+      if (self$nbBlocks > 1) private$Z <- .softmax_rows(private$log_tau_completed(private$Z, nu))
     },
     #' @description for each node, the expected complete log-likelihood it would contribute to
     #'   each class if hard-assigned there (parameters and imputations held fixed), used to decide
