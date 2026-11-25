@@ -1,88 +1,45 @@
 # missSBM 1.2.0
 
-This version changes the estimation of the missing-not-at-random designs and the ICL: the
-results of `block-node`, `block-dyad`, `double-standard` and `degree`, and the models selected
-for all the designs, can differ from those of missSBM 1.1.0. To reproduce former results, install
-missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
+This version changes the estimation of the missing-not-at-random designs and the ICL: the results of `block-node`, `block-dyad`, `double-standard` and `degree`, and the models selected for all the designs, can differ from those of missSBM 1.1.0. To reproduce former results, install missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
 
 ## Changes in the estimation
 
-- `block-node` and `block-dyad`: the sampling only depends on the blocks, so the missing dyads are
-  integrated out given the blocks. The SBM part is fitted on the observed dyads, with the
-  sampling term in the update of the blocks. This is a tighter bound of the same likelihood, and
-  it removes a feedback of the imputations on the blocks, which could empty the blocks of
-  unobserved nodes: the clustering is much more accurate when many dyads are missing.
-- `double-standard`: the missing dyads are integrated out given the blocks too, and the
-  connectivity and the sampling parameters (p0, p1) are estimated jointly. (p0, p1) are only
-  identified through the differences of connectivity between the blocks: with a single block,
-  the model is fitted with p0 = p1, i.e. as `dyad` sampling, and `estimateMissSBM()` warns.
-- `degree`: the variational EM maximizes the bound of the model again (Tabouy, Barbillon &
-  Chiquet, 2020). It fits the SBM part on the observed dyads, then the sampling part, then all
-  the parameters jointly, the blocks taking the imputed dyads into account. In the previous
-  versions, the clustering ignored the sampling.
+- `block-node` and `block-dyad`: the sampling only depends on the blocks, so the missing dyads are integrated out given the blocks. The SBM part is fitted on the observed dyads, with the sampling term in the update of the blocks. This is a tighter bound of the same likelihood, and it removes a feedback of the imputations on the blocks, which could empty the blocks of unobserved nodes: the clustering is much more accurate when many dyads are missing.
+- `double-standard`: the missing dyads are integrated out given the blocks too, and the connectivity and the sampling parameters (p0, p1) are estimated jointly. (p0, p1) are only identified through the differences of connectivity between the blocks: with a single block, the model is fitted with p0 = p1, i.e. as `dyad` sampling, and `estimateMissSBM()` warns.
+- `degree`: the variational EM maximizes the bound of the model again (Tabouy, Barbillon & Chiquet, 2020). It fits the SBM part on the observed dyads, then the sampling part, then all the parameters jointly, the blocks taking the imputed dyads into account. In the previous versions, the clustering ignored the sampling.
 - The variational EM monitors and stops on the bound it maximizes (`loglik`), for all the designs.
 
 ## ICL
 
-- The ICL is built on the observed data, the observed dyads and the sampling matrix: -2 times
-  the variational bound at the MAP memberships (each node in its most probable block), plus the
-  penalty. The missing dyads are integrated out exactly, except for `degree`, whose bound includes
-  the imputed dyads and their entropy. This makes the ICL of different designs comparable,
-  although some designs remain hard to tell apart (e.g. `block-node` and `degree` on an
-  assortative network).
-- The penalty counts the observed dyads for the connectivity, which is estimated on them, instead
-  of all the possible dyads.
-- The ICL of the previous versions, computed on the network completed by the imputations, is no
-  longer available: it rewarded the models that predict the missing dyads with certainty, and
-  selected too many blocks when many dyads are missing.
+- The ICL is built on the observed data, the observed dyads and the sampling matrix: -2 times the ELBO at the MAP memberships plus the penalty. The missing dyads are integrated out exactly, except for `degree`, whose bound includes the imputed dyads and their entropy. This makes the ICL of different designs comparable, although some designs remain hard to tell apart (e.g. `block-node` and `degree` on an assortative network).
+- The penalty counts the observed dyads for the connectivity instead of all the possible dyads.
+- The ICL of the previous versions, computed on the network completed by the imputations, is no longer available: it rewarded the models that predict the missing dyads with certainty, and selected too many blocks when many dyads are missing.
 
 ## New fields
 
-- `missSBM_fit$imputations`: the imputations of the missing dyads of `degree` (`NULL` for the
-  other designs, which integrate them out; `imputedNetwork` gives the imputed network of any
-  design).
+- `missSBM_fit$imputations`: the imputations of the missing dyads of `degree` (`NULL` for the other designs, which integrate them out; `imputedNetwork` gives the imputed network of any design).
 - `fittedSBM$nbObservedDyads`; a column `stage` in the `monitoring` of a `degree` fit.
 
 ## Arguments and documentation
 
-- A new vignette, `vignette("case_study_frenchblog")`, follows a reduced form of the analysis of
-  the French political blogosphere of the JSS article with the current version.
-
-- `estimateMissSBM()` and `observeNetwork()` check their arguments with informative messages: a
-  non-square matrix, a non-integer number of blocks or a `clusterInit` inconsistent with
-  `vBlocks` were accepted silently. `clusterInit` is sorted with `vBlocks`.
-- `?estimateMissSBM` describes the parameters of every design (`degree` was missing) and the
-  selection of the model and of the design by the ICL.
+- A new vignette, `vignette("case_study_frenchblog")`, follows a reduced form of the analysis of the French political blogosphere of the JSS article with the current version.
+- `estimateMissSBM()` and `observeNetwork()` check their arguments with informative messages.
+- `?estimateMissSBM` describes the parameters of every design and the model/design selection by the ICL.
 
 ## Memory and speed
 
-- No n x n matrix is formed any more for the designs without covariates (network object,
-  initial clustering, imputations, fit), and several computations run in C++: the memory used
-  is several times smaller (building the network object takes about the size of its result,
-  instead of five times the input), and the estimation is about twice as fast. Same results.
+- No n x n matrix is formed any more for the designs without covariates (network object, initial clustering, imputations, fit), and several computations run in C++: the memory used is several times smaller (building the network object takes about the size of its result, instead of five times the input), and the estimation is about twice as fast. Same results.
 
 ## Bug fixes
 
-- `degree`: the imputations were not probabilities (since 2018), the sampling parameters were
-  estimated on wrong degrees (since 1.0.0), the variational parameter of the bound of Jaakkola
-  and Jordan was truncated to [0, 1], which biased the sampling parameters (since 2018), and the
-  ICL used an approximation above the expected log-likelihood of the sampling instead of its
-  bound. `imputedNetwork` doubled the imputations.
-- `block-dyad`: the expected log-likelihood of the sampling was the log of an expectation, which
-  overestimated the objective and the ICL.
-- `block-node` and `block-dyad`: the sampling parameters were not reordered with the blocks of
-  the SBM, so that `fittedSampling$parameters` and `coef()` did not match `fittedSBM`.
-- `imputedNetwork` gives the imputations at the final parameters (they came from the last
-  iteration of the variational EM).
-- Covariates in the SBM: the M-step failed ("Newton solver failed to find an ascent direction")
-  when two blocks had no edge between them, as the connectivity reached 0 exactly; it is now
-  bounded away from 0 and 1, as without covariates.
-- `summary()` of a `missSBM_collection` failed; it prints the collection, as for a fit.
-- `frenchblog2007`: the party "center-rigth" is spelled "center-right".
-- The `war` data sets were stored by an old version of igraph, which printed a conversion
-  message when used.
-- Tests: the reference tests against `sbm` run sequentially (`nbCores = 1`), avoiding a
-  segfault on macOS (`r-oldrel-macos-arm64`).
+- `degree`: the imputations were not probabilities, the sampling parameters were estimated on wrong degrees (since 1.0.0), the variational parameter of the bound of Jaakkola and Jordan was truncated to [0, 1], which biased the sampling parameters (since 2018), and the ICL used an approximation above the expected log-likelihood of the sampling instead of its bound.
+- `block-dyad`: the expected log-likelihood of the sampling was the log of an expectation, which overestimated the objective and the ICL.
+- `block-node` and `block-dyad`: the sampling parameters were not reordered with the blocks of the SBM, so that `fittedSampling$parameters` and `coef()` did not match `fittedSBM`.
+- `imputedNetwork` now gives the imputations at the final parameters (they came from the last iteration of the variational EM).
+- Covariates in the SBM: the M-step could fail when two blocks had no edge between them, as the connectivity reached 0 exactly; it is now bounded away from 0 and 1, as without covariates.
+- `summary()` of a `missSBM_collection` failed; it now prints the collection, as for a fit.
+- The `war` data sets were stored by an old version of igraph, which printed a conversion message when used.
+- Tests: the reference tests against `sbm` run sequentially (`nbCores = 1`), avoiding a segfault on macOS (`r-oldrel-macos-arm64`).
 
 # missSBM 1.1.0 (2026-07-21)
 
