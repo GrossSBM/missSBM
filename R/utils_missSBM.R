@@ -174,12 +174,11 @@ xlogx <- function(x) {
 }
 
 ## values of Z %*% M %*% t(Z) at the structural nonzeros of a dgCMatrix pattern, packaged as a
-## dgCMatrix with that same pattern, without forming the N x N matrix: O(nnz(pattern) * Q)
-## time and memory instead of O(N^2 * Q) and O(N^2).
+## dgCMatrix with that same pattern, without forming the N x N matrix nor any (nnz x Q)
+## temporary (#49): O(nnz(pattern) * Q) time, the size of the result in memory (C++).
 .bilinear_at_pattern <- function(Z, M, pattern, fun = identity) {
-  cidx <- rep.int(seq_len(ncol(pattern)), diff(pattern@p))
-  ZM <- Z %*% M
-  pattern@x <- fun(rowSums(ZM[pattern@i + 1L, , drop = FALSE] * Z[cidx, , drop = FALSE]))
+  Z <- as.matrix(Z); storage.mode(Z) <- "double"
+  pattern@x <- fun(bilinear_at_pattern_cpp(t(Z %*% M), t(Z), pattern@i, pattern@p))
   pattern
 }
 

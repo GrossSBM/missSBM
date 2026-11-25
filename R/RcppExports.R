@@ -25,6 +25,10 @@ E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, symmetric 
     .Call(`_missSBM_E_step_sparse_bernoulli_covariates`, Y, R, M, Z, Gamma, pi, symmetric, rescale)
 }
 
+bilinear_at_pattern_cpp <- function(ZMt, Zt, i, p) {
+    .Call(`_missSBM_bilinear_at_pattern_cpp`, ZMt, Zt, i, p)
+}
+
 kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
 }

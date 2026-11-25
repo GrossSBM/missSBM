@@ -108,6 +108,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// bilinear_at_pattern_cpp
+NumericVector bilinear_at_pattern_cpp(const NumericMatrix& ZMt, const NumericMatrix& Zt, const IntegerVector& i, const IntegerVector& p);
+RcppExport SEXP _missSBM_bilinear_at_pattern_cpp(SEXP ZMtSEXP, SEXP ZtSEXP, SEXP iSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type ZMt(ZMtSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Zt(ZtSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(bilinear_at_pattern_cpp(ZMt, Zt, i, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 // kmeans_cpp
 IntegerVector kmeans_cpp(const arma::mat& coordinates, arma::mat& input_centroids);
 RcppExport SEXP _missSBM_kmeans_cpp(SEXP coordinatesSEXP, SEXP input_centroidsSEXP) {
@@ -174,6 +188,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
+    {"_missSBM_bilinear_at_pattern_cpp", (DL_FUNC) &_missSBM_bilinear_at_pattern_cpp, 4},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
     {"_missSBM_farthest_pair_cpp", (DL_FUNC) &_missSBM_farthest_pair_cpp, 1},
     {"_missSBM_dist_to_row_cpp", (DL_FUNC) &_missSBM_dist_to_row_cpp, 2},

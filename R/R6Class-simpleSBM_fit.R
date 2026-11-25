@@ -201,7 +201,8 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
       if (is.null(private$imputation_cache))
-        private$imputation_cache <- .mask_dense_at_pattern(private$Z %*% log(private$theta$mean/(1-private$theta$mean)) %*% t(private$Z), private$S, .logistic)
+        ## at the missing dyads only, without the n x n matrix (#49)
+        private$imputation_cache <- .bilinear_at_pattern(private$Z, log(private$theta$mean/(1-private$theta$mean)), private$S, .logistic)
       private$imputation_cache
     },
     #' @field vExpec double: variational approximation of the expectation complete log-likelihood
