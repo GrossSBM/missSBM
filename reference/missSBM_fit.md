@@ -54,6 +54,14 @@ the user and exported as S3 methods. See the documentation for
 
   `TRUE` if `occupiedBlocks < fittedSBM$nbBlocks`
 
+- `imputations`:
+
+  the variational parameters of the missing dyads (sparse matrix with
+  their pattern): the imputations of 'degree', whose missing dyads
+  cannot be integrated out; `NULL` for the other designs, which
+  integrate them out given the blocks (see `imputedNetwork` for the
+  imputed network of any design)
+
 - `entropyImputed`:
 
   the entropy of the imputations of the missing dyads, variational

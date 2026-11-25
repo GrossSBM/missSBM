@@ -137,6 +137,21 @@
   [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)
   warns when `vBlocks` contains 1.
 
+### Memory and speed ([\#49](https://github.com/grossSBM/missSBM/issues/49))
+
+- No n x n matrix is formed any more for the designs without covariates:
+  the imputations are not computed along the VEM of the designs that
+  integrate the missing dyads out (they are computed on demand by
+  `imputedNetwork`, at the final parameters), and at the missing dyads
+  only, in C++; the network object is built by reading the dense input
+  in C++, without masks; the initial clustering uses no matrix of
+  distances. At n = 4000 (`inst/simus/issue49-memory/`), building the
+  network object takes +95 Mb instead of 5 times the input (+574 to 715
+  Mb), the initial clustering +91 to 128 Mb instead of +526 to 672 Mb,
+  and the fit of `node`, `block-dyad` and `double-standard` +4 to 110 Mb
+  instead of +301 to 637 Mb; the whole estimation is about twice as
+  fast. Same results (up to rounding for the imputations).
+
 ### Bug fixes
 
 - `degree` sampling: the imputations of the missing dyads were not

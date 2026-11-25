@@ -15,7 +15,7 @@ as S3 methods. See the documentation for  show(), print(), fitted(), predict(), 
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,13 @@ or more classes (see <code>repair()</code>)</p></dd>
 
     <dt><code>degenerate</code></dt>
 <dd><p><code>TRUE</code> if <code>occupiedBlocks &lt; fittedSBM$nbBlocks</code></p></dd>
+
+
+    <dt><code>imputations</code></dt>
+<dd><p>the variational parameters of the missing dyads (sparse matrix with
+their pattern): the imputations of 'degree', whose missing dyads cannot be integrated
+out; <code>NULL</code> for the other designs, which integrate them out given the blocks (see
+<code>imputedNetwork</code> for the imputed network of any design)</p></dd>
 
 
     <dt><code>entropyImputed</code></dt>
