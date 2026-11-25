@@ -49,6 +49,6 @@ test_that("estimateMissSBM() accepts the default (no control argument) and missS
   adjMatrix <- missSBM::observeNetwork(
     sbm::sampleSimpleSBM(30, c(1/2, 1/2), list(mean = diag(.4, 2) + .05))$networkData,
     "dyad", 0.9)
-  expect_no_error(estimateMissSBM(adjMatrix, 1:2, "dyad"))
+  expect_output(estimateMissSBM(adjMatrix, 1:2, "dyad")) # trace = TRUE by default
   expect_no_error(estimateMissSBM(adjMatrix, 1:2, "dyad", control = missSBM_param(trace = FALSE)))
 })

@@ -6,7 +6,7 @@ M <- 1
 source("utils_test.R", local = TRUE)
 
 ## control parameter for the VEM
-control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 5, trace = TRUE)
+control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 5, trace = FALSE)
 
 test_that("missSBM with covariates and dyad sampling works", {
 

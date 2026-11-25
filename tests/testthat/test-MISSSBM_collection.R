@@ -14,7 +14,7 @@ test_that("missSBMcollection works", {
     partlyObservedNet  = partlyObservedNet,
     sampling    = "dyad",
     clusterInit = cl,
-    control = list(useCov = FALSE, trace = TRUE))
+    control = list(useCov = FALSE, trace = FALSE))
 
   ## control parameter for the VEM
   control <- list(threshold = 1e-2, maxIter = 50, fixPointIter = 3, trace = 0, iterates = 0)

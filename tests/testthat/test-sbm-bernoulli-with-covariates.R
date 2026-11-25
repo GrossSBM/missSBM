@@ -51,7 +51,7 @@ test_that("SimpleSBM_fit 'Bernoulli' model, directed, one covariate", {
   cls <- net$clustering(1:(2*Q))
   cl <- cls[[Q]]
   mySBM_missSBM <- missSBM:::SimpleSBM_fit_withCov$new(net, clusterInit = cl, covarList = covarList_directed)
-  mySBM_missSBM$doVEM(trace = TRUE)
+  mySBM_missSBM$doVEM(trace = FALSE)
 
   ## correctness
   ## distance with blockmodels/sbm estiamtor

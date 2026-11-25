@@ -24,9 +24,7 @@ test_that("missSBM-fit works and is consistent for all samplings", {
   tol_truth <- .4
   tol_ARI   <- .8
 
-  cat("Tested sampling:")
   for (sampling in samplings) {
-    cat("\n -", sampling$name)
 
     ## sampled the network
     adjMatrix  <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, sampling$name, sampling$psi, sampler_undirected_nocov$memberships)

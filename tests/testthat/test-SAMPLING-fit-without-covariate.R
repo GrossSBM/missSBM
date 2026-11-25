@@ -21,9 +21,7 @@ test_that("Consistency of sampling fit for undirected bernoulli withou covariate
   Z0  <- sampler_undirected_nocov$indMemberships
 
   tol_truth <- 1e-1
-  cat("Tested sampling:")
   for (sampling in samplings) {
-    cat("\n -", sampling$name)
 
     ## sampled the network
     adjMatrix  <- missSBM::observeNetwork(sampler_undirected_nocov$networkData, sampling$name, sampling$psi, sampler_undirected_nocov$memberships)
@@ -74,9 +72,7 @@ test_that("Consistency of sampling fit for directed network, no covariates", {
   Z0  <- sampler_directed_nocov$indMemberships
 
   tol_truth <- 1e-1
-  cat("Tested sampling:")
   for (sampling in samplings) {
-    cat("\n -", sampling$name)
 
     ## sampled the network
     adjMatrix  <- missSBM::observeNetwork(sampler_directed_nocov$networkData, sampling$name, sampling$psi, sampler_directed_nocov$memberships)
