@@ -239,6 +239,9 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
       )
       private$beta  <- as.numeric(res$beta)
       private$theta <- res$theta
+      ## bounded as without covariates: a connectivity of exactly 0 or 1 (no edge, or only edges,
+      ## between two blocks) makes logit(theta), the starting point of the next M-step, infinite
+      private$theta$mean <- check_boundaries(private$theta$mean)
       private$pi    <- as.numeric(res$pi)
       invisible(res)
     },

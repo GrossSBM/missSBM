@@ -63,6 +63,9 @@ missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
   the SBM, so that `fittedSampling$parameters` and `coef()` did not match `fittedSBM`.
 - `imputedNetwork` gives the imputations at the final parameters (they came from the last
   iteration of the variational EM).
+- Covariates in the SBM: the M-step failed ("Newton solver failed to find an ascent direction")
+  when two blocks had no edge between them, as the connectivity reached 0 exactly; it is now
+  bounded away from 0 and 1, as without covariates.
 - Tests: the `blockmodels`-based reference tests run sequentially (`nbCores = 1`), avoiding a
   segfault on macOS (r-oldrel-macos-arm64).
 

@@ -155,7 +155,9 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
             double zz = Z(i, q) * Z(j, l);
             if (zz == 0.0) continue;
             double eta = Gm(q, l) + mu;
-            loglik += zz * (yij * eta - std::log1p(std::exp(eta)));
+            // log(1 + exp(eta)), without overflow for large eta
+            double log1pexp = eta > 0 ? eta + std::log1p(std::exp(-eta)) : std::log1p(std::exp(eta));
+            loglik += zz * (yij * eta - log1pexp);
           }
         }
       }
@@ -219,7 +221,8 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
         arma::vec rhs = C.t() * (Dinv % g_shared) - g_beta;
 
         arma::vec delta_beta;
-        if (!arma::solve(delta_beta, Sc, rhs)) {
+        // a singular system calls for more damping, not for an approximate solution
+        if (!arma::solve(delta_beta, Sc, rhs, arma::solve_opts::no_approx)) {
           ridge *= 10;
           continue;
         }
@@ -238,14 +241,20 @@ Rcpp::List M_step_sparse_bernoulli_covariates (
           Gamma_new = Gamma + alpha * delta_Gamma;
           beta_new  = beta  + alpha * delta_beta;
           J_new = eval_loglik(Gamma_new, beta_new);
-          if (J_new > J_old - 1e-12) { accepted = true; break; }
+          // relative tolerance: near the optimum, the rounding errors of the sum over the dyads
+          // exceed any absolute threshold
+          if (J_new > J_old - 1e-12 * (std::abs(J_old) + 1.0)) { accepted = true; break; }
           alpha *= 0.5;
         }
         if (!accepted) ridge *= 10; else ridge = std::max(ridge / 10, 1e-10);
       }
       if (!accepted) {
-        throw Rcpp::exception("M_step_sparse_bernoulli_covariates: Newton solver failed "
-                               "to find an ascent direction (degenerate Hessian).");
+        // no step improves J, even heavily damped: the current point is a maximum up to the
+        // numerical precision
+        if (!std::isfinite(J_old))
+          throw Rcpp::exception("M_step_sparse_bernoulli_covariates: non-finite log-likelihood.");
+        converged = true;
+        break;
       }
 
       Gamma = Gamma_new;
