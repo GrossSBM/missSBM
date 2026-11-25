@@ -132,7 +132,6 @@ ARI(party, sbm_full$bestModel$fittedSBM$memberships)
 ## ----Alluvial-plot, echo = TRUE, message = FALSE, results  = "hide", warning = FALSE, fig.cap = "\\label{fig:alluvialPlot}Alluvial plot between block-node sampling clustering and political parties.", fig.width = 9, fig.height = 7, out.width = ".8\\textwidth", fig.pos = "htbp!", fig.align = "center"----
 library("alluvial")
 cl_party <- as.factor(party)
-levels(cl_party)[3] <- "center-right"
 new_order <- match(c("far-right", "right", "liberal", "center-right", "analyst", "center-left", "left", "green", "far-left"), levels(cl_party))
 cl_party <- factor(cl_party, levels = levels(cl_party)[new_order], ordered = TRUE)
 

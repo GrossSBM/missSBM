@@ -78,6 +78,7 @@ missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
   when two blocks had no edge between them, as the connectivity reached 0 exactly; it is now
   bounded away from 0 and 1, as without covariates.
 - `summary()` of a `missSBM_collection` failed; it prints the collection, as for a fit.
+- `frenchblog2007`: the party "center-rigth" is spelled "center-right".
 - The `war` data sets were stored by an old version of igraph, which printed a conversion
   message when used.
 - Tests: the reference tests against `sbm` run sequentially (`nbCores = 1`), avoiding a

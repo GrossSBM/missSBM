@@ -64,7 +64,6 @@ plot(myModel, type = "expected", dimLabels = list(row = "blogs", col = "blogs"))
 ## Alluvial plot
 library("alluvial")
 cl_party <- as.factor(party)
-levels(cl_party)[3] <- "center-right"
 new_order <- match(c("far-right", "right", "liberal", "center-right", "analyst",
                      "center-left", "left", "green", "far-left"), levels(cl_party))
 cl_party <- factor(cl_party, levels = levels(cl_party)[new_order], ordered = TRUE)
