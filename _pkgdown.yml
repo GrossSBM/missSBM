@@ -14,6 +14,7 @@ external-articles:
 articles:
 - title: Articles
   contents:
+  - case_study_frenchblog
   - case_study_war_networks
   - jss-paper
 

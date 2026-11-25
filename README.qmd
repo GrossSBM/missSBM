@@ -64,7 +64,7 @@ full_fit <- estimateMissSBM(adjacency, vBlocks = 1:14, sampling = "node",
                              control = missSBM_param(trace = FALSE))
 ```
 
-```{r plot-full}
+```{r plot-full, fig.alt = "ICL of the SBM fitted on the fully observed network, against the number of blocks"}
 plot(full_fit, "icl")
 ```
 
@@ -87,7 +87,7 @@ partial_fit <- estimateMissSBM(partial_network, vBlocks = 1:14, sampling = "bloc
                                 control = missSBM_param(trace = FALSE, iterates = 2))
 ```
 
-```{r plot-partial}
+```{r plot-partial, fig.alt = "ICL of the SBM fitted on the partly observed network with block-node sampling, against the number of blocks"}
 plot(partial_fit, "icl")
 ```
 
@@ -112,7 +112,7 @@ aricode::ARI(full_fit$bestModel$fittedSBM$memberships, partial_fit$bestModel$fit
 
 The expected connections under the models fitted on the full network and on the partly observed one:
 
-```{r plot-expected, warning=FALSE}
+```{r plot-expected, warning=FALSE, fig.alt = c("Expected connections between the blogs under the model fitted on the full network", "Expected connections between the blogs under the model fitted on the partly observed network")}
 plot(full_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 plot(partial_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 ```

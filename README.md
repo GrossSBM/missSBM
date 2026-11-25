@@ -85,7 +85,8 @@ full_fit <- estimateMissSBM(adjacency, vBlocks = 1:14, sampling = "node",
 plot(full_fit, "icl")
 ```
 
-![](man/figures/README-plot-full-1.png)
+<img src="man/figures/README-plot-full-1.png"
+data-fig-alt="ICL of the SBM fitted on the fully observed network, against the number of blocks" />
 
 ### Simulate a Missing Not At Random sampling and account for it
 
@@ -117,7 +118,8 @@ partial_fit <- estimateMissSBM(partial_network, vBlocks = 1:14, sampling = "bloc
 plot(partial_fit, "icl")
 ```
 
-![](man/figures/README-plot-partial-1.png)
+<img src="man/figures/README-plot-partial-1.png"
+data-fig-alt="ICL of the SBM fitted on the partly observed network with block-node sampling, against the number of blocks" />
 
 The ICL can also compare sampling designs fitted to the same data, here
 `"block-node"` and `"node"` (which ignores the sampling):
@@ -158,13 +160,15 @@ on the partly observed one:
 plot(full_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 ```
 
-![](man/figures/README-plot-expected-1.png)
+<img src="man/figures/README-plot-expected-1.png"
+data-fig-alt="Expected connections between the blogs under the model fitted on the full network" />
 
 ``` r
 plot(partial_fit$bestModel, "expected", dimLabels = list(row = "blogs", col = "blogs"))
 ```
 
-![](man/figures/README-plot-expected-2.png)
+<img src="man/figures/README-plot-expected-2.png"
+data-fig-alt="Expected connections between the blogs under the model fitted on the partly observed network" />
 
 See the vignettes and [the JSS
 article](https://doi.org/10.18637/jss.v101.i12) for a more comprehensive
