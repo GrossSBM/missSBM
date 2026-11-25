@@ -6,7 +6,7 @@ message: >-
   article listed under "preferred-citation" below.
 title: missSBM
 type: software
-version: 1.1.0
+version: 1.2.0
 license: GPL-3.0-only
 repository-code: https://github.com/GrossSBM/missSBM
 url: https://grosssbm.github.io/missSBM/
