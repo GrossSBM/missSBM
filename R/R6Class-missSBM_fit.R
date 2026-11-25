@@ -48,8 +48,7 @@ missSBM_fit <-
     adopt = function(candidate) {
       private$SBM      <- candidate$fittedSBM
       private$sampling <- candidate$fittedSampling
-      private$nu       <- candidate$.__enclos_env__$private$nu
-      if (is.null(private$nu)) private$nu <- private$sampling$update_imputation(private$SBM$imputation)
+      private$nu       <- candidate$.__enclos_env__$private$nu # NULL but for 'degree'
     },
 
     ## the VEM of the degree sampling, whose missing dyads cannot be integrated out (the sampling
@@ -230,10 +229,10 @@ missSBM_fit <-
       private$optStatus <- run_VEM(
         control    = control,
         init_stop  = FALSE,
+        ## no imputation of the missing dyads along the VEM: these designs integrate them out
+        ## given the blocks (#49; 'degree', which needs them, has its own VEM)
         e_step     = function(fixPointIter) {
           for (i in seq.int(fixPointIter)) {
-            # update the variational parameters for missing entries (a.k.a nu)
-            private$nu <- private$sampling$update_imputation(private$SBM$imputation)
             # update the variational parameters for block memberships (a.k.a tau)
             private$SBM$update_blocks(log_lambda = private$sampling$log_lambda)
           }
@@ -244,10 +243,10 @@ missSBM_fit <-
             psi <- private$SBM$update_parameters(private$sampling$parameters)
             private$sampling$update_parameters(Z = private$SBM$probMemberships, theta = private$SBM$connectParam$mean, psi = psi)
           } else {
-            # update the parameters of the SBM (a.k.a pi and theta)
-            private$SBM$update_parameters(private$nu)
+            # update the parameters of the SBM (a.k.a pi and theta), on the observed dyads
+            private$SBM$update_parameters()
             # update the parameters of network sampling process (a.k.a psi)
-            private$sampling$update_parameters(private$nu, private$SBM$probMemberships)
+            private$sampling$update_parameters(NULL, private$SBM$probMemberships)
           }
         },
         get_loglik = function() self$loglik,
@@ -466,11 +465,14 @@ missSBM_fit <-
     fittedSampling = function(value) {private$sampling},
     #' @field imputedNetwork The network data as a matrix with NAs values imputed with the current model
     imputedNetwork = function(value) {
-      nu <- if (private$sampling$type == "double-standard")
+      nu <- switch(private$sampling$type,
         ## the posterior given the blocks, averaged over the memberships, at the missing dyads
-        .bilinear_at_pattern(private$SBM$probMemberships, private$sampling$blockImputation,
-                             private$partlyObservedNet$samplingMatrixBar)
-        else private$nu
+        "double-standard" = .bilinear_at_pattern(private$SBM$probMemberships, private$sampling$blockImputation,
+                                                 private$partlyObservedNet$samplingMatrixBar),
+        ## the variational parameters of the sampling
+        "degree" = private$imputations_degree(),
+        ## the imputations of the SBM, computed on demand (not along the VEM, #49)
+        private$sampling$update_imputation(private$SBM$imputation))
       res <- private$SBM$networkData + nu
       if (!private$SBM$directed) res <- res + t(res)
       res
