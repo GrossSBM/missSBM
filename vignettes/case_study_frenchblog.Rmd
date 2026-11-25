@@ -44,7 +44,7 @@ The estimation can run in parallel with the **future** package (e.g.
 
 The network `frenchblog2007` is a snapshot of the French political blogosphere taken in October
 2006, during the campaign of the French presidential election of 2007: the nodes are blogs, the
-edges hyperlinks between them, and each blog is labelled by the political party it supports. We
+edges hyperlinks between them, and each blog is labeled by the political party it supports. We
 remove the isolated blogs.
 
 ```{r data}
