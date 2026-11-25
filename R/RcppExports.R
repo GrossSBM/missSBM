@@ -29,12 +29,12 @@ kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
 }
 
-farthest_pair_cpp <- function(X) {
-    .Call(`_missSBM_farthest_pair_cpp`, X)
+farthest_pair_cpp <- function(Xt) {
+    .Call(`_missSBM_farthest_pair_cpp`, Xt)
 }
 
-dist_to_row_cpp <- function(X, i) {
-    .Call(`_missSBM_dist_to_row_cpp`, X, i)
+dist_to_row_cpp <- function(Xt, i) {
+    .Call(`_missSBM_dist_to_row_cpp`, Xt, i)
 }
 
 network_patterns_dense <- function(A) {

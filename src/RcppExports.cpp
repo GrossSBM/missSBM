@@ -121,25 +121,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // farthest_pair_cpp
-IntegerVector farthest_pair_cpp(const NumericMatrix& X);
-RcppExport SEXP _missSBM_farthest_pair_cpp(SEXP XSEXP) {
+IntegerVector farthest_pair_cpp(const NumericMatrix& Xt);
+RcppExport SEXP _missSBM_farthest_pair_cpp(SEXP XtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(farthest_pair_cpp(X));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Xt(XtSEXP);
+    rcpp_result_gen = Rcpp::wrap(farthest_pair_cpp(Xt));
     return rcpp_result_gen;
 END_RCPP
 }
 // dist_to_row_cpp
-NumericVector dist_to_row_cpp(const NumericMatrix& X, int i);
-RcppExport SEXP _missSBM_dist_to_row_cpp(SEXP XSEXP, SEXP iSEXP) {
+NumericVector dist_to_row_cpp(const NumericMatrix& Xt, int i);
+RcppExport SEXP _missSBM_dist_to_row_cpp(SEXP XtSEXP, SEXP iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Xt(XtSEXP);
     Rcpp::traits::input_parameter< int >::type i(iSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist_to_row_cpp(X, i));
+    rcpp_result_gen = Rcpp::wrap(dist_to_row_cpp(Xt, i));
     return rcpp_result_gen;
 END_RCPP
 }
