@@ -1,4 +1,4 @@
-# missSBM (development version)
+# missSBM 1.2.0
 
 ## Changes in the estimation
 
