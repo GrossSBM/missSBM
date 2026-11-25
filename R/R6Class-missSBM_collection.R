@@ -131,8 +131,9 @@ missSBM_collection <-
       ggplot(df, aes(x = nBlock, y = ICL)) +
         geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
         scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
-        labs(x = "#blocks", y = "Integrated Classification likelihood",
-             shape = "collapsed classes") + ggtitle("Model Selection")
+        labs(x = "#blocks", y = "Integrated Classification Likelihood (ICL)",
+             shape = "collapsed classes") + ggtitle("Model Selection") +
+        if (!any(df$collapsed)) guides(shape = "none")
     },
     plot_elbo = function() {
       df <- data.frame(nBlock = self$vBlocks,
@@ -141,14 +142,15 @@ missSBM_collection <-
       ggplot(df, aes(x = nBlock, y = elbo)) +
         geom_line() + geom_point(aes(shape = collapsed), size = 2) + theme_bw() +
         scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 4)) +
-        labs(x = "#blocks", y = "Evidence (Varitional) Lower Bound",
-             shape = "collapsed classes") + ggtitle("Model Selection")
+        labs(x = "#blocks", y = "Evidence Lower Bound (variational)",
+             shape = "collapsed classes") + ggtitle("Model Selection") +
+        if (!any(df$collapsed)) guides(shape = "none")
     },
     plot_monitoring = function() {
       monitoring <- self$optimizationStatus
       monitoring$nBlock <- as.factor(monitoring$nBlock)
       ggplot(monitoring, aes(x = cumsum(iteration), y = elbo, color = nBlock)) + geom_line() + geom_point() +
-        theme_bw() + labs(x = "# cumulated V-EM iterations", y = "Evidence (variational) Lower Bound") + ggtitle("Optimization monitoring")
+        theme_bw() + labs(x = "cumulated VEM iterations", y = "Evidence Lower Bound (variational)") + ggtitle("Optimization monitoring")
     }
   ),
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
