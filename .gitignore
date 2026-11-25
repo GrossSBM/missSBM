@@ -57,3 +57,5 @@ snowflake.log
 
 # Formularius: derivations kept local for now
 inst/Formularius/
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds

@@ -57,6 +57,44 @@ future_lapply_shuffled <- function(X, FUN, ...) {
 
 ## logical N x N mask selecting each dyad exactly once: all off-diagonal pairs if directed, only
 ## the upper triangle (i < j) if undirected
+## the patterns of the observed dyads (R), of the missing ones (S) and of the edges (Y) of a
+## network given as a dense matrix with NA or as a dgCMatrix, as sparse matrices on the valid
+## dyads (upper triangle if undirected), and whether it is directed, without any n x n temporary
+## (#49: the masks .row() / .col() / is.na() / != 0, the copy of as.numeric() and the transpose
+## of isSymmetric() peaked at about 5 times the input). A dense matrix is read in place in C++
+## (network_patterns_dense()); a sparse one, without NA, column by column. Also checks that the
+## observed values (diagonal included) are 0 or 1, both present.
+.network_patterns <- function(A) {
+  n <- ncol(A)
+  if (inherits(A, "sparseMatrix")) {
+    directed <- !Matrix::isSymmetric(A)
+    obs <- edges <- vector("list", n)
+    ## the diagonal is not a dyad, but its values are checked too (as by the former check)
+    d <- Matrix::diag(A)
+    if (any(d != 0 & d != 1)) stop("the network must be binary (0, 1, or NA for missing)")
+    values <- c(zero = any(d == 0), one = any(d == 1))
+    for (j in seq_len(n)) {
+      i <- if (directed) seq_len(n)[-j] else seq_len(j - 1)
+      v <- as.numeric(A[i, j])
+      if (any(v != 0 & v != 1)) stop("the network must be binary (0, 1, or NA for missing)")
+      values <- values | c(any(v == 0), any(v == 1))
+      obs[[j]]   <- i
+      edges[[j]] <- i[v != 0]
+    }
+    p <- list(R_i = unlist(obs) - 1L, R_p = c(0L, cumsum(lengths(obs))), S_i = integer(0), S_p = integer(n + 1),
+              Y_i = unlist(edges) - 1L, Y_p = c(0L, cumsum(lengths(edges))),
+              directed = directed, binary = TRUE, has_zero = values[["zero"]], has_one = values[["one"]])
+  } else {
+    p <- network_patterns_dense(A)
+  }
+  if (!p$binary) stop("the network must be binary (0, 1, or NA for missing)")
+  if (!(p$has_zero && p$has_one)) stop("the network must have both 0 and 1 among its observed dyads")
+  ## the indices come column by column, rows increasing: the compressed format directly, without
+  ## the sort of the triplets of sparseMatrix() (about 3 times the result)
+  pattern <- function(i, p) new("dgCMatrix", i = i, p = as.integer(p), x = rep(1, length(i)), Dim = c(n, n))
+  list(R = pattern(p$R_i, p$R_p), S = pattern(p$S_i, p$S_p), Y = pattern(p$Y_i, p$Y_p), directed = p$directed)
+}
+
 valid_dyads <- function(dim, directed) {
   if (directed) .row(dim) != .col(dim) else .row(dim) < .col(dim)
 }

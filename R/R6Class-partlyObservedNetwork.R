@@ -69,10 +69,12 @@ partlyObservedNetwork <-
       ## TODO: handle the case when adjacencyMatrix is a sparseMatrix with NA
 
       ## TODO: later, should also include Poisson/Gaussian models
-      stopifnot(all.equal(sort(setdiff(unique(as.numeric(adjacencyMatrix)), NA)), c(0,1)))
+      ## observed dyads, missing dyads and edges, as sparse patterns on the valid dyads (upper
+      ## triangle if undirected), without n x n temporaries; checks the values
+      patterns <- .network_patterns(adjacencyMatrix)
 
       ## type of SBM
-      private$directed <- ifelse(isSymmetric(adjacencyMatrix), FALSE, TRUE)
+      private$directed <- patterns$directed
 
       ## covariates
       ## TODO: for symmetric network, we should only keep the upper triangular part of the covariates
@@ -80,20 +82,11 @@ partlyObservedNetwork <-
       private$X   <- covar$Matrix
       private$phi <- covar$Array
 
-      ## sets of observed / unobserved dyads
-      dyads <- valid_dyads(dim(adjacencyMatrix), private$directed)
-      ## where are my observations?
-      NAs   <- is.na(adjacencyMatrix)
-      obs   <- which(!NAs & dyads, arr.ind = TRUE )
-      miss  <- which( NAs & dyads, arr.ind = TRUE )
-      ## where are my non-zero entries?
-      nzero <- which(!NAs & adjacencyMatrix != 0 & dyads, arr.ind = TRUE)
-
-      ## sampling matrix (indicating who is observed)
-      private$R <- Matrix::sparseMatrix(obs[,1] , obs[,2] ,x = 1, dims = dim(adjacencyMatrix))
-      private$S <- Matrix::sparseMatrix(miss[,1], miss[,2],x = 1, dims = dim(adjacencyMatrix))
-      ## network matrix (only none zero, non NA values)
-      private$Y <- Matrix::sparseMatrix(nzero[,1], nzero[,2], x = 1, dims = dim(adjacencyMatrix))
+      ## sampling matrix (indicating who is observed), its complement, network matrix (only
+      ## non-zero, non-NA values)
+      private$R <- patterns$R
+      private$S <- patterns$S
+      private$Y <- patterns$Y
 
     },
     #' @description method to cluster network data with missing value

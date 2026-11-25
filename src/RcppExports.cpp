@@ -120,6 +120,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// network_patterns_dense
+List network_patterns_dense(SEXP A);
+RcppExport SEXP _missSBM_network_patterns_dense(SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type A(ASEXP);
+    rcpp_result_gen = Rcpp::wrap(network_patterns_dense(A));
+    return rcpp_result_gen;
+END_RCPP
+}
 // roundProduct
 Rcpp::NumericMatrix roundProduct(Rcpp::List covariates_list, arma::vec beta);
 RcppExport SEXP _missSBM_roundProduct(SEXP covariates_listSEXP, SEXP betaSEXP) {
@@ -141,6 +152,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
+    {"_missSBM_network_patterns_dense", (DL_FUNC) &_missSBM_network_patterns_dense, 1},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {NULL, NULL, 0}
 };

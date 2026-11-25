@@ -29,6 +29,10 @@ kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
 }
 
+network_patterns_dense <- function(A) {
+    .Call(`_missSBM_network_patterns_dense`, A)
+}
+
 roundProduct <- function(covariates_list, beta) {
     .Call(`_missSBM_roundProduct`, covariates_list, beta)
 }
