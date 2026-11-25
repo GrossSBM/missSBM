@@ -7,7 +7,7 @@
 Class for fitting a degree sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{degreeSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{networkSampling_fit} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{degreeSampling_fit}
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -31,9 +31,9 @@ and \eqn{\log(1 - \sigma(x)) = \log \sigma(x) - x}, in expectation over the impu
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="reorder"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-reorder'><code>networkSamplingNodes_fit$reorder()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>networkSamplingNodes_fit$show()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="vExpec_at"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-vExpec_at'><code>networkSamplingNodes_fit$vExpec_at()</code></a></span></li>
+  <li><code>networkSampling_fit$reorder()</code></li>
+  <li><code>networkSampling_fit$show()</code></li>
+  <li><code>networkSampling_fit$vExpec_at()</code></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

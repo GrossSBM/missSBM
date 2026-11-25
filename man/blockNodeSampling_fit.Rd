@@ -7,7 +7,7 @@
 Class for fitting a block-node sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{blockNodeSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{networkSampling_fit} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{blockNodeSampling_fit}
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -31,8 +31,8 @@ Class for fitting a block-node sampling
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="show"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-show'><code>networkSamplingNodes_fit$show()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingNodes_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSamplingNodes_fit.html#method-networkSamplingNodes_fit-update_imputation'><code>networkSamplingNodes_fit$update_imputation()</code></a></span></li>
+  <li><code>networkSampling_fit$show()</code></li>
+  <li><code>networkSampling_fit$update_imputation()</code></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

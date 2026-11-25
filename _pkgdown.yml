@@ -67,6 +67,7 @@ reference:
     - '`missSBM`'
     - '`networkSampler`'
     - '`networkSampling`'
+    - '`networkSampling_fit`'
     - '`networkSamplingDyads_fit`'
     - '`networkSamplingNodes_fit`'
     - '`nodeSampler`'

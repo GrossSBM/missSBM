@@ -44,11 +44,23 @@ missSBM_fit <-
     netSampling       = NULL,
     useCov            = NULL,
 
-    ## replaces self's fit by that of a candidate (polish(), repair()), with its imputations
+    ## replaces self's fit by that of a candidate (polish(), repair(), split(), merge()), with
+    ## its imputations
     adopt = function(candidate) {
       private$SBM      <- candidate$fittedSBM
       private$sampling <- candidate$fittedSampling
       private$nu       <- candidate$imputations
+    },
+
+    ## a lightweight snapshot of the fit along the VEM (no cloning of the network data), and its
+    ## restoration
+    snapshot = function() {
+      list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu)
+    },
+    restore = function(state) {
+      private$SBM$set_state(state$SBM)
+      private$sampling <- state$sampling
+      private$nu       <- state$nu
     },
 
     ## the VEM of the degree sampling, whose missing dyads cannot be integrated out (the sampling
@@ -62,16 +74,11 @@ missSBM_fit <-
     ##    from stages 1 and 2 avoids the poor local
     ##    optima of the coordinate ascent from the initial clustering.
     doVEM_degree = function(control) {
-      snapshot <- function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu)
-      restore  <- function(state) {
-        private$SBM$set_state(state$SBM)
-        private$sampling <- state$sampling
-        private$nu       <- state$nu
-      }
       reorder <- function() private$SBM$reorder()
       theta   <- function() private$SBM$connectParam$mean
       stage <- function(name, e_step, m_step, get_loglik, get_theta) {
-        res <- run_VEM(control, init_stop = FALSE, e_step, m_step, get_loglik, get_theta, snapshot, restore, reorder)
+        res <- run_VEM(control, init_stop = FALSE, e_step, m_step, get_loglik, get_theta,
+                       private$snapshot, private$restore, reorder)
         res$stage <- name
         res
       }
@@ -112,14 +119,6 @@ missSBM_fit <-
       invisible(k)
     },
 
-    ## the MAP memberships, as an n x Q indicator matrix (also with empty classes)
-    map_memberships = function() {
-      tau <- private$SBM$probMemberships
-      Z <- matrix(0, nrow(tau), ncol(tau))
-      Z[cbind(seq_len(nrow(tau)), max.col(tau, ties.method = "first"))] <- 1
-      Z
-    },
-
     ## the imputations of the missing dyads under 'degree' (variational parameters of its sampling)
     imputations_degree = function() {
       if (is.null(private$nu)) private$sampling$update_imputation(private$SBM$imputation) else private$nu
@@ -130,9 +129,7 @@ missSBM_fit <-
     build_candidate = function(candidate_labels, in_place) {
       new_fit <- missSBM_fit$new(private$partlyObservedNet, private$netSampling, candidate_labels, private$useCov)
       if (in_place) {
-        private$SBM      <- new_fit$fittedSBM
-        private$sampling <- new_fit$fittedSampling
-        private$nu       <- NULL
+        private$adopt(new_fit) # not fitted yet: no imputations
         return(invisible(self))
       }
       new_fit
@@ -251,13 +248,8 @@ missSBM_fit <-
         },
         get_loglik = function() self$loglik,
         get_theta  = function() private$SBM$connectParam$mean,
-        ## a lightweight snapshot of the fit (no cloning of the network data)
-        snapshot   = function() list(SBM = private$SBM$get_state(), sampling = private$sampling$clone(), nu = private$nu),
-        restore    = function(state) {
-          private$SBM$set_state(state$SBM)
-          private$sampling <- state$sampling
-          private$nu       <- state$nu
-        },
+        snapshot   = private$snapshot,
+        restore    = private$restore,
         ## the parameters of the sampling indexed by the blocks follow the permutation
         reorder    = function() private$sampling$reorder(private$SBM$reorder())
       )
@@ -526,7 +518,7 @@ missSBM_fit <-
     #'   block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
     #'   bound includes the expected log-likelihood and the entropy of the imputations.
     ICL    = function(value) {
-      Z <- private$map_memberships()
+      Z <- .map_indicator(private$SBM$probMemberships)
       J <- private$sampling$vExpec_at(Z) + private$SBM$vExpec_at(Z) +
         if (private$sampling$type == "degree")
           private$SBM$vExpec_imputed(private$imputations_degree(), Z) + self$entropyImputed else 0

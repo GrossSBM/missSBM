@@ -189,6 +189,20 @@ xlogx <- function(x) {
   exp(x - b) / sum(exp(x - b))
 }
 
+## the softmax of each row of a matrix of log-probabilities (up to a constant per row)
+.softmax_rows <- function(log_tau) {t(apply(log_tau, 1, .softmax))}
+
+## the MAP memberships of the probabilities tau, as an indicator matrix (empty classes kept)
+.map_indicator <- function(tau) {
+  Z <- matrix(0, nrow(tau), ncol(tau))
+  Z[cbind(seq_len(nrow(tau)), max.col(tau, ties.method = "first"))] <- 1
+  Z
+}
+
+## the counts of a (sparse) n x n matrix X by pair of blocks, weighted by the memberships Z:
+## (Z' X Z)_ql = sum_ij Z_iq X_ij Z_jl, a Q x Q matrix
+.block_counts <- function(Z, X) {as.matrix(t(Z) %*% X %*% Z)}
+
 h <- function(x) {-.5 * (.logistic(x) - 0.5) / x}
 
 #' Shared variational-EM driver
