@@ -9,7 +9,7 @@ SimpleSBM_fit_noCov, SimpleSBM_fit_withCov and SimpleSBM_fit_MNAR."></head><body
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,12 @@ SimpleSBM_fit_noCov, SimpleSBM_fit_withCov and SimpleSBM_fit_MNAR."></head><body
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -66,14 +71,20 @@ the possible dyads (as sbm does for a network with missing values)</p></dd>
 <dd><p>double, value of the entropy due to the clustering distribution</p></dd>
 
 
+    <dt><code>vExpec</code></dt>
+<dd><p>double: variational expectation of the complete log-likelihood of the
+observed dyads and of the blocks</p></dd>
+
+
     <dt><code>loglik</code></dt>
 <dd><p>double: approximation of the log-likelihood (variational lower bound) reached</p></dd>
 
 
     <dt><code>ICL</code></dt>
-<dd><p>double: value of the integrated classification log-likelihood: -2 times the
-variational expectation of the complete log-likelihood at the MAP memberships (each node
-in its most probable block), plus the penalty, as for <a href="missSBM_fit.html">missSBM_fit</a></p></dd>
+<dd><p>double: the ICL (Integrated Classification Likelihood) of the SBM alone: -2 times
+the variational expectation of the complete log-likelihood of the observed dyads at the
+MAP memberships (each node in its most probable block), plus the penalty, as for
+<a href="missSBM_fit.html">missSBM_fit</a></p></dd>
 
 
 </dl><p></p></div>
@@ -88,6 +99,7 @@ in its most probable block), plus the penalty, as for <a href="missSBM_fit.html"
 <li><p><a href="#method-SimpleSBM_fit-reorder"><code>SimpleSBM_fit$reorder()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit-get_state"><code>SimpleSBM_fit$get_state()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit-set_state"><code>SimpleSBM_fit$set_state()</code></a></p></li>
+<li><p><a href="#method-SimpleSBM_fit-polish_log_tau"><code>SimpleSBM_fit$polish_log_tau()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit-clone"><code>SimpleSBM_fit$clone()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href="https://grosssbm.github.io/sbm/reference/SBM.html#method-print"><code>sbm::SBM$print()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="rNetwork"><a href="https://grosssbm.github.io/sbm/reference/SBM.html#method-rNetwork"><code>sbm::SBM$rNetwork()</code></a></span></li>
@@ -187,13 +199,38 @@ which duplicates the whole object, including the – possibly large – network 
 
 </div>
 
+<p></p><hr><a id="method-SimpleSBM_fit-polish_log_tau"></a><div class="section">
+<h3 id="simplesbm-fit-polish-log-tau-"><code>SimpleSBM_fit$polish_log_tau()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-polish-log-tau-"></a></h3>
+<p>for each node, the log-likelihood of the observed dyads it would contribute
+to each block if hard-assigned there (parameters held fixed), plus the term of the
+sampling: the gains of the node swaps of <code>missSBM_fit$polish()</code></p><div class="section">
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit</span><span class="op">$</span><span class="fu">polish_log_tau</span><span class="op">(</span>log_lambda <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>log_lambda</code></dt>
+<dd><p>term of the sampling depending on the blocks, added as is (0 for the
+designs whose sampling does not depend on them)</p></dd>
+
+      <dt><code>...</code></dt>
+<dd><p>additional arguments, not used</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
+<p>an N x Q matrix</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-SimpleSBM_fit-clone"></a><div class="section">
 <h3 id="simplesbm-fit-clone-"><code>SimpleSBM_fit$clone()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

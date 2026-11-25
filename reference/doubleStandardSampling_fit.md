@@ -20,6 +20,8 @@ parameter.
 
 [`networkSampling`](https://grosssbm.github.io/missSBM/reference/networkSampling.md)
 -\>
+[`networkSampling_fit`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.md)
+-\>
 [`networkSamplingDyads_fit`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.md)
 -\> `doubleStandardSampling_fit`
 
@@ -64,7 +66,7 @@ parameter.
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
-- [`networkSamplingDyads_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html#method-show)
+- [`networkSampling_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-show)
 
 ------------------------------------------------------------------------
 

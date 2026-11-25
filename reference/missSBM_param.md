@@ -29,17 +29,18 @@ missSBM_param(
 
 - threshold:
 
-  V-EM algorithm stops when an optimization step changes the objective
-  function or the parameters by less than threshold. Default is 1e-2.
+  the VEM stops when an optimization step changes the objective function
+  or the parameters by less than threshold. Default is 1e-2.
 
 - maxIter:
 
-  V-EM algorithm stops when the number of iteration exceeds maxIter.
-  Default is 50.
+  the VEM stops when the number of iterations exceeds maxIter. Default
+  is 50.
 
 - fixPointIter:
 
-  number of fix-point iterations in the V-E step. Default is 3.
+  number of fixed-point iterations in the variational E step. Default is
+  3.
 
 - imputation:
 
@@ -79,15 +80,16 @@ missSBM_param(
 - iterates:
 
   integer, the number of forward/backward exploration passes searching
-  for a better number of blocks by splitting/merging clusters (unlike
+  for a better number of blocks by splitting/merging blocks (unlike
   `polish`, which only refines each model at its own number of blocks):
   more expensive than `polish`. `0` disables exploration entirely (only
   the initial VEM fit, plus `polish` if enabled, is returned). Default
-  is 1.
+  is 1, enough on small networks; 2 are advised for a reference analysis
+  of a network with many blocks.
 
 - maxMergeCandidates:
 
-  integer, caps the number of cluster-pair merge candidates tried during
+  integer, caps the number of block-pair merge candidates tried during
   backward exploration (quadratic in the number of blocks otherwise).
   Beyond this cap, only the pairs with the most similar fitted
   connectivity profiles are tried, since merging two blocks with very

@@ -25,7 +25,7 @@ to dyad sampling, with one parameter."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,12 @@ to dyad sampling, with one parameter."></head><body>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -68,7 +73,7 @@ to dyad sampling, with one parameter.</p>
 
     <div class="section level2">
     <h2 id="super-classes">Super classes<a class="anchor" aria-label="anchor" href="#super-classes"></a></h2>
-    <p><code><a href="networkSampling.html">networkSampling</a></code> -&gt; <code><a href="networkSamplingDyads_fit.html">networkSamplingDyads_fit</a></code> -&gt; <code>doubleStandardSampling_fit</code></p>
+    <p><code><a href="networkSampling.html">networkSampling</a></code> -&gt; <code><a href="networkSampling_fit.html">networkSampling_fit</a></code> -&gt; <code><a href="networkSamplingDyads_fit.html">networkSamplingDyads_fit</a></code> -&gt; <code>doubleStandardSampling_fit</code></p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
@@ -106,7 +111,7 @@ blocks q and l is an edge, with the current parameters</p></dd>
 <li><p><a href="#method-doubleStandardSampling_fit-vExpec_at"><code>doubleStandardSampling_fit$vExpec_at()</code></a></p></li>
 <li><p><a href="#method-doubleStandardSampling_fit-clone"><code>doubleStandardSampling_fit$clone()</code></a></p></li>
 </ul></div><p><details open><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href="networkSampling.html#method-print"><code>networkSampling$print()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSamplingDyads_fit" data-id="show"><a href="networkSamplingDyads_fit.html#method-show"><code>networkSamplingDyads_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="show"><a href="networkSampling_fit.html#method-show"><code>networkSampling_fit$show()</code></a></span></li>
 </ul></details></p><hr><a id="method-doubleStandardSampling_fit-initialize"></a><div class="section">
 <h3 id="doublestandardsampling-fit-new-"><code>doubleStandardSampling_fit$new()</code><a class="anchor" aria-label="anchor" href="#doublestandardsampling-fit-new-"></a></h3>
 <p>constructor</p><div class="section">

@@ -111,7 +111,7 @@ We can now adjust a Stochastic Block Model with the function
 `estimateMissSBM` under this type of sampling: by default, we use a
 forward/backward (split and merge) strategy on the clustering to avoid
 local minima and get a robust Integrated Classification Likelihood
-Criterion, commonly used to perform model selection. This will make the
+(ICL), commonly used to perform model selection. This will make the
 choice of the number of groups/blocks more robust. The number of
 exploration passes can be tuned via the `iterates` argument of
 [`missSBM_param()`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md),
@@ -211,7 +211,7 @@ covariate(s), if any are included in the model.
 
 The covariate provided as a vector is transferred on edges through an
 $`\ell_1`$ similarity: for edge $`(i,j)`$ the associated covariate is
-defined by $`|x_i-x_j|`$ where $`x_i`$ denotes the covariate for node
+defined by $`-|x_i-x_j|`$ where $`x_i`$ denotes the covariate for node
 $`i`$. Another similarity measure could be provided via the option
 `similarity`.
 
@@ -382,9 +382,9 @@ Barbieri, Katherine, Omar MG Keshk, and Brian M Pollins. 2009. “Trading
 Data: Evaluating Our Assumptions and Coding Rules.” *Conflict Management
 and Peace Science* 26 (5): 471–91.
 
-Barbieri, Katherine, Omar Keshk, and Brian Pollins. 2016. “Correlates of
-War Project Trade Data Set Codebook, Version 4.0.” *Online:
-Http://Correlatesofwar. Org*.
+Barbieri, Katherine, Omar Keshk, and Brian Pollins. 2016. *Correlates of
+War Project Trade Data Set Codebook, Version 4.0*.
+[Https://correlatesofwar.org](https://correlatesofwar.org).
 
 Gibler, Douglas M. 2008. *International Military Alliances, 1648-2008*.
 CQ Press.

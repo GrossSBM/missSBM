@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +16,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -63,16 +68,16 @@
 
 
 <dl><dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>V-EM algorithm stops when an optimization step changes the objective function
+<dd><p>the VEM stops when an optimization step changes the objective function
 or the parameters by less than threshold. Default is 1e-2.</p></dd>
 
 
 <dt id="arg-maxiter">maxIter<a class="anchor" aria-label="anchor" href="#arg-maxiter"></a></dt>
-<dd><p>V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.</p></dd>
+<dd><p>the VEM stops when the number of iterations exceeds maxIter. Default is 50.</p></dd>
 
 
 <dt id="arg-fixpointiter">fixPointIter<a class="anchor" aria-label="anchor" href="#arg-fixpointiter"></a></dt>
-<dd><p>number of fix-point iterations in the V-E step. Default is 3.</p></dd>
+<dd><p>number of fixed-point iterations in the variational E step. Default is 3.</p></dd>
 
 
 <dt id="arg-imputation">imputation<a class="anchor" aria-label="anchor" href="#arg-imputation"></a></dt>
@@ -107,14 +112,15 @@ not search across numbers of blocks. Default is TRUE.</p></dd>
 
 <dt id="arg-iterates">iterates<a class="anchor" aria-label="anchor" href="#arg-iterates"></a></dt>
 <dd><p>integer, the number of forward/backward exploration passes searching for a
-better number of blocks by splitting/merging clusters (unlike <code>polish</code>, which only
+better number of blocks by splitting/merging blocks (unlike <code>polish</code>, which only
 refines each model at its own number of blocks): more expensive than <code>polish</code>.
 <code>0</code> disables exploration entirely (only the initial VEM fit, plus <code>polish</code> if
-enabled, is returned). Default is 1.</p></dd>
+enabled, is returned). Default is 1, enough on small networks; 2 are advised for a reference
+analysis of a network with many blocks.</p></dd>
 
 
 <dt id="arg-maxmergecandidates">maxMergeCandidates<a class="anchor" aria-label="anchor" href="#arg-maxmergecandidates"></a></dt>
-<dd><p>integer, caps the number of cluster-pair merge candidates tried
+<dd><p>integer, caps the number of block-pair merge candidates tried
 during backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
 only the pairs with the most similar fitted connectivity profiles are tried, since merging
 two blocks with very different connectivity is rarely competitive anyway. Default is 30.</p></dd>

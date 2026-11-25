@@ -17,7 +17,7 @@ as S3 methods. See the documentation for show() and print()"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,12 @@ as S3 methods. See the documentation for show() and print()"></head><body>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -61,7 +66,8 @@ as S3 methods. See the documentation for <code><a href="https://rdrr.io/r/method
 
 
     <dt><code>ICL</code></dt>
-<dd><p>the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)</p></dd>
+<dd><p>the vector of the ICL (Integrated Classification Likelihood, the smaller the better)
+of the models of the collection, see <a href="missSBM_fit.html">missSBM_fit</a></p></dd>
 
 
     <dt><code>bestModel</code></dt>
@@ -279,11 +285,9 @@ directions are searched. Default "both".</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Sample 75% of dyads in  French political Blogosphere's network data</span></span></span>
 <span class="r-in"><span><span class="va">adjacencyMatrix</span> <span class="op">&lt;-</span> <span class="fu">missSBM</span><span class="fu">::</span><span class="va"><a href="frenchblog2007.html">frenchblog2007</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/delete.vertices.html" class="external-link">delete.vertices</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/delete_vertices.html" class="external-link">delete_vertices</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_adjacency_matrix.html" class="external-link">as_adjacency_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">missSBM</span><span class="fu">::</span><span class="fu"><a href="observeNetwork.html">observeNetwork</a></span><span class="op">(</span>sampling <span class="op">=</span> <span class="st">"dyad"</span>, parameters <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`delete.vertices()` was deprecated in igraph 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use `delete_vertices()` instead.</span>
 <span class="r-in"><span><span class="va">collection</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">adjacencyMatrix</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, sampling <span class="op">=</span> <span class="st">"dyad"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -294,10 +298,10 @@ directions are searched. Default "both".</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Initialization of 5 model(s). </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Performing VEM inference</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  	Model with 4 blocks.
- 	Model with 2 blocks.
  	Model with 5 blocks.
- 	Model with 1 blocks.
  	Model with 3 blocks.
+ 	Model with 1 blocks.
+ 	Model with 2 blocks.
  Polishing (node-swap)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Looking for better solutions</span>

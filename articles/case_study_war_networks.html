@@ -19,7 +19,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +29,14 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul>
+</li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -153,7 +160,7 @@ diagonal of the adjacency matrix). To this end we rely on the function
 <code>estimateMissSBM</code> under this type of sampling: by default, we
 use a forward/backward (split and merge) strategy on the clustering to
 avoid local minima and get a robust Integrated Classification Likelihood
-Criterion, commonly used to perform model selection. This will make the
+(ICL), commonly used to perform model selection. This will make the
 choice of the number of groups/blocks more robust. The number of
 exploration passes can be tuned via the <code>iterates</code> argument
 of <code><a href="../reference/missSBM_param.html">missSBM_param()</a></code>, passed as the <code>control</code>
@@ -228,7 +235,7 @@ covariate(s), if any are included in the model.</p>
 similarity: for edge
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i,j)</annotation></semantics></math>
 the associated covariate is defined by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><msub><mi>x</mi><mi>j</mi></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|x_i-x_j|</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><msub><mi>x</mi><mi>j</mi></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">-|x_i-x_j|</annotation></semantics></math>
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>i</mi></msub><annotation encoding="application/x-tex">x_i</annotation></semantics></math>
 denotes the covariate for node
@@ -357,9 +364,8 @@ Rules.”</span> <em>Conflict Management and Peace Science</em> 26 (5):
 471–91.
 </div>
 <div id="ref-barbieri2012correlates" class="csl-entry">
-Barbieri, Katherine, Omar Keshk, and Brian Pollins. 2016.
-<span>“Correlates of War Project Trade Data Set Codebook, Version
-4.0.”</span> <em>Online: Http://Correlatesofwar. Org</em>.
+Barbieri, Katherine, Omar Keshk, and Brian Pollins. 2016. <em>Correlates
+of War Project Trade Data Set Codebook, Version 4.0</em>. <a href="https://correlatesofwar.org" class="external-link uri">Https://correlatesofwar.org</a>.
 </div>
 <div id="ref-gibler2008international" class="csl-entry">
 Gibler, Douglas M. 2008. <em>International Military Alliances,

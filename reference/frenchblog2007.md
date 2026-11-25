@@ -18,7 +18,9 @@ possible clustering of the nodes.
 
 ## Source
 
-<https://www.meltwater.com/en/suite/consumer-intelligence?utm_source=direct&utm_medium=linkfluence>
+The "Observatoire Présidentielle" project of Linkfluence (now part of
+Meltwater); the network was distributed in the package 'mixer', archived
+on CRAN: <https://CRAN.R-project.org/package=mixer>
 
 ## Examples
 
@@ -34,13 +36,13 @@ igraph::V(frenchblog2007)$party
 #>  [31] "right"        "right"        "right"        "right"        "right"       
 #>  [36] "right"        "right"        "right"        "right"        "right"       
 #>  [41] "right"        "right"        "right"        "right"        "right"       
-#>  [46] "right"        "center-rigth" "right"        "center-rigth" "center-rigth"
-#>  [51] "center-rigth" "center-rigth" "center-rigth" "center-rigth" "center-rigth"
-#>  [56] "center-rigth" "center-rigth" "center-rigth" "center-rigth" "center-rigth"
-#>  [61] "center-rigth" "center-rigth" "center-rigth" "center-rigth" "center-rigth"
-#>  [66] "center-rigth" "center-rigth" "center-rigth" "center-rigth" "center-rigth"
-#>  [71] "center-rigth" "center-rigth" "center-rigth" "center-rigth" "center-rigth"
-#>  [76] "center-rigth" "center-rigth" "center-rigth" "center-rigth" "left"        
+#>  [46] "right"        "center-right" "right"        "center-right" "center-right"
+#>  [51] "center-right" "center-right" "center-right" "center-right" "center-right"
+#>  [56] "center-right" "center-right" "center-right" "center-right" "center-right"
+#>  [61] "center-right" "center-right" "center-right" "center-right" "center-right"
+#>  [66] "center-right" "center-right" "center-right" "center-right" "center-right"
+#>  [71] "center-right" "center-right" "center-right" "center-right" "center-right"
+#>  [76] "center-right" "center-right" "center-right" "center-right" "left"        
 #>  [81] "left"         "left"         "left"         "left"         "left"        
 #>  [86] "left"         "left"         "left"         "left"         "left"        
 #>  [91] "left"         "left"         "left"         "left"         "left"        

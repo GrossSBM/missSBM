@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://grosssbm.github.io/missSBM/404.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/LICENSE.html</loc></url>
+<url><loc>https://grosssbm.github.io/missSBM/articles/case_study_frenchblog.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/articles/case_study_war_networks.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/articles/index.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/authors.html</loc></url>
@@ -38,16 +39,18 @@
 <url><loc>https://grosssbm.github.io/missSBM/reference/networkSampling.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html</loc></url>
+<url><loc>https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/nodeSampler.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/nodeSampling_fit.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/observeNetwork.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/partlyObservedNetwork.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/pipe.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/plot.missSBM_fit.html</loc></url>
-<url><loc>https://grosssbm.github.io/missSBM/reference/predicted.missSBM_fit.html</loc></url>
+<url><loc>https://grosssbm.github.io/missSBM/reference/predict.missSBM_fit.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/simpleDyadSampler.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/simpleNodeSampler.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/snowballSampler.html</loc></url>
+<url><loc>https://grosssbm.github.io/missSBM/reference/summary.missSBM_collection.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/summary.missSBM_fit.html</loc></url>
 <url><loc>https://grosssbm.github.io/missSBM/reference/war.html</loc></url>
 </urlset>

@@ -24,8 +24,9 @@ the user and exported as S3 methods. See the documentation for
 
 - `ICL`:
 
-  the vector of Integrated Classification Criterion (ICL) associated to
-  the models in the collection (the smaller, the better)
+  the vector of the ICL (Integrated Classification Likelihood, the
+  smaller the better) of the models of the collection, see
+  [missSBM_fit](https://grosssbm.github.io/missSBM/reference/missSBM_fit.md)
 
 - `bestModel`:
 
@@ -289,11 +290,9 @@ The objects of this class are cloneable with this method.
 
 ## Sample 75% of dyads in  French political Blogosphere's network data
 adjacencyMatrix <- missSBM::frenchblog2007 %>%
-  igraph::delete.vertices(1:100) %>%
+  igraph::delete_vertices(1:100) %>%
   igraph::as_adjacency_matrix() %>%
   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
-#> Warning: `delete.vertices()` was deprecated in igraph 2.0.0.
-#> ℹ Please use `delete_vertices()` instead.
 collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
 #> 
 #> 
@@ -304,10 +303,10 @@ collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
 #>  Initialization of 5 model(s). 
 #>  Performing VEM inference
 #>      Model with 4 blocks.
-    Model with 2 blocks.
     Model with 5 blocks.
-    Model with 1 blocks.
     Model with 3 blocks.
+    Model with 1 blocks.
+    Model with 2 blocks.
  Polishing (node-swap)
 #> 
 #>  Looking for better solutions

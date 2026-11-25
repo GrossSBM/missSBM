@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +16,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -74,14 +79,14 @@ before sampling is applied on top of it, with a warning.</p></dd>
 
 
 <dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
-<dd><p>An optional list with M entries (the M covariates). If the covariates are node-centered,
-each entry of <code>covariates</code>. must be a size-N vector;  if the covariates are dyad-centered, each entry
-of <code>covariates</code> must be N x N matrix.</p></dd>
+<dd><p>An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of <code>covariates</code>
+must be a size-N vector;  if the covariates are dyad-centered, each entry of <code>covariates</code> must be N x N matrix.</p></dd>
 
 
 <dt id="arg-similarity">similarity<a class="anchor" aria-label="anchor" href="#arg-similarity"></a></dt>
-<dd><p>An optional function to compute similarities between node covariates. Default is
-<code><a href="l1_similarity.html">l1_similarity</a></code>, that is, -abs(x-y). Only relevant when the covariates are node-centered.</p></dd>
+<dd><p>an R x R -&gt; R function to compute similarities between node covariates.
+Default is <code><a href="l1_similarity.html">l1_similarity</a></code>, that is, -abs(x - y). Only relevant when the
+covariates are node-centered (i.e. <code>covariates</code> is a list of size-N vectors).</p></dd>
 
 
 <dt id="arg-intercept">intercept<a class="anchor" aria-label="anchor" href="#arg-intercept"></a></dt>
@@ -96,32 +101,53 @@ of <code>covariates</code> must be N x N matrix.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Internal functions use <code>future_lapply</code>, so set your plan to <code>'multisession'</code> or
 <code>'multicore'</code> to use several cores/workers.</p>
-<p>The different sampling designs are split into two families in which we find dyad-centered and
-node-centered samplings. See <a href="https://doi.org/10.1080/01621459.2018.1562934" class="external-link">doi:10.1080/01621459.2018.1562934</a>
- for a complete description.</p><ul><li><p>Missing at Random (MAR)</p><ul><li><p>dyad parameter = p = Prob(Dyad(i,j) is observed)</p></li>
-<li><p>node parameter = p = Prob(Node i is observed)</p></li>
-<li><p>covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))</p></li>
-<li><p>covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)</p></li>
-<li><p>snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)</p></li>
+<p>The sampling designs are either Missing At Random (MAR) or Missing Not At Random
+(MNAR), and observe either dyads or nodes (all the dyads of an observed node). See
+<a href="https://doi.org/10.1080/01621459.2018.1562934" class="external-link">doi:10.1080/01621459.2018.1562934</a>
+ for a complete description. The parameters of each design:</p><ul><li><p>Missing At Random (MAR)</p><ul><li><p>"dyad": p, the probability that a dyad is observed.</p></li>
+<li><p>"node": p, the probability that a node is observed.</p></li>
+<li><p>"covar-dyad": \(\beta \in R^M\), a dyad (i, j) being observed with probability
+\(logistic(\beta' x_{ij})\), \(x_{ij}\) the covariates of the dyad.</p></li>
+<li><p>"covar-node": \(\beta \in R^M\), a node i being observed with probability
+\(logistic(\beta' x_i)\), \(x_i\) the covariates of the node.</p></li>
+<li><p>"snowball": (number of waves, proportion of the nodes observed in the first wave); the
+nodes of each wave are the neighbors of the nodes of the previous one. It is fitted as
+"node" sampling.</p></li>
 </ul></li>
-<li><p>Missing Not At Random (MNAR)</p><ul><li><p>double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1).
-(p0, p1) are identified through the differences of connectivity between the blocks: with a
-single block, they are not identifiable, and the model is fitted with p0 = p1, i.e. as dyad
-sampling (with a warning).</p></li>
-<li><p>block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)</p></li>
-<li><p>block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)</p></li>
+<li><p>Missing Not At Random (MNAR)</p><ul><li><p>"double-standard": (p0, p1), the probabilities that a dyad is observed if it is 0 and if it
+is 1. (p0, p1) are identified through the differences of connectivity between the blocks:
+with a single block, they are not identifiable, and the model is fitted with p0 = p1, i.e.
+as dyad sampling (with a warning).</p></li>
+<li><p>"block-node": \((p_1, \dots, p_Q)\), \(p_q\) the probability that a node of block q is
+observed.</p></li>
+<li><p>"block-dyad": the Q x Q matrix \((p_{ql})\), \(p_{ql}\) the probability that a dyad
+between blocks q and l is observed.</p></li>
+<li><p>"degree": (a, b), a node i being observed with probability \(logistic(a + b D_i)\),
+\(D_i\) its degree.</p></li>
 </ul></li>
-</ul></div>
+</ul><p>The number of blocks is selected by the ICL (Integrated Classification Likelihood,
+the smaller the better): -2 times the variational lower bound of the log-likelihood of the
+observed data (the observed dyads and the sampling matrix), at the MAP memberships, plus a
+penalty, in which the connectivity counts the observed dyads and the parameters of the sampling
+all the dyads (or all the nodes). The ICLs of different designs fitted to the same data can be
+compared to choose the design. When their samplings carry the same information (e.g.
+"block-node" and "degree" on an assortative network, where the degree depends on the block),
+the ICLs differ by a few units, about the penalty of one parameter (log N), and the partitions
+are the same: such a difference is no evidence for one design. Each number of blocks is fitted
+from a spectral clustering, then improved by a polish and by passes of exploration splitting
+and merging blocks (see <code><a href="missSBM_param.html">missSBM_param</a></code>); one pass is enough on small networks,
+two are advised for a reference analysis of a network with many blocks.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## SBM parameters</span></span></span>
 <span class="r-in"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of nodes</span></span></span>
-<span class="r-in"><span><span class="va">Q</span> <span class="op">&lt;-</span> <span class="fl">3</span>   <span class="co"># number of clusters</span></span></span>
+<span class="r-in"><span><span class="va">Q</span> <span class="op">&lt;-</span> <span class="fl">3</span>   <span class="co"># number of blocks</span></span></span>
 <span class="r-in"><span><span class="va">pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">Q</span><span class="op">)</span><span class="op">/</span><span class="va">Q</span>     <span class="co"># block proportion</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">.45</span>,<span class="va">Q</span><span class="op">)</span> <span class="op">+</span> <span class="fl">.05</span> <span class="op">)</span> <span class="co"># connectivity matrix</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## simulate an unidrected binary SBM without covariate</span></span></span>
+<span class="r-in"><span><span class="co">## simulate an undirected binary SBM without covariate</span></span></span>
 <span class="r-in"><span><span class="va">sbm</span> <span class="op">&lt;-</span> <span class="fu">sbm</span><span class="fu">::</span><span class="fu"><a href="https://grosssbm.github.io/sbm/reference/sampleSimpleSBM.html" class="external-link">sampleSimpleSBM</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">pi</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Sample network data</span></span></span>

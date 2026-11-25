@@ -6,6 +6,8 @@ Class for fitting a block-node sampling
 
 [`networkSampling`](https://grosssbm.github.io/missSBM/reference/networkSampling.md)
 -\>
+[`networkSampling_fit`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.md)
+-\>
 [`networkSamplingNodes_fit`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.md)
 -\> `blockNodeSampling_fit`
 
@@ -37,8 +39,8 @@ Class for fitting a block-node sampling
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
-- [`networkSamplingNodes_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-show)
-- [`networkSamplingNodes_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-update_imputation)
+- [`networkSampling_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-show)
+- [`networkSampling_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-update_imputation)
 
 ------------------------------------------------------------------------
 
@@ -65,22 +67,21 @@ constructor
 
 ### `blockNodeSampling_fit$update_parameters()`
 
-a method to update the estimation of the parameters. By default, nothing
-to do (corresponds to MAR sampling)
+update the parameters: the observation rate of the nodes of each block
 
 #### Usage
 
-    blockNodeSampling_fit$update_parameters(imputedNet, Z)
+    blockNodeSampling_fit$update_parameters(Z, ...)
 
 #### Arguments
 
-- `imputedNet`:
-
-  an adjacency matrix where missing values have been imputed
-
 - `Z`:
 
-  indicator of blocks
+  probabilities of block memberships
+
+- `...`:
+
+  use for compatibility
 
 ------------------------------------------------------------------------
 

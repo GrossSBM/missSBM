@@ -16,11 +16,6 @@ It is not designed to be called directly by the user.
 
   the matrix of imputed values
 
-- `vExpec`:
-
-  double: variational approximation of the expectation complete
-  log-likelihood
-
 ## Methods
 
 ### Public methods
@@ -28,8 +23,6 @@ It is not designed to be called directly by the user.
 - [`SimpleSBM_fit_noCov$update_parameters()`](#method-SimpleSBM_fit_noCov-update_parameters)
 
 - [`SimpleSBM_fit_noCov$update_blocks()`](#method-SimpleSBM_fit_noCov-update_blocks)
-
-- [`SimpleSBM_fit_noCov$polish_log_tau()`](#method-SimpleSBM_fit_noCov-polish_log_tau)
 
 - [`SimpleSBM_fit_noCov$vExpec_imputed()`](#method-SimpleSBM_fit_noCov-vExpec_imputed)
 
@@ -49,6 +42,7 @@ Inherited methods
 - [`SimpleSBM_fit$doVEM()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-doVEM)
 - [`SimpleSBM_fit$get_state()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-get_state)
 - [`SimpleSBM_fit$initialize()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-initialize)
+- [`SimpleSBM_fit$polish_log_tau()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-polish_log_tau)
 - [`SimpleSBM_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-reorder)
 - [`SimpleSBM_fit$set_state()`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit.html#method-set_state)
 
@@ -89,32 +83,6 @@ update variational estimation of blocks (VE-step)
 - `...`:
 
   additional arguments, only required for MNAR cases
-
-------------------------------------------------------------------------
-
-### `SimpleSBM_fit_noCov$polish_log_tau()`
-
-for each node, the complete-data log-likelihood it would contribute to
-each class if hard-assigned there (theta/pi held fixed), used to decide
-node-swap moves in `missSBM_fit$polish()`.
-
-#### Usage
-
-    SimpleSBM_fit_noCov$polish_log_tau(log_lambda = 0, ...)
-
-#### Arguments
-
-- `log_lambda`:
-
-  additional sampling-design-dependent term, added as-is
-
-- `...`:
-
-  additional arguments, not used
-
-#### Returns
-
-an N x Q matrix
 
 ------------------------------------------------------------------------
 

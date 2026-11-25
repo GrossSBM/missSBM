@@ -31,7 +31,7 @@ top-level function estimateMissSBM().
   Extract model fitted values from object `missSBM_fit`, return by
   [`estimateMissSBM()`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)
 
-- [`predict(`*`<missSBM_fit>`*`)`](https://grosssbm.github.io/missSBM/reference/predicted.missSBM_fit.md)
+- [`predict(`*`<missSBM_fit>`*`)`](https://grosssbm.github.io/missSBM/reference/predict.missSBM_fit.md)
   :
 
   Prediction of a `missSBM_fit` (i.e. network with imputed missing

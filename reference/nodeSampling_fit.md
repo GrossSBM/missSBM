@@ -6,6 +6,8 @@ Class for fitting a node sampling
 
 [`networkSampling`](https://grosssbm.github.io/missSBM/reference/networkSampling.md)
 -\>
+[`networkSampling_fit`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.md)
+-\>
 [`networkSamplingNodes_fit`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.md)
 -\> `nodeSampling_fit`
 
@@ -26,11 +28,11 @@ Class for fitting a node sampling
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
-- [`networkSamplingNodes_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-reorder)
-- [`networkSamplingNodes_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-show)
-- [`networkSamplingNodes_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-update_imputation)
-- [`networkSamplingNodes_fit$update_parameters()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-update_parameters)
-- [`networkSamplingNodes_fit$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-vExpec_at)
+- [`networkSampling_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-reorder)
+- [`networkSampling_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-show)
+- [`networkSampling_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-update_imputation)
+- [`networkSampling_fit$update_parameters()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-update_parameters)
+- [`networkSampling_fit$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-vExpec_at)
 
 ------------------------------------------------------------------------
 

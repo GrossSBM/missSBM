@@ -93,14 +93,14 @@ the user and exported as S3 methods. See the documentation for
 
 - `ICL`:
 
-  double: integrated classification likelihood, built on the observed
-  data (the observed dyads and the sampling matrix), the missing dyads
-  being integrated out: -2 times the variational lower bound of the
-  log-likelihood of the observed data and of the blocks, evaluated at
-  the MAP memberships (hard assignment of each node to its most probable
-  block), plus the penalty. For 'degree', whose missing dyads cannot be
-  integrated out, the bound includes the expected log-likelihood and the
-  entropy of the imputations.
+  double: the ICL (Integrated Classification Likelihood, the smaller the
+  better), built on the observed data (the observed dyads and the
+  sampling matrix), the missing dyads being integrated out: -2 times the
+  variational lower bound of the log-likelihood of the observed data and
+  of the blocks, evaluated at the MAP memberships (hard assignment of
+  each node to its most probable block), plus the penalty. For 'degree',
+  whose missing dyads cannot be integrated out, the bound includes the
+  expected log-likelihood and the entropy of the imputations.
 
 ## Methods
 
@@ -187,7 +187,7 @@ variational EM
 
 ### `missSBM_fit$split()`
 
-clone of the current fit after splitting cluster `index` in two, via a
+clone of the current fit after splitting block `index` in two, via a
 spectral bipartition of the sub-network it induces. Builds but does not
 fit the candidate (see `candidates_split()`).
 
@@ -199,7 +199,7 @@ fit the candidate (see `candidates_split()`).
 
 - `index`:
 
-  index (integer) of the cluster to split
+  index (integer) of the block to split
 
 - `in_place`:
 
@@ -222,8 +222,8 @@ split (its induced sub-network has zero variance)
 ### `missSBM_fit$candidates_split()`
 
 generate and cheaply trial-fit candidates obtained by splitting each
-splittable cluster in two (see
-[`split()`](https://rdrr.io/r/base/split.html)). A cluster is splittable
+splittable block in two (see
+[`split()`](https://rdrr.io/r/base/split.html)). A block is splittable
 if it has at least 4 members and non-zero variance in its induced
 sub-network.
 
@@ -249,13 +249,13 @@ sub-network.
 #### Returns
 
 a list of trial-fitted `missSBM_fit` candidates (one per splittable
-cluster)
+block)
 
 ------------------------------------------------------------------------
 
 ### `missSBM_fit$merge()`
 
-clone of the current fit after merging clusters `indices[1]` and
+clone of the current fit after merging blocks `indices[1]` and
 `indices[2]` into one. Builds but does not fit the candidate (see
 `candidates_merge()`).
 
@@ -267,7 +267,7 @@ clone of the current fit after merging clusters `indices[1]` and
 
 - `indices`:
 
-  indices (couple of integers) of the clusters to merge
+  indices (couple of integers) of the blocks to merge
 
 - `in_place`:
 
@@ -283,7 +283,7 @@ a new `missSBM_fit` with one fewer block
 ### `missSBM_fit$candidates_merge()`
 
 generate and cheaply trial-fit candidates obtained by merging pairs of
-clusters (see [`merge()`](https://rdrr.io/r/base/merge.html)). Beyond
+blocks (see [`merge()`](https://rdrr.io/r/base/merge.html)). Beyond
 `max_candidates` pairs (quadratic in the number of blocks), only the
 most similar-connectivity pairs are tried.
 

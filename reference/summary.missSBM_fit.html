@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +16,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -61,6 +66,29 @@
     <p>a basic printing output</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## a fit of the French political blogosphere, 30% of its dyads missing</span></span></span>
+<span class="r-in"><span><span class="va">adjMatrix</span> <span class="op">&lt;-</span> <span class="fu">missSBM</span><span class="fu">::</span><span class="va"><a href="frenchblog2007.html">frenchblog2007</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_adjacency_matrix.html" class="external-link">as_adjacency_matrix</a></span><span class="op">(</span>sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">missSBM</span><span class="fu">::</span><span class="fu"><a href="observeNetwork.html">observeNetwork</a></span><span class="op">(</span>sampling <span class="op">=</span> <span class="st">"dyad"</span>, parameters <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">collection</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimateMissSBM.html">estimateMissSBM</a></span><span class="op">(</span><span class="va">adjMatrix</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="st">"dyad"</span>,</span></span>
+<span class="r-in"><span>  control <span class="op">=</span> <span class="fu"><a href="missSBM_param.html">missSBM_param</a></span><span class="op">(</span>trace <span class="op">=</span> <span class="cn">FALSE</span>, iterates <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">myModel</span> <span class="op">&lt;-</span> <span class="va">collection</span><span class="op">$</span><span class="va">bestModel</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">myModel</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> missSBM-fit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Structure for storing an SBM fitted under missing data condition  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * Useful fields (first 2 special objects themselves with methods) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   $fittedSBM (the adjusted stochastic block model)                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   $fittedSampling (the estimated sampling process)                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   $imputedNetwork (the adjacency matrix with imputed values)      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   $monitoring, $ICL, $loglik, $vExpec, $penalty                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * S3 methods                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   plot, coef, fitted, predict, print                              </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

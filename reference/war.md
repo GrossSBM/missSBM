@@ -39,14 +39,8 @@ data(war)
 class(war$belligerent)
 #> [1] "igraph"
 igraph::gorder(war$alliance)
-#> This graph was created by an old(er) igraph version.
-#> ℹ Call `igraph::upgrade_graph()` on it to use with the current igraph version.
-#> For now we convert it on the fly...
 #> [1] 171
 igraph::gorder(war$belligerent)
-#> This graph was created by an old(er) igraph version.
-#> ℹ Call `igraph::upgrade_graph()` on it to use with the current igraph version.
-#> For now we convert it on the fly...
 #> [1] 83
 igraph::edges(war$alliance)
 #> [[1]]
@@ -65,9 +59,7 @@ igraph::edges(war$alliance)
 #> 
 #> attr(,"class")
 #> [1] "igraph.edge"
-igraph::get.graph.attribute(war$alliance)
-#> Warning: `get.graph.attribute()` was deprecated in igraph 2.0.0.
-#> ℹ Please use `graph_attr()` instead.
+igraph::graph_attr(war$alliance)
 #> $trade
 #>                                  United States of America    Canada     Bahamas
 #> United States of America                         11838636 83309.874 29769.84735

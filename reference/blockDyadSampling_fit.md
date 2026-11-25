@@ -6,6 +6,8 @@ Class for fitting a block-dyad sampling
 
 [`networkSampling`](https://grosssbm.github.io/missSBM/reference/networkSampling.md)
 -\>
+[`networkSampling_fit`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.md)
+-\>
 [`networkSamplingDyads_fit`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.md)
 -\> `blockDyadSampling_fit`
 
@@ -37,8 +39,8 @@ Class for fitting a block-dyad sampling
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
-- [`networkSamplingDyads_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html#method-show)
-- [`networkSamplingDyads_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSamplingDyads_fit.html#method-update_imputation)
+- [`networkSampling_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-show)
+- [`networkSampling_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-update_imputation)
 
 ------------------------------------------------------------------------
 
@@ -65,22 +67,22 @@ constructor
 
 ### `blockDyadSampling_fit$update_parameters()`
 
-a method to update the estimation of the parameters. By default, nothing
-to do (corresponds to MAR sampling)
+update the parameters: the observation rate of the dyads between each
+pair of blocks
 
 #### Usage
 
-    blockDyadSampling_fit$update_parameters(nu, Z)
+    blockDyadSampling_fit$update_parameters(Z, ...)
 
 #### Arguments
-
-- `nu`:
-
-  the matrix of (uncorrected) imputation for missing entries
 
 - `Z`:
 
   probabilities of block memberships
+
+- `...`:
+
+  use for compatibility
 
 ------------------------------------------------------------------------
 

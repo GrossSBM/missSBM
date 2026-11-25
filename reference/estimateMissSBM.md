@@ -29,11 +29,10 @@ estimateMissSBM(
 
 - sampling:
 
-  The model used to described the process that originates the missing
-  data: MAR designs ("dyad",
-  "node","covar-dyad","covar-node","snowball") and MNAR designs
-  ("double-standard", "block-dyad", "block-node" , "degree") are
-  available. See details.
+  The sampling design, the model of the process that originates the
+  missing data: MAR designs ("dyad", "node", "covar-dyad", "covar-node",
+  "snowball") and MNAR designs ("double-standard", "block-dyad",
+  "block-node", "degree") are available. See details.
 
 - covariates:
 
@@ -59,41 +58,64 @@ Returns an R6 object with class
 Internal functions use `future_lapply`, so set your plan to
 `'multisession'` or `'multicore'` to use several cores/workers.
 
-The different sampling designs are split into two families in which we
-find dyad-centered and node-centered samplings. See
+The sampling designs are either Missing At Random (MAR) or Missing Not
+At Random (MNAR), and observe either dyads or nodes (all the dyads of an
+observed node). See
 [doi:10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934)
-for a complete description.
+for a complete description. The parameters of each design:
 
-- Missing at Random (MAR)
+- Missing At Random (MAR)
 
-  - dyad parameter = p = Prob(Dyad(i,j) is observed)
+  - "dyad": p, the probability that a dyad is observed.
 
-  - node parameter = p = Prob(Node i is observed)
+  - "node": p, the probability that a node is observed.
 
-  - covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is
-    observed) = logistic(parameter' covarArray (i,j, .))
+  - "covar-dyad": \\\beta \in R^M\\, a dyad (i, j) being observed with
+    probability \\logistic(\beta' x\_{ij})\\, \\x\_{ij}\\ the covariates
+    of the dyad.
 
-  - covar-node": parameter = nu in R^M such that Prob(Node i is
-    observed) = logistic(parameter' covarMatrix (i,)
+  - "covar-node": \\\beta \in R^M\\, a node i being observed with
+    probability \\logistic(\beta' x_i)\\, \\x_i\\ the covariates of the
+    node.
 
-  - snowball": parameter = number of waves with Prob(Node i is observed
-    in the 1st wave)
+  - "snowball": (number of waves, proportion of the nodes observed in
+    the first wave); the nodes of each wave are the neighbors of the
+    nodes of the previous one. It is fitted as "node" sampling.
 
 - Missing Not At Random (MNAR)
 
-  - double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is
-    observed \| the dyad is equal to 0), p1 = Prob(Dyad (i,j) is
-    observed \| the dyad is equal to 1). (p0, p1) are identified through
+  - "double-standard": (p0, p1), the probabilities that a dyad is
+    observed if it is 0 and if it is 1. (p0, p1) are identified through
     the differences of connectivity between the blocks: with a single
     block, they are not identifiable, and the model is fitted with p0 =
     p1, i.e. as dyad sampling (with a warning).
 
-  - block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is
-    observed \| node i is in cluster q)
+  - "block-node": \\(p_1, \dots, p_Q)\\, \\p_q\\ the probability that a
+    node of block q is observed.
 
-  - block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge
-    (i,j) is observed \| node i is in cluster q and node j is in cluster
-    l)
+  - "block-dyad": the Q x Q matrix \\(p\_{ql})\\, \\p\_{ql}\\ the
+    probability that a dyad between blocks q and l is observed.
+
+  - "degree": (a, b), a node i being observed with probability
+    \\logistic(a + b D_i)\\, \\D_i\\ its degree.
+
+The number of blocks is selected by the ICL (Integrated Classification
+Likelihood, the smaller the better): -2 times the variational lower
+bound of the log-likelihood of the observed data (the observed dyads and
+the sampling matrix), at the MAP memberships, plus a penalty, in which
+the connectivity counts the observed dyads and the parameters of the
+sampling all the dyads (or all the nodes). The ICLs of different designs
+fitted to the same data can be compared to choose the design. When their
+samplings carry the same information (e.g. "block-node" and "degree" on
+an assortative network, where the degree depends on the block), the ICLs
+differ by a few units, about the penalty of one parameter (log N), and
+the partitions are the same: such a difference is no evidence for one
+design. Each number of blocks is fitted from a spectral clustering, then
+improved by a polish and by passes of exploration splitting and merging
+blocks (see
+[`missSBM_param`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md));
+one pass is enough on small networks, two are advised for a reference
+analysis of a network with many blocks.
 
 ## See also
 
@@ -108,7 +130,7 @@ and
 ``` r
 ## SBM parameters
 N <- 100 # number of nodes
-Q <- 3   # number of clusters
+Q <- 3   # number of blocks
 pi <- rep(1,Q)/Q     # block proportion
 theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 
@@ -116,7 +138,7 @@ theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 samplingParameters <- .75 # the sampling rate
 sampling  <- "dyad"      # the sampling design
 
-## generate a undirected binary SBM with no covariate
+## generate an undirected binary SBM with no covariate
 sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
 ## Uncomment to set parallel computing with future
@@ -134,10 +156,10 @@ collection <-
 #> 
 #>  Initialization of 4 model(s). 
 #>  Performing VEM inference
-#>      Model with 3 blocks.
-    Model with 1 blocks.
-    Model with 4 blocks.
+#>      Model with 4 blocks.
+    Model with 3 blocks.
     Model with 2 blocks.
+    Model with 1 blocks.
  Polishing (node-swap)
 #> 
 #>  Looking for better solutions
@@ -152,13 +174,13 @@ plot(collection, "icl")
 
 
 collection$ICL
-#> [1] 9346.422 8879.635 8585.705 8625.259
+#> [1] 9283.987 8785.037 8566.070 8606.452
 coef(collection$bestModel$fittedSBM, "connectivity")
 #> $mean
 #>            [,1]       [,2]       [,3]
-#> [1,] 0.50953677 0.05164995 0.05509355
-#> [2,] 0.05164995 0.53003541 0.05696972
-#> [3,] 0.05509355 0.05696972 0.50247919
+#> [1,] 0.49037793 0.05779239 0.03823879
+#> [2,] 0.05779239 0.47647349 0.05993739
+#> [3,] 0.03823879 0.05993739 0.50684957
 #> 
 
 myModel <- collection$bestModel
@@ -168,20 +190,20 @@ plot(myModel, "imputed")
 
 plot(myModel, "meso")
 coef(myModel, "sampling")
-#> [1] 0.7553535
+#> [1] 0.7519192
 coef(myModel, "connectivity")
 #> $mean
 #>            [,1]       [,2]       [,3]
-#> [1,] 0.50953677 0.05164995 0.05509355
-#> [2,] 0.05164995 0.53003541 0.05696972
-#> [3,] 0.05509355 0.05696972 0.50247919
+#> [1,] 0.49037793 0.05779239 0.03823879
+#> [2,] 0.05779239 0.47647349 0.05993739
+#> [3,] 0.03823879 0.05993739 0.50684957
 #> 
 predict(myModel)[1:5, 1:5]
 #> 5 x 5 sparse Matrix of class "dgCMatrix"
-#>                                                   
-#> [1,] .          . 0.05164995 .          .         
-#> [2,] .          . 1.00000000 1.00000000 .         
-#> [3,] 0.05164995 1 .          1.00000000 .         
-#> [4,] .          1 1.00000000 .          0.05509355
-#> [5,] .          . .          0.05509355 .         
+#>                                                           
+#> [1,] .          0.05993739 0.05993739 .         .         
+#> [2,] 0.05993739 .          1.00000000 1.0000000 1.00000000
+#> [3,] 0.05993739 1.00000000 .          0.5068496 0.03823879
+#> [4,] .          1.00000000 0.50684957 .         .         
+#> [5,] .          1.00000000 0.03823879 .         .         
 ```

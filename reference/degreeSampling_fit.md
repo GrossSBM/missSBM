@@ -6,6 +6,8 @@ Class for fitting a degree sampling
 
 [`networkSampling`](https://grosssbm.github.io/missSBM/reference/networkSampling.md)
 -\>
+[`networkSampling_fit`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.md)
+-\>
 [`networkSamplingNodes_fit`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.md)
 -\> `degreeSampling_fit`
 
@@ -34,9 +36,9 @@ Class for fitting a degree sampling
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
-- [`networkSamplingNodes_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-reorder)
-- [`networkSamplingNodes_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-show)
-- [`networkSamplingNodes_fit$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/networkSamplingNodes_fit.html#method-vExpec_at)
+- [`networkSampling_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-reorder)
+- [`networkSampling_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-show)
+- [`networkSampling_fit$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-vExpec_at)
 
 ------------------------------------------------------------------------
 
@@ -67,8 +69,8 @@ constructor
 
 ### `degreeSampling_fit$update_parameters()`
 
-a method to update the estimation of the parameters. By default, nothing
-to do (corresponds to MAR sampling)
+update the parameters given the imputations: the expected degrees, the
+parameters zeta of the bound of Jaakkola and Jordan, then (a, b)
 
 #### Usage
 

@@ -35,6 +35,11 @@ and
 
   double, value of the entropy due to the clustering distribution
 
+- `vExpec`:
+
+  double: variational expectation of the complete log-likelihood of the
+  observed dyads and of the blocks
+
 - `loglik`:
 
   double: approximation of the log-likelihood (variational lower bound)
@@ -42,10 +47,10 @@ and
 
 - `ICL`:
 
-  double: value of the integrated classification log-likelihood: -2
-  times the variational expectation of the complete log-likelihood at
-  the MAP memberships (each node in its most probable block), plus the
-  penalty, as for
+  double: the ICL (Integrated Classification Likelihood) of the SBM
+  alone: -2 times the variational expectation of the complete
+  log-likelihood of the observed dyads at the MAP memberships (each node
+  in its most probable block), plus the penalty, as for
   [missSBM_fit](https://grosssbm.github.io/missSBM/reference/missSBM_fit.md)
 
 ## Methods
@@ -61,6 +66,8 @@ and
 - [`SimpleSBM_fit$get_state()`](#method-SimpleSBM_fit-get_state)
 
 - [`SimpleSBM_fit$set_state()`](#method-SimpleSBM_fit-set_state)
+
+- [`SimpleSBM_fit$polish_log_tau()`](#method-SimpleSBM_fit-polish_log_tau)
 
 - [`SimpleSBM_fit$clone()`](#method-SimpleSBM_fit-clone)
 
@@ -179,6 +186,34 @@ restore a state previously returned by `get_state()`
 - `state`:
 
   a state, as returned by `get_state()`
+
+------------------------------------------------------------------------
+
+### `SimpleSBM_fit$polish_log_tau()`
+
+for each node, the log-likelihood of the observed dyads it would
+contribute to each block if hard-assigned there (parameters held fixed),
+plus the term of the sampling: the gains of the node swaps of
+`missSBM_fit$polish()`
+
+#### Usage
+
+    SimpleSBM_fit$polish_log_tau(log_lambda = 0, ...)
+
+#### Arguments
+
+- `log_lambda`:
+
+  term of the sampling depending on the blocks, added as is (0 for the
+  designs whose sampling does not depend on them)
+
+- `...`:
+
+  additional arguments, not used
+
+#### Returns
+
+an N x Q matrix
 
 ------------------------------------------------------------------------
 

@@ -1,22 +1,13 @@
-# Virtual class used to define a family of networkSamplingDyads_fit
+# Virtual class of the fits of the sampling designs on the dyads
 
-Virtual class used to define a family of networkSamplingDyads_fit
+Virtual class of the fits of the sampling designs on the dyads
 
-## Super class
+## Super classes
 
 [`networkSampling`](https://grosssbm.github.io/missSBM/reference/networkSampling.md)
+-\>
+[`networkSampling_fit`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.md)
 -\> `networkSamplingDyads_fit`
-
-## Active bindings
-
-- `penalty`:
-
-  double, value of the penalty term in ICL
-
-- `log_lambda`:
-
-  double, term for adjusting the imputation step which depends on the
-  type of sampling
 
 ## Methods
 
@@ -24,27 +15,22 @@ Virtual class used to define a family of networkSamplingDyads_fit
 
 - [`networkSamplingDyads_fit$new()`](#method-networkSamplingDyads_fit-initialize)
 
-- [`networkSamplingDyads_fit$show()`](#method-networkSamplingDyads_fit-show)
-
-- [`networkSamplingDyads_fit$update_parameters()`](#method-networkSamplingDyads_fit-update_parameters)
-
-- [`networkSamplingDyads_fit$update_imputation()`](#method-networkSamplingDyads_fit-update_imputation)
-
-- [`networkSamplingDyads_fit$reorder()`](#method-networkSamplingDyads_fit-reorder)
-
-- [`networkSamplingDyads_fit$vExpec_at()`](#method-networkSamplingDyads_fit-vExpec_at)
-
 - [`networkSamplingDyads_fit$clone()`](#method-networkSamplingDyads_fit-clone)
 
 Inherited methods
 
 - [`networkSampling$print()`](https://grosssbm.github.io/missSBM/reference/networkSampling.html#method-print)
+- [`networkSampling_fit$reorder()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-reorder)
+- [`networkSampling_fit$show()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-show)
+- [`networkSampling_fit$update_imputation()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-update_imputation)
+- [`networkSampling_fit$update_parameters()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-update_parameters)
+- [`networkSampling_fit$vExpec_at()`](https://grosssbm.github.io/missSBM/reference/networkSampling_fit.html#method-vExpec_at)
 
 ------------------------------------------------------------------------
 
 ### `networkSamplingDyads_fit$new()`
 
-constructor for networkSampling_fit
+constructor
 
 #### Usage
 
@@ -61,85 +47,6 @@ constructor for networkSampling_fit
 
   a character for the name of sampling to fit on the
   partlyObservedNetwork
-
-------------------------------------------------------------------------
-
-### `networkSamplingDyads_fit$show()`
-
-show method
-
-#### Usage
-
-    networkSamplingDyads_fit$show()
-
-------------------------------------------------------------------------
-
-### `networkSamplingDyads_fit$update_parameters()`
-
-a method to update the estimation of the parameters. By default, nothing
-to do (corresponds to MAR sampling)
-
-#### Usage
-
-    networkSamplingDyads_fit$update_parameters(...)
-
-#### Arguments
-
-- `...`:
-
-  use for compatibility
-
-------------------------------------------------------------------------
-
-### `networkSamplingDyads_fit$update_imputation()`
-
-a method to update the imputation of the missing entries.
-
-#### Usage
-
-    networkSamplingDyads_fit$update_imputation(nu)
-
-#### Arguments
-
-- `nu`:
-
-  the matrix of (uncorrected) imputation for missing entries
-
-------------------------------------------------------------------------
-
-### `networkSamplingDyads_fit$reorder()`
-
-permute the parameters indexed by the blocks, after the blocks of the
-SBM were permuted. By default, nothing to do (no parameter indexed by
-the blocks)
-
-#### Usage
-
-    networkSamplingDyads_fit$reorder(o)
-
-#### Arguments
-
-- `o`:
-
-  the permutation applied to the blocks (new block k is former block
-  `o[k]`)
-
-------------------------------------------------------------------------
-
-### `networkSamplingDyads_fit$vExpec_at()`
-
-the variational expectation of the log-likelihood of the sampling at
-given memberships (used by the ICL, at the MAP memberships)
-
-#### Usage
-
-    networkSamplingDyads_fit$vExpec_at(Z)
-
-#### Arguments
-
-- `Z`:
-
-  an n x Q matrix of memberships
 
 ------------------------------------------------------------------------
 

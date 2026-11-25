@@ -42,17 +42,17 @@ observeNetwork(
 - covariates:
 
   An optional list with M entries (the M covariates). If the covariates
-  are node-centered, each entry of `covariates`. must be a size-N
-  vector; if the covariates are dyad-centered, each entry of
-  `covariates` must be N x N matrix.
+  are node-centered, each entry of `covariates` must be a size-N vector;
+  if the covariates are dyad-centered, each entry of `covariates` must
+  be N x N matrix.
 
 - similarity:
 
-  An optional function to compute similarities between node covariates.
-  Default is
+  an R x R -\> R function to compute similarities between node
+  covariates. Default is
   [`l1_similarity`](https://grosssbm.github.io/missSBM/reference/l1_similarity.md),
-  that is, -abs(x-y). Only relevant when the covariates are
-  node-centered.
+  that is, -abs(x - y). Only relevant when the covariates are
+  node-centered (i.e. `covariates` is a list of size-N vectors).
 
 - intercept:
 
@@ -69,52 +69,75 @@ additional NAs.
 Internal functions use `future_lapply`, so set your plan to
 `'multisession'` or `'multicore'` to use several cores/workers.
 
-The different sampling designs are split into two families in which we
-find dyad-centered and node-centered samplings. See
+The sampling designs are either Missing At Random (MAR) or Missing Not
+At Random (MNAR), and observe either dyads or nodes (all the dyads of an
+observed node). See
 [doi:10.1080/01621459.2018.1562934](https://doi.org/10.1080/01621459.2018.1562934)
-for a complete description.
+for a complete description. The parameters of each design:
 
-- Missing at Random (MAR)
+- Missing At Random (MAR)
 
-  - dyad parameter = p = Prob(Dyad(i,j) is observed)
+  - "dyad": p, the probability that a dyad is observed.
 
-  - node parameter = p = Prob(Node i is observed)
+  - "node": p, the probability that a node is observed.
 
-  - covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is
-    observed) = logistic(parameter' covarArray (i,j, .))
+  - "covar-dyad": \\\beta \in R^M\\, a dyad (i, j) being observed with
+    probability \\logistic(\beta' x\_{ij})\\, \\x\_{ij}\\ the covariates
+    of the dyad.
 
-  - covar-node": parameter = nu in R^M such that Prob(Node i is
-    observed) = logistic(parameter' covarMatrix (i,)
+  - "covar-node": \\\beta \in R^M\\, a node i being observed with
+    probability \\logistic(\beta' x_i)\\, \\x_i\\ the covariates of the
+    node.
 
-  - snowball": parameter = number of waves with Prob(Node i is observed
-    in the 1st wave)
+  - "snowball": (number of waves, proportion of the nodes observed in
+    the first wave); the nodes of each wave are the neighbors of the
+    nodes of the previous one. It is fitted as "node" sampling.
 
 - Missing Not At Random (MNAR)
 
-  - double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is
-    observed \| the dyad is equal to 0), p1 = Prob(Dyad (i,j) is
-    observed \| the dyad is equal to 1). (p0, p1) are identified through
+  - "double-standard": (p0, p1), the probabilities that a dyad is
+    observed if it is 0 and if it is 1. (p0, p1) are identified through
     the differences of connectivity between the blocks: with a single
     block, they are not identifiable, and the model is fitted with p0 =
     p1, i.e. as dyad sampling (with a warning).
 
-  - block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is
-    observed \| node i is in cluster q)
+  - "block-node": \\(p_1, \dots, p_Q)\\, \\p_q\\ the probability that a
+    node of block q is observed.
 
-  - block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge
-    (i,j) is observed \| node i is in cluster q and node j is in cluster
-    l)
+  - "block-dyad": the Q x Q matrix \\(p\_{ql})\\, \\p\_{ql}\\ the
+    probability that a dyad between blocks q and l is observed.
+
+  - "degree": (a, b), a node i being observed with probability
+    \\logistic(a + b D_i)\\, \\D_i\\ its degree.
+
+The number of blocks is selected by the ICL (Integrated Classification
+Likelihood, the smaller the better): -2 times the variational lower
+bound of the log-likelihood of the observed data (the observed dyads and
+the sampling matrix), at the MAP memberships, plus a penalty, in which
+the connectivity counts the observed dyads and the parameters of the
+sampling all the dyads (or all the nodes). The ICLs of different designs
+fitted to the same data can be compared to choose the design. When their
+samplings carry the same information (e.g. "block-node" and "degree" on
+an assortative network, where the degree depends on the block), the ICLs
+differ by a few units, about the penalty of one parameter (log N), and
+the partitions are the same: such a difference is no evidence for one
+design. Each number of blocks is fitted from a spectral clustering, then
+improved by a polish and by passes of exploration splitting and merging
+blocks (see
+[`missSBM_param`](https://grosssbm.github.io/missSBM/reference/missSBM_param.md));
+one pass is enough on small networks, two are advised for a reference
+analysis of a network with many blocks.
 
 ## Examples
 
 ``` r
 ## SBM parameters
 N <- 300 # number of nodes
-Q <- 3   # number of clusters
+Q <- 3   # number of blocks
 pi <- rep(1,Q)/Q     # block proportion
 theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 
-## simulate an unidrected binary SBM without covariate
+## simulate an undirected binary SBM without covariate
 sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 
 ## Sample network data

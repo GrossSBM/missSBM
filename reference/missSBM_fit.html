@@ -15,7 +15,7 @@ as S3 methods. See the documentation for  show(), print(), fitted(), predict(), 
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,7 +24,12 @@ as S3 methods. See the documentation for  show(), print(), fitted(), predict(), 
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -116,11 +121,11 @@ sampling matrix is fully observed</p></dd>
 
 
     <dt><code>ICL</code></dt>
-<dd><p>double: integrated classification likelihood, built on the observed data (the
-observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
-the variational lower bound of the log-likelihood of the observed data and of the blocks,
-evaluated at the MAP memberships (hard assignment of each node to its most probable
-block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+<dd><p>double: the ICL (Integrated Classification Likelihood, the smaller the better),
+built on the observed data (the observed dyads and the sampling matrix), the missing dyads
+being integrated out: -2 times the variational lower bound of the log-likelihood of the
+observed data and of the blocks, evaluated at the MAP memberships (hard assignment of each
+node to its most probable block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
 bound includes the expected log-likelihood and the entropy of the imputations.</p></dd>
 
 
@@ -187,7 +192,7 @@ bound includes the expected log-likelihood and the entropy of the imputations.</
 
 <p></p><hr><a id="method-missSBM_fit-split"></a><div class="section">
 <h3 id="misssbm-fit-split-"><code>missSBM_fit$split()</code><a class="anchor" aria-label="anchor" href="#misssbm-fit-split-"></a></h3>
-<p>clone of the current fit after splitting cluster <code>index</code> in two, via a
+<p>clone of the current fit after splitting block <code>index</code> in two, via a
 spectral bipartition of the sub-network it induces. Builds but does not fit the
 candidate (see <code>candidates_split()</code>).</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
@@ -195,7 +200,7 @@ candidate (see <code>candidates_split()</code>).</p><div class="section">
 </div><p></p><div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>index</code></dt>
-<dd><p>index (integer) of the cluster to split</p></dd>
+<dd><p>index (integer) of the block to split</p></dd>
 
       <dt><code>in_place</code></dt>
 <dd><p>replace <code>self</code>'s own fit (<code>TRUE</code>) or return a new object
@@ -219,7 +224,7 @@ be split (its induced sub-network has zero variance)</p>
 <p></p><hr><a id="method-missSBM_fit-candidates_split"></a><div class="section">
 <h3 id="misssbm-fit-candidates-split-"><code>missSBM_fit$candidates_split()</code><a class="anchor" aria-label="anchor" href="#misssbm-fit-candidates-split-"></a></h3>
 <p>generate and cheaply trial-fit candidates obtained by splitting each
-splittable cluster in two (see <code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>). A cluster is splittable if it has at
+splittable block in two (see <code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>). A block is splittable if it has at
 least 4 members and non-zero variance in its induced sub-network.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">candidates_split</span><span class="op">(</span></span>
@@ -238,14 +243,14 @@ least 4 members and non-zero variance in its induced sub-network.</p><div class=
 </dl><p></p></div>
 </div><p></p><div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
-<p>a list of trial-fitted <code>missSBM_fit</code> candidates (one per splittable cluster)</p>
+<p>a list of trial-fitted <code>missSBM_fit</code> candidates (one per splittable block)</p>
 </div>
 
 </div>
 
 <p></p><hr><a id="method-missSBM_fit-merge"></a><div class="section">
 <h3 id="misssbm-fit-merge-"><code>missSBM_fit$merge()</code><a class="anchor" aria-label="anchor" href="#misssbm-fit-merge-"></a></h3>
-<p>clone of the current fit after merging clusters <code>indices[1]</code> and
+<p>clone of the current fit after merging blocks <code>indices[1]</code> and
 <code>indices[2]</code> into one. Builds but does not fit the candidate (see
 <code>candidates_merge()</code>).</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
@@ -253,7 +258,7 @@ least 4 members and non-zero variance in its induced sub-network.</p><div class=
 </div><p></p><div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>indices</code></dt>
-<dd><p>indices (couple of integers) of the clusters to merge</p></dd>
+<dd><p>indices (couple of integers) of the blocks to merge</p></dd>
 
       <dt><code>in_place</code></dt>
 <dd><p>replace <code>self</code>'s own fit (<code>TRUE</code>) or return a new object
@@ -271,7 +276,7 @@ least 4 members and non-zero variance in its induced sub-network.</p><div class=
 <p></p><hr><a id="method-missSBM_fit-candidates_merge"></a><div class="section">
 <h3 id="misssbm-fit-candidates-merge-"><code>missSBM_fit$candidates_merge()</code><a class="anchor" aria-label="anchor" href="#misssbm-fit-candidates-merge-"></a></h3>
 <p>generate and cheaply trial-fit candidates obtained by merging pairs of
-clusters (see <code><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge()</a></code>). Beyond <code>max_candidates</code> pairs (quadratic in the
+blocks (see <code><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge()</a></code>). Beyond <code>max_candidates</code> pairs (quadratic in the
 number of blocks), only the most similar-connectivity pairs are tried.</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">missSBM_fit</span><span class="op">$</span><span class="fu">candidates_merge</span><span class="op">(</span></span>

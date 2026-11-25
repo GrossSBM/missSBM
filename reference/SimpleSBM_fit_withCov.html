@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">missSBM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +16,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/case_study_frenchblog.html">missSBM: a case study with the French political blogosphere</a></li>
+    <li><a class="dropdown-item" href="../articles/case_study_war_networks.html">missSBM: a case study with war networks</a></li>
+  </ul></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.18637/jss.v101.i12">JSS article</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -49,10 +54,6 @@
 <dd><p>the matrix of imputed values</p></dd>
 
 
-    <dt><code>vExpec</code></dt>
-<dd><p>double: variational approximation of the expectation complete log-likelihood</p></dd>
-
-
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -62,7 +63,6 @@
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 <p></p><ul><li><p><a href="#method-SimpleSBM_fit_withCov-update_parameters"><code>SimpleSBM_fit_withCov$update_parameters()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit_withCov-update_blocks"><code>SimpleSBM_fit_withCov$update_blocks()</code></a></p></li>
-<li><p><a href="#method-SimpleSBM_fit_withCov-polish_log_tau"><code>SimpleSBM_fit_withCov$polish_log_tau()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit_withCov-vExpec_at"><code>SimpleSBM_fit_withCov$vExpec_at()</code></a></p></li>
 <li><p><a href="#method-SimpleSBM_fit_withCov-clone"><code>SimpleSBM_fit_withCov$clone()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="sbm" data-topic="SBM" data-id="print"><a href="https://grosssbm.github.io/sbm/reference/SBM.html#method-print"><code>sbm::SBM$print()</code></a></span></li>
@@ -75,6 +75,7 @@
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="doVEM"><a href="SimpleSBM_fit.html#method-doVEM"><code>SimpleSBM_fit$doVEM()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="get_state"><a href="SimpleSBM_fit.html#method-get_state"><code>SimpleSBM_fit$get_state()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="initialize"><a href="SimpleSBM_fit.html#method-initialize"><code>SimpleSBM_fit$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="polish_log_tau"><a href="SimpleSBM_fit.html#method-polish_log_tau"><code>SimpleSBM_fit$polish_log_tau()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="reorder"><a href="SimpleSBM_fit.html#method-reorder"><code>SimpleSBM_fit$reorder()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="SimpleSBM_fit" data-id="set_state"><a href="SimpleSBM_fit.html#method-set_state"><code>SimpleSBM_fit$set_state()</code></a></span></li>
 </ul></details></p><hr><a id="method-SimpleSBM_fit_withCov-update_parameters"></a><div class="section">
@@ -111,38 +112,14 @@ handful of iterations – no external optimizer is required.</p><div class="sect
 
 </div>
 
-<p></p><hr><a id="method-SimpleSBM_fit_withCov-polish_log_tau"></a><div class="section">
-<h3 id="simplesbm-fit-withcov-polish-log-tau-"><code>SimpleSBM_fit_withCov$polish_log_tau()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-withcov-polish-log-tau-"></a></h3>
-<p>for each node, the complete-data log-likelihood it would contribute to
-each class if hard-assigned there (theta/beta/pi held fixed), used to decide node-swap
-moves in <code>missSBM_fit$polish()</code>.</p><div class="section">
-<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_withCov</span><span class="op">$</span><span class="fu">polish_log_tau</span><span class="op">(</span>log_lambda <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
-<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>log_lambda</code></dt>
-<dd><p>additional sampling-design-dependent term, added as-is</p></dd>
-
-      <dt><code>...</code></dt>
-<dd><p>additional arguments, not used</p></dd>
-
-
-</dl><p></p></div>
-</div><p></p><div class="section">
-<h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
-<p>an N x Q matrix</p>
-</div>
-
-</div>
-
 <p></p><hr><a id="method-SimpleSBM_fit_withCov-vExpec_at"></a><div class="section">
 <h3 id="simplesbm-fit-withcov-vexpec-at-"><code>SimpleSBM_fit_withCov$vExpec_at()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-withcov-vexpec-at-"></a></h3>
 <p>variational expectation of the log-likelihood of the observed dyads and of
 the blocks at given memberships (used by the ICL, at the MAP memberships)</p><div class="section">
-<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
+<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_withCov</span><span class="op">$</span><span class="fu">vExpec_at</span><span class="op">(</span><span class="va">Z</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>Z</code></dt>
 <dd><p>an n x Q matrix of memberships</p></dd>
 
@@ -155,10 +132,10 @@ the blocks at given memberships (used by the ICL, at the MAP memberships)</p><di
 <p></p><hr><a id="method-SimpleSBM_fit_withCov-clone"></a><div class="section">
 <h3 id="simplesbm-fit-withcov-clone-"><code>SimpleSBM_fit_withCov$clone()</code><a class="anchor" aria-label="anchor" href="#simplesbm-fit-withcov-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SimpleSBM_fit_withCov</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
