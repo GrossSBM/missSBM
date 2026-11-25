@@ -15,7 +15,7 @@ samplings <- list(
   list(name = "degree", psi = c(-.05, .01), class = "degreeSampling_fit", k = log(N))
 )
 
-test_that("Consistency of sampling fit for undirected bernoulli withou covariate", {
+test_that("Consistency of sampling fit for undirected bernoulli without covariate", {
 
   sampler_undirected_nocov$rNetwork(store = TRUE)
   Z0  <- sampler_undirected_nocov$indMemberships

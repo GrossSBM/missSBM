@@ -3,7 +3,7 @@ context("double-standard sampling: the missing dyads are integrated out given th
 ## A dyad is observed with probability p0 if it is 0, p1 if it is 1. Given the blocks, a dyad
 ## between blocks q and l is missing with probability m_ql = pi_ql (1 - p1) + (1 - pi_ql) (1 - p0):
 ## the missing dyads are integrated out, and the posterior probability that a missing dyad is an
-## edge is nu_ql = pi_ql (1 - p1) / m_ql (see #52).
+## edge is nu_ql = pi_ql (1 - p1) / m_ql.
 
 sim_ds <- function(seed, n = 200, psi = c(.2, .8), directed = FALSE) {
   set.seed(seed)

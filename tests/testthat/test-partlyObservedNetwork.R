@@ -297,7 +297,7 @@ test_that("partlyObservedNetwork: observed nodes, undirected, computed without R
   expect_equal(which(!pon$observedNodes), sort(c(miss, 3, 7)))
 })
 
-test_that("partlyObservedNetwork: sparse patterns built column by column match the dense masks (#49)", {
+test_that("partlyObservedNetwork: sparse patterns built column by column match the dense masks", {
   for (directed in c(FALSE, TRUE)) for (sparse in c(FALSE, TRUE)) {
     set.seed(5)
     n <- 50

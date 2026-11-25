@@ -93,7 +93,7 @@ for (directed in c(FALSE, TRUE)) {
 }
 
 ## ---------------------------------------------------------------------------------------------
-## The bound of Jaakkola and Jordan and the three stages of the VEM (#55)
+## The bound of Jaakkola and Jordan and the three stages of the VEM
 
 ## a small undirected network under degree sampling, its fit at the true clustering
 small_degree_fit <- function(seed, n = 60, maxIter = 100, threshold = 1e-6) {

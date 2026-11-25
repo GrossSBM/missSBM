@@ -114,7 +114,7 @@ test_that("polish() improves a deliberately noisy initial clustering", {
 test_that("self stays usable after polish() without an intervening doVEM() call", {
   ## regression test: imputedNetwork() and split()/candidates_split() must work right after
   ## polish() accepts a move (e.g. from explore()). They once broke on `sparseMatrix + NULL`
-  ## (numeric(0)); since #49, imputedNetwork computes the imputations on demand for this design
+  ## (numeric(0)); imputedNetwork computes the imputations on demand for this design
   ## (fit$imputations is NULL)
   net <- missSBM:::partlyObservedNetwork$new(sampler$networkData)
   noisy <- sampler$memberships
