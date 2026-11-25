@@ -201,7 +201,7 @@ R6::R6Class(classname = "SimpleSBM_fit_noCov",
     #' @field imputation the matrix of imputed values
     imputation = function(value) {
       if (is.null(private$imputation_cache))
-        ## at the missing dyads only, without the n x n matrix (#49)
+        ## at the missing dyads only, without the n x n matrix
         private$imputation_cache <- .bilinear_at_pattern(private$Z, log(private$theta$mean/(1-private$theta$mean)), private$S, .logistic)
       private$imputation_cache
     },
@@ -304,7 +304,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MNAR",
     ## over its missing dyads (i, j) of sum_l Z_jl log m_ql (both triangles if undirected)
     missing_term = function(Z, log_m) {
       if (identical(log_m, 0)) return(0) # no sampling term (the SBM alone)
-      as.matrix(private$S %*% Z %*% t(log_m) + Matrix::crossprod(private$S, Z) %*% log_m) # no transpose of S (#49)
+      as.matrix(private$S %*% Z %*% t(log_m) + Matrix::crossprod(private$S, Z) %*% log_m) # no transpose of S
     }
   ),
   public = list(

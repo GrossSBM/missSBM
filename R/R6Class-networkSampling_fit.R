@@ -362,16 +362,16 @@ blockDyadSampling_fit <-
     #' @field vExpec variational expectation of the sampling
     vExpec = function(value) {
       ## E_q[log p(R | Z)] = sum_{(i,j) observed} sum_{q,l} tau_iq tau_jl log(psi_ql) + same on the
-      ## missing dyads with log(1 - psi_ql): the expectation of the log, consistent with the update
-      ## of psi and with log_lambda (it was the log of the expectation, log(Z psi Z^T), before), and
-      ## computed through Z^T R Z and Z^T S Z, without any n x n matrix
+      ## missing dyads with log(1 - psi_ql): the expectation of the log (not the log of the
+      ## expectation), consistent with the update of psi and with log_lambda, computed through
+      ## Z^T R Z and Z^T S Z, without any n x n matrix
       Z <- private$Z
       sum(as.matrix(t(Z) %*% private$R %*% Z) * log(private$psi)) +
         sum(as.matrix(t(Z) %*% private$S %*% Z) * log(1 - private$psi))
     },
     #' @field log_lambda matrix, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {
-      ## crossprod(R, Z) = t(R) %*% Z without forming the transpose of R (#49)
+      ## crossprod(R, Z) = t(R) %*% Z without forming the transpose of R
       res <- private$R %*% private$Z %*% t(log(private$psi)) + private$S %*% private$Z %*% t(log(1 - private$psi)) +
         Matrix::crossprod(private$R, private$Z) %*% log(private$psi) + Matrix::crossprod(private$S, private$Z) %*% log(1 - private$psi)
       res
@@ -519,8 +519,7 @@ degreeSampling_fit <-
       ## for a missing dyad (i, j): C_ij + C_ji - psi[2], with
       ## C_ij = 2 h(ksi_i) (psi[1] psi[2] + psi[2]^2 (1 + D_i - nu_ij)), nu_ij taken as 0 when the
       ## dyad is observed (only possible for (j, i) in a directed network)
-      ## in one pass over the missing dyads, in C++ (#57): the R version allocated about ten
-      ## vectors of the size of the missing dyads at each call
+      ## in one pass over the missing dyads, in C++
       nu  <- PI
       nu@x <- degree_imputation_cpp(PI@x, private$miss_i, private$miss_j, private$nu_x,
                                     if (private$directed) private$miss_t else integer(0),

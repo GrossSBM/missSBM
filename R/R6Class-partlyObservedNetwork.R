@@ -144,7 +144,7 @@ partlyObservedNetwork <-
       } else {
         adjMat   <- private$Y
         ## without covariates, the observed values are 0 or 1: their mean and median follow from
-        ## the numbers of ones and of observed dyads, without indexing them (#49)
+        ## the numbers of ones and of observed dyads, without indexing them
         n1 <- length(private$Y@x); n_obs <- length(private$R@x)
         obs_vals <- NULL
       }

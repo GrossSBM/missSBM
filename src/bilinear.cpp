@@ -1,5 +1,5 @@
 // Values of Z M Z' at the structural nonzeros of a sparse pattern (dgCMatrix), without the
-// n x n product nor any (#nonzeros x Q) temporary (#49).
+// n x n product nor any (#nonzeros x Q) temporary.
 
 #include <Rcpp.h>
 using namespace Rcpp;

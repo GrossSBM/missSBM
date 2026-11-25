@@ -7,7 +7,7 @@ kmeans_missSBM <- function(coordinates, k)
     if (k == 1) {
       classif <- rep(1,n)
     } else {
-      ## farthest-point seeding, without the n x n matrix of distances (#49): the farthest pair,
+      ## farthest-point seeding, without the n x n matrix of distances: the farthest pair,
       ## then incrementally, for each point, its distance to the nearest already-chosen centroid
       ## (the same choices as with as.matrix(dist(coordinates)), ties included)
       coordinates <- as.matrix(coordinates)

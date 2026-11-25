@@ -70,7 +70,7 @@ IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroi
 }
 
 // -----------------------------------------------------------------
-// farthest-point seeding of kmeans_missSBM() without the n x n matrix of distances (#49)
+// farthest-point seeding of kmeans_missSBM() without the n x n matrix of distances
 
 // Euclidean distance between points i and j of Xt (d x n: one point per column, contiguous),
 // accumulated over the coordinates in the same order as stats::dist()

@@ -60,8 +60,7 @@ future_lapply_shuffled <- function(X, FUN, ...) {
 ## the patterns of the observed dyads (R), of the missing ones (S) and of the edges (Y) of a
 ## network given as a dense matrix with NA or as a dgCMatrix, as sparse matrices on the valid
 ## dyads (upper triangle if undirected), and whether it is directed, without any n x n temporary
-## (#49: the masks .row() / .col() / is.na() / != 0, the copy of as.numeric() and the transpose
-## of isSymmetric() peaked at about 5 times the input). A dense matrix is read in place in C++
+## (no mask, copy or transpose of the input). A dense matrix is read in place in C++
 ## (network_patterns_dense()); a sparse one (possibly with NA), column by column. Also checks that the
 ## observed values (diagonal included) are 0 or 1, both present.
 .network_patterns <- function(A) {
@@ -178,7 +177,7 @@ xlogx <- function(x) {
 
 ## values of Z %*% M %*% t(Z) at the structural nonzeros of a dgCMatrix pattern, packaged as a
 ## dgCMatrix with that same pattern, without forming the N x N matrix nor any (nnz x Q)
-## temporary (#49): O(nnz(pattern) * Q) time, the size of the result in memory (C++).
+## temporary: O(nnz(pattern) * Q) time, the size of the result in memory (C++).
 .bilinear_at_pattern <- function(Z, M, pattern, fun = identity) {
   Z <- as.matrix(Z); storage.mode(Z) <- "double"
   pattern@x <- fun(bilinear_at_pattern_cpp(t(Z %*% M), t(Z), pattern@i, pattern@p))

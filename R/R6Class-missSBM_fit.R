@@ -53,7 +53,7 @@ missSBM_fit <-
 
     ## the VEM of the degree sampling, whose missing dyads cannot be integrated out (the sampling
     ## of a node depends on a whole row of the network), in three stages, each stopping on the
-    ## objective it increases (#55):
+    ## objective it increases:
     ## 1. the SBM part on the observed dyads, stopping on its bound (the VEM of a MAR design);
     ## 2. the sampling part (imputations nu, (a, b), zeta) given the SBM part, to convergence;
     ## 3. the coordinate ascent of the bound of the model (factorized q(Z) q(Y^m), bound of
@@ -230,7 +230,7 @@ missSBM_fit <-
         control    = control,
         init_stop  = FALSE,
         ## no imputation of the missing dyads along the VEM: these designs integrate them out
-        ## given the blocks (#49; 'degree', which needs them, has its own VEM)
+        ## given the blocks ('degree', which needs them, has its own VEM)
         e_step     = function(fixPointIter) {
           for (i in seq.int(fixPointIter)) {
             # update the variational parameters for block memberships (a.k.a tau)
@@ -471,7 +471,7 @@ missSBM_fit <-
                                                  private$partlyObservedNet$samplingMatrixBar),
         ## the variational parameters of the sampling
         "degree" = private$imputations_degree(),
-        ## the imputations of the SBM, computed on demand (not along the VEM, #49)
+        ## the imputations of the SBM, computed on demand (not along the VEM)
         private$sampling$update_imputation(private$SBM$imputation))
       res <- private$SBM$networkData + nu
       if (!private$SBM$directed) res <- res + t(res)
