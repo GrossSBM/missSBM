@@ -199,22 +199,31 @@ estimateMissSBM <- function(adjacencyMatrix, vBlocks, sampling, covariates = lis
          "and see the documentation of missSBM_param().")
 
   ## Sanity checks
-  stopifnot(sampling %in% available_samplings)
-  stopifnot(is.numeric(vBlocks))
-  stopifnot(is.character(sampling))
-  stopifnot(is.list(covariates))
+  .check_adjacency(adjacencyMatrix)
+  nbNodes <- ncol(adjacencyMatrix)
+  .check_sampling(sampling, covariates)
+  .check_covariates(covariates, nbNodes)
+  .check_vBlocks(vBlocks, nbNodes)
+  if (!is.null(control$clusterInit)) {
+    if (is.numeric(control$clusterInit)) control$clusterInit <- list(control$clusterInit)
+    .check_clusterInit(control$clusterInit, length(vBlocks), nbNodes)
+  }
 
   ## explore_forward()/explore_backward()/estimate_chain() all assume vBlocks is strictly
   ## increasing (indices k, k +/- 1 refer to smaller/larger numbers of blocks)
-  vBlocks_sorted <- sort(unique(vBlocks))
-  if (length(vBlocks_sorted) != length(vBlocks) || any(vBlocks_sorted != vBlocks)) {
+  o <- order(vBlocks)
+  o <- o[!duplicated(vBlocks[o])]
+  if (length(o) != length(vBlocks) || any(o != seq_along(vBlocks))) {
     warning("vBlocks was not strictly increasing: sorted and de-duplicated.", call. = FALSE)
   }
-  vBlocks <- vBlocks_sorted
+  vBlocks <- vBlocks[o]
+  if (!is.null(control$clusterInit)) control$clusterInit <- control$clusterInit[o]
 
   ## If no covariate is provided, you cannot ask for using them
   if (length(covariates) == 0) control$useCov <- FALSE
-  if (control$useCov) stopifnot(sampling %in% available_samplings_covariates)
+  if (control$useCov && !(sampling %in% available_samplings_covariates))
+    stop("covariates in the SBM (useCov = TRUE) are only available with the samplings ",
+         paste0("'", available_samplings_covariates, "'", collapse = ", "), ".", call. = FALSE)
 
   if (sampling == "double-standard" && 1 %in% vBlocks)
     warning("With a single block, double-standard sampling is not identifiable: ",

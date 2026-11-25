@@ -53,15 +53,17 @@
 #' @export
 observeNetwork <- function(adjacencyMatrix, sampling, parameters, clusters = NULL, covariates = list(), similarity = l1_similarity, intercept = 0) {
 
+  ## Sanity checks
+  .check_adjacency(adjacencyMatrix)
+  .check_sampling(sampling, covariates)
+  .check_covariates(covariates, ncol(adjacencyMatrix))
+
   ## pre-existing NAs (other than the diagonal, conventionally NA/unused) are treated as absent
   ## edges before applying the requested sampling design
   if (anyNA(adjacencyMatrix[row(adjacencyMatrix) != col(adjacencyMatrix)])) {
     warning("adjacencyMatrix has off-diagonal NA entries: they are treated as absent edges (0) before sampling.")
   }
   adjacencyMatrix[is.na(adjacencyMatrix)] <- 0
-
-  ## Sanity check
-  stopifnot(sampling %in% available_samplings)
 
   ## general network parameters
   nbNodes   <- ncol(adjacencyMatrix)

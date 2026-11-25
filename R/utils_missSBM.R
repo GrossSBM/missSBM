@@ -2,6 +2,43 @@ available_samplings <- c("dyad", "covar-dyad", "node", "covar-node", "block-node
 
 available_samplings_covariates <- c("dyad", "covar-dyad", "node", "covar-node")
 
+## checks of the arguments of the user-facing functions, with informative messages
+.check_adjacency <- function(adjacencyMatrix) {
+  if (!(is.matrix(adjacencyMatrix) || inherits(adjacencyMatrix, "dgCMatrix")))
+    stop("adjacencyMatrix must be a matrix, possibly with NA (or a dgCMatrix).", call. = FALSE)
+  if (nrow(adjacencyMatrix) != ncol(adjacencyMatrix))
+    stop("adjacencyMatrix must be a square matrix.", call. = FALSE)
+}
+
+.check_sampling <- function(sampling, covariates) {
+  if (!is.character(sampling) || length(sampling) != 1 || !(sampling %in% available_samplings))
+    stop("sampling must be one of ", paste0("'", available_samplings, "'", collapse = ", "), ".", call. = FALSE)
+  if (sampling %in% c("covar-dyad", "covar-node") && length(covariates) == 0)
+    stop("sampling '", sampling, "' needs covariates.", call. = FALSE)
+}
+
+.check_covariates <- function(covariates, nbNodes) {
+  if (!is.list(covariates))
+    stop("covariates must be a list of size-N vectors (node-centered) or of N x N matrices (dyad-centered).", call. = FALSE)
+  ok <- vapply(covariates, function(x)
+    if (is.null(dim(x))) length(x) == nbNodes else length(dim(x)) == 2 && all(dim(x) == nbNodes), logical(1))
+  if (!all(ok))
+    stop("each covariate must be a vector of size N = ", nbNodes, " or an N x N matrix.", call. = FALSE)
+}
+
+.check_vBlocks <- function(vBlocks, nbNodes) {
+  if (!is.numeric(vBlocks) || length(vBlocks) == 0 || anyNA(vBlocks) ||
+      any(vBlocks != round(vBlocks)) || any(vBlocks < 1) || any(vBlocks >= nbNodes))
+    stop("vBlocks must be a vector of numbers of blocks: integers between 1 and N - 1 = ", nbNodes - 1, ".", call. = FALSE)
+}
+
+.check_clusterInit <- function(clusterInit, nbBlocks, nbNodes) {
+  if (!is.list(clusterInit) || length(clusterInit) != nbBlocks)
+    stop("clusterInit must be a list with one clustering per number of blocks in vBlocks.", call. = FALSE)
+  if (!all(vapply(clusterInit, function(cl) is.numeric(cl) && length(cl) == nbNodes, logical(1))))
+    stop("each clustering of clusterInit must be a vector of N = ", nbNodes, " block labels.", call. = FALSE)
+}
+
 #' L1-similarity
 #'
 #' Compute l1-similarity between two vectors
