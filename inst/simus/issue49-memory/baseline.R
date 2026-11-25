@@ -7,7 +7,14 @@
 args  <- commandArgs(TRUE)
 label <- args[1]
 cores <- if (length(args) > 1) as.integer(args[2]) else 8
-suppressMessages(devtools::load_all(quiet = TRUE))
+## the package: installed in SIMU_LIB if set (compiled with optimization, as for a user), from the
+## sources otherwise (devtools::load_all() compiles the C++ code without optimization: timings of
+## the C++ parts are then much slower than for an installed package)
+lib <- Sys.getenv("SIMU_LIB", "")
+if (nzchar(lib)) {
+  suppressMessages(library(missSBM, lib.loc = lib))
+  attach(asNamespace("missSBM"), name = "missSBM_internals", warn.conflicts = FALSE)
+} else suppressMessages(devtools::load_all(quiet = TRUE))
 future::plan("sequential")
 library(parallel)
 

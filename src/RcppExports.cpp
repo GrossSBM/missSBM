@@ -168,6 +168,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// degree_imputation_cpp
+NumericVector degree_imputation_cpp(const NumericVector& PI, const IntegerVector& i, const IntegerVector& j, const NumericVector& nu, const IntegerVector& transpose, const NumericVector& hk, const NumericVector& D, double a, double b, bool directed);
+RcppExport SEXP _missSBM_degree_imputation_cpp(SEXP PISEXP, SEXP iSEXP, SEXP jSEXP, SEXP nuSEXP, SEXP transposeSEXP, SEXP hkSEXP, SEXP DSEXP, SEXP aSEXP, SEXP bSEXP, SEXP directedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type PI(PISEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type j(jSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type transpose(transposeSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type hk(hkSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type D(DSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type directed(directedSEXP);
+    rcpp_result_gen = Rcpp::wrap(degree_imputation_cpp(PI, i, j, nu, transpose, hk, D, a, b, directed));
+    return rcpp_result_gen;
+END_RCPP
+}
 // roundProduct
 Rcpp::NumericMatrix roundProduct(Rcpp::List covariates_list, arma::vec beta);
 RcppExport SEXP _missSBM_roundProduct(SEXP covariates_listSEXP, SEXP betaSEXP) {
@@ -193,6 +213,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_farthest_pair_cpp", (DL_FUNC) &_missSBM_farthest_pair_cpp, 1},
     {"_missSBM_dist_to_row_cpp", (DL_FUNC) &_missSBM_dist_to_row_cpp, 2},
     {"_missSBM_network_patterns_dense", (DL_FUNC) &_missSBM_network_patterns_dense, 1},
+    {"_missSBM_degree_imputation_cpp", (DL_FUNC) &_missSBM_degree_imputation_cpp, 10},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {NULL, NULL, 0}
 };

@@ -107,6 +107,10 @@
   clustering +91 to 128 Mb instead of +526 to 672 Mb, and the fit of `node`, `block-dyad` and
   `double-standard` +4 to 110 Mb instead of +301 to 637 Mb; the whole estimation is about twice
   as fast. Same results (up to rounding for the imputations).
+- `degree` (#57): the update of its imputations runs in C++, in one pass over the missing dyads
+  (it allocated about ten vectors of their size at each of the many iterations of its sampling
+  part), and the E-step no longer transposes the sparse matrices. At n = 4000, its fit goes from
+  6.7 s to 4.2 s (installed package). Same results, up to rounding.
 
 ## Bug fixes
 
