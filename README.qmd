@@ -91,7 +91,7 @@ partial_fit <- estimateMissSBM(partial_network, vBlocks = 1:14, sampling = "bloc
 plot(partial_fit, "icl")
 ```
 
-The ICL can also compare sampling designs fitted to the same data. Ignoring the sampling (`"node"`, missing at random) gives a larger ICL than the design that generated the data:
+The ICL can also compare sampling designs fitted to the same data, here `"block-node"` and `"node"` (which ignores the sampling):
 
 ```{r fit-node, results = 'hide'}
 node_fit <- estimateMissSBM(partial_network, vBlocks = 1:14, sampling = "node",
@@ -101,6 +101,8 @@ node_fit <- estimateMissSBM(partial_network, vBlocks = 1:14, sampling = "node",
 ```{r compare-designs}
 c(node = min(node_fit$ICL), "block-node" = min(partial_fit$ICL))
 ```
+
+On this sampling, the ICL prefers the design that generated the data. Over repeated samplings, it does not always: `"block-node"` has one sampling parameter per block, more than this sampling needs, and a small difference of ICL is no evidence for one design (see `?estimateMissSBM`).
 
 Despite `r round(100 * mean(is.na(partial_network[upper.tri(partial_network)])))`% of the dyads missing under this informative design, **missSBM** recovers a block structure close to the one found on the fully observed network (Adjusted Rand Index, the closer to 1 the better):
 

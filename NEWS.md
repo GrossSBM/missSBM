@@ -45,6 +45,9 @@ missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
 
 ## Arguments and documentation
 
+- A new vignette, `vignette("case_study_frenchblog")`, follows a reduced form of the analysis of
+  the French political blogosphere of the JSS article with the current version.
+
 - `estimateMissSBM()` and `observeNetwork()` check their arguments with informative messages: a
   non-square matrix, a non-integer number of blocks or a `clusterInit` inconsistent with
   `vBlocks` were accepted silently. `clusterInit` is sorted with `vBlocks`.
