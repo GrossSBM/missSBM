@@ -68,3 +68,41 @@ IntegerVector kmeans_cpp(const arma::mat & coordinates, arma::mat& input_centroi
 
     return Rcpp::wrap(classif);
 }
+
+// -----------------------------------------------------------------
+// farthest-point seeding of kmeans_missSBM() without the n x n matrix of distances (#49)
+
+// Euclidean distance between rows i and j, accumulated as stats::dist() does
+static double row_dist(const NumericMatrix& X, int i, int j) {
+  double d = 0;
+  for (int k = 0; k < X.ncol(); ++k) {
+    const double dev = X(i, k) - X(j, k);
+    d += dev * dev;
+  }
+  return std::sqrt(d);
+}
+
+// the farthest pair of rows, as the first maximum of as.matrix(dist(X)) in column-major order:
+// (row, column), 1-based
+// [[Rcpp::export]]
+IntegerVector farthest_pair_cpp(const NumericMatrix& X) {
+  const int n = X.nrow();
+  double dmax = -1;
+  int imax = 0, jmax = 0;
+  // the first occurrence of the maximum in column-major order lies in the lower triangle
+  for (int j = 0; j < n; ++j)
+    for (int i = j + 1; i < n; ++i) {
+      const double d = row_dist(X, i, j);
+      if (d > dmax) { dmax = d; imax = i; jmax = j; }
+    }
+  return IntegerVector::create(imax + 1, jmax + 1);
+}
+
+// the distances of all the rows to row i (1-based), as a row of as.matrix(dist(X))
+// [[Rcpp::export]]
+NumericVector dist_to_row_cpp(const NumericMatrix& X, int i) {
+  const int n = X.nrow();
+  NumericVector d(n);
+  for (int j = 0; j < n; ++j) d[j] = (j == i - 1) ? 0 : row_dist(X, j, i - 1);
+  return d;
+}

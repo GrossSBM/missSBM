@@ -1,4 +1,3 @@
-#' @importFrom stats dist
 kmeans_missSBM <- function(coordinates, k)
 {
 
@@ -8,19 +7,18 @@ kmeans_missSBM <- function(coordinates, k)
     if (k == 1) {
       classif <- rep(1,n)
     } else {
-      dists <- as.matrix( dist( coordinates ))
-
-      choosen <- as.integer(which(dists==max(dists),arr.ind = TRUE)[1,c('row','col')])
-
-      ## farthest-point seeding: incrementally track, for each point, its distance to the
-      ## nearest already-chosen centroid, instead of recomputing the min over all chosen
-      ## rows at every iteration (turns an O(k^2 N) loop into O(k N))
-      min_dist <- pmin(dists[choosen[1], ], dists[choosen[2], ])
+      ## farthest-point seeding, without the n x n matrix of distances (#49): the farthest pair,
+      ## then incrementally, for each point, its distance to the nearest already-chosen centroid
+      ## (the same choices as with as.matrix(dist(coordinates)), ties included)
+      coordinates <- as.matrix(coordinates)
+      storage.mode(coordinates) <- "double"
+      choosen  <- farthest_pair_cpp(coordinates)
+      min_dist <- pmin(dist_to_row_cpp(coordinates, choosen[1]), dist_to_row_cpp(coordinates, choosen[2]))
       while(length(choosen)<k)
       {
         next_point <- which.max(min_dist)
         choosen <- c(choosen, next_point)
-        min_dist <- pmin(min_dist, dists[next_point, ])
+        min_dist <- pmin(min_dist, dist_to_row_cpp(coordinates, next_point))
       }
 
       centroids <- coordinates[choosen,]

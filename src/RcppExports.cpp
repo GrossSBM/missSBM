@@ -120,6 +120,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// farthest_pair_cpp
+IntegerVector farthest_pair_cpp(const NumericMatrix& X);
+RcppExport SEXP _missSBM_farthest_pair_cpp(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(farthest_pair_cpp(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_to_row_cpp
+NumericVector dist_to_row_cpp(const NumericMatrix& X, int i);
+RcppExport SEXP _missSBM_dist_to_row_cpp(SEXP XSEXP, SEXP iSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_to_row_cpp(X, i));
+    return rcpp_result_gen;
+END_RCPP
+}
 // network_patterns_dense
 List network_patterns_dense(SEXP A);
 RcppExport SEXP _missSBM_network_patterns_dense(SEXP ASEXP) {
@@ -152,6 +175,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
+    {"_missSBM_farthest_pair_cpp", (DL_FUNC) &_missSBM_farthest_pair_cpp, 1},
+    {"_missSBM_dist_to_row_cpp", (DL_FUNC) &_missSBM_dist_to_row_cpp, 2},
     {"_missSBM_network_patterns_dense", (DL_FUNC) &_missSBM_network_patterns_dense, 1},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {NULL, NULL, 0}

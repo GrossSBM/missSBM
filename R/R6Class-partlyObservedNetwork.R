@@ -100,7 +100,7 @@ partlyObservedNetwork <-
 
       A <- self$imputation(imputation)
       n <- ncol(A)
-      A <- A %*% t(A) ## get second order paths between node
+      A <- Matrix::tcrossprod(A) ## get second order paths between node (A A', without transposing A)
       ## handling lonely souls
       unconnected <- which(rowSums(abs(A)) == 0)
       connected   <- setdiff(1:n, unconnected)
@@ -132,10 +132,10 @@ partlyObservedNetwork <-
     #' @param type a character, the type of imputation. Either "median" or "average"
     imputation = function(type = c("median", "average", "zero")) {
       type   <- match.arg(type)
-      obs    <- which(private$R != 0)                # linear indices of observed dyads
-      obs_ij <- which(private$R != 0, arr.ind = TRUE) # same, as (row, col)
 
       if (!is.null(private$phi)) {
+        obs    <- which(private$R != 0)                # linear indices of observed dyads
+        obs_ij <- which(private$R != 0, arr.ind = TRUE) # same, as (row, col)
         y <- as.vector(private$Y[obs])
         X <- cbind(1, apply(private$phi, 3, function(x) x[obs]))
 ### TODO: make it work for other model than Bernoulli / family than binomial
@@ -143,16 +143,25 @@ partlyObservedNetwork <-
         adjMat   <- Matrix::sparseMatrix(obs_ij[,1], obs_ij[,2], x = obs_vals, dims = dim(private$Y))
       } else {
         adjMat   <- private$Y
-        obs_vals <- private$Y[obs]
+        ## without covariates, the observed values are 0 or 1: their mean and median follow from
+        ## the numbers of ones and of observed dyads, without indexing them (#49)
+        n1 <- length(private$Y@x); n_obs <- length(private$R@x)
+        obs_vals <- NULL
       }
 
       ## sparse-preserving addition (Matrix's [<- on a large index vector is slow); fill value
       ## computed from observed values only, not the still-zero missing entries
-      fill <- switch(type,
-        "average" = mean(obs_vals),
-        "median"  = median(obs_vals),
-        "zero"    = 0
-      )
+      fill <- if (is.null(obs_vals)) {
+        switch(type,
+          "average" = n1 / n_obs,
+          "median"  = if (2 * n1 > n_obs) 1 else if (2 * n1 < n_obs) 0 else .5,
+          "zero"    = 0)
+      } else {
+        switch(type,
+          "average" = mean(obs_vals),
+          "median"  = median(obs_vals),
+          "zero"    = 0)
+      }
       if (fill != 0) adjMat <- adjMat + private$S * fill
       if (!private$directed) adjMat <- adjMat + Matrix::t(adjMat)
 
