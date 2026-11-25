@@ -40,6 +40,13 @@ What the campaigns of 1.2.0 suggest:
   information (`block-node` and `degree` on an assortative network, where the degree depends on
   the block), the ICLs differ by a few units, about the penalty of one parameter (log n), and the
   partitions are the same (`model-selection`). Such a difference is no evidence for one design.
+- **`block-node` on the blog network** (`node-vs-block-node-blog.R`, 12 block-node samplings with
+  two rates, 0.2 for the small blocks and 0.8 for the others): the ICL prefers `node` in 9 cases
+  out of 12 (difference -13 on average, from -69 to +41), with close partitions (ARI with the
+  full network 0.68 for `node`, 0.70 for `block-node`) and imputations (AUC 0.83 and 0.84).
+  `block-node` has one sampling parameter per block, many more than the two rates of the
+  sampling, and the small blocks inform their rate little. A design with fewer rates than blocks
+  (rates shared between blocks) would fit such samplings better.
 - **Exploration**: one pass (`iterates = 1`, the default) leaves an ICL gap with `node` on the
   block-node samplings of the blog network (8 to 10 blocks), closed by 2 passes (`exploration`);
   on the simulated networks of `model-selection` (Q = 3, n = 200), a second pass changes no
