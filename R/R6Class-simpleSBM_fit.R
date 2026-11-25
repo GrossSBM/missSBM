@@ -300,7 +300,7 @@ R6::R6Class(classname = "SimpleSBM_fit_MNAR",
     ## over its missing dyads (i, j) of sum_l Z_jl log m_ql (both triangles if undirected)
     missing_term = function(Z, log_m) {
       if (identical(log_m, 0)) return(0) # no sampling term (the SBM alone)
-      as.matrix(private$S %*% Z %*% t(log_m) + Matrix::t(private$S) %*% Z %*% log_m)
+      as.matrix(private$S %*% Z %*% t(log_m) + Matrix::crossprod(private$S, Z) %*% log_m) # no transpose of S (#49)
     }
   ),
   public = list(
