@@ -53,6 +53,8 @@
 <div class="section level3">
 <h3 id="memory-and-speed-development-version">Memory and speed (<a href="https://github.com/grossSBM/missSBM/issues/49" class="external-link">#49</a>)<a class="anchor" aria-label="anchor" href="#memory-and-speed-development-version"></a></h3>
 <ul><li>No n x n matrix is formed any more for the designs without covariates: the imputations are not computed along the VEM of the designs that integrate the missing dyads out (they are computed on demand by <code>imputedNetwork</code>, at the final parameters), and at the missing dyads only, in C++; the network object is built by reading the dense input in C++, without masks; the initial clustering uses no matrix of distances. At n = 4000 (<code>inst/simus/issue49-memory/</code>), building the network object takes +95 Mb instead of 5 times the input (+574 to 715 Mb), the initial clustering +91 to 128 Mb instead of +526 to 672 Mb, and the fit of <code>node</code>, <code>block-dyad</code> and <code>double-standard</code> +4 to 110 Mb instead of +301 to 637 Mb; the whole estimation is about twice as fast. Same results (up to rounding for the imputations).</li>
+<li>
+<code>degree</code> (<a href="https://github.com/grossSBM/missSBM/issues/57" class="external-link">#57</a>): the update of its imputations runs in C++, in one pass over the missing dyads (it allocated about ten vectors of their size at each of the many iterations of its sampling part), and the E-step no longer transposes the sparse matrices. At n = 4000, its fit goes from 6.7 s to 4.2 s (installed package). Same results, up to rounding.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
