@@ -112,9 +112,10 @@ test_that("polish() improves a deliberately noisy initial clustering", {
 })
 
 test_that("self stays usable after polish() without an intervening doVEM() call", {
-  ## regression test: private$nu must stay a valid sparse matrix after polish() accepts a move,
-  ## not NULL -- `sparseMatrix + NULL` silently returns numeric(0), which broke imputedNetwork()
-  ## and any split()/candidates_split() call made right after polish() (e.g. from explore())
+  ## regression test: imputedNetwork() and split()/candidates_split() must work right after
+  ## polish() accepts a move (e.g. from explore()). They once broke on `sparseMatrix + NULL`
+  ## (numeric(0)); since #49, imputedNetwork computes the imputations on demand for this design
+  ## (fit$imputations is NULL)
   net <- missSBM:::partlyObservedNetwork$new(sampler$networkData)
   noisy <- sampler$memberships
   idx <- sample(N, floor(N * .3))
@@ -123,6 +124,7 @@ test_that("self stays usable after polish() without an intervening doVEM() call"
   fit$doVEM(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
   fit$polish(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
 
+  expect_null(fit$imputations)
   expect_equal(dim(fit$imputedNetwork), c(N, N))
   candidates <- fit$candidates_split(list(threshold = 1e-3, maxIter = 50, fixPointIter = 3, trace = FALSE))
   expect_true(all(sapply(candidates, function(m) is.finite(m$ICL))))

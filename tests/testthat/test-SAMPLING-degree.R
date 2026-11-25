@@ -111,7 +111,7 @@ test_that("degree: the sampling term is the bound of Jaakkola and Jordan, below 
   x <- small_degree_fit(11)
   samp <- x$fit$fittedSampling
   priv <- environment(samp$update_parameters)$private
-  nu <- environment(x$fit$doVEM)$private$nu
+  nu <- x$fit$imputations
   a <- samp$parameters[1]; b <- samp$parameters[2]
   ## the exact expectation of log p(R | D) under the imputations: the degree of node i is its
   ## observed degree plus a sum of independent Bernoulli(nu_ij) (Poisson-binomial), by convolution
@@ -146,7 +146,7 @@ test_that("degree: three stages, the bound J_zeta increases in stages 2 and 3, a
   }
   ## loglik is J_zeta, computed dyad by dyad
   SBM <- fit$fittedSBM; priv <- environment(SBM$get_state)$private
-  nu  <- environment(fit$doVEM)$private$nu
+  nu  <- fit$imputations
   tau <- SBM$probMemberships; theta <- SBM$connectParam$mean; alpha <- SBM$blockProp
   Yc  <- as.matrix(priv$Y + nu); Rc <- as.matrix(priv$R + priv$S)
   ll_sbm <- sum(tau %*% log(alpha))
@@ -163,7 +163,7 @@ test_that("degree: three stages, the bound J_zeta increases in stages 2 and 3, a
 test_that("degree: polish_log_tau() matches a brute-force delta of the completed network", {
   x <- small_degree_fit(13)
   SBM <- x$fit$fittedSBM; priv <- environment(SBM$get_state)$private
-  nu  <- environment(x$fit$doVEM)$private$nu
+  nu  <- x$fit$imputations
   Zhard <- SBM$indMemberships; cl0 <- SBM$memberships; Q <- ncol(Zhard)
   log_tau <- SBM$polish_log_tau(0, nu = nu)
   vLL <- function(Z) missSBM:::vLL_complete_sparse_bernoulli_nocovariate(priv$Y + nu, priv$R + priv$S, Z,

@@ -48,7 +48,7 @@ missSBM_fit <-
     adopt = function(candidate) {
       private$SBM      <- candidate$fittedSBM
       private$sampling <- candidate$fittedSampling
-      private$nu       <- candidate$.__enclos_env__$private$nu # NULL but for 'degree'
+      private$nu       <- candidate$imputations
     },
 
     ## the VEM of the degree sampling, whose missing dyads cannot be integrated out (the sampling
@@ -485,6 +485,11 @@ missSBM_fit <-
     occupiedBlocks = function(value) {length(unique(private$SBM$memberships))},
     #' @field degenerate \code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}
     degenerate     = function(value) {is_degenerate(self)},
+    #' @field imputations the variational parameters of the missing dyads (sparse matrix with
+    #'   their pattern): the imputations of 'degree', whose missing dyads cannot be integrated
+    #'   out; \code{NULL} for the other designs, which integrate them out given the blocks (see
+    #'   \code{imputedNetwork} for the imputed network of any design)
+    imputations = function(value) {private$nu},
     #' @field entropyImputed the entropy of the imputations of the missing dyads, variational
     #'   parameters of the 'degree' sampling only (0 for the other designs, whose missing dyads
     #'   are integrated out)

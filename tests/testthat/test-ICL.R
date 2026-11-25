@@ -52,7 +52,7 @@ test_that("degree: the ICL includes the expected log-likelihood and the entropy 
   fit <- suppressWarnings(estimateMissSBM(A_degree, 2, "degree", control = ctrl()))$bestModel
   expect_true(is.finite(fit$ICL))
   expect_gt(fit$entropyImputed, 0)
-  nu <- environment(fit$doVEM)$private$nu # the imputations of the sampling
+  nu <- fit$imputations # the imputations of the sampling
   Z  <- map_Z(fit)
   expect_equal(fit$ICL, -2 * (fit$fittedSampling$vExpec + fit$fittedSBM$vExpec_at(Z) +
                                 fit$fittedSBM$vExpec_imputed(nu, Z) + fit$entropyImputed) + fit$penalty)

@@ -41,6 +41,11 @@ or more classes (see \code{repair()})}
 
     \item{\code{degenerate}}{\code{TRUE} if \code{occupiedBlocks < fittedSBM$nbBlocks}}
 
+    \item{\code{imputations}}{the variational parameters of the missing dyads (sparse matrix with
+their pattern): the imputations of 'degree', whose missing dyads cannot be integrated
+out; \code{NULL} for the other designs, which integrate them out given the blocks (see
+\code{imputedNetwork} for the imputed network of any design)}
+
     \item{\code{entropyImputed}}{the entropy of the imputations of the missing dyads, variational
 parameters of the 'degree' sampling only (0 for the other designs, whose missing dyads
 are integrated out)}
