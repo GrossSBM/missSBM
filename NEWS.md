@@ -43,6 +43,14 @@ missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
   design).
 - `fittedSBM$nbObservedDyads`; a column `stage` in the `monitoring` of a `degree` fit.
 
+## Arguments and documentation
+
+- `estimateMissSBM()` and `observeNetwork()` check their arguments with informative messages: a
+  non-square matrix, a non-integer number of blocks or a `clusterInit` inconsistent with
+  `vBlocks` were accepted silently. `clusterInit` is sorted with `vBlocks`.
+- `?estimateMissSBM` describes the parameters of every design (`degree` was missing) and the
+  selection of the model and of the design by the ICL.
+
 ## Memory and speed
 
 - No n x n matrix is formed any more for the designs without covariates (network object,
@@ -66,6 +74,9 @@ missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
 - Covariates in the SBM: the M-step failed ("Newton solver failed to find an ascent direction")
   when two blocks had no edge between them, as the connectivity reached 0 exactly; it is now
   bounded away from 0 and 1, as without covariates.
+- `summary()` of a `missSBM_collection` failed; it prints the collection, as for a fit.
+- The `war` data sets were stored by an old version of igraph, which printed a conversion
+  message when used.
 - Tests: the reference tests against `sbm` run sequentially (`nbCores = 1`), avoiding a
   segfault on macOS (`r-oldrel-macos-arm64`).
 
