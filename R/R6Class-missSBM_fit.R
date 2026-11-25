@@ -543,6 +543,15 @@ is_missSBMfit <- function(Robject) {inherits(Robject, "missSBM_fit")}
 #' @return A matrix of estimated probabilities of connection
 #'
 #' @importFrom stats fitted
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' fitted(myModel)[1:5, 1:5]
 #' @export
 fitted.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -560,6 +569,16 @@ fitted.missSBM_fit <- function(object, ...) {
 #' their expected values, i.e. by there estimated probabilities of connection under the missing SBM.
 #'
 #' @importFrom stats predict
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' ## the observed dyads, and the imputations of the missing ones
+#' predict(myModel)[1:5, 1:5]
 #' @export
 predict.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -576,6 +595,15 @@ predict.missSBM_fit <- function(object, ...) {
 #' @return a basic printing output
 #'
 #' @method summary missSBM_fit
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' summary(myModel)
 #' @export
 summary.missSBM_fit <- function(object, ...) {
   stopifnot(is_missSBMfit(object))
@@ -595,6 +623,17 @@ summary.missSBM_fit <- function(object, ...) {
 #' @param type the type specifies the field to plot, either "imputed", "expected", "meso",  or "monitoring"
 #' @param dimLabels : a list of two characters specifying the labels of the nodes. Default to \code{list(row= 'node',col = 'node')})
 #' @param ... additional parameters for S3 compatibility. Not used
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' plot(myModel, "expected")
+#' plot(myModel, "imputed")
+#' plot(myModel, "monitoring")
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
@@ -622,6 +661,17 @@ plot.missSBM_fit <- function(x, type = c("imputed", "expected", "meso", "monitor
 #' @param ... additional parameters for S3 compatibility. Not used
 #' @return A vector or matrix of coefficients extracted from the missSBM_fit model.
 #'
+#' @examples
+#' ## a fit of the French political blogosphere, 30% of its dyads missing
+#' adjMatrix <- missSBM::frenchblog2007 %>%
+#'   igraph::as_adjacency_matrix(sparse = FALSE) %>%
+#'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+#' collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+#'   control = missSBM_param(trace = FALSE, iterates = 0))
+#' myModel <- collection$bestModel
+#' coef(myModel, "mixture")
+#' coef(myModel, "connectivity")
+#' coef(myModel, "sampling")
 #' @export
 coef.missSBM_fit <- function(object, type = c("mixture", "connectivity", "covariates", "sampling"), ...) {
   stopifnot(is_missSBMfit(object))

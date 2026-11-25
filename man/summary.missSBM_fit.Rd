@@ -17,3 +17,13 @@ a basic printing output
 \description{
 Summary method for a \code{\link{missSBM_fit}}
 }
+\examples{
+## a fit of the French political blogosphere, 30\% of its dyads missing
+adjMatrix <- missSBM::frenchblog2007 \%>\%
+  igraph::as_adjacency_matrix(sparse = FALSE) \%>\%
+  missSBM::observeNetwork(sampling = "dyad", parameters = 0.7)
+collection <- estimateMissSBM(adjMatrix, 1:3, "dyad",
+  control = missSBM_param(trace = FALSE, iterates = 0))
+myModel <- collection$bestModel
+summary(myModel)
+}
