@@ -8,17 +8,17 @@ library("parallel")
 library("future")
 
 options(future.fork.enable = TRUE) # so it can be used from Rstudio
-future::plan("multicore", workers = 10)
+future::plan("multisession", workers = 10)
 
 ## import blog data
 data("frenchblog2007", package = "missSBM")
 frenchblog2007 <- delete_vertices(frenchblog2007, which(degree(frenchblog2007) == 0))
 blog  <- as_adjacency_matrix(frenchblog2007)
-party <- vertex.attributes(frenchblog2007)$party
+party <- vertex_attr(frenchblog2007)$party
 party_num <- as.numeric(as.factor(party))
 
 ## SBM with no missing edge or node
-blocks <- 1:14 # the ICL selects 8 to 10 blocks, see below
+blocks <- 1:14 # the ICL selects 8 (partly observed) to 10 (fully observed) blocks
 sbm_full <- estimateMissSBM(blog, blocks, "node")
 plot(sbm_full)
 plot(sbm_full, "monitoring")
@@ -69,7 +69,8 @@ new_order <- match(c("far-right", "right", "liberal", "center-right", "analyst",
                      "center-left", "left", "green", "far-left"), levels(cl_party))
 cl_party <- factor(cl_party, levels = levels(cl_party)[new_order], ordered = TRUE)
 cl_block <- as.factor(myModel$fittedSBM$memberships)
-cl_block <- factor(cl_block, levels = levels(cl_block)[c(1, 6, 3, 4, 10, 5, 8, 2, 7, 9)],
+## blocks ordered by the mean position of their blogs on the political axis (whatever their number)
+cl_block <- factor(cl_block, levels = levels(cl_block)[order(tapply(as.numeric(cl_party), cl_block, mean))],
                    ordered = TRUE)
 d <- data.frame(party = cl_party, block = cl_block, Freq = 1)
 d %>% group_by(party, block) %>% summarise(n = sum(Freq)) -> alluv
