@@ -519,17 +519,13 @@ degreeSampling_fit <-
       ## for a missing dyad (i, j): C_ij + C_ji - psi[2], with
       ## C_ij = 2 h(ksi_i) (psi[1] psi[2] + psi[2]^2 (1 + D_i - nu_ij)), nu_ij taken as 0 when the
       ## dyad is observed (only possible for (j, i) in a directed network)
-      i <- private$miss_i; j <- private$miss_j
-      nu_ij <- private$nu_x
-      nu_ji <- if (private$directed) {
-        res <- private$nu_x[private$miss_t]; res[is.na(res)] <- 0; res
-      } else nu_ij
-      hk <- 2 * h(private$ksi)
-      a  <- private$psi[1] * private$psi[2]
-      b  <- private$psi[2]^2
-      eta <- hk[i] * (a + b * (1 + private$D[i] - nu_ij)) + hk[j] * (a + b * (1 + private$D[j] - nu_ji)) - private$psi[2]
+      ## in one pass over the missing dyads, in C++ (#57): the R version allocated about ten
+      ## vectors of the size of the missing dyads at each call
       nu  <- PI
-      nu@x <- check_boundaries(.logistic(.logit(PI@x) + eta))
+      nu@x <- degree_imputation_cpp(PI@x, private$miss_i, private$miss_j, private$nu_x,
+                                    if (private$directed) private$miss_t else integer(0),
+                                    2 * h(private$ksi), private$D, private$psi[1], private$psi[2],
+                                    private$directed)
       nu
     }
   ),

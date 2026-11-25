@@ -284,7 +284,7 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_nocovariate(
 
   // I use trans
   mat log_tau = Y * Z * trans(log(theta/(1 - theta))) + R * Z * trans(log(1 - theta)) +
-    Y.t() * Z * log(theta/(1 - theta)) +  R.t() * Z * log(1 - theta) ;
+    (Z.t() * Y).t() * log(theta/(1 - theta)) +  (Z.t() * R).t() * log(1 - theta) ; // Y'Z without transposing Y (#57)
   log_tau.each_row() += log(pi) ;
 
   if (rescale) {
@@ -314,7 +314,7 @@ Rcpp::NumericMatrix E_step_sparse_bernoulli_covariates(
   sp_mat::const_iterator Rij     = R.begin();
   sp_mat::const_iterator Rij_end = R.end();
 
-  arma::mat log_tau = Y * Z * Gamma.t() + Y.t() * Z * Gamma ;
+  arma::mat log_tau = Y * Z * Gamma.t() + (Z.t() * Y).t() * Gamma ; // Y'Z without transposing Y (#57)
   log_tau.each_row() += log(pi) ;
 
   for(; Rij != Rij_end; ++Rij) {

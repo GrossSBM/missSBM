@@ -45,6 +45,10 @@ network_patterns_dense <- function(A) {
     .Call(`_missSBM_network_patterns_dense`, A)
 }
 
+degree_imputation_cpp <- function(PI, i, j, nu, transpose, hk, D, a, b, directed) {
+    .Call(`_missSBM_degree_imputation_cpp`, PI, i, j, nu, transpose, hk, D, a, b, directed)
+}
+
 roundProduct <- function(covariates_list, beta) {
     .Call(`_missSBM_roundProduct`, covariates_list, beta)
 }

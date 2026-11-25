@@ -22,6 +22,22 @@ OPENBLAS_NUM_THREADS=1 Rscript inst/simus/issue49-memory/baseline.R <label> 8
 Rscript inst/simus/issue49-memory/summarize.R   # baseline.rds -> final.rds
 ```
 
+**Timings of the C++ code.** Without `SIMU_LIB`, the package is loaded with
+`devtools::load_all()`, which compiles the C++ code without optimization (`-O0`): the timings of
+#49 below compare two such builds. For the timings of an installed package, install it with
+`--preclean` (otherwise `R CMD INSTALL` reuses the unoptimized objects left in `src/`) and set
+`SIMU_LIB`:
+
+```sh
+R CMD INSTALL --preclean -l /path/to/lib .
+SIMU_LIB=/path/to/lib OPENBLAS_NUM_THREADS=1 Rscript inst/simus/issue49-memory/baseline.R <label> 4
+```
+
+`results/installed-master.rds` and `results/installed-branch.rds` compare master after #49 and the
+branch of #57 (degree), both installed: at n = 4000, the fit of `degree` goes from 6.7 s to 4.2 s,
+the other designs are unchanged (the fit of `node` takes 0.44 s installed, against 1.5 s with
+`load_all()`).
+
 `results/baseline.rds` is master before #49, `results/final.rds` the end of the branch; the
 intermediate files (`point6`, `point5`, `points23`) follow the commits. The table is in
 `results/summary.md`.

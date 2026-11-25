@@ -2,6 +2,9 @@
 // with NA, read in place, without any n x n temporary (#49): see .network_patterns() in R.
 
 #include <Rcpp.h>
+#include <algorithm>
+#include <cmath>
+#include <limits>
 using namespace Rcpp;
 
 template <int RTYPE>
@@ -69,4 +72,34 @@ List network_patterns_dense(SEXP A) {
     case LGLSXP:  return patterns_impl<LGLSXP>(LogicalMatrix(A));
     default: stop("the network must be a numeric, integer or logical matrix");
   }
+}
+
+// -----------------------------------------------------------------
+// The update of the imputations of the degree sampling, in one pass over the missing dyads
+// (#57): see degreeSampling_fit$update_imputation(). For a missing dyad (i, j),
+//   nu_ij = logistic(logit(PI_ij) + eta_ij), eta_ij = C_ij + C_ji - b,
+//   C_ij = hk_i (a b + b^2 (1 + D_i - nu_ij)),
+// with nu_ji the imputation of (j, i) in a directed network (0 when observed), bounded to
+// [eps, 1 - eps] as check_boundaries().
+
+// [[Rcpp::export]]
+NumericVector degree_imputation_cpp(const NumericVector& PI, const IntegerVector& i, const IntegerVector& j,
+                                    const NumericVector& nu, const IntegerVector& transpose,
+                                    const NumericVector& hk, const NumericVector& D,
+                                    double a, double b, bool directed) {
+  const double eps = std::numeric_limits<double>::epsilon();
+  const double ab = a * b, b2 = b * b;
+  const int m = PI.size();
+  NumericVector out(m);
+  for (int k = 0; k < m; ++k) {
+    const int ik = i[k] - 1, jk = j[k] - 1;
+    double nu_ji = nu[k];
+    if (directed) nu_ji = (transpose[k] == NA_INTEGER) ? 0 : nu[transpose[k] - 1];
+    const double eta = hk[ik] * (ab + b2 * (1 + D[ik] - nu[k])) + hk[jk] * (ab + b2 * (1 + D[jk] - nu_ji)) - b;
+    const double p = PI[k];
+    double x = 1 / (1 + std::exp(-(std::log(p / (1 - p)) + eta)));
+    if (std::isnan(x)) x = eps;
+    out[k] = std::min(std::max(x, eps), 1 - eps);
+  }
+  return out;
 }
