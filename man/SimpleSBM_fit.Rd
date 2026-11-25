@@ -28,9 +28,10 @@ observed dyads and of the blocks}
 
     \item{\code{loglik}}{double: approximation of the log-likelihood (variational lower bound) reached}
 
-    \item{\code{ICL}}{double: value of the integrated classification log-likelihood: -2 times the
-variational expectation of the complete log-likelihood at the MAP memberships (each node
-in its most probable block), plus the penalty, as for \link{missSBM_fit}}
+    \item{\code{ICL}}{double: the ICL (Integrated Classification Likelihood) of the SBM alone: -2 times
+the variational expectation of the complete log-likelihood of the observed dyads at the
+MAP memberships (each node in its most probable block), plus the penalty, as for
+\link{missSBM_fit}}
   }
   \if{html}{\out{</div>}}
 }

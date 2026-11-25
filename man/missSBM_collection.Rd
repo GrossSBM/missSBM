@@ -31,7 +31,8 @@ class(collection)
   \describe{
     \item{\code{models}}{a list of models}
 
-    \item{\code{ICL}}{the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)}
+    \item{\code{ICL}}{the vector of the ICL (Integrated Classification Likelihood, the smaller the better)
+of the models of the collection, see \link{missSBM_fit}}
 
     \item{\code{bestModel}}{the best model according to the ICL, restricted to models without
 collapsed classes when at least one such model is available (see \code{$degenerate})}

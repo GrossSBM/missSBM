@@ -7,7 +7,7 @@
 Class for fitting a degree sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{networkSampling_fit} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{degreeSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampling_fit]{networkSampling_fit}} -> \code{\link[missSBM:networkSamplingNodes_fit]{networkSamplingNodes_fit}} -> \code{degreeSampling_fit}
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -31,9 +31,9 @@ and \eqn{\log(1 - \sigma(x)) = \log \sigma(x) - x}, in expectation over the impu
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
-  <li><code>networkSampling_fit$reorder()</code></li>
-  <li><code>networkSampling_fit$show()</code></li>
-  <li><code>networkSampling_fit$vExpec_at()</code></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="reorder"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-reorder'><code>networkSampling_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="show"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-show'><code>networkSampling_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="vExpec_at"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-vExpec_at'><code>networkSampling_fit$vExpec_at()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}
@@ -61,7 +61,8 @@ and \eqn{\log(1 - \sigma(x)) = \log \sigma(x) - x}, in expectation over the impu
 \if{html}{\out{<a id="method-degreeSampling_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-degreeSampling_fit-update_parameters}{}}}
 \subsection{\code{degreeSampling_fit$update_parameters()}}{
-  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  update the parameters given the imputations: the expected degrees, the
+parameters zeta of the bound of Jaakkola and Jordan, then (a, b)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{degreeSampling_fit$update_parameters(nu, ...)}

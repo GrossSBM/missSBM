@@ -312,7 +312,8 @@ missSBM_collection <-
   active = list(
     #' @field models a list of models
     models = function(value) (private$missSBM_fit),
-    #' @field ICL the vector of Integrated Classification Criterion (ICL) associated to the models in the collection (the smaller, the better)
+    #' @field ICL the vector of the ICL (Integrated Classification Likelihood, the smaller the better)
+    #'   of the models of the collection, see [missSBM_fit]
     ICL = function(value) {setNames(sapply(self$models, function(model) model$ICL), names(self$vBlocks))},
     #' @field bestModel the best model according to the ICL, restricted to models without
     #'   collapsed classes when at least one such model is available (see \code{$degenerate})

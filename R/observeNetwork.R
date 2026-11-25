@@ -8,12 +8,9 @@
 #' @param sampling The sampling design used to observe the adjacency matrix, see details.
 #' @param parameters The sampling parameters (adapted to each sampling, see details).
 #' @param clusters An optional clustering membership vector of the nodes. Only necessary for block samplings.
-#' @param covariates An optional list with M entries (the M covariates). If the covariates are node-centered,
-#'     each entry of \code{covariates}. must be a size-N vector;  if the covariates are dyad-centered, each entry
-#'     of \code{covariates} must be N x N matrix.
-#' @param similarity An optional function to compute similarities between node covariates. Default is
-#' [`l1_similarity`], that is, -abs(x-y). Only relevant when the covariates are node-centered.
 #' @param intercept An optional intercept term to be added in case of the presence of covariates. Default is 0.
+#' @inheritParams estimateMissSBM
+#' @inheritParams missSBM_param
 #'
 #' @inherit estimateMissSBM details
 #'
@@ -22,11 +19,11 @@
 #' @examples
 #' ## SBM parameters
 #' N <- 300 # number of nodes
-#' Q <- 3   # number of clusters
+#' Q <- 3   # number of blocks
 #' pi <- rep(1,Q)/Q     # block proportion
 #' theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 #'
-#' ## simulate an unidrected binary SBM without covariate
+#' ## simulate an undirected binary SBM without covariate
 #' sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 #'
 #' ## Sample network data

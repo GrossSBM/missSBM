@@ -141,9 +141,10 @@ R6::R6Class(classname = "SimpleSBM_fit",
     vExpec = function(value) {self$vExpec_at(private$Z)},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik = function(value) {self$vExpec + self$entropy},
-    #' @field ICL double: value of the integrated classification log-likelihood: -2 times the
-    #'   variational expectation of the complete log-likelihood at the MAP memberships (each node
-    #'   in its most probable block), plus the penalty, as for [missSBM_fit]
+    #' @field ICL double: the ICL (Integrated Classification Likelihood) of the SBM alone: -2 times
+    #'   the variational expectation of the complete log-likelihood of the observed dyads at the
+    #'   MAP memberships (each node in its most probable block), plus the penalty, as for
+    #'   [missSBM_fit]
     ICL    = function(value) {-2 * self$vExpec_at(.map_indicator(private$Z)) + self$penalty}
   )
 )

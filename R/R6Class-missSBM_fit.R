@@ -243,7 +243,7 @@ missSBM_fit <-
             # update the parameters of the SBM (a.k.a pi and theta), on the observed dyads
             private$SBM$update_parameters()
             # update the parameters of network sampling process (a.k.a psi)
-            private$sampling$update_parameters(NULL, private$SBM$probMemberships)
+            private$sampling$update_parameters(Z = private$SBM$probMemberships)
           }
         },
         get_loglik = function() self$loglik,
@@ -256,10 +256,10 @@ missSBM_fit <-
 
       invisible(private$optStatus)
     },
-    #' @description clone of the current fit after splitting cluster \code{index} in two, via a
+    #' @description clone of the current fit after splitting block \code{index} in two, via a
     #'   spectral bipartition of the sub-network it induces. Builds but does not fit the
     #'   candidate (see \code{candidates_split()}).
-    #' @param index index (integer) of the cluster to split
+    #' @param index index (integer) of the block to split
     #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
     #'   (\code{FALSE}, the default)?
     #' @param base_net optional precomputed network to bipartition (as built internally at the
@@ -296,11 +296,11 @@ missSBM_fit <-
       private$build_candidate(candidate, in_place)
     },
     #' @description generate and cheaply trial-fit candidates obtained by splitting each
-    #'   splittable cluster in two (see \code{split()}). A cluster is splittable if it has at
+    #'   splittable block in two (see \code{split()}). A block is splittable if it has at
     #'   least 4 members and non-zero variance in its induced sub-network.
     #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
     #' @param trial_niter `r .rd_trial_niter`
-    #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable cluster)
+    #' @return a list of trial-fitted [`missSBM_fit`] candidates (one per splittable block)
     candidates_split = function(control = list(threshold = 1e-2, maxIter = 100, fixPointIter = 3, trace = TRUE), trial_niter = 2) {
       base_net <- self$imputedNetwork
       if (private$SBM$directed) base_net <- base_net %*% t(base_net)
@@ -315,10 +315,10 @@ missSBM_fit <-
       private$trial_fit_candidates(cl_splitable, function(k_) self$split(k_, base_net = base_net),
                                     control, trial_niter)
     },
-    #' @description clone of the current fit after merging clusters \code{indices[1]} and
+    #' @description clone of the current fit after merging blocks \code{indices[1]} and
     #'   \code{indices[2]} into one. Builds but does not fit the candidate (see
     #'   \code{candidates_merge()}).
-    #' @param indices indices (couple of integers) of the clusters to merge
+    #' @param indices indices (couple of integers) of the blocks to merge
     #' @param in_place replace \code{self}'s own fit (\code{TRUE}) or return a new object
     #'   (\code{FALSE}, the default)?
     #' @return a new [`missSBM_fit`] with one fewer block
@@ -335,7 +335,7 @@ missSBM_fit <-
       private$build_candidate(candidate, in_place)
     },
     #' @description generate and cheaply trial-fit candidates obtained by merging pairs of
-    #'   clusters (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
+    #'   blocks (see \code{merge()}). Beyond \code{max_candidates} pairs (quadratic in the
     #'   number of blocks), only the most similar-connectivity pairs are tried.
     #' @param control `r .rd_control_vem`; \code{maxIter} is overridden by \code{trial_niter}
     #' @param max_candidates cap on the number of pairs tried. Default is 30.
@@ -511,11 +511,11 @@ missSBM_fit <-
     penalty = function(value) {private$SBM$penalty + private$sampling$penalty},
     #' @field loglik double: approximation of the log-likelihood (variational lower bound) reached
     loglik  = function(value) {self$vExpec + self$entropy},
-    #' @field ICL double: integrated classification likelihood, built on the observed data (the
-    #'   observed dyads and the sampling matrix), the missing dyads being integrated out: -2 times
-    #'   the variational lower bound of the log-likelihood of the observed data and of the blocks,
-    #'   evaluated at the MAP memberships (hard assignment of each node to its most probable
-    #'   block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
+    #' @field ICL double: the ICL (Integrated Classification Likelihood, the smaller the better),
+    #'   built on the observed data (the observed dyads and the sampling matrix), the missing dyads
+    #'   being integrated out: -2 times the variational lower bound of the log-likelihood of the
+    #'   observed data and of the blocks, evaluated at the MAP memberships (hard assignment of each
+    #'   node to its most probable block), plus the penalty. For 'degree', whose missing dyads cannot be integrated out, the
     #'   bound includes the expected log-likelihood and the entropy of the imputations.
     ICL    = function(value) {
       Z <- .map_indicator(private$SBM$probMemberships)
@@ -551,7 +551,7 @@ fitted.missSBM_fit <- function(object, ...) {
 
 #' Prediction of a [`missSBM_fit`] (i.e. network with imputed missing dyads)
 #'
-#' @name predicted.missSBM_fit
+#' @name predict.missSBM_fit
 #'
 #' @param object an R6 object with class [`missSBM_fit`]
 #' @param ... additional parameters for S3 compatibility.

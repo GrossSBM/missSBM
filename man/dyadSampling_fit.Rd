@@ -7,7 +7,7 @@
 Class for fitting a dyad sampling
 }
 \section{Super classes}{
-\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{networkSampling_fit} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{dyadSampling_fit}
+\code{\link[missSBM:networkSampling]{networkSampling}} -> \code{\link[missSBM:networkSampling_fit]{networkSampling_fit}} -> \code{\link[missSBM:networkSamplingDyads_fit]{networkSamplingDyads_fit}} -> \code{dyadSampling_fit}
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -26,11 +26,11 @@ Class for fitting a dyad sampling
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling" data-id="print"><a href='../../missSBM/html/networkSampling.html#method-networkSampling-print'><code>networkSampling$print()</code></a></span></li>
-  <li><code>networkSampling_fit$reorder()</code></li>
-  <li><code>networkSampling_fit$show()</code></li>
-  <li><code>networkSampling_fit$update_imputation()</code></li>
-  <li><code>networkSampling_fit$update_parameters()</code></li>
-  <li><code>networkSampling_fit$vExpec_at()</code></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="reorder"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-reorder'><code>networkSampling_fit$reorder()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="show"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-show'><code>networkSampling_fit$show()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="update_imputation"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-update_imputation'><code>networkSampling_fit$update_imputation()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="update_parameters"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-update_parameters'><code>networkSampling_fit$update_parameters()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="missSBM" data-topic="networkSampling_fit" data-id="vExpec_at"><a href='../../missSBM/html/networkSampling_fit.html#method-networkSampling_fit-vExpec_at'><code>networkSampling_fit$vExpec_at()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

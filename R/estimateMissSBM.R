@@ -2,10 +2,10 @@
 #'
 #' Helper to define the list of parameters that controls [estimateMissSBM()]. All arguments have defaults.
 #'
-#' @param threshold V-EM algorithm stops when an optimization step changes the objective function
+#' @param threshold the VEM stops when an optimization step changes the objective function
 #'   or the parameters by less than threshold. Default is 1e-2.
-#' @param maxIter V-EM algorithm stops when the number of iteration exceeds maxIter. Default is 50.
-#' @param fixPointIter number of fix-point iterations in the V-E step. Default is 3.
+#' @param maxIter the VEM stops when the number of iterations exceeds maxIter. Default is 50.
+#' @param fixPointIter number of fixed-point iterations in the variational E step. Default is 3.
 #' @param imputation character, the imputation strategy used to build the initial clustering (see
 #'   \code{\link{partlyObservedNetwork}}'s \code{imputation()}). Either "median" (default),
 #'   "average" or "zero".
@@ -22,11 +22,12 @@
 #'   model's own number of blocks? Cheap relative to exploration (\code{iterates}), since it does
 #'   not search across numbers of blocks. Default is TRUE.
 #' @param iterates integer, the number of forward/backward exploration passes searching for a
-#'   better number of blocks by splitting/merging clusters (unlike \code{polish}, which only
+#'   better number of blocks by splitting/merging blocks (unlike \code{polish}, which only
 #'   refines each model at its own number of blocks): more expensive than \code{polish}.
 #'   \code{0} disables exploration entirely (only the initial VEM fit, plus \code{polish} if
-#'   enabled, is returned). Default is 1.
-#' @param maxMergeCandidates integer, caps the number of cluster-pair merge candidates tried
+#'   enabled, is returned). Default is 1, enough on small networks; 2 are advised for a reference
+#'   analysis of a network with many blocks.
+#' @param maxMergeCandidates integer, caps the number of block-pair merge candidates tried
 #'   during backward exploration (quadratic in the number of blocks otherwise). Beyond this cap,
 #'   only the pairs with the most similar fitted connectivity profiles are tried, since merging
 #'   two blocks with very different connectivity is rarely competitive anyway. Default is 30.
@@ -101,9 +102,9 @@ missSBM_param <- function(
 #' @param adjacencyMatrix The N x N adjacency matrix of the network data. If \code{adjacencyMatrix} is symmetric,
 #' we assume an undirected network with no loop; otherwise the network is assumed to be directed.
 #' @param vBlocks The vector of number of blocks considered in the collection.
-#' @param sampling The model used to described the process that originates the missing data:
-#' MAR designs ("dyad", "node","covar-dyad","covar-node","snowball") and MNAR designs
-#' ("double-standard", "block-dyad", "block-node" , "degree") are available. See details.
+#' @param sampling The sampling design, the model of the process that originates the missing data:
+#' MAR designs ("dyad", "node", "covar-dyad", "covar-node", "snowball") and MNAR designs
+#' ("double-standard", "block-dyad", "block-node", "degree") are available. See details.
 #' @param covariates An optional list with M entries (the M covariates). If the covariates are node-centered, each entry of \code{covariates}
 #' must be a size-N vector;  if the covariates are dyad-centered, each entry of \code{covariates} must be N x N matrix.
 #' @param control a list-like structure for controlling advanced features, with default generated
@@ -114,28 +115,49 @@ missSBM_param <- function(
 #' @details Internal functions use \code{future_lapply}, so set your plan to \code{'multisession'} or
 #' \code{'multicore'} to use several cores/workers.
 #'
-#' @details The different sampling designs are split into two families in which we find dyad-centered and
-#' node-centered samplings. See \doi{10.1080/01621459.2018.1562934} for a complete description.
-#' * Missing at Random (MAR)
-#'    * dyad parameter = p = Prob(Dyad(i,j) is observed)
-#'    * node parameter = p = Prob(Node i is observed)
-#'    * covar-dyad": parameter = beta in R^M, such that Prob(Dyad (i,j) is observed) = logistic(parameter' covarArray (i,j, .))
-#'    * covar-node": parameter = nu in R^M such that Prob(Node i is observed)  = logistic(parameter' covarMatrix (i,)
-#'    * snowball": parameter = number of waves with Prob(Node i is observed in the 1st wave)
+#' @details The sampling designs are either Missing At Random (MAR) or Missing Not At Random
+#' (MNAR), and observe either dyads or nodes (all the dyads of an observed node). See
+#' \doi{10.1080/01621459.2018.1562934} for a complete description. The parameters of each design:
+#' * Missing At Random (MAR)
+#'    * "dyad": p, the probability that a dyad is observed.
+#'    * "node": p, the probability that a node is observed.
+#'    * "covar-dyad": \eqn{\beta \in R^M}, a dyad (i, j) being observed with probability
+#'      \eqn{logistic(\beta' x_{ij})}, \eqn{x_{ij}} the covariates of the dyad.
+#'    * "covar-node": \eqn{\beta \in R^M}, a node i being observed with probability
+#'      \eqn{logistic(\beta' x_i)}, \eqn{x_i} the covariates of the node.
+#'    * "snowball": (number of waves, proportion of the nodes observed in the first wave); the
+#'      nodes of each wave are the neighbors of the nodes of the previous one. It is fitted as
+#'      "node" sampling.
 #' * Missing Not At Random (MNAR)
-#'    * double-standard parameter = (p0,p1) with p0 = Prob(Dyad (i,j) is observed | the dyad is equal to 0), p1 = Prob(Dyad (i,j) is observed | the dyad is equal to 1).
-#'      (p0, p1) are identified through the differences of connectivity between the blocks: with a
-#'      single block, they are not identifiable, and the model is fitted with p0 = p1, i.e. as dyad
-#'      sampling (with a warning).
-#'    * block-node parameter = c(p(1),...,p(Q)) and p(q) = Prob(Node i is observed | node i is in cluster q)
-#'    * block-dyad parameter = c(p(1,1),...,p(Q,Q)) and p(q,l) = Prob(Edge (i,j) is observed | node i is in cluster q and node j is in cluster l)
-#     * degree parameter = c(a,b) and logit(a+b*degree(i)) = Prob(Node i is observed | Degree(i))
+#'    * "double-standard": (p0, p1), the probabilities that a dyad is observed if it is 0 and if it
+#'      is 1. (p0, p1) are identified through the differences of connectivity between the blocks:
+#'      with a single block, they are not identifiable, and the model is fitted with p0 = p1, i.e.
+#'      as dyad sampling (with a warning).
+#'    * "block-node": \eqn{(p_1, \dots, p_Q)}, \eqn{p_q} the probability that a node of block q is
+#'      observed.
+#'    * "block-dyad": the Q x Q matrix \eqn{(p_{ql})}, \eqn{p_{ql}} the probability that a dyad
+#'      between blocks q and l is observed.
+#'    * "degree": (a, b), a node i being observed with probability \eqn{logistic(a + b D_i)},
+#'      \eqn{D_i} its degree.
+#'
+#' @details The number of blocks is selected by the ICL (Integrated Classification Likelihood,
+#' the smaller the better): -2 times the variational lower bound of the log-likelihood of the
+#' observed data (the observed dyads and the sampling matrix), at the MAP memberships, plus a
+#' penalty, in which the connectivity counts the observed dyads and the parameters of the sampling
+#' all the dyads (or all the nodes). The ICLs of different designs fitted to the same data can be
+#' compared to choose the design. When their samplings carry the same information (e.g.
+#' "block-node" and "degree" on an assortative network, where the degree depends on the block),
+#' the ICLs differ by a few units, about the penalty of one parameter (log N), and the partitions
+#' are the same: such a difference is no evidence for one design. Each number of blocks is fitted
+#' from a spectral clustering, then improved by a polish and by passes of exploration splitting
+#' and merging blocks (see \code{\link{missSBM_param}}); one pass is enough on small networks,
+#' two are advised for a reference analysis of a network with many blocks.
 #'
 #' @seealso \code{\link{observeNetwork}}, \code{\link{missSBM_collection}}, \code{\link{missSBM_fit}} and \code{\link{missSBM_param}}.
 #' @examples
 #' ## SBM parameters
 #' N <- 100 # number of nodes
-#' Q <- 3   # number of clusters
+#' Q <- 3   # number of blocks
 #' pi <- rep(1,Q)/Q     # block proportion
 #' theta <- list(mean = diag(.45,Q) + .05 ) # connectivity matrix
 #'
@@ -143,7 +165,7 @@ missSBM_param <- function(
 #' samplingParameters <- .75 # the sampling rate
 #' sampling  <- "dyad"      # the sampling design
 #'
-#' ## generate a undirected binary SBM with no covariate
+#' ## generate an undirected binary SBM with no covariate
 #' sbm <- sbm::sampleSimpleSBM(N, pi, theta)
 #'
 #' ## Uncomment to set parallel computing with future

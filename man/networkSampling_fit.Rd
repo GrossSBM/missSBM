@@ -54,7 +54,8 @@ depend on them}
 \if{html}{\out{<a id="method-networkSampling_fit-update_parameters"></a>}}
 \if{latex}{\out{\hypertarget{method-networkSampling_fit-update_parameters}{}}}
 \subsection{\code{networkSampling_fit$update_parameters()}}{
-  a method to update the estimation of the parameters. By default, nothing to do (corresponds to MAR sampling)
+  update the parameters along the VEM: nothing to do by default, the
+parameters of a MAR design not depending on the SBM
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{networkSampling_fit$update_parameters(...)}
