@@ -304,10 +304,10 @@ test_that("partlyObservedNetwork: sparse patterns built column by column match t
     A <- matrix(rbinom(n * n, 1, .2), n, n)
     if (!directed) A[lower.tri(A)] <- t(A)[lower.tri(A)]
     diag(A) <- 0
-    if (sparse) A <- as(as(A, "generalMatrix"), "CsparseMatrix") else { # a dgCMatrix, as from igraph
-      A[sample(n, 10), ] <- NA
-      if (!directed) A[lower.tri(A)] <- t(A)[lower.tri(A)]
-    }
+    A[sample(n, 10), ] <- NA
+    if (!directed) A[lower.tri(A)] <- t(A)[lower.tri(A)]
+    ## a dgCMatrix with NA, as from observeNetwork() on the adjacency matrix of igraph
+    if (sparse) A <- as(as(A, "generalMatrix"), "CsparseMatrix")
     net <- missSBM:::partlyObservedNetwork$new(A)
     expect_equal(net$is_directed, directed)
     Ad <- as.matrix(A)
