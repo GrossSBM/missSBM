@@ -66,8 +66,8 @@ missSBM 1.1.0 (e.g., `remotes::install_version("missSBM", "1.1.0")`).
 - Covariates in the SBM: the M-step failed ("Newton solver failed to find an ascent direction")
   when two blocks had no edge between them, as the connectivity reached 0 exactly; it is now
   bounded away from 0 and 1, as without covariates.
-- Tests: the `blockmodels`-based reference tests run sequentially (`nbCores = 1`), avoiding a
-  segfault on macOS (r-oldrel-macos-arm64).
+- Tests: the reference tests against `sbm` run sequentially (`nbCores = 1`), avoiding a
+  segfault on macOS (`r-oldrel-macos-arm64`).
 
 # missSBM 1.1.0 (2026-07-21)
 
