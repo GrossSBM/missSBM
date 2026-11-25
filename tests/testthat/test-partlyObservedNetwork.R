@@ -296,3 +296,25 @@ test_that("partlyObservedNetwork: observed nodes, undirected, computed without R
   expect_equal(pon$observedNodes, unname(Matrix::rowSums(R | Matrix::t(R)) == n - 1))
   expect_equal(which(!pon$observedNodes), sort(c(miss, 3, 7)))
 })
+
+test_that("partlyObservedNetwork: sparse patterns built column by column match the dense masks (#49)", {
+  for (directed in c(FALSE, TRUE)) for (sparse in c(FALSE, TRUE)) {
+    set.seed(5)
+    n <- 50
+    A <- matrix(rbinom(n * n, 1, .2), n, n)
+    if (!directed) A[lower.tri(A)] <- t(A)[lower.tri(A)]
+    diag(A) <- 0
+    A[sample(n, 10), ] <- NA
+    if (!directed) A[lower.tri(A)] <- t(A)[lower.tri(A)]
+    ## a dgCMatrix with NA, as from observeNetwork() on the adjacency matrix of igraph
+    if (sparse) A <- as(as(A, "generalMatrix"), "CsparseMatrix")
+    net <- missSBM:::partlyObservedNetwork$new(A)
+    expect_equal(net$is_directed, directed)
+    Ad <- as.matrix(A)
+    valid <- if (directed) row(Ad) != col(Ad) else row(Ad) < col(Ad)
+    expect_equal(as.matrix(net$samplingMatrix)    != 0, valid & !is.na(Ad))
+    expect_equal(as.matrix(net$samplingMatrixBar) != 0, valid &  is.na(Ad))
+    expect_equal(as.matrix(net$networkData) != 0, valid & !is.na(Ad) & Ad == 1)
+  }
+  expect_error(missSBM:::partlyObservedNetwork$new(matrix(c(0, 2, 2, 0), 2, 2)), "binary")
+})

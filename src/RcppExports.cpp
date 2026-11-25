@@ -108,6 +108,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// bilinear_at_pattern_cpp
+NumericVector bilinear_at_pattern_cpp(const NumericMatrix& ZMt, const NumericMatrix& Zt, const IntegerVector& i, const IntegerVector& p);
+RcppExport SEXP _missSBM_bilinear_at_pattern_cpp(SEXP ZMtSEXP, SEXP ZtSEXP, SEXP iSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type ZMt(ZMtSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Zt(ZtSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(bilinear_at_pattern_cpp(ZMt, Zt, i, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 // kmeans_cpp
 IntegerVector kmeans_cpp(const arma::mat& coordinates, arma::mat& input_centroids);
 RcppExport SEXP _missSBM_kmeans_cpp(SEXP coordinatesSEXP, SEXP input_centroidsSEXP) {
@@ -117,6 +131,40 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type coordinates(coordinatesSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type input_centroids(input_centroidsSEXP);
     rcpp_result_gen = Rcpp::wrap(kmeans_cpp(coordinates, input_centroids));
+    return rcpp_result_gen;
+END_RCPP
+}
+// farthest_pair_cpp
+IntegerVector farthest_pair_cpp(const NumericMatrix& Xt);
+RcppExport SEXP _missSBM_farthest_pair_cpp(SEXP XtSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Xt(XtSEXP);
+    rcpp_result_gen = Rcpp::wrap(farthest_pair_cpp(Xt));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_to_row_cpp
+NumericVector dist_to_row_cpp(const NumericMatrix& Xt, int i);
+RcppExport SEXP _missSBM_dist_to_row_cpp(SEXP XtSEXP, SEXP iSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Xt(XtSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_to_row_cpp(Xt, i));
+    return rcpp_result_gen;
+END_RCPP
+}
+// network_patterns_dense
+List network_patterns_dense(SEXP A);
+RcppExport SEXP _missSBM_network_patterns_dense(SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type A(ASEXP);
+    rcpp_result_gen = Rcpp::wrap(network_patterns_dense(A));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -140,7 +188,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_missSBM_M_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_M_step_sparse_bernoulli_covariates, 8},
     {"_missSBM_E_step_sparse_bernoulli_nocovariate", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_nocovariate, 6},
     {"_missSBM_E_step_sparse_bernoulli_covariates", (DL_FUNC) &_missSBM_E_step_sparse_bernoulli_covariates, 8},
+    {"_missSBM_bilinear_at_pattern_cpp", (DL_FUNC) &_missSBM_bilinear_at_pattern_cpp, 4},
     {"_missSBM_kmeans_cpp", (DL_FUNC) &_missSBM_kmeans_cpp, 2},
+    {"_missSBM_farthest_pair_cpp", (DL_FUNC) &_missSBM_farthest_pair_cpp, 1},
+    {"_missSBM_dist_to_row_cpp", (DL_FUNC) &_missSBM_dist_to_row_cpp, 2},
+    {"_missSBM_network_patterns_dense", (DL_FUNC) &_missSBM_network_patterns_dense, 1},
     {"_missSBM_roundProduct", (DL_FUNC) &_missSBM_roundProduct, 2},
     {NULL, NULL, 0}
 };

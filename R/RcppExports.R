@@ -25,8 +25,24 @@ E_step_sparse_bernoulli_covariates <- function(Y, R, M, Z, Gamma, pi, symmetric 
     .Call(`_missSBM_E_step_sparse_bernoulli_covariates`, Y, R, M, Z, Gamma, pi, symmetric, rescale)
 }
 
+bilinear_at_pattern_cpp <- function(ZMt, Zt, i, p) {
+    .Call(`_missSBM_bilinear_at_pattern_cpp`, ZMt, Zt, i, p)
+}
+
 kmeans_cpp <- function(coordinates, input_centroids) {
     .Call(`_missSBM_kmeans_cpp`, coordinates, input_centroids)
+}
+
+farthest_pair_cpp <- function(Xt) {
+    .Call(`_missSBM_farthest_pair_cpp`, Xt)
+}
+
+dist_to_row_cpp <- function(Xt, i) {
+    .Call(`_missSBM_dist_to_row_cpp`, Xt, i)
+}
+
+network_patterns_dense <- function(A) {
+    .Call(`_missSBM_network_patterns_dense`, A)
 }
 
 roundProduct <- function(covariates_list, beta) {

@@ -371,8 +371,9 @@ blockDyadSampling_fit <-
     },
     #' @field log_lambda matrix, term for adjusting the imputation step which depends on the type of sampling
     log_lambda = function(value) {
+      ## crossprod(R, Z) = t(R) %*% Z without forming the transpose of R (#49)
       res <- private$R %*% private$Z %*% t(log(private$psi)) + private$S %*% private$Z %*% t(log(1 - private$psi)) +
-        t(private$R) %*% private$Z %*% log(private$psi) + t(private$S) %*% private$Z %*% log(1 - private$psi)
+        Matrix::crossprod(private$R, private$Z) %*% log(private$psi) + Matrix::crossprod(private$S, private$Z) %*% log(1 - private$psi)
       res
     }
   )
