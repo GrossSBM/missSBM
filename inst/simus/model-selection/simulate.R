@@ -11,13 +11,15 @@
 ##     design that generated the data?
 ##
 ## Usage (from the root of the package; see load-missSBM.R for SIMU_LIB):
-##   [SIMU_LIB=<lib>] OPENBLAS_NUM_THREADS=1 Rscript inst/simus/model-selection/simulate.R [nb cores] [label]
-## writes inst/simus/model-selection/results/<label>.rds (label: the version by default).
+##   [SIMU_LIB=<lib>] [SIMU_ITERATES=<k>] OPENBLAS_NUM_THREADS=1 Rscript inst/simus/model-selection/simulate.R [nb cores] [label]
+## writes inst/simus/model-selection/results/<label>.rds (label: the version by default, followed
+## by "-iter<k>" if SIMU_ITERATES is set, the number of passes of the exploration).
 
 args  <- commandArgs(TRUE)
 cores <- if (length(args) > 0) as.integer(args[1]) else 1L
 source(file.path("inst", "simus", "load-missSBM.R"))
-label <- if (length(args) > 1) args[2] else simu_version
+iterates <- Sys.getenv("SIMU_ITERATES", "")
+label <- if (length(args) > 1) args[2] else paste0(simu_version, if (nzchar(iterates)) paste0("-iter", iterates))
 out_dir <- file.path("inst", "simus", "model-selection", "results")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
@@ -30,7 +32,7 @@ Q      <- 3
 alpha  <- c(.25, .35, .40)
 vBlocks <- 1:6
 nb_rep <- as.integer(Sys.getenv("SIMU_NB_REP", 20)) # fewer replicates for a quick try
-control <- missSBM_param(trace = FALSE)
+control <- if (nzchar(iterates)) missSBM_param(trace = FALSE, iterates = as.integer(iterates)) else missSBM_param(trace = FALSE)
 
 connectivity <- list(
   assortative    = matrix(c(.60, .05, .05,

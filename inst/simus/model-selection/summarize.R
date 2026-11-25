@@ -1,11 +1,13 @@
 ## Tables comparing runs of simulate.R (by default v1.1.0 and v1.2.0), written to
-## inst/simus/model-selection/results/summary.md
+## inst/simus/model-selection/results/summary.md, or summary-<label 1>_vs_<label 2>.md for other runs
 ##
 ## Usage (from the root of the package):
 ##   Rscript inst/simus/model-selection/summarize.R [labels of the runs, in order]
 
 args   <- commandArgs(TRUE)
-labels <- if (length(args) >= 2) args else c("v1.1.0", "v1.2.0")
+default <- c("v1.1.0", "v1.2.0")
+labels <- if (length(args) >= 2) args else default
+out    <- if (identical(labels, default)) "summary.md" else paste0("summary-", paste(labels, collapse = "_vs_"), ".md")
 dir    <- file.path("inst", "simus", "model-selection", "results")
 runs   <- lapply(labels, function(l) readRDS(file.path(dir, paste0(l, ".rds"))))
 names(runs) <- labels
@@ -94,5 +96,5 @@ md <- c(
   "",
   knitr::kable(tab_q, format = "pipe", align = "llrr", row.names = FALSE)
 )
-writeLines(md, file.path(dir, "summary.md"))
+writeLines(md, file.path(dir, out))
 cat(md, sep = "\n")

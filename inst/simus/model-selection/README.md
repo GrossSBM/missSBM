@@ -63,3 +63,12 @@ network completed by the imputations, favoured the designs with more imputations
 assortative network, the observation of a node depends on its degree under both designs, and the
 three fits give the same partition (ARI 0.97). The selected Q is 3 with the true design in all the
 cases (3.0 to 5.2 with v1.1.0).
+
+**A second pass of the exploration changes nothing here** (`SIMU_ITERATES=2`, tables in
+`results/summary-v1.2.0_vs_v1.2.0-iter2.md`): the same selected models in all the cases, the ICL
+changed in 8 fits out of 360 by at most 0.18, for twice the time.
+
+```sh
+SIMU_LIB=<lib-v1.2.0> SIMU_ITERATES=2 Rscript inst/simus/model-selection/simulate.R 16
+Rscript inst/simus/model-selection/summarize.R v1.2.0 v1.2.0-iter2
+```

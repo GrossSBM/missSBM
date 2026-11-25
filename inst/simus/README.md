@@ -23,3 +23,34 @@ with `R CMD INSTALL --preclean` (see `load-missSBM.R`); timings are only meaning
 installed versions, as `load_all()` compiles the C++ code without optimization. Results are
 labelled by the version loaded (`v1.2.0.rds`), and the `summarize.R` scripts compare v1.1.0 and
 v1.2.0 by default. Set `OPENBLAS_NUM_THREADS=1`, as the jobs run in parallel.
+
+## Not covered yet, and leads
+
+Gaps of the campaigns, to fill before relying on them for these cases:
+
+- **Covariates**: no campaign on `covar-node`, `covar-dyad`, nor on covariates in the SBM
+  (`useCov`). A bug of the M-step with covariates, present since 1.1.0, was only found by the
+  replication scripts of the JSS article (`inst/JSS-analyses/`).
+- **Directed networks** and **`snowball`**: in no campaign (only in the tests and in the
+  numerical checks of the refactorings).
+
+What the campaigns of 1.2.0 suggest:
+
+- **Choice of the design by the ICL**: between designs whose sampling carries the same
+  information (`block-node` and `degree` on an assortative network, where the degree depends on
+  the block), the ICLs differ by a few units, about the penalty of one parameter (log n), and the
+  partitions are the same (`model-selection`). Such a difference is no evidence for one design.
+- **Exploration**: one pass (`iterates = 1`, the default) leaves an ICL gap with `node` on the
+  block-node samplings of the blog network (8 to 10 blocks), closed by 2 passes (`exploration`);
+  on the simulated networks of `model-selection` (Q = 3, n = 200), a second pass changes no
+  selected model (ICL changed in 8 fits out of 360, by at most 0.18) and doubles the time
+  (`results/summary-v1.2.0_vs_v1.2.0-iter2.md`). Hence the default of 1 pass, and 2 for a
+  reference analysis of a real network with many blocks.
+- **Local minima**: without exploration, the ICL is 280 to 400 above the best known, in both
+  versions: they come from the initialization (spectral clustering) and the VEM, not from the
+  missing data. A better initialization is the main lever.
+- **Cost**: what remains is the E-step and the M-step on the pattern of the observed dyads,
+  nearly full; `degree` costs 3 to 5 times the other designs, in proportion to the number of
+  missing dyads (`performance`).
+- **`degree`**: with a weak effect of the degree, b is underestimated by 10% to 19% by all the
+  estimators (`degree-estimation`): a small parameter, poorly identified.
