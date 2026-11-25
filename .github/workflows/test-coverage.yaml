@@ -4,14 +4,24 @@ on:
   push:
     branches: [main, master]
   pull_request:
+    # also when a draft PR becomes ready for review (the jobs skip draft PRs, see below)
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
 
 name: test-coverage.yaml
+
+# a new commit on a PR cancels the run in progress for that PR (not on master)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions: read-all
 
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
+    # not on draft PRs: the CI runs once the PR is ready for review (or by hand)
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
