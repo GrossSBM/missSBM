@@ -23,7 +23,7 @@
 #'
 #' ## Sample 75% of dyads in  French political Blogosphere's network data
 #' adjacencyMatrix <- missSBM::frenchblog2007 %>%
-#'   igraph::delete.vertices(1:100) %>%
+#'   igraph::delete_vertices(1:100) %>%
 #'   igraph::as_adjacency_matrix() %>%
 #'   missSBM::observeNetwork(sampling = "dyad", parameters = 0.75)
 #' collection <- estimateMissSBM(adjacencyMatrix, 1:5, sampling = "dyad")
