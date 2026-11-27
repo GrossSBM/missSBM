@@ -3,9 +3,10 @@
 It is not designed to be called directly by the user; see the concrete
 variants
 [`SimpleSBM_fit_noCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_noCov.md),
-[`SimpleSBM_fit_withCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_withCov.md)
+[`SimpleSBM_fit_withCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_withCov.md),
+[`SimpleSBM_fit_doubleStandard`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_doubleStandard.md)
 and
-[`SimpleSBM_fit_MNAR`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md).
+[`SimpleSBM_fit_degree`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_degree.md).
 
 ## Super classes
 

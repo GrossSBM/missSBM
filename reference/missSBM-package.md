@@ -43,14 +43,20 @@ R. The main objects are the following:
   an object to store a collection of missSBM_fit, ordered by number of
   block
 
-- [`SimpleSBM_fit_MNAR`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md)
-  an object to define and store an SBM fit with MNAR values
-
 - [`SimpleSBM_fit_noCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_noCov.md)
-  an object to define and store an SBM fit without covariate, MAR values
+  an object to define and store an SBM fit without covariates, on the
+  observed dyads (designs dyad, node, block-node, block-dyad, and the
+  covariates only in the sampling)
 
 - [`SimpleSBM_fit_withCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_withCov.md)
-  an object to define and store an SBM fit with covariates, MAR values
+  an object to define and store an SBM fit with covariates
+
+- [`SimpleSBM_fit_doubleStandard`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_doubleStandard.md)
+  an object to define and store an SBM fit under the double-standard
+  sampling
+
+- [`SimpleSBM_fit_degree`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_degree.md)
+  an object to define and store an SBM fit under the degree sampling
 
 - [`networkSampling`](https://grosssbm.github.io/missSBM/reference/networkSampling.md)
   an object to define and store a network sampling fit

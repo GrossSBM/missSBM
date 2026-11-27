@@ -5,7 +5,7 @@ with probability \(m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)\): the m
 are integrated out given the blocks, and the posterior probability that a missing dyad between
 blocks q and l is an edge is \(\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}\), a Q x Q matrix.
 The parameters are updated jointly with the connectivity of the SBM (see
-SimpleSBM_fit_MNAR): this class only stores them, with the terms of the sampling.
+SimpleSBM_fit_doubleStandard): this class only stores them, with the terms of the sampling.
 With a single block, \((\pi, p_0, p_1)\) are not identifiable: the observed data only inform
 \(\pi p_1\) and \((1 - \pi) p_0\). The fit is then constrained to \(p_0 = p_1\), that is,
 to dyad sampling, with one parameter."><meta property="og:description" content="A dyad is observed with probability \(p_0\) if it is 0, \(p_1\) if it is 1 (the vector of
@@ -14,7 +14,7 @@ with probability \(m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)\): the m
 are integrated out given the blocks, and the posterior probability that a missing dyad between
 blocks q and l is an edge is \(\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}\), a Q x Q matrix.
 The parameters are updated jointly with the connectivity of the SBM (see
-SimpleSBM_fit_MNAR): this class only stores them, with the terms of the sampling.
+SimpleSBM_fit_doubleStandard): this class only stores them, with the terms of the sampling.
 With a single block, \((\pi, p_0, p_1)\) are not identifiable: the observed data only inform
 \(\pi p_1\) and \((1 - \pi) p_0\). The fit is then constrained to \(p_0 = p_1\), that is,
 to dyad sampling, with one parameter."></head><body>
@@ -64,7 +64,7 @@ with probability \(m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)\): the m
 are integrated out given the blocks, and the posterior probability that a missing dyad between
 blocks q and l is an edge is \(\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}\), a Q x Q matrix.
 The parameters are updated jointly with the connectivity of the SBM (see
-<a href="SimpleSBM_fit_MNAR.html">SimpleSBM_fit_MNAR</a>): this class only stores them, with the terms of the sampling.</p>
+<a href="SimpleSBM_fit_doubleStandard.html">SimpleSBM_fit_doubleStandard</a>): this class only stores them, with the terms of the sampling.</p>
 <p>With a single block, \((\pi, p_0, p_1)\) are not identifiable: the observed data only inform
 \(\pi p_1\) and \((1 - \pi) p_0\). The fit is then constrained to \(p_0 = p_1\), that is,
 to dyad sampling, with one parameter.</p>
@@ -137,7 +137,7 @@ blocks q and l is an edge, with the current parameters</p></dd>
 <p></p><hr><a id="method-doubleStandardSampling_fit-update_parameters"></a><div class="section">
 <h3 id="doublestandardsampling-fit-update-parameters-"><code>doubleStandardSampling_fit$update_parameters()</code><a class="anchor" aria-label="anchor" href="#doublestandardsampling-fit-update-parameters-"></a></h3>
 <p>stores the parameters, updated jointly with the connectivity of the SBM
-(see <a href="SimpleSBM_fit_MNAR.html">SimpleSBM_fit_MNAR</a>), and the current blocks</p><div class="section">
+(see <a href="SimpleSBM_fit_doubleStandard.html">SimpleSBM_fit_doubleStandard</a>), and the current blocks</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">doubleStandardSampling_fit</span><span class="op">$</span><span class="fu">update_parameters</span><span class="op">(</span><span class="va">Z</span>, <span class="va">theta</span>, psi <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">

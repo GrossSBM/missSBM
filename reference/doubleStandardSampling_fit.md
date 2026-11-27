@@ -8,7 +8,7 @@ integrated out given the blocks, and the posterior probability that a
 missing dyad between blocks q and l is an edge is \\\nu\_{ql} =
 \pi\_{ql}(1 - p_1) / m\_{ql}\\, a Q x Q matrix. The parameters are
 updated jointly with the connectivity of the SBM (see
-[SimpleSBM_fit_MNAR](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md)):
+[SimpleSBM_fit_doubleStandard](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_doubleStandard.md)):
 this class only stores them, with the terms of the sampling.
 
 With a single block, \\(\pi, p_0, p_1)\\ are not identifiable: the
@@ -99,7 +99,7 @@ constructor
 
 stores the parameters, updated jointly with the connectivity of the SBM
 (see
-[SimpleSBM_fit_MNAR](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md)),
+[SimpleSBM_fit_doubleStandard](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_doubleStandard.md)),
 and the current blocks
 
 #### Usage

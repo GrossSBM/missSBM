@@ -70,6 +70,11 @@ results, install missSBM 1.1.0 (e.g.,
 - [`?estimateMissSBM`](https://grosssbm.github.io/missSBM/reference/estimateMissSBM.md)
   describes the parameters of every design and the model/design
   selection by the ICL.
+- The internal class of the SBM fitted under the `double-standard`
+  sampling is renamed `SimpleSBM_fit_doubleStandard` (formerly
+  `SimpleSBM_fit_MNAR`, which suggested that it served all the MNAR
+  designs), as `SimpleSBM_fit_degree` for `degree`: it is the class of
+  `fittedSBM` for this design.
 
 ### Memory and speed
 

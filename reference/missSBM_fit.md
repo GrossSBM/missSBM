@@ -25,7 +25,7 @@ the user and exported as S3 methods. See the documentation for
   [`SimpleSBM_fit_withCov`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_withCov.md),
   [`SimpleSBM_fit_degree`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_degree.md)
   or
-  [`SimpleSBM_fit_MNAR`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_MNAR.md)
+  [`SimpleSBM_fit_doubleStandard`](https://grosssbm.github.io/missSBM/reference/SimpleSBM_fit_doubleStandard.md)
   inheriting from class
   [`sbm::SimpleSBM_fit`](https://grosssbm.github.io/sbm/reference/SimpleSBM_fit.html)
 
