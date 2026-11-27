@@ -15,9 +15,10 @@
 #'
 #' * [`missSBM_fit`] an object that put together an SBM fit and and network sampling fit - the main point of the missSBM package !
 #' * [`missSBM_collection`] an object to store a collection of missSBM_fit, ordered by number of block
-#' * [`SimpleSBM_fit_MNAR`] an object to define and store an SBM fit with MNAR values
-#' * [`SimpleSBM_fit_noCov`] an object to define and store an SBM fit without covariate, MAR values
-#' * [`SimpleSBM_fit_withCov`] an object to define and store an SBM fit with covariates, MAR values
+#' * [`SimpleSBM_fit_noCov`] an object to define and store an SBM fit without covariates, on the observed dyads (designs dyad, node, block-node, block-dyad, and the covariates only in the sampling)
+#' * [`SimpleSBM_fit_withCov`] an object to define and store an SBM fit with covariates
+#' * [`SimpleSBM_fit_doubleStandard`] an object to define and store an SBM fit under the double-standard sampling
+#' * [`SimpleSBM_fit_degree`] an object to define and store an SBM fit under the degree sampling
 #' * [`networkSampling`] an object to define and store a network sampling fit
 #'
 #' missSBM extends some functionality of the package sbm, by inheriting from classes and methods associated to simple stochastic block models.

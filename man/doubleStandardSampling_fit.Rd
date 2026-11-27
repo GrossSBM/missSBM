@@ -10,7 +10,7 @@ with probability \eqn{m_{ql} = \pi_{ql}(1 - p_1) + (1 - \pi_{ql})(1 - p_0)}: the
 are integrated out given the blocks, and the posterior probability that a missing dyad between
 blocks q and l is an edge is \eqn{\nu_{ql} = \pi_{ql}(1 - p_1) / m_{ql}}, a Q x Q matrix.
 The parameters are updated jointly with the connectivity of the SBM (see
-\link{SimpleSBM_fit_MNAR}): this class only stores them, with the terms of the sampling.
+\link{SimpleSBM_fit_doubleStandard}): this class only stores them, with the terms of the sampling.
 
 With a single block, \eqn{(\pi, p_0, p_1)} are not identifiable: the observed data only inform
 \eqn{\pi p_1} and \eqn{(1 - \pi) p_0}. The fit is then constrained to \eqn{p_0 = p_1}, that is,
@@ -79,7 +79,7 @@ blocks q and l is an edge, with the current parameters}
 \if{latex}{\out{\hypertarget{method-doubleStandardSampling_fit-update_parameters}{}}}
 \subsection{\code{doubleStandardSampling_fit$update_parameters()}}{
   stores the parameters, updated jointly with the connectivity of the SBM
-(see \link{SimpleSBM_fit_MNAR}), and the current blocks
+(see \link{SimpleSBM_fit_doubleStandard}), and the current blocks
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{doubleStandardSampling_fit$update_parameters(Z, theta, psi = NULL, ...)}

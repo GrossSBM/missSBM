@@ -43,7 +43,7 @@ reference:
   desc: ~
   contents:
     - '`SimpleSBM_fit`'
-    - '`SimpleSBM_fit_MNAR`'
+    - '`SimpleSBM_fit_doubleStandard`'
     - '`SimpleSBM_fit_degree`'
     - '`SimpleSBM_fit_noCov`'
     - '`SimpleSBM_fit_withCov`'
