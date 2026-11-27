@@ -1,7 +1,8 @@
 #' Base internal class for adjusting a binary Stochastic Block Model in the context of missSBM.
 #'
 #' It is not designed to be called directly by the user; see the concrete variants
-#' [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`] and [`SimpleSBM_fit_MNAR`].
+#' [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`], [`SimpleSBM_fit_doubleStandard`] and
+#' [`SimpleSBM_fit_degree`].
 #'
 #' @import R6
 SimpleSBM_fit <-
@@ -292,8 +293,8 @@ R6::R6Class(classname = "SimpleSBM_fit_withCov",
 #' It is not designed to be called directly by the user.
 #'
 #' @import R6
-SimpleSBM_fit_MNAR <-
-R6::R6Class(classname = "SimpleSBM_fit_MNAR",
+SimpleSBM_fit_doubleStandard <-
+R6::R6Class(classname = "SimpleSBM_fit_doubleStandard",
   inherit = SimpleSBM_fit_noCov,
   private = list(
     ## term of the missing dyads in the update of the blocks: for each node i and block q, the sum

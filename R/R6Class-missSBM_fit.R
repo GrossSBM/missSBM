@@ -180,7 +180,7 @@ missSBM_fit <-
         ## 'double-standard' integrates the missing dyads out given the blocks: their term enters
         ## the update of the blocks, and their posterior given the blocks the M-step.
         if (netSampling == "double-standard") {
-          private$SBM <- SimpleSBM_fit_MNAR$new(partlyObservedNet, clusterInit)
+          private$SBM <- SimpleSBM_fit_doubleStandard$new(partlyObservedNet, clusterInit)
         } else if (netSampling == "degree") {
           ## fitted in three stages, see doVEM_degree()
           private$SBM <- SimpleSBM_fit_degree$new(partlyObservedNet, clusterInit)
@@ -451,7 +451,7 @@ missSBM_fit <-
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   active = list(
     #' @field fittedSBM the fitted SBM with class [`SimpleSBM_fit_noCov`], [`SimpleSBM_fit_withCov`], [`SimpleSBM_fit_degree`] or
-    #' [`SimpleSBM_fit_MNAR`] inheriting from class [`sbm::SimpleSBM_fit`]
+    #' [`SimpleSBM_fit_doubleStandard`] inheriting from class [`sbm::SimpleSBM_fit`]
     fittedSBM = function(value) {private$SBM},
     #' @field fittedSampling  the fitted sampling, inheriting from class [`networkSampling`] and corresponding fits
     fittedSampling = function(value) {private$sampling},

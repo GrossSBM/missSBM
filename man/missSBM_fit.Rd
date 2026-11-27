@@ -27,7 +27,7 @@ plot(my_missSBM_fit, "imputed")
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{fittedSBM}}{the fitted SBM with class \code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}}, \code{\link{SimpleSBM_fit_degree}} or
-\code{\link{SimpleSBM_fit_MNAR}} inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
+\code{\link{SimpleSBM_fit_doubleStandard}} inheriting from class \code{\link[sbm:SimpleSBM_fit]{sbm::SimpleSBM_fit}}}
 
     \item{\code{fittedSampling}}{the fitted sampling, inheriting from class \code{\link{networkSampling}} and corresponding fits}
 

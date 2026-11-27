@@ -5,7 +5,8 @@
 \title{Base internal class for adjusting a binary Stochastic Block Model in the context of missSBM.}
 \description{
 It is not designed to be called directly by the user; see the concrete variants
-\code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}} and \code{\link{SimpleSBM_fit_MNAR}}.
+\code{\link{SimpleSBM_fit_noCov}}, \code{\link{SimpleSBM_fit_withCov}}, \code{\link{SimpleSBM_fit_doubleStandard}} and
+\code{\link{SimpleSBM_fit_degree}}.
 }
 \section{Super classes}{
 \code{\link[sbm:SBM]{sbm::SBM}} -> \code{\link[sbm:SimpleSBM]{sbm::SimpleSBM}} -> \code{SimpleSBM_fit}

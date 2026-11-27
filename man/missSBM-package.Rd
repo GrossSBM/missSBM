@@ -23,9 +23,10 @@ directly. The user should only have a basic understanding of the fields of each 
 \itemize{
 \item \code{\link{missSBM_fit}} an object that put together an SBM fit and and network sampling fit - the main point of the missSBM package !
 \item \code{\link{missSBM_collection}} an object to store a collection of missSBM_fit, ordered by number of block
-\item \code{\link{SimpleSBM_fit_MNAR}} an object to define and store an SBM fit with MNAR values
-\item \code{\link{SimpleSBM_fit_noCov}} an object to define and store an SBM fit without covariate, MAR values
-\item \code{\link{SimpleSBM_fit_withCov}} an object to define and store an SBM fit with covariates, MAR values
+\item \code{\link{SimpleSBM_fit_noCov}} an object to define and store an SBM fit without covariates, on the observed dyads (designs dyad, node, block-node, block-dyad, and the covariates only in the sampling)
+\item \code{\link{SimpleSBM_fit_withCov}} an object to define and store an SBM fit with covariates
+\item \code{\link{SimpleSBM_fit_doubleStandard}} an object to define and store an SBM fit under the double-standard sampling
+\item \code{\link{SimpleSBM_fit_degree}} an object to define and store an SBM fit under the degree sampling
 \item \code{\link{networkSampling}} an object to define and store a network sampling fit
 }
 

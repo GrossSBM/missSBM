@@ -25,6 +25,7 @@ This version changes the estimation of the missing-not-at-random designs and the
 - A new vignette, `vignette("case_study_frenchblog")`, follows a reduced form of the analysis of the French political blogosphere of the JSS article with the current version.
 - `estimateMissSBM()` and `observeNetwork()` check their arguments with informative messages.
 - `?estimateMissSBM` describes the parameters of every design and the model/design selection by the ICL.
+- The internal class of the SBM fitted under the `double-standard` sampling is renamed `SimpleSBM_fit_doubleStandard` (formerly `SimpleSBM_fit_MNAR`, which suggested that it served all the MNAR designs), as `SimpleSBM_fit_degree` for `degree`: it is the class of `fittedSBM` for this design.
 
 ## Memory and speed
 
